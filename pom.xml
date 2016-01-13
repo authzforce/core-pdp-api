@@ -6,7 +6,7 @@
 		<version>3.3.7</version>
 	</parent>
 	<artifactId>authzforce-ce-core-pdp-api</artifactId>
-	<version>3.6.1</version>
+	<version>3.6.2-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>AuthZForce CE - Core PDP API</description>
 	<url>https://tuleap.ow2.org/projects/authzforce</url>
