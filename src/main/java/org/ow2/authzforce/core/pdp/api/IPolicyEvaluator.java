@@ -18,24 +18,32 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Policy Element evaluator interface, "Policy Element" referring to all Policy* element: Policy, PolicySet, PolicyIdReference (handled by PolicyReference),
- * PolicySetIdReference (handled by PolicySetReference). All these classes have common behavior which is captured by this interface to benefit from
- * polymorphism, therefore more reusable (-> less) code. Actually this class intends to replace AbstractPolicy which can no longer be used as mother class to
- * (xacmlv3.)Policy(Set) and Policy(Set)Reference (because it is an abstract class), as long as those classes already extend another class from JAXB model (e.g.
- * com.thalesgroup.authzforce.core.test.custom.Policy extends oasis.names...Policy), so we can only make them implement an Interface instead, as Java does not
- * allow extension of multiple abstract classes.
+ * Policy Element evaluator interface, "Policy Element" referring to all Policy*
+ * element: Policy, PolicySet, PolicyIdReference (handled by PolicyReference),
+ * PolicySetIdReference (handled by PolicySetReference). All these classes have
+ * common behavior which is captured by this interface to benefit from
+ * polymorphism, therefore more reusable (-> less) code. Actually this class
+ * intends to replace AbstractPolicy which can no longer be used as mother class
+ * to (xacmlv3.)Policy(Set) and Policy(Set)Reference (because it is an abstract
+ * class), as long as those classes already extend another class from JAXB model
+ * (e.g. com.thalesgroup.authzforce.core.test.custom.Policy extends
+ * oasis.names...Policy), so we can only make them implement an Interface
+ * instead, as Java does not allow extension of multiple abstract classes.
  * 
  * 
  */
-public interface IPolicyEvaluator extends Decidable
-{
+public interface IPolicyEvaluator extends Decidable {
 	/**
-	 * "isApplicable()" as defined by Only-one-applicable algorithm (section C.9), i.e. applicable by virtue of its target, i.e. the target matches the context.
-	 * {@link #evaluate(EvaluationContext)} already checks first if the policy is applicable, therefore you may call isApplicable() only if you only want to
-	 * check if the policy is applicable. If you want to evaluate the policy, call {@link #evaluate(EvaluationContext)} right away. To be used by
-	 * Only-one-applicable algorithm in particular.
+	 * "isApplicable()" as defined by Only-one-applicable algorithm (section
+	 * C.9), i.e. applicable by virtue of its target, i.e. the target matches
+	 * the context. {@link #evaluate(EvaluationContext)} already checks first if
+	 * the policy is applicable, therefore you may call isApplicable() only if
+	 * you only want to check if the policy is applicable. If you want to
+	 * evaluate the policy, call {@link #evaluate(EvaluationContext)} right
+	 * away. To be used by Only-one-applicable algorithm in particular.
 	 * 
 	 * @param context
 	 *            evaluation context to match
@@ -43,16 +51,20 @@ public interface IPolicyEvaluator extends Decidable
 	 * @throws IndeterminateEvaluationException
 	 *             if Target evaluation in this context is "Indeterminate"
 	 */
-	boolean isApplicable(EvaluationContext context) throws IndeterminateEvaluationException;
+	boolean isApplicable(EvaluationContext context)
+			throws IndeterminateEvaluationException;
 
 	/**
-	 * Same as {@link #evaluate(EvaluationContext)} except Target evaluation may be skipped. To be used by Only-one-applicable algorithm with
-	 * <code>skipTarget</code>=true, after calling {@link #isApplicable(EvaluationContext)} in particular.
+	 * Same as {@link #evaluate(EvaluationContext)} except Target evaluation may
+	 * be skipped. To be used by Only-one-applicable algorithm with
+	 * <code>skipTarget</code>=true, after calling
+	 * {@link #isApplicable(EvaluationContext)} in particular.
 	 * 
 	 * @param context
 	 *            evaluation context
 	 * @param skipTarget
-	 *            whether to evaluate the Target. If false, this must be equivalent to {@link #evaluate(EvaluationContext)}
+	 *            whether to evaluate the Target. If false, this must be
+	 *            equivalent to {@link #evaluate(EvaluationContext)}
 	 * @return decision result
 	 */
 	DecisionResult evaluate(EvaluationContext context, boolean skipTarget);
@@ -65,6 +77,14 @@ public interface IPolicyEvaluator extends Decidable
 	String getPolicyId();
 
 	/**
+	 * Get policy version, e.g. for auditing
+	 * 
+	 * @return evaluated policy(Set) Version; null if not statically defined,
+	 *         e.g. dynamic policy reference evaluator
+	 */
+	PolicyVersion getPolicyVersion();
+
+	/**
 	 * Get combining algorithm, e.g. for auditing policy decision
 	 * 
 	 * @return Policy/Rule combining algorithm
@@ -72,16 +92,34 @@ public interface IPolicyEvaluator extends Decidable
 	String getCombiningAlgId();
 
 	/**
-	 * Get longest chain of Policy reference (via Policy(Set)IdReference) starting from this Policy(Set), in order to limit the length of such chain. Note that
-	 * in the current XACML 3.0 model, it is safe to ignore Policy elements; since they cannot have references. However, we consider that Policy and PolicySet
-	 * types could be merged into one Policy type on the long-term. That's why we define this method at the interface level on top of both Policy and PolicySet
-	 * evaluator classes. Indeed, this interface represents common behavior of the two.
+	 * Get longest chain of Policy reference (via Policy(Set)IdReference)
+	 * starting from this Policy(Set), in order to limit the length of such
+	 * chain. Note that in the current XACML 3.0 model, it is safe to ignore
+	 * Policy elements; since they cannot have references. However, we consider
+	 * that Policy and PolicySet types could be merged into one Policy type on
+	 * the long-term. That's why we define this method at the interface level on
+	 * top of both Policy and PolicySet evaluator classes. Indeed, this
+	 * interface represents common behavior of the two.
 	 * 
-	 * @return longest policy reference chain in this policy; null if there is no Policy(Set)IdReference in this Policy(Set), or undefined because there are
-	 *         Policy references dynamically resolved depending of the evaluation context (as opposed to static policy reference resolved by static policy
-	 *         finders).
+	 * @return longest policy reference chain in this policy; null if there is
+	 *         no Policy(Set)IdReference in this Policy(Set), or undefined
+	 *         because there are Policy references dynamically resolved
+	 *         depending of the evaluation context (as opposed to static policy
+	 *         reference resolved by static policy finders).
 	 *         <p>
-	 *         Result must be immutable (can be made so with {@link Collections#unmodifiableList(java.util.List)}).
+	 *         Result must be immutable (can be made so with
+	 *         {@link Collections#unmodifiableList(java.util.List)}).
 	 */
 	List<String> getLongestPolicyReferenceChain();
+
+	/**
+	 * Get the policies statically referenced - directly or indirectly - from
+	 * the evaluated policy.
+	 * 
+	 * @return the direct/indirect statically resolved policy references; null
+	 *         if any of the policy references is not statically resolved (once
+	 *         and for all). Note that the returned map may be empty if the
+	 *         evaluated policy does not have any policy reference at all.
+	 */
+	Map<String, PolicyVersion> getStaticRefPolicies();
 }
