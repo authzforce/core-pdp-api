@@ -5,6 +5,7 @@ All notable changes to this project are documented in this file following the [K
 ### Added
 - Interface method IPolicyEvaluator#getPolicyVersion(): provides version of the evaluated Policy(Set)
 - Interface method IPolicyEvaluator#getStaticRefPolicies(): provides the policies statically referenced - directly or indirectly - from the evaluated policy.
+- Interface method DecisionResult#getExtendedIndeterminate(): provides Extended Indeterminate value (to be used when #getDecision() returns "Indeterminate")
 
 ## 3.6.1
 ### Added
