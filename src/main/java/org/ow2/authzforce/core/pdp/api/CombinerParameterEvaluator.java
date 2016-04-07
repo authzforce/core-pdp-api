@@ -23,10 +23,9 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 /**
  * Evaluates a XACML CombinerParameter.
  */
-public class CombinerParameterEvaluator extends CombinerParameter
+public final class CombinerParameterEvaluator extends CombinerParameter
 {
-	private static final UnsupportedOperationException UNSUPPORTED_SET_ATTRIBUTE_VALUE_OPERATION_EXCEPTION = new UnsupportedOperationException(
-			"CombinerParameterEvaluator.setAttributeValue() not allowed");
+	private static final UnsupportedOperationException UNSUPPORTED_SET_ATTRIBUTE_VALUE_OPERATION_EXCEPTION = new UnsupportedOperationException("CombinerParameterEvaluator.setAttributeValue() not allowed");
 
 	private final AttributeValue attrValue;
 	private transient final int hashCode;
@@ -34,12 +33,15 @@ public class CombinerParameterEvaluator extends CombinerParameter
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see oasis.names.tc.xacml._3_0.core.schema.wd_17.CombinerParameter#setAttributeValue(oasis.names .tc.xacml._3_0.core.schema.wd_17.AttributeValueType)
+	 * @see oasis.names.tc.xacml._3_0.core.schema.wd_17.CombinerParameter#
+	 * setAttributeValue(oasis.names
+	 * .tc.xacml._3_0.core.schema.wd_17.AttributeValueType)
 	 */
 	@Override
-	public final void setAttributeValue(AttributeValueType value)
+	public void setAttributeValue(AttributeValueType value)
 	{
-		// Cannot allow this because we have to make sure value is always instance of our internal
+		// Cannot allow this because we have to make sure value is always
+		// instance of our internal
 		// AttributeValue class
 		throw UNSUPPORTED_SET_ATTRIBUTE_VALUE_OPERATION_EXCEPTION;
 	}
@@ -56,8 +58,9 @@ public class CombinerParameterEvaluator extends CombinerParameter
 	 * @param param
 	 *            CombinerParameter as defined by OASIS XACML model
 	 * @param xPathCompiler
-	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element; null
-	 *            if none specified
+	 *            Policy(Set) default XPath compiler, corresponding to the
+	 *            Policy(Set)'s default XPath version specified in
+	 *            {@link DefaultsType} element; null if none specified
 	 * @param expFactory
 	 *            attribute value factory
 	 * @throws IllegalArgumentException
@@ -65,7 +68,8 @@ public class CombinerParameterEvaluator extends CombinerParameter
 	 */
 	public CombinerParameterEvaluator(CombinerParameter param, ExpressionFactory expFactory, XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
-		// set JAXB AttributeValueType.attributeValue = null, and overridde getAttributeValue() to return an instance of AttributeValue instead
+		// set JAXB AttributeValueType.attributeValue = null, and overridde
+		// getAttributeValue() to return an instance of AttributeValue instead
 		super(null, param.getParameterName());
 		final ValueExpression<? extends AttributeValue> valExpr = expFactory.getInstance(param.getAttributeValue(), xPathCompiler);
 		this.attrValue = valExpr.getValue();
@@ -80,7 +84,9 @@ public class CombinerParameterEvaluator extends CombinerParameter
 	public AttributeValue getValue()
 	{
 		/*
-		 * In the constructor, we make sure input is an AttributeValue, and we override setAttributeValue() to make it unsupported. So this cast should be safe
+		 * In the constructor, we make sure input is an AttributeValue, and we
+		 * override setAttributeValue() to make it unsupported. So this cast
+		 * should be safe
 		 */
 		return attrValue;
 	}

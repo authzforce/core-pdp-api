@@ -37,8 +37,7 @@ import java.util.List;
 public final class PolicyVersion implements Comparable<PolicyVersion>
 {
 	private static final IllegalArgumentException UNDEFINED_VERSION_EXCEPTION = new IllegalArgumentException("Policy(Set) Version undefined");
-	private static final IllegalArgumentException UNDEFINED_COMPARED_VERSION_EXCEPTION = new IllegalArgumentException(
-			"Other Policy(Set) Version for comparison is undefined");
+	private static final IllegalArgumentException UNDEFINED_COMPARED_VERSION_EXCEPTION = new IllegalArgumentException("Other Policy(Set) Version for comparison is undefined");
 
 	private final String version;
 	private final List<Integer> numbers;
@@ -46,13 +45,21 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	// cached hashCode() result
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
+	protected PolicyVersion(String version, List<Integer> numbers)
+	{
+		assert version != null;
+		this.numbers = Collections.unmodifiableList(numbers);
+		this.version = version;
+	}
+
 	/**
 	 * Creates instance from version in text form
 	 * 
 	 * @param version
 	 *            version string
 	 * @throws IllegalArgumentException
-	 *             if version is null or not valid according to pattern definition in XACML schema: "(\d+\.)*\d+"
+	 *             if version is null or not valid according to pattern
+	 *             definition in XACML schema: "(\d+\.)*\d+"
 	 */
 	public PolicyVersion(String version) throws IllegalArgumentException
 	{
@@ -81,8 +88,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 
 			if (number < 0)
 			{
-				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'. Number #" + i + " (=" + number
-						+ ") is not a positive integer");
+				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'. Number #" + i + " (=" + number + ") is not a positive integer");
 			}
 
 			intTokens.add(number);
@@ -152,7 +158,8 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	// }
 
 	/**
-	 * Return the original version string from which this object was instantiated
+	 * Return the original version string from which this object was
+	 * instantiated
 	 */
 	@Override
 	public String toString()
