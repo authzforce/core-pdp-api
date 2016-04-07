@@ -19,11 +19,14 @@ import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.XACMLParserFactory;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;
 
 /**
- * This is the interface for all modules responsible for finding Policy(Set)s by their Policy(Set)IdReference in a specific way (e.g. from a specific policy
+ * This is the interface for all modules responsible for finding Policy(Set)s by
+ * their Policy(Set)IdReference in a specific way (e.g. from a specific policy
  * repository).
  * <p>
- * Implements {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for
- * retrieving the policies. Therefore, these resources must be release by calling {@link #close()} when it is no longer needed.
+ * Implements {@link Closeable} because it may may use resources external to the
+ * JVM such as a cache, a disk, a connection to a remote server, etc. for
+ * retrieving the policies. Therefore, these resources must be release by
+ * calling {@link #close()} when it is no longer needed.
  * 
  */
 public interface RefPolicyProviderModule extends RefPolicyProvider, Closeable
@@ -32,7 +35,8 @@ public interface RefPolicyProviderModule extends RefPolicyProvider, Closeable
 	 * RefPolicyProviderModule factory
 	 * 
 	 * @param <CONF_T>
-	 *            type of configuration (XML-schema-derived) of the module (initialization parameter)
+	 *            type of configuration (XML-schema-derived) of the module
+	 *            (initialization parameter)
 	 * 
 	 * 
 	 */
@@ -46,12 +50,16 @@ public interface RefPolicyProviderModule extends RefPolicyProvider, Closeable
 		 * @param xacmlParserFactory
 		 *            XACML parser factory for parsing any XACML Policy(Set)
 		 * @param maxPolicySetRefDepth
-		 *            maximum allowed depth of PolicySet reference chain (via PolicySetIdReference): PolicySet1 -> PolicySet2 -> ...; to be enforced by any
-		 *            instance created by this factory
+		 *            maximum allowed depth of PolicySet reference chain (via
+		 *            PolicySetIdReference): PolicySet1 -> PolicySet2 -> ...; to
+		 *            be enforced by any instance created by this factory. A
+		 *            strictly negative value means no limit
 		 * @param expressionFactory
-		 *            Expression factory for parsing XACML Expressions in the policies
+		 *            Expression factory for parsing XACML Expressions in the
+		 *            policies
 		 * @param combiningAlgRegistry
-		 *            Combining algorithm registry for getting implementations of algorithms used in the policies
+		 *            Combining algorithm registry for getting implementations
+		 *            of algorithms used in the policies
 		 * @param environmentProperties
 		 *            global PDP configuration environment properties
 		 * 
@@ -59,8 +67,6 @@ public interface RefPolicyProviderModule extends RefPolicyProvider, Closeable
 		 * @throws IllegalArgumentException
 		 *             if {@code conf} required but null
 		 */
-		public abstract RefPolicyProviderModule getInstance(CONF_T conf, XACMLParserFactory xacmlParserFactory, int maxPolicySetRefDepth,
-				ExpressionFactory expressionFactory, CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties)
-				throws IllegalArgumentException;
+		public abstract RefPolicyProviderModule getInstance(CONF_T conf, XACMLParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory, CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
 	}
 }
