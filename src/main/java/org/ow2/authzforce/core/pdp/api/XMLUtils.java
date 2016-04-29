@@ -84,27 +84,22 @@ public final class XMLUtils
 			 * <p>
 			 * at net.sf.saxon.s9api.DocumentBuilder.build(DocumentBuilder.java:374) ~[Saxon-HE-9.6.0-5.jar:na]
 			 * <p>
-			 * at org.ow2.authzforce.core.XACMLParsers$FullJaxbXACMLAttributesParserFactory$FullJaxbXACMLAttributesParser.parseContent(XACMLParsers.java:909)
-			 * ~[classes/:na]
+			 * at org.ow2.authzforce.core.XACMLParsers$FullJaxbXACMLAttributesParserFactory$FullJaxbXACMLAttributesParser.parseContent(XACMLParsers.java:909) ~[classes/:na]
 			 */
-			throw new UnsupportedOperationException("Error loading Saxon processor from configuration file at this location: "
-					+ SAXON_CONFIGURATION_CLASSPATH_LOCATION
+			throw new UnsupportedOperationException("Error loading Saxon processor from configuration file at this location: " + SAXON_CONFIGURATION_CLASSPATH_LOCATION
 					+ ": xInclude=true is not supported. Please remove any 'xInclude' parameter from this configuration file.");
 		}
 	}
 
-	private static final IllegalArgumentException NULL_NAMESPACE_PREFIX_EXCEPTION = new IllegalArgumentException(
-			"Invalid XPath compiler input: null namespace prefix in namespace prefix-URI mappings");
-	private static final IllegalArgumentException NULL_NAMESPACE_URI_EXCEPTION = new IllegalArgumentException(
-			"Invalid XPath compiler input: null namespace URI in namespace prefix-URI mappings");
+	private static final IllegalArgumentException NULL_NAMESPACE_PREFIX_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace prefix in namespace prefix-URI mappings");
+	private static final IllegalArgumentException NULL_NAMESPACE_URI_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace URI in namespace prefix-URI mappings");
 
 	private static XPathCompiler newXPathCompiler(XPATHVersion xpathVersion) throws IllegalArgumentException
 	{
 		final XPathCompiler xpathCompiler = SAXON_PROCESSOR.newXPathCompiler();
 		xpathCompiler.setLanguageVersion(xpathVersion.getVersionNumber());
 		/*
-		 * No need for caching since we are only using this for XPaths in Policy/PolicySet (AttributeSelector and xpathExpression), not in the Request (not
-		 * supported)
+		 * No need for caching since we are only using this for XPaths in Policy/PolicySet (AttributeSelector and xpathExpression), not in the Request (not supported)
 		 */
 		xpathCompiler.setCaching(false);
 		xpathCompiler.setSchemaAware(false);
@@ -124,9 +119,8 @@ public final class XMLUtils
 	}
 
 	/**
-	 * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with
-	 * {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation of the same XPath, use {@link XPathEvaluator} instead. What we have in
-	 * XACML Policy/PolicySetDefaults is the version URI so we need this map to map the URI to the XPath compiler
+	 * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
+	 * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI so we need this map to map the URI to the XPath compiler
 	 * 
 	 * @param xpathVersionURI
 	 *            XPath version URI, e.g. "http://www.w3.org/TR/1999/REC-xpath-19991116"
@@ -134,8 +128,7 @@ public final class XMLUtils
 	 *            namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
 	 * @return XPath compiler instance
 	 * @throws IllegalArgumentException
-	 *             if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is
-	 *             null
+	 *             if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null
 	 */
 	public static XPathCompiler newXPathCompiler(String xpathVersionURI, Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
 	{
@@ -173,8 +166,8 @@ public final class XMLUtils
 	}
 
 	/**
-	 * Wrapper around XPathExecutable that provides the original XPath expression from which the XPathExecutable was compiled, via toString() method. To be used
-	 * for XPath-based Expression evaluations, e.g. AttributeSelector, xpathExpression, etc.
+	 * Wrapper around XPathExecutable that provides the original XPath expression from which the XPathExecutable was compiled, via toString() method. To be used for XPath-based Expression evaluations,
+	 * e.g. AttributeSelector, xpathExpression, etc.
 	 */
 	public static final class XPathEvaluator
 	{
@@ -254,8 +247,8 @@ public final class XMLUtils
 		Object parse(URL url) throws JAXBException, IllegalArgumentException;
 
 		/**
-		 * Provides namespace prefix-URI mappings found during last call to {@link #parse(InputSource)}, if namespace prefix-URI collecting is supported. Such
-		 * mappings may then be used for namespace-aware XPath evaluation (e.g. XACML xpathExpression values)
+		 * Provides namespace prefix-URI mappings found during last call to {@link #parse(InputSource)}, if namespace prefix-URI collecting is supported. Such mappings may then be used for
+		 * namespace-aware XPath evaluation (e.g. XACML xpathExpression values)
 		 * 
 		 * @return namespace prefix-URI mappings; empty if {@link #parse(InputSource)} not called yet, or namespace prefix-URI collecting is not supported
 		 */
@@ -296,8 +289,7 @@ public final class XMLUtils
 			} catch (SAXException | ParserConfigurationException e)
 			{
 				// fatal error: there is no way to use the SAXParserFactory at this point for anything
-				throw new RuntimeException(
-						"Unable to create any XML parser from SAXParserFactory (required for namespace-aware XPath evaluation in particular)", e);
+				throw new RuntimeException("Unable to create any XML parser from SAXParserFactory (required for namespace-aware XPath evaluation in particular)", e);
 			}
 
 			this.xmlFilter = new XMLFilterImpl(xmlReader)
@@ -355,9 +347,9 @@ public final class XMLUtils
 	}
 
 	/**
-	 * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix
-	 * mappings is returned). Therefore it can be used as a convenient replacement for {@link SAXBasedNamespaceFilteringParser} when no namespace-filtering is
-	 * actually required but still a parser compliant with {@link NamespaceFilteringParser} for polymorphism purposes.
+	 * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix mappings is returned). Therefore it can be
+	 * used as a convenient replacement for {@link SAXBasedNamespaceFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link NamespaceFilteringParser}
+	 * for polymorphism purposes.
 	 *
 	 */
 	public static final class NoNamespaceFilteringParser implements NamespaceFilteringParser
@@ -408,4 +400,10 @@ public final class XMLUtils
 	{
 	}
 
+	// SAXON PROCESSOR TESTING
+	// public static void main(String[] args) throws SaxonApiException
+	// {
+	// Processor proc = new Processor(new StreamSource("src/test/resources/saxon.xml"));
+	// System.out.println(SAXON_PROCESSOR.getConfigurationProperty(FeatureKeys.OCCURRENCE_LIMITS));
+	// }
 }
