@@ -99,7 +99,7 @@
       preserveBoundarySpace="false"
       requiredContextItemType="document-node()"
       emptyLeast="true" />
-      <!-- XSD occurrenceLimits property is not considered valid by SAXON 9.5 although it is in the doc:
+      <!-- XSD occurrenceLimits property is not considered valid by SAXON 9.6 although it is in the doc:
       http://www.saxonica.com/documentation9.6/index.html#!configuration/configuration-file/config-xsd 
       Bug reported here: https://saxonica.plan.io/issues/2731
       -->
