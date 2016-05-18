@@ -49,6 +49,11 @@ import org.ow2.authzforce.core.pdp.api.SingleCategoryAttributes.NamedAttributeIt
 import org.ow2.authzforce.core.pdp.api.XMLUtils.NamespaceFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XMLUtils.NoNamespaceFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XMLUtils.SAXBasedNamespaceFilteringParser;
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.Bags;
+import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
+import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
 import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XACMLCategory;
 import org.ow2.authzforce.xacml.identifiers.XACMLResourceScope;

@@ -16,6 +16,8 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.List;
 import java.util.Map;
 
+import org.ow2.authzforce.core.pdp.api.value.Bag;
+
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 
