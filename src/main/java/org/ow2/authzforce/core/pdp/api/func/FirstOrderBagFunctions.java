@@ -539,7 +539,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public SetEquals(Datatype<Bag<AV>> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
+			super(NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
 
 		@Override
