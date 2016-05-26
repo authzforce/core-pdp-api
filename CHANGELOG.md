@@ -1,6 +1,15 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## Unreleased
+### Added
+- Implementations of XACML 3.0 Core standard data types
+- Re-usable/abstract classes for XACML comparison/conversion/higher-order/set/bag functions
+
+### Fixed
+- Javadoc of DecisionResult#getExtendedIndeterminate() method
+
+
 ## 3.7.0
 ### Changed
 - PDP extensions that are static root policy providers should now implement StaticRootPolicyProviderModule class, instead of RootPolicyProviderModule.Static class
