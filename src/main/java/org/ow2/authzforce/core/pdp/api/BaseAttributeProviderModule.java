@@ -38,13 +38,10 @@ package org.ow2.authzforce.core.pdp.api;
 public abstract class BaseAttributeProviderModule implements CloseableAttributeProviderModule
 {
 
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_CATEGORY_EXCEPTION = new UnsupportedOperationException(
-			"Unsupported attribute category");
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_ISSUER_EXCEPTION = new UnsupportedOperationException(
-			"Unsupported attribute issuer");
+	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_CATEGORY_EXCEPTION = new UnsupportedOperationException("Unsupported attribute category");
+	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_ISSUER_EXCEPTION = new UnsupportedOperationException("Unsupported attribute issuer");
 	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_ID_EXCEPTION = new UnsupportedOperationException("Unsupported attribute ID");
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_DATATYPE_EXCEPTION = new UnsupportedOperationException(
-			"Unsupported attribute datetype");
+	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_DATATYPE_EXCEPTION = new UnsupportedOperationException("Unsupported attribute datetype");
 	private static final IllegalArgumentException UNDEF_MODULE_INSTANCE_ID = new IllegalArgumentException("Undefined attribute Provider module's instance ID");
 
 	private final String instanceID;
@@ -58,11 +55,6 @@ public abstract class BaseAttributeProviderModule implements CloseableAttributeP
 	 * 
 	 * @param instanceID
 	 *            module instance ID (to be used as unique identifier for this instance in the logs for example);
-	 * @param attributeFactory
-	 *            factory for creating attribute values
-	 * @param depAttributeProvider
-	 *            dependency attribute Provider. This module may require other attributes as input to do the job. As it does not know how to get them (it is not
-	 *            its job), it may call this {@code depAttributeProvider} to get them on its behalf.
 	 * @throws IllegalArgumentException
 	 *             if instanceId null
 	 */

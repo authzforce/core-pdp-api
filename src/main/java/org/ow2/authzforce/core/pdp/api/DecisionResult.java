@@ -25,9 +25,8 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
- * Result of evaluation of {@link Decidable} (Policy, Rule...). This is different from the final Result in the Response
- * by the PDP as it does not have the Attributes to be included in the final Result; and Obligations/Advices are
- * packaged together in a {@link PepActions} field.
+ * Result of evaluation of {@link Decidable} (Policy, Rule...). This is different from the final Result in the Response by the PDP as it does not have the Attributes to be included in the final
+ * Result; and Obligations/Advices are packaged together in a {@link PepActions} field.
  * 
  */
 public interface DecisionResult
@@ -62,8 +61,7 @@ public interface DecisionResult
 	Status getStatus();
 
 	/**
-	 * Merge extra PEP actions and/or matched policy identifiers. Used when combining results from child Rules of Policy
-	 * or child Policies of PolicySet
+	 * Merge extra PEP actions and/or matched policy identifiers. Used when combining results from child Rules of Policy or child Policies of PolicySet
 	 * 
 	 * @param newPepActions
 	 *            new PEP actions
@@ -73,19 +71,16 @@ public interface DecisionResult
 	void merge(PepActions newPepActions, List<JAXBElement<IdReferenceType>> newMatchedPolicyIdList);
 
 	/**
-	 * Provides the Extended Indeterminate value, only in case {@link #getDecision()} returns
-	 * {@value DecisionType#INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0 core:
-	 * <i>potential effect value which could have occurred if there would not have been an error causing the
-	 * “Indeterminate”</i>. We use the following convention:
+	 * Provides the Extended Indeterminate value, only in case {@link #getDecision()} returns {@value DecisionType#INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0
+	 * core: <i>potential effect value which could have occurred if there would not have been an error causing the “Indeterminate”</i>. We use the following convention:
 	 * <ul>
 	 * <li>{@link DecisionType#DENY} means "Indeterminate{D}"</li>
 	 * <li>{@link DecisionType#PERMIT} means "Indeterminate{P}"</li>
-	 * <li>Null means "Indeterminate{DP}"</li>
-	 * <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and
-	 * therefore any extended Indeterminate value should be ignored</li>
+	 * <li>{@link DecisionType#INDETERMINATE} means "Indeterminate{DP}"</li>
+	 * <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
 	 * </ul>
 	 * 
-	 * @return extended Indeterminate value; null if decision is not "Indeterminate"
+	 * @return extended Indeterminate value
 	 * 
 	 */
 	DecisionType getExtendedIndeterminate();

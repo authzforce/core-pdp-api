@@ -16,6 +16,11 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.Datatype;
+import org.ow2.authzforce.core.pdp.api.value.Value;
+
 import net.sf.saxon.s9api.XdmNode;
 
 /**

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
+import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractAttributeProvider;
 
 /**

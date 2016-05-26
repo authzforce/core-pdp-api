@@ -13,6 +13,10 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.Datatype;
+
 /**
  * Attribute provider used to resolve {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType}s.
  * 
