@@ -1,7 +1,8 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
-## Unreleased
+
+## 3.8.0
 ### Added
 - Implementations of XACML 3.0 Core standard data types
 - Re-usable/abstract classes for XACML comparison/conversion/higher-order/set/bag functions
@@ -20,6 +21,7 @@ All notable changes to this project are documented in this file following the [K
 - Interface method PolicyEvaluator#getExtraPolicyMetadata(): provides version of the evaluated Policy(Set) and policies referenced (directly/indirectly) from this Policy(Set)
 - Interface method PolicyEvaluator#getPolicyElementType(): provides the type of top-level policy element (Policy or PolicySet).
 - Interface method DecisionResult#getExtendedIndeterminate(): provides Extended Indeterminate value (to be used when #getDecision() returns "Indeterminate")
+
 
 ## 3.6.1
 ### Added
