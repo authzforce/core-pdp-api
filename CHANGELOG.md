@@ -1,6 +1,10 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## 3.8.1
+### Fixed
+- Current year in license header
+
 
 ## 3.8.0
 ### Added
