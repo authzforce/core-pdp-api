@@ -1,15 +1,20 @@
 /**
- * Copyright (C) 2011-2015 Thales Services SAS.
+ * Copyright (C) 2012-2016 Thales Services SAS.
  *
- * This file is part of AuthZForce.
+ * This file is part of AuthZForce CE.
  *
- * AuthZForce is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
+ * AuthZForce CE is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * AuthZForce is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * AuthZForce CE is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with AuthZForce. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
@@ -31,13 +36,14 @@ import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.BooleanValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
+import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 import org.ow2.authzforce.core.pdp.api.value.IntegerValue;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * First-order bag functions, as opposed to the higher-order bag functions (see {@link HigherOrderBagFunction}); such as the Bag functions of section A.3.10, and the Set functions of A.3.11 of the
- * XACML spec.
+ * First-order bag functions, as opposed to the higher-order bag functions (see {@link HigherOrderBagFunction}); such as the Bag functions of section A.3.10,
+ * and the Set functions of A.3.11 of the XACML spec.
  *
  * 
  * @version $Id: $
@@ -71,8 +77,7 @@ public final class FirstOrderBagFunctions
 		public SingletonBagToPrimitive(Datatype<AV> paramType, Datatype<Bag<AV>> paramBagType)
 		{
 			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
-			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
-					StatusHelper.STATUS_PROCESSING_ERROR);
+			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.", StatusHelper.STATUS_PROCESSING_ERROR);
 		}
 
 		@Override
@@ -451,7 +456,8 @@ public final class FirstOrderBagFunctions
 		public Union(Datatype<AV> paramType, Datatype<Bag<AV>> paramBagType)
 		{
 			/*
-			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same bag type
+			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same
+			 * bag type
 			 */
 			super(NAME_SUFFIX_UNION, paramBagType, true, Arrays.asList(paramBagType, paramBagType, paramBagType));
 			this.paramType = paramType;
@@ -569,8 +575,8 @@ public final class FirstOrderBagFunctions
 
 	/**
 	 * Creates/gets all first-order bag functions taking a given primitive datatype as bag's primitive type, i.e. the equivalents of standard
-	 * <code>urn:oasis:names:tc:xacml:x.x:function:type${suffix}</code> functions, where <code>urn:oasis:names:tc:xacml:x.x:function:type</code> is replaced by a given prefix ({@code functionIdPrefix}
-	 * ) and the suffix takes the following values (one per created function):
+	 * <code>urn:oasis:names:tc:xacml:x.x:function:type${suffix}</code> functions, where <code>urn:oasis:names:tc:xacml:x.x:function:type</code> is replaced by
+	 * a given prefix ({@code functionIdPrefix} ) and the suffix takes the following values (one per created function):
 	 * <ul>
 	 * <li>{@code -one-and-only}: converts a given singleton bag to a the single primitive value in the bag</li>
 	 * <li>{@code -bag-size}: gives the size of a given bag</li>
@@ -583,23 +589,20 @@ public final class FirstOrderBagFunctions
 	 * <li>{@code -set-equals}: tests whether bags are equal regardless of order</li>
 	 * </ul>
 	 * 
-	 * @param functionIdPrefix
-	 *            function ID prefix (before ${suffix})
-	 * @param paramType
-	 *            bag's primitive datatype
-	 * @param paramBagType
-	 *            bag datatype
-	 * @param paramArrayClass
-	 *            primitive value array class
-	 * @return first-order bag functions taking a given primitive datatype as bag's primitive type
+	 * @param paramTypeFactory
+	 *            parameter datatype factory
+	 * @return first-order bag functions taking the given primitive datatype as bag's primitive type
 	 */
-	public static <AV extends AttributeValue> Set<Function<?>> getFunctions(String functionIdPrefix, Datatype<AV> paramType, BagDatatype<AV> paramBagType, Class<AV[]> paramArrayClass)
+	public static <AV extends AttributeValue> Set<Function<?>> getFunctions(DatatypeFactory<AV> paramTypeFactory)
 	{
+		final Datatype<AV> paramType = paramTypeFactory.getDatatype();
+		final BagDatatype<AV> paramBagType = paramTypeFactory.getBagDatatype();
+		final Class<AV[]> paramArrayClass = paramTypeFactory.getArrayClass();
 		final Set<Function<?>> mutableSet = new HashSet<>();
 		/**
 		 * 
-		 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set functions
-		 * that takes multiple bags as parameters.
+		 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in
+		 * section A.3.10. As opposed to Set functions that takes multiple bags as parameters.
 		 * 
 		 */
 		mutableSet.add(new SingletonBagToPrimitive<>(paramType, paramBagType));

@@ -6,7 +6,7 @@
       <version>3.3.7</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>3.8.0</version>
+   <version>3.8.1</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthZForce CE - Core PDP API</description>
    <url>https://tuleap.ow2.org/projects/authzforce</url>
@@ -110,6 +110,7 @@
                   <id>format-sources-license</id>
                   <phase>process-sources</phase>
                   <goals>
+<!--                      <goal>remove</goal> -->
                      <goal>format</goal>
                   </goals>
                </execution>
@@ -117,6 +118,7 @@
                   <id>format-test-sources-license</id>
                   <phase>process-test-sources</phase>
                   <goals>
+<!--                      <goal>remove</goal> -->
                      <goal>format</goal>
                   </goals>
                </execution>
