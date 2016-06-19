@@ -24,11 +24,11 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
  * 
@@ -46,11 +46,13 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		Iterator<Entry<AttributeGUID, Bag<?>>> convert(Iterator<Entry<AttributeGUID, V_BAG>> namedAttributeIterator);
 	}
 
+	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
+			"SingleCategoryAttributes - named attributes iterator may be called only once.");
+
 	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeGUID, Bag<?>>>
 	{
 
-		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException(
-				"Cannot remove element via Immutable iterator");
+		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException("Cannot remove element via Immutable iterator");
 		private final Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator;
 
 		private MutableBagBasedImmutableIterator(Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator)
@@ -94,8 +96,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	};
 
 	/**
-	 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity
-	 * function/transformation)
+	 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity function/transformation)
 	 */
 	public static final NamedAttributeIteratorConverter<Bag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<Bag<?>>()
 	{
@@ -108,16 +109,13 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 
 	};
 
-	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
-			"SingleCategoryAttributes - named attributes iterator may be called only once.");
-
 	private final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes;
 
 	private final Attributes attrsToIncludeInResult;
 
 	/*
-	 * Corresponds to Attributes/Content marshalled to XPath data model for XPath evaluation (e.g. AttributeSelector or XPath-based evaluation). This is set to
-	 * null if no Content provided or no feature using XPath evaluation against Content is enabled.
+	 * Corresponds to Attributes/Content marshalled to XPath data model for XPath evaluation (e.g. AttributeSelector or XPath-based evaluation). This is set to null if no Content provided or no
+	 * feature using XPath evaluation against Content is enabled.
 	 */
 	private final XdmNode extraContent;
 
@@ -133,13 +131,12 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 * @param namedAttributeIteratorConverter
 	 *            converts the iterator of {@code namedAttributes} into constant-valued attribute iterator
 	 * @param attributesToIncludeInResult
-	 *            Attributes with only the Attribute elements to include in final Result (IncludeInResult = true in original XACML request) or null if there was
-	 *            none
+	 *            Attributes with only the Attribute elements to include in final Result (IncludeInResult = true in original XACML request) or null if there was none
 	 * @param extraContent
 	 *            Attributes/Content parsed into XPath data model for XPath evaluation
 	 */
-	public SingleCategoryAttributes(Set<Entry<AttributeGUID, AV_BAG>> namedAttributes, NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
-			Attributes attributesToIncludeInResult, XdmNode extraContent)
+	public SingleCategoryAttributes(Set<Entry<AttributeGUID, AV_BAG>> namedAttributes, NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter, Attributes attributesToIncludeInResult,
+			XdmNode extraContent)
 	{
 		// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
 		if (namedAttributes == null || namedAttributes.isEmpty())

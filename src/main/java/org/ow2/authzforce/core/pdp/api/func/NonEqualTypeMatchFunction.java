@@ -44,7 +44,7 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
  * 
  * @version $Id: $
  */
-public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue> extends FirstOrderFunction.MultiParameterTyped<BooleanValue>
+public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue> extends FirstOrderFunctions.MultiParameterTypedFirstOrderFunction<BooleanValue>
 {
 	/**
 	 * Generic match method interface for values of different types
@@ -87,9 +87,9 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		private final Class<T0> paramClass0;
 		private final Class<T1> paramClass1;
 		private final Matcher<T0, T1> matcher;
-		private final FunctionSignature<BooleanValue> funcSig;
+		private final FirstOrderFunctionSignature<BooleanValue> funcSig;
 
-		private CallFactory(FunctionSignature<BooleanValue> functionSig, Datatype<T0> paramType0, Datatype<T1> paramType1, Matcher<T0, T1> matcher)
+		private CallFactory(FirstOrderFunctionSignature<BooleanValue> functionSig, Datatype<T0> paramType0, Datatype<T1> paramType1, Matcher<T0, T1> matcher)
 		{
 
 			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types: expected: " + paramType0 + "," + paramType1 + "; actual: ";
@@ -159,7 +159,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		 *            match function's second parameter type
 		 * @return match function call factory
 		 */
-		CallFactory<T0, T1> build(FunctionSignature<BooleanValue> functionSignature, Datatype<T0> paramType0, Datatype<T1> paramType1);
+		CallFactory<T0, T1> build(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<T0> paramType0, Datatype<T1> paramType1);
 	}
 
 	private final CallFactory<T0, T1> funcCallFactory;
@@ -234,7 +234,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		{
 			private final RegexpMatchFunctionHelper regexFuncHelper;
 
-			private RegexpMatchCallFactory(FunctionSignature<BooleanValue> functionSignature, Datatype<AV> secondParamType)
+			private RegexpMatchCallFactory(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<AV> secondParamType)
 			{
 				super(functionSignature, StandardDatatypes.STRING_FACTORY.getDatatype(), secondParamType, regexMatcher);
 				regexFuncHelper = new RegexpMatchFunctionHelper(functionSignature, secondParamType);
@@ -253,7 +253,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		}
 
 		@Override
-		public CallFactory<StringValue, AV> build(FunctionSignature<BooleanValue> functionSignature, Datatype<StringValue> paramType0, Datatype<AV> paramType1)
+		public CallFactory<StringValue, AV> build(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<StringValue> paramType0, Datatype<AV> paramType1)
 		{
 			return new RegexpMatchCallFactory(functionSignature, paramType1);
 		}

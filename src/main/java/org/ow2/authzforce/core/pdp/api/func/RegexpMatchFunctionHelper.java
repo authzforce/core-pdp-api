@@ -70,7 +70,7 @@ public final class RegexpMatchFunctionHelper
 		private final String invalidRemainingArg1TypeMsg;
 		private final String funcId;
 
-		private CompiledRegexMatchFunctionCall(FunctionSignature<BooleanValue> functionSig, List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes, RegularExpression compiledRegex,
+		private CompiledRegexMatchFunctionCall(FirstOrderFunctionSignature<BooleanValue> functionSig, List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes, RegularExpression compiledRegex,
 				Datatype<? extends SimpleValue<String>> matchedValueType, String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
 		{
 			super(functionSig, argExpressions, remainingArgTypes);
@@ -116,7 +116,7 @@ public final class RegexpMatchFunctionHelper
 	}
 
 	private final String indeterminateArg1TypeMessage;
-	private final FunctionSignature<BooleanValue> funcSig;
+	private final FirstOrderFunctionSignature<BooleanValue> funcSig;
 	private final Datatype<? extends SimpleValue<String>> matchedValueType;
 	private final String indeterminateArg0StaticPreEvalMsg;
 	private final String invalidRegexMsg;
@@ -129,7 +129,7 @@ public final class RegexpMatchFunctionHelper
 	 * @param matchedDatatype
 	 *            datatype of value to be matched against the regular expression
 	 */
-	public RegexpMatchFunctionHelper(FunctionSignature<BooleanValue> matchFunctionSignature, Datatype<? extends SimpleValue<String>> matchedDatatype)
+	public RegexpMatchFunctionHelper(FirstOrderFunctionSignature<BooleanValue> matchFunctionSignature, Datatype<? extends SimpleValue<String>> matchedDatatype)
 	{
 		this.funcSig = matchFunctionSignature;
 		this.matchedValueType = matchedDatatype;

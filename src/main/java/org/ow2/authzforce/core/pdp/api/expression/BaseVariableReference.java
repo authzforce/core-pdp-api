@@ -31,8 +31,8 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * This class defines a VariableReference built from VariableReference after the referenced VariableDefinition has been resolved and therefore its expression.
- * As a result, Variables are simply Expressions identified by an ID (VariableId) and replace original XACML VariableReferences for actual evaluation.
+ * This class defines a VariableReference built from VariableReference after the referenced VariableDefinition has been resolved and therefore its expression. As a result, Variables are simply
+ * Expressions identified by an ID (VariableId) and replace original XACML VariableReferences for actual evaluation.
  *
  * @param <V>
  *            evaluation's return type
@@ -41,6 +41,10 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  */
 public class BaseVariableReference<V extends Value> implements VariableReference<V>
 {
+
+	private final String variableId;
+
+	private final transient Deque<String> longestVariableReferenceChain;
 	private final transient Expression<V> expression;
 
 	/*
@@ -67,10 +71,6 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 		return expression;
 	}
 
-	private final String variableId;
-
-	private final transient Deque<String> longestVariableReferenceChain;
-
 	/**
 	 * Constructor that takes a variable identifier
 	 *
@@ -79,8 +79,8 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 	 * @param varExpr
 	 *            Expression of referenced VariableDefinition
 	 * @param longestVarRefChain
-	 *            longest chain of VariableReference Reference in <code>expr</code> (V1 -> V2 -> ... -> Vn, where "V1 -> V2" means VariableReference V1's
-	 *            expression contains one or more VariableReferences to V2)
+	 *            longest chain of VariableReference Reference in <code>expr</code> (V1 -> V2 -> ... -> Vn, where "V1 -> V2" means VariableReference V1's expression contains one or more
+	 *            VariableReferences to V2)
 	 */
 	public BaseVariableReference(String varId, Expression<V> varExpr, Deque<String> longestVarRefChain)
 	{
@@ -92,15 +92,15 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 	/**
 	 * {@inheritDoc}
 	 *
-	 * Evaluates the referenced expression using the given context, and either returns an error or a resulting value. If this doesn't reference an evaluatable
-	 * expression (eg, a single Function) then this will throw an exception.
+	 * Evaluates the referenced expression using the given context, and either returns an error or a resulting value. If this doesn't reference an evaluatable expression (eg, a single Function) then
+	 * this will throw an exception.
 	 */
 	@Override
 	public V evaluate(EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		/*
-		 * Even if context == null, evaluation may work because expression may be static/constant (e.g. AttributeValue or Apply on AttributeValues). This is
-		 * called static evaluation and is used for pre-evaluating/optimizing certain function calls.
+		 * Even if context == null, evaluation may work because expression may be static/constant (e.g. AttributeValue or Apply on AttributeValues). This is called static evaluation and is used for
+		 * pre-evaluating/optimizing certain function calls.
 		 */
 		if (context == null)
 		{
@@ -138,7 +138,9 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 	}
 
 	/**
-	 * <p>Getter for the field <code>longestVariableReferenceChain</code>.</p>
+	 * <p>
+	 * Getter for the field <code>longestVariableReferenceChain</code>.
+	 * </p>
 	 *
 	 * @return the longestVariableReferenceChain
 	 */

@@ -26,62 +26,88 @@ import java.util.Objects;
  * 
  * @version $Id: $
  */
-public final class PortRange
+public final class NetworkPortRange
 {
 
 	/**
-	 * Constant used to specify that the range is unbound on one side.
+	 * Minimum network socket port number (decimal).
 	 */
-	private static final int UNBOUND = -1;
+	public static final int MIN_NET_PORT_NUMBER = 0;
 
-	// the port bound values
+	/**
+	 * Maximum network socket port number (decimal).
+	 */
+	public static final int MAX_NET_PORT_NUMBER = 65535;
+
+	// the port range bounds
 	private final int lowerBound;
 	private final int upperBound;
 
-	/**
-	 * Default constructor used to represent an unbound range. This is typically used when an address has no port information.
-	 */
-	public PortRange()
-	{
-		this(UNBOUND, UNBOUND);
-	}
+	private transient volatile String toString = null;
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
-	 * Creates a <code>PortRange</code> with upper and lower bounds. Either of the parameters may have the value <code>UNBOUND</code> meaning that there is no bound at the respective end.
+	 * Creates a <code>PortRange</code> with upper and lower bounds.
 	 * 
 	 * @param lowerBound
-	 *            the lower-bound port number or <code>UNBOUND</code>
+	 *            the lower-bound port number
 	 * @param upperBound
-	 *            the upper-bound port number or <code>UNBOUND</code>
+	 *            the upper-bound port number
 	 */
-	private PortRange(int lowerBound, int upperBound)
+	private NetworkPortRange(int lowerBound, int upperBound)
 	{
+		if (lowerBound < MIN_NET_PORT_NUMBER)
+		{
+			throw new IllegalArgumentException("Invalid port number: " + lowerBound + " < " + MIN_NET_PORT_NUMBER);
+		}
+
+		// MIN <= lowerBound
+
+		if (lowerBound > upperBound)
+		{
+			throw new IllegalArgumentException("Invalid port range: lower bound (" + lowerBound + ") > upper bound (" + upperBound + ")");
+		}
+
+		// MIN <= lowerbound <= upperBound
+
+		if (upperBound > MAX_NET_PORT_NUMBER)
+		{
+			throw new IllegalArgumentException("Invalid port number: " + upperBound + " > " + MAX_NET_PORT_NUMBER);
+		}
+
+		// MIN <= lowerbound <= upperBound <= MAX
+
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 	}
 
 	/**
+	 * Max port range (all possible port numbers): [{@value #MIN_NET_PORT_NUMBER}, {@value #MAX_NET_PORT_NUMBER}]
+	 */
+	public static final NetworkPortRange MAX = new NetworkPortRange(MIN_NET_PORT_NUMBER, MAX_NET_PORT_NUMBER);
+
+	/**
 	 * Creates an instance of <code>PortRange</code> based on the given value.
 	 *
 	 * @param value
-	 *            a <code>String</code> representing the range
+	 *            a <code>String</code> representing the range, that may be null or empty for unlimited range, or a valid port range as defined by appendix A.2 for IP address and DNS name.
 	 * @return a new <code>PortRange</code>
-	 * @throws java.lang.NumberFormatException
-	 *             if a port value isn't an integer
+	 * @throws IllegalArgumentException
+	 *             if the port range syntax is not: {@literal portnumber | "-"portnumber | portnumber"-"[portnumber]}; or one of the {@literal portnumber} values is not a valid decimal number in the
+	 *             interval [{@value #MIN_NET_PORT_NUMBER}, {@value #MAX_NET_PORT_NUMBER}]
 	 */
-	public static PortRange getInstance(String value)
+	public static NetworkPortRange getInstance(String value) throws IllegalArgumentException
 	{
-		int lowerBound = UNBOUND;
-		int upperBound = UNBOUND;
-
-		// first off, make sure there's actually content here
-		if (value.length() == 0 || value.equals("-"))
+		// first off, make sure there's actually a port range
+		if (value == null || value.isEmpty())
 		{
-			return new PortRange();
+			return MAX;
 		}
 
 		// there's content, so figure where the '-' is, if at all
-		int dashPos = value.indexOf('-');
+		final int dashPos = value.indexOf('-');
+		final int lowerBound;
+		final int upperBound;
 
 		if (dashPos == -1)
 		{
@@ -90,22 +116,18 @@ public final class PortRange
 		} else if (dashPos == 0)
 		{
 			// it starts with a dash, so it's just upper-range bound
+			lowerBound = MIN_NET_PORT_NUMBER;
 			upperBound = Integer.parseInt(value.substring(1));
 		} else
 		{
 			// it's a number followed by a dash, so get the lower-bound...
 			lowerBound = Integer.parseInt(value.substring(0, dashPos));
-			int len = value.length();
-
-			// ... and see if there is a second port number
-			if (dashPos != len - 1)
-			{
-				// the dash wasn't at the end, so there's an upper-bound
-				upperBound = Integer.parseInt(value.substring(dashPos + 1, len));
-			}
+			final int len = value.length();
+			// ... and see if there is an upper-bound specified
+			upperBound = dashPos == len - 1 ? MAX_NET_PORT_NUMBER : Integer.parseInt(value.substring(dashPos + 1, len));
 		}
 
-		return new PortRange(lowerBound, upperBound);
+		return new NetworkPortRange(lowerBound, upperBound);
 	}
 
 	/**
@@ -129,48 +151,6 @@ public final class PortRange
 	{
 		return upperBound;
 	}
-
-	/**
-	 * Returns whether the range is bounded by a lower port number.
-	 *
-	 * @return true if lower-bounded, false otherwise
-	 */
-	public boolean isLowerBounded()
-	{
-		return lowerBound != UNBOUND;
-	}
-
-	/**
-	 * Returns whether the range is bounded by an upper port number.
-	 *
-	 * @return true if upper-bounded, false otherwise
-	 */
-	public boolean isUpperBounded()
-	{
-		return upperBound != UNBOUND;
-	}
-
-	/**
-	 * Returns whether the range is actually a single port number.
-	 *
-	 * @return true if the range is a single port number, false otherwise
-	 */
-	public boolean isSinglePort()
-	{
-		return lowerBound == upperBound && lowerBound != UNBOUND;
-	}
-
-	/**
-	 * Returns whether the range is unbound, which means that it specifies no port number or range. This is typically used with addresses that include no port information.
-	 *
-	 * @return true if the range is unbound, false otherwise
-	 */
-	public boolean isUnbound()
-	{
-		return lowerBound == UNBOUND && upperBound == UNBOUND;
-	}
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/** {@inheritDoc} */
 	@Override
@@ -197,37 +177,32 @@ public final class PortRange
 			return true;
 		}
 
-		if (!(o instanceof PortRange))
+		if (!(o instanceof NetworkPortRange))
 		{
 			return false;
 		}
 
-		final PortRange other = (PortRange) o;
+		final NetworkPortRange other = (NetworkPortRange) o;
 		return lowerBound == other.lowerBound && upperBound == other.upperBound;
 	}
 
-	/**
-	 * <p>
-	 * encode
-	 * </p>
-	 *
-	 * @return encoded port range
-	 */
-	public String encode()
+	@Override
+	public String toString()
 	{
-		if (isUnbound())
-			return "";
+		if (toString != null)
+		{
+			return toString;
+		}
 
-		if (isSinglePort())
-			return Integer.toString(lowerBound, 10);
+		if (lowerBound == MIN_NET_PORT_NUMBER)
+		{
+			toString = upperBound == MAX_NET_PORT_NUMBER ? "" : "-" + upperBound;
+		} else
+		{
+			toString = lowerBound + "-" + (upperBound == MAX_NET_PORT_NUMBER ? "" : upperBound);
+		}
 
-		if (!isLowerBounded())
-			return "-" + Integer.toString(upperBound, 10);
-
-		if (!isUpperBounded())
-			return Integer.toString(lowerBound, 10) + "-";
-
-		return Integer.toString(lowerBound, 10) + "-" + Integer.toString(upperBound, 10);
+		return toString;
 	}
 
 }

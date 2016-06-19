@@ -36,7 +36,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * Function call, made of a function definition and given arguments to be passed to the function. It is the recommended way of calling any {@link FirstOrderFunction} instance.
+ * Function call, made of a function definition and given arguments to be passed to the function. It is the recommended way of calling any {@link FirstOrderFunctions} instance.
  * <p>
  * Some of the arguments (expressions) may not be known in advance, but only at evaluation time (when calling {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}). For example, when using
  * a FirstOrderFunction as a sub-function of the Higher-Order function 'any-of', the last arguments of the sub-function are determined during evaluation, after evaluating the expression of the last
@@ -263,7 +263,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @throws IllegalArgumentException
 	 *             if inputs are invalid for this function or one of <code>remainingArgTypes</code> is a bag type.
 	 */
-	public FirstOrderFunctionCall(FunctionSignature<RETURN> functionSig, List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+	public FirstOrderFunctionCall(FirstOrderFunctionSignature<RETURN> functionSig, List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 	{
 		this.funcId = functionSig.name;
 		final List<? extends Datatype<?>> paramTypes = functionSig.getParameterTypes();
@@ -351,7 +351,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @param context
 	 *            evaluation context
 	 * @param remainingArgs
-	 *            remaining args corresponding to <code>remainingArgTypes</code> parameters passed to {@link #FirstOrderFunctionCall(FunctionSignature, List, Datatype...)}. Null if none. Only
+	 *            remaining args corresponding to <code>remainingArgTypes</code> parameters passed to {@link #FirstOrderFunctionCall(FirstOrderFunctionSignature, List, Datatype...)}. Null if none. Only
 	 *            non-bag/primitive values are valid <code>remainingArgs</code> to prevent varargs warning in {@link #evaluate(EvaluationContext, AttributeValue...)} (potential heap pollution via
 	 *            varargs parameter) that would be caused by using a parameterized type such as Value/Collection to represent both bags and primitives.
 	 * @return result of the call
@@ -420,7 +420,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	}
 
 	/**
-	 * Function call, for {@link FirstOrderFunction}s requiring <i>eager</i> (aka <i>greedy</i>) evaluation of ALL their arguments' expressions to actual values, before the function can be evaluated.
+	 * Function call, for {@link FirstOrderFunctions}s requiring <i>eager</i> (aka <i>greedy</i>) evaluation of ALL their arguments' expressions to actual values, before the function can be evaluated.
 	 * This is the case of most functions in XACML. Exceptions (functions not using eager evaluation) are logical functions for instance, such as 'or', 'and', 'n-of'. Indeed, these functions can
 	 * return the final result before all arguments have been evaluated, e.g. the 'or' function returns True as soon as one of the arguments return True, regardless of the remaining arguments.
 	 * 
@@ -449,7 +449,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerEval(FunctionSignature<RETURN_T> functionSignature, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+		protected EagerEval(FirstOrderFunctionSignature<RETURN_T> functionSignature, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSignature, args, remainingArgTypes);
 			final List<? extends Datatype<?>> paramTypes = functionSignature.getParameterTypes();
@@ -557,7 +557,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerMultiPrimitiveTypeEval(FunctionSignature<RETURN_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+		protected EagerMultiPrimitiveTypeEval(FirstOrderFunctionSignature<RETURN_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
 		}
@@ -639,7 +639,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerSinglePrimitiveTypeEval(FunctionSignature.SingleParameterTyped<RETURN_T, PARAM_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes)
+		protected EagerSinglePrimitiveTypeEval(FirstOrderFunctionSignatures.SingleParameterTyped<RETURN_T, PARAM_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes)
 				throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
@@ -728,7 +728,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @param args
 		 *            arguments' Expressions
 		 */
-		protected EagerBagEval(FunctionSignature.SingleParameterTyped<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, List<Expression<?>> args) throws IllegalArgumentException
+		protected EagerBagEval(FirstOrderFunctionSignatures.SingleParameterTyped<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, List<Expression<?>> args) throws IllegalArgumentException
 		{
 			super(functionSig, args);
 			if (argExpressions == null)
@@ -802,7 +802,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		private final Datatype<PRIMITIVE_PARAM_T> primitiveParamType;
 		private final Class<PRIMITIVE_PARAM_T[]> primitiveParamArrayClass;
 
-		protected EagerPartlyBagEval(FunctionSignature<RETURN_T> functionSig, BagDatatype<PRIMITIVE_PARAM_T> bagParamType, Class<PRIMITIVE_PARAM_T[]> primitiveArrayClass, List<Expression<?>> args,
+		protected EagerPartlyBagEval(FirstOrderFunctionSignature<RETURN_T> functionSig, BagDatatype<PRIMITIVE_PARAM_T> bagParamType, Class<PRIMITIVE_PARAM_T[]> primitiveArrayClass, List<Expression<?>> args,
 				Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);

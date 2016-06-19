@@ -57,7 +57,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class SingletonBagToPrimitive<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<AV, Bag<AV>>
+	public static class SingletonBagToPrimitive<AV extends AttributeValue> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<AV, Bag<AV>>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-one-and-only' functions
@@ -111,7 +111,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class BagSize<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<IntegerValue, Bag<AV>>
+	public static class BagSize<AV extends AttributeValue> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<IntegerValue, Bag<AV>>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-bag-size' functions
@@ -157,7 +157,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class BagContains<AV extends AttributeValue> extends FirstOrderFunction.MultiParameterTyped<BooleanValue>
+	public static class BagContains<AV extends AttributeValue> extends FirstOrderFunctions.MultiParameterTypedFirstOrderFunction<BooleanValue>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-is-in' functions
@@ -221,7 +221,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class PrimitiveToBag<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<Bag<AV>, AV>
+	public static class PrimitiveToBag<AV extends AttributeValue> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<Bag<AV>, AV>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-bag' functions
@@ -268,7 +268,7 @@ public final class FirstOrderBagFunctions
 	 * @param <RETURN>
 	 *            return type
 	 */
-	public static abstract class SetFunction<AV extends AttributeValue, RETURN extends Value> extends FirstOrderFunction.SingleParameterTyped<RETURN, Bag<AV>>
+	public static abstract class SetFunction<AV extends AttributeValue, RETURN extends Value> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<RETURN, Bag<AV>>
 	{
 
 		private static final IllegalArgumentException UNDEF_PARAM_TYPES_ARG_EXCEPTION = new IllegalArgumentException("Undefined function parameter types");
