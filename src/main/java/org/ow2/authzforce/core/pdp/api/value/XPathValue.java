@@ -89,7 +89,9 @@ public final class XPathValue extends SimpleValue<String>
 
 	private final String xpathEvalExceptionMessage;
 
-	private IndeterminateEvaluationException missingContextException;
+	private final IndeterminateEvaluationException missingContextException;
+
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
 	 * Instantiates from XPath expression.
@@ -170,8 +172,6 @@ public final class XPathValue extends SimpleValue<String>
 			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, StatusHelper.STATUS_SYNTAX_ERROR, e);
 		}
 	}
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/** {@inheritDoc} */
 	@Override
