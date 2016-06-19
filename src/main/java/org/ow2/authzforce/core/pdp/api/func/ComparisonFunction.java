@@ -42,7 +42,7 @@ import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
  * 
  * @version $Id: $
  */
-public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<BooleanValue, AV>
+public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> extends SingleParameterTypedFirstOrderFunction<BooleanValue, AV>
 {
 	/**
 	 * post-condition to hold true when comparing the result of <code>arg0.compareTo(arg1)</code> to zero; where compateTo() function is similar to {@link Comparable#compareTo(Object)}.
@@ -119,7 +119,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	private static final class CallFactory<V extends AttributeValue & Comparable<V>>
 	{
 		private final PostCondition postCondition;
-		private final FirstOrderFunctionSignatures.SingleParameterTyped<BooleanValue, V> funcSig;
+		private final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, V> funcSig;
 		private final String illegalComparisonMsgPrefix;
 
 		/**
@@ -128,7 +128,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		 * @param condition
 		 *            post-condition to hold true when comparing the result of <code>arg0.compareTo(arg1)</code> to zero; where compateTo() function is similar to {@link Comparable#compareTo(Object)}.
 		 */
-		private CallFactory(FirstOrderFunctionSignatures.SingleParameterTyped<BooleanValue, V> functionSig, PostCondition postCondition)
+		private CallFactory(SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, V> functionSig, PostCondition postCondition)
 		{
 			this.funcSig = functionSig;
 			this.postCondition = postCondition;

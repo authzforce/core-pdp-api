@@ -33,8 +33,9 @@ public class BaseFunctionSet implements FunctionSet
 {
 
 	private final String id;
-
 	private final Set<Function<?>> functions;
+
+	private volatile int hashCode = 0;
 
 	/**
 	 * Constructor from an identifier and an array of functions
@@ -81,8 +82,6 @@ public class BaseFunctionSet implements FunctionSet
 	{
 		return id;
 	}
-
-	private volatile int hashCode = 0;
 
 	/** {@inheritDoc} */
 	@Override

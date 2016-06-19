@@ -41,13 +41,13 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
 public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>> implements Iterable<Entry<AttributeGUID, Bag<?>>>
 {
 
+	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
+			"SingleCategoryAttributes - named attributes iterator may be called only once.");
+
 	interface NamedAttributeIteratorConverter<V_BAG extends Iterable<? extends AttributeValue>>
 	{
 		Iterator<Entry<AttributeGUID, Bag<?>>> convert(Iterator<Entry<AttributeGUID, V_BAG>> namedAttributeIterator);
 	}
-
-	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
-			"SingleCategoryAttributes - named attributes iterator may be called only once.");
 
 	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeGUID, Bag<?>>>
 	{

@@ -639,7 +639,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerSinglePrimitiveTypeEval(FirstOrderFunctionSignatures.SingleParameterTyped<RETURN_T, PARAM_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes)
+		protected EagerSinglePrimitiveTypeEval(SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, PARAM_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes)
 				throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
@@ -728,7 +728,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @param args
 		 *            arguments' Expressions
 		 */
-		protected EagerBagEval(FirstOrderFunctionSignatures.SingleParameterTyped<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, List<Expression<?>> args) throws IllegalArgumentException
+		protected EagerBagEval(SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, List<Expression<?>> args) throws IllegalArgumentException
 		{
 			super(functionSig, args);
 			if (argExpressions == null)

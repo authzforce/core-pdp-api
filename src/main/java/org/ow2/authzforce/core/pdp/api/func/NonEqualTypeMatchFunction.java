@@ -44,7 +44,7 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
  * 
  * @version $Id: $
  */
-public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue> extends FirstOrderFunctions.MultiParameterTypedFirstOrderFunction<BooleanValue>
+public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue> extends MultiParameterTypedFirstOrderFunction<BooleanValue>
 {
 	/**
 	 * Generic match method interface for values of different types

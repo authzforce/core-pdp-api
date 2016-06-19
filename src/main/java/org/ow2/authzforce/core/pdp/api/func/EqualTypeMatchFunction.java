@@ -39,7 +39,7 @@ import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
  * 
  * @version $Id: $
  */
-public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends FirstOrderFunctions.SingleParameterTypedFirstOrderFunction<BooleanValue, PARAM>
+public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends SingleParameterTypedFirstOrderFunction<BooleanValue, PARAM>
 {
 
 	/**
@@ -51,10 +51,10 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends FirstO
 	public static class CallFactory<PARAM_T extends AttributeValue>
 	{
 
-		private final FirstOrderFunctionSignatures.SingleParameterTyped<BooleanValue, PARAM_T> funcSig;
+		private final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> funcSig;
 		private final Matcher<PARAM_T> matcher;
 
-		protected CallFactory(FirstOrderFunctionSignatures.SingleParameterTyped<BooleanValue, PARAM_T> functionSignature, Matcher<PARAM_T> matcher)
+		protected CallFactory(SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> functionSignature, Matcher<PARAM_T> matcher)
 		{
 			this.funcSig = functionSignature;
 			this.matcher = matcher;
@@ -90,7 +90,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends FirstO
 		 *            match function signature
 		 * @return match function call factory
 		 */
-		CallFactory<PARAM_T> build(FirstOrderFunctionSignatures.SingleParameterTyped<BooleanValue, PARAM_T> functionSignature);
+		CallFactory<PARAM_T> build(SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> functionSignature);
 	}
 
 	/**
