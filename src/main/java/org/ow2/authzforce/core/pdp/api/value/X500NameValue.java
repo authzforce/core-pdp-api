@@ -36,6 +36,8 @@ public final class X500NameValue extends SimpleValue<String>
 
 	private final LdapName ldapName;
 
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
 	/**
 	 * Returns a new <code>X500NameAttributeValue</code> that represents the X500 Name value indicated by the string provided.
 	 *
@@ -66,15 +68,12 @@ public final class X500NameValue extends SimpleValue<String>
 	public boolean match(X500NameValue other)
 	{
 		/*
-		 * As the Javadoc says, "The right most RDN is at index 0, and the left most RDN is at index n-1. For example, the distinguished name: " CN=Steve Kille,
-		 * O=Isode Limited, C=GB " is numbered in the following sequence ranging from 0 to 2: {C=GB, O=Isode Limited, CN=Steve Kille}" Therefore RDNs are in
-		 * reverse order of declaration in the string representation, so to check the match against a terminal sequence of RDNs, we don't use the endsWith()
-		 * function, but startsWith()
+		 * As the Javadoc says, "The right most RDN is at index 0, and the left most RDN is at index n-1. For example, the distinguished name: " CN=Steve Kille, O=Isode Limited, C=GB
+		 * " is numbered in the following sequence ranging from 0 to 2: {C=GB, O=Isode Limited, CN=Steve Kille}" Therefore RDNs are in reverse order of declaration in the string representation, so to
+		 * check the match against a terminal sequence of RDNs, we don't use the endsWith() function, but startsWith()
 		 */
 		return other.ldapName.startsWith(this.ldapName.getRdns());
 	}
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/** {@inheritDoc} */
 	@Override

@@ -46,7 +46,11 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 
 	private final Collection<AV> values;
 	private final IndeterminateEvaluationException causeForEmpty;
-	protected Datatype<AV> elementDatatype;
+	protected final Datatype<AV> elementDatatype;
+
+	// cached toString()/hashCode() results
+	protected int hashCode = 0;
+	private transient volatile String toString = null; // Effective Java - Item 71
 
 	/**
 	 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
@@ -152,10 +156,6 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	{
 		return values.isEmpty() || values.size() > 1 ? null : values.iterator().next();
 	}
-
-	// cached toString()/hashCode() results
-	protected int hashCode = 0;
-	private transient volatile String toString = null; // Effective Java - Item 71
 
 	@Override
 	public boolean equals(Object other)
