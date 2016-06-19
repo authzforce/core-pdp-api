@@ -32,10 +32,6 @@ public final class Bags
 {
 	private static final IllegalArgumentException NULL_BAG_ELEMENT_EXCEPTION = new IllegalArgumentException("Null value in bag");
 
-	private Bags()
-	{
-	}
-
 	private static final class Empty<AV extends AttributeValue> extends Bag<AV>
 	{
 		private Empty(Datatype<AV> elementDatatype, IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
@@ -188,5 +184,9 @@ public final class Bags
 
 		// more than one value
 		return new Multi<>(elementDatatype, values);
+	}
+
+	private Bags()
+	{
 	}
 }

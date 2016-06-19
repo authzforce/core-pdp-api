@@ -47,6 +47,8 @@ public final class RFC822NameValue extends SimpleValue<String>
 
 	private final String domainPartLowerCase;
 
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
 	/**
 	 * Creates instance from InternetAddress
 	 *
@@ -115,8 +117,6 @@ public final class RFC822NameValue extends SimpleValue<String>
 	// {
 	// return domainPartLowerCase;
 	// }
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/*
 	 * (non-Javadoc)

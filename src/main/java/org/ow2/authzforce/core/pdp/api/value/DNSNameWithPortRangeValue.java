@@ -68,6 +68,8 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	// the optional port/portRange
 	private final transient NetworkPortRange portRange;
 
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
 	/*
 	 * true if the hostname starts with a '*', therefore this field is derived from hostname
 	 */
@@ -161,8 +163,6 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	// {
 	// return isAnySubdomain;
 	// }
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/** {@inheritDoc} */
 	@Override

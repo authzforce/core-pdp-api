@@ -20,13 +20,13 @@ package org.ow2.authzforce.core.pdp.api.func;
 
 import javax.xml.bind.JAXBElement;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.FunctionType;
+
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.Value;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.FunctionType;
 
 /**
  * Base class for XACML functions.
@@ -37,6 +37,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.FunctionType;
 public abstract class BaseFunction<RETURN_T extends Value> implements Function<RETURN_T>
 {
 	private final String functionId;
+	private final String indeterminateArgMessagePrefix;
 
 	// cached hashcode result
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
@@ -46,8 +47,6 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	{
 		return this.functionId;
 	}
-
-	private final String indeterminateArgMessagePrefix;
 
 	protected BaseFunction(String functionId)
 	{

@@ -54,6 +54,11 @@ import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
 public final class XPathValue extends SimpleValue<String>
 {
 	/**
+	 * Official name of this type
+	 */
+	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression";
+
+	/**
 	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
 	 */
 	public static final String XPATH_CATEGORY_ATTRIBUTE_LOCALNAME = "XPathCategory";
@@ -72,6 +77,10 @@ public final class XPathValue extends SimpleValue<String>
 	 */
 	public static final QName XPATH_CATEGORY_ATTRIBUTE_QNAME = new QName("", XPATH_CATEGORY_ATTRIBUTE_LOCALNAME);
 
+	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
+	private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
+			"Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
+
 	private final String xpathCategory;
 
 	private final transient XPathEvaluator xpathEvaluator;
@@ -81,15 +90,6 @@ public final class XPathValue extends SimpleValue<String>
 	private final String xpathEvalExceptionMessage;
 
 	private IndeterminateEvaluationException missingContextException;
-
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression";
-
-	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
-	private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
-			"Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
 
 	/**
 	 * Instantiates from XPath expression.

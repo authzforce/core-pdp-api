@@ -70,8 +70,8 @@ public final class RegexpMatchFunctionHelper
 		private final String invalidRemainingArg1TypeMsg;
 		private final String funcId;
 
-		private CompiledRegexMatchFunctionCall(FirstOrderFunctionSignature<BooleanValue> functionSig, List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes, RegularExpression compiledRegex,
-				Datatype<? extends SimpleValue<String>> matchedValueType, String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
+		private CompiledRegexMatchFunctionCall(FirstOrderFunctionSignature<BooleanValue> functionSig, List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes,
+				RegularExpression compiledRegex, Datatype<? extends SimpleValue<String>> matchedValueType, String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
 		{
 			super(functionSig, argExpressions, remainingArgTypes);
 			this.funcId = functionSig.getName();
@@ -113,6 +113,34 @@ public final class RegexpMatchFunctionHelper
 			return BooleanValue.valueOf(compiledRegex.containsMatch(arg1.getUnderlyingValue()));
 
 		}
+	}
+
+	/**
+	 * Match a string against a regular expression
+	 * 
+	 * @param regex
+	 *            regular expression
+	 * @param arg1
+	 *            string value
+	 * @return true iff {@code arg1} matches {@code regex}
+	 * @throws IllegalArgumentException
+	 *             {@code regex} is not a valid regular expression
+	 */
+	public static boolean match(StringValue regex, SimpleValue<String> arg1) throws IllegalArgumentException
+	{
+		/*
+		 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
+		 */
+		final RegularExpression compiledRegex;
+		try
+		{
+			compiledRegex = Configuration.getPlatform().compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
+		} catch (XPathException e)
+		{
+			throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
+		}
+
+		return compiledRegex.containsMatch(arg1.getUnderlyingValue());
 	}
 
 	private final String indeterminateArg1TypeMessage;
@@ -194,33 +222,5 @@ public final class RegexpMatchFunctionHelper
 		 * compiledRegex, we still need to pass original argExpressions to any subclass of FirstOrderFunctionCall (like below) because it checks all arguments datatypes and so on first.
 		 */
 		return new CompiledRegexMatchFunctionCall(funcSig, argExpressions, remainingArgTypes, compiledRegex, matchedValueType, indeterminateArg1TypeMessage);
-	}
-
-	/**
-	 * Match a string against a regular expression
-	 * 
-	 * @param regex
-	 *            regular expression
-	 * @param arg1
-	 *            string value
-	 * @return true iff {@code arg1} matches {@code regex}
-	 * @throws IllegalArgumentException
-	 *             {@code regex} is not a valid regular expression
-	 */
-	public static boolean match(StringValue regex, SimpleValue<String> arg1) throws IllegalArgumentException
-	{
-		/*
-		 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
-		 */
-		final RegularExpression compiledRegex;
-		try
-		{
-			compiledRegex = Configuration.getPlatform().compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
-		} catch (XPathException e)
-		{
-			throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
-		}
-
-		return compiledRegex.containsMatch(arg1.getUnderlyingValue());
 	}
 }

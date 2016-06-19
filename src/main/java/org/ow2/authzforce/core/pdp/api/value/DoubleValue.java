@@ -36,10 +36,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#double";
 
-	/**
-	 * Value zero
-	 */
-	public static final DoubleValue ZERO = new DoubleValue(0);
+	private static final ArithmeticException ILLEGAL_DIV_BY_ZERO_EXCEPTION = new ArithmeticException("Illegal division by zero");
 
 	/**
 	 * Creates a new <code>DoubleAttributeValue</code> that represents the double value supplied.
@@ -51,6 +48,11 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	{
 		super(TYPE_URI, value);
 	}
+
+	/**
+	 * Value zero
+	 */
+	public static final DoubleValue ZERO = new DoubleValue(0);
 
 	/**
 	 * Creates instance from lexical representation of xs:double
@@ -106,8 +108,6 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 		return new DoubleValue(product);
 	}
 
-	private static final ArithmeticException ILLEGAL_DIV_BY_ZERO_EXCEPTION = new ArithmeticException("Illegal division by zero");
-
 	/** {@inheritDoc} */
 	@Override
 	public DoubleValue divide(DoubleValue divisor) throws ArithmeticException
@@ -129,7 +129,9 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	}
 
 	/**
-	 * <p>floor</p>
+	 * <p>
+	 * floor
+	 * </p>
 	 *
 	 * @see Math#floor(double)
 	 * @return result of Math#floor(double) as AttributeValue
