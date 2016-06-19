@@ -31,7 +31,7 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  * @param <RETURN>
  *            function return type
  */
-abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunction<RETURN>
+public abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunction<RETURN>
 {
 	private static final Datatype<?>[] EMPTY_DATATYPE_DEF_ARRAY = new Datatype<?>[] {};
 
