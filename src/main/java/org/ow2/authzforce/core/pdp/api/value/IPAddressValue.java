@@ -33,36 +33,22 @@ import com.google.common.net.InetAddresses;
  */
 public final class IPAddressValue extends SimpleValue<String>
 {
-	/*
-	 * These fields are not actually needed in the XACML core specification since no function uses them, but it might be useful for new XACML profile or custom functions dealing with network access
-	 * control for instance.
-	 */
-	private final InetAddress address;
-	private final InetAddress mask;
-	private final transient PortRange portRange;
 
-	private static void parseIPAddress(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<PortRange> returnedRange) throws IllegalArgumentException
-	{
-		// an IPv6 address starts with a '['
-		if (val.indexOf('[') == 0)
-		{
-			parseIPv6Address(val, returnedAddress, returnedMask, returnedRange);
-		} else
-		{
-			parseIPv4Address(val, returnedAddress, returnedMask, returnedRange);
-		}
-	}
+	/**
+	 * Official name of this type
+	 */
+	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:ipAddress";
 
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
-	private static void parseIPv4Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<PortRange> returnedRange) throws IllegalArgumentException
+	private static void parseIPv4Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
 	{
 		assert val != null;
 
 		final InetAddress address;
 		final InetAddress mask;
-		final PortRange range;
+		final NetworkPortRange range;
 
 		// start out by seeing where the delimiters are
 		int maskPos = val.indexOf("/");
@@ -76,7 +62,7 @@ public final class IPAddressValue extends SimpleValue<String>
 			 */
 			address = InetAddresses.forString(val);
 			mask = null;
-			range = new PortRange();
+			range = NetworkPortRange.MAX;
 		} else if (maskPos != -1)
 		{
 			// there is also a mask (and maybe a range)
@@ -91,7 +77,7 @@ public final class IPAddressValue extends SimpleValue<String>
 				 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName().
 				 */
 				mask = InetAddresses.forString(val.substring(maskPos + 1, rangePos));
-				range = PortRange.getInstance(val.substring(rangePos + 1, val.length()));
+				range = NetworkPortRange.getInstance(val.substring(rangePos + 1, val.length()));
 			} else
 			{
 				// there's no range, so just get the mask
@@ -100,7 +86,7 @@ public final class IPAddressValue extends SimpleValue<String>
 				 */
 				mask = InetAddresses.forString(val.substring(maskPos + 1, val.length()));
 				// if the range is null, then create it as unbound
-				range = new PortRange();
+				range = NetworkPortRange.MAX;
 			}
 		} else
 		{
@@ -110,7 +96,7 @@ public final class IPAddressValue extends SimpleValue<String>
 			 */
 			address = InetAddresses.forString(val.substring(0, rangePos));
 			mask = null;
-			range = PortRange.getInstance(val.substring(rangePos + 1, val.length()));
+			range = NetworkPortRange.getInstance(val.substring(rangePos + 1, val.length()));
 		}
 
 		returnedAddress.value = address;
@@ -121,12 +107,12 @@ public final class IPAddressValue extends SimpleValue<String>
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
-	private static void parseIPv6Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<PortRange> returnedRange) throws IllegalArgumentException
+	private static void parseIPv6Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
 	{
 		// Let's validate
 		final InetAddress address;
 		final InetAddress mask;
-		final PortRange range;
+		final NetworkPortRange range;
 		int len = val.length();
 
 		// get the required address component
@@ -153,15 +139,15 @@ public final class IPAddressValue extends SimpleValue<String>
 			// finally, see if there's a port range, if we're not finished
 			if (endIndex != len - 1 && val.charAt(endIndex + 1) == ':')
 			{
-				range = PortRange.getInstance(val.substring(endIndex + 2, len));
+				range = NetworkPortRange.getInstance(val.substring(endIndex + 2, len));
 			} else
 			{
-				range = new PortRange();
+				range = NetworkPortRange.MAX;
 			}
 		} else
 		{
 			mask = null;
-			range = new PortRange();
+			range = NetworkPortRange.MAX;
 		}
 
 		returnedAddress.value = address;
@@ -169,10 +155,28 @@ public final class IPAddressValue extends SimpleValue<String>
 		returnedRange.value = range;
 	}
 
-	/**
-	 * Official name of this type
+	private static void parseIPAddress(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
+	{
+		// an IPv6 address starts with a '['
+		if (val.indexOf('[') == 0)
+		{
+			parseIPv6Address(val, returnedAddress, returnedMask, returnedRange);
+		} else
+		{
+			parseIPv4Address(val, returnedAddress, returnedMask, returnedRange);
+		}
+	}
+
+	/*
+	 * These fields are not actually needed in the XACML core specification since no function uses them, but it might be useful for new XACML profile or custom functions dealing with network access
+	 * control for instance.
 	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:ipAddress";
+	private final InetAddress address;
+	private final InetAddress mask;
+
+	private final transient NetworkPortRange portRange;
+
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
 	 * Instantiates from string representation
@@ -187,7 +191,7 @@ public final class IPAddressValue extends SimpleValue<String>
 		super(TYPE_URI, val);
 		final Holder<InetAddress> addressHolder = new Holder<>();
 		final Holder<InetAddress> maskHolder = new Holder<>();
-		final Holder<PortRange> rangeHolder = new Holder<>();
+		final Holder<NetworkPortRange> rangeHolder = new Holder<>();
 		parseIPAddress(this.value, addressHolder, maskHolder, rangeHolder);
 		address = addressHolder.value;
 		mask = maskHolder.value;
@@ -223,8 +227,6 @@ public final class IPAddressValue extends SimpleValue<String>
 	// {
 	// return portRange;
 	// }
-
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/** {@inheritDoc} */
 	@Override

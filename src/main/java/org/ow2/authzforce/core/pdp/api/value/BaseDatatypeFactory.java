@@ -29,6 +29,9 @@ import java.net.URI;
  */
 public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> implements DatatypeFactory<INSTANCE_AV>
 {
+	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException("Undefined instanceClass argument");
+	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException("Undefined datatypeId argument");
+
 	/**
 	 * Primitive datatype
 	 *
@@ -95,9 +98,6 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 			return null;
 		}
 	}
-
-	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException("Undefined instanceClass argument");
-	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException("Undefined datatypeId argument");
 
 	protected final Datatype<INSTANCE_AV> instanceDatatype;
 	private final Bag<INSTANCE_AV> emptyBag;

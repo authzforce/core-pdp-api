@@ -23,12 +23,10 @@ import java.util.Objects;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
 /**
- * Attribute's Globally unique identifier, as opposed to AttributeId which is local to a specific category and/or issuer. Why not use AttributeDesignator?
- * Because we don't care about MustBePresent or Datatype for lookup here. This is used for example as key in a map to retrieve corresponding AttributeValue or
- * AttributeProvider module.
+ * Attribute's Globally unique identifier, as opposed to AttributeId which is local to a specific category and/or issuer. Why not use AttributeDesignator? Because we don't care about MustBePresent or
+ * Datatype for lookup here. This is used for example as key in a map to retrieve corresponding AttributeValue or AttributeProvider module.
  * <p>
- * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1],
- * not in java.net.URI.
+ * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
  * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
@@ -38,6 +36,12 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 public final class AttributeGUID
 {
 	private final String category;
+	private final String issuer;
+	private final String id;
+
+	// cached method results
+	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile String toString = null; // Effective Java - Item 71
 
 	/**
 	 * @return the category
@@ -46,13 +50,6 @@ public final class AttributeGUID
 	{
 		return category;
 	}
-
-	private final String issuer;
-	private final String id;
-
-	// cached method results
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
-	private transient volatile String toString = null; // Effective Java - Item 71
 
 	/**
 	 * @return the id

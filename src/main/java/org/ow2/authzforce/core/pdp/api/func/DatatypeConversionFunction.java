@@ -41,7 +41,7 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  * 
  * @version $Id: $
  */
-public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<RETURN_T, PARAM_T>
+public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T extends AttributeValue> extends SingleParameterTypedFirstOrderFunction<RETURN_T, PARAM_T>
 {
 
 	/**
@@ -70,10 +70,10 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 	private static final class CallFactory<RETURN extends Value, PARAM extends AttributeValue>
 	{
 		private final TypeConverter<RETURN, PARAM> converter;
-		private final FunctionSignature.SingleParameterTyped<RETURN, PARAM> funcSig;
+		private final SingleParameterTypedFirstOrderFunctionSignature<RETURN, PARAM> funcSig;
 		private final String invalidArgMsgPrefix;
 
-		private CallFactory(FunctionSignature.SingleParameterTyped<RETURN, PARAM> functionSignature, TypeConverter<RETURN, PARAM> converter)
+		private CallFactory(SingleParameterTypedFirstOrderFunctionSignature<RETURN, PARAM> functionSignature, TypeConverter<RETURN, PARAM> converter)
 		{
 			this.funcSig = functionSignature;
 			this.converter = converter;

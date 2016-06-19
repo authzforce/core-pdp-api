@@ -42,8 +42,8 @@ import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * First-order bag functions, as opposed to the higher-order bag functions (see {@link HigherOrderBagFunction}); such as the Bag functions of section A.3.10,
- * and the Set functions of A.3.11 of the XACML spec.
+ * First-order bag functions, as opposed to the higher-order bag functions (see {@link HigherOrderBagFunction}); such as the Bag functions of section A.3.10, and the Set functions of A.3.11 of the
+ * XACML spec.
  *
  * 
  * @version $Id: $
@@ -57,7 +57,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class SingletonBagToPrimitive<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<AV, Bag<AV>>
+	public static class SingletonBagToPrimitive<AV extends AttributeValue> extends SingleParameterTypedFirstOrderFunction<AV, Bag<AV>>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-one-and-only' functions
@@ -77,7 +77,8 @@ public final class FirstOrderBagFunctions
 		public SingletonBagToPrimitive(Datatype<AV> paramType, Datatype<Bag<AV>> paramBagType)
 		{
 			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
-			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.", StatusHelper.STATUS_PROCESSING_ERROR);
+			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
+					StatusHelper.STATUS_PROCESSING_ERROR);
 		}
 
 		@Override
@@ -111,7 +112,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class BagSize<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<IntegerValue, Bag<AV>>
+	public static class BagSize<AV extends AttributeValue> extends SingleParameterTypedFirstOrderFunction<IntegerValue, Bag<AV>>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-bag-size' functions
@@ -157,7 +158,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class BagContains<AV extends AttributeValue> extends FirstOrderFunction.MultiParameterTyped<BooleanValue>
+	public static class BagContains<AV extends AttributeValue> extends MultiParameterTypedFirstOrderFunction<BooleanValue>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-is-in' functions
@@ -221,7 +222,7 @@ public final class FirstOrderBagFunctions
 	 * @param <AV>
 	 *            primitive datatype
 	 */
-	public static class PrimitiveToBag<AV extends AttributeValue> extends FirstOrderFunction.SingleParameterTyped<Bag<AV>, AV>
+	public static class PrimitiveToBag<AV extends AttributeValue> extends SingleParameterTypedFirstOrderFunction<Bag<AV>, AV>
 	{
 		/**
 		 * Function ID suffix for 'primitiveType-bag' functions
@@ -268,7 +269,7 @@ public final class FirstOrderBagFunctions
 	 * @param <RETURN>
 	 *            return type
 	 */
-	public static abstract class SetFunction<AV extends AttributeValue, RETURN extends Value> extends FirstOrderFunction.SingleParameterTyped<RETURN, Bag<AV>>
+	public static abstract class SetFunction<AV extends AttributeValue, RETURN extends Value> extends SingleParameterTypedFirstOrderFunction<RETURN, Bag<AV>>
 	{
 
 		private static final IllegalArgumentException UNDEF_PARAM_TYPES_ARG_EXCEPTION = new IllegalArgumentException("Undefined function parameter types");
@@ -456,8 +457,7 @@ public final class FirstOrderBagFunctions
 		public Union(Datatype<AV> paramType, Datatype<Bag<AV>> paramBagType)
 		{
 			/*
-			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same
-			 * bag type
+			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same bag type
 			 */
 			super(NAME_SUFFIX_UNION, paramBagType, true, Arrays.asList(paramBagType, paramBagType, paramBagType));
 			this.paramType = paramType;
@@ -575,8 +575,8 @@ public final class FirstOrderBagFunctions
 
 	/**
 	 * Creates/gets all first-order bag functions taking a given primitive datatype as bag's primitive type, i.e. the equivalents of standard
-	 * <code>urn:oasis:names:tc:xacml:x.x:function:type${suffix}</code> functions, where <code>urn:oasis:names:tc:xacml:x.x:function:type</code> is replaced by
-	 * a given prefix ({@code functionIdPrefix} ) and the suffix takes the following values (one per created function):
+	 * <code>urn:oasis:names:tc:xacml:x.x:function:type${suffix}</code> functions, where <code>urn:oasis:names:tc:xacml:x.x:function:type</code> is replaced by a given prefix ({@code functionIdPrefix}
+	 * ) and the suffix takes the following values (one per created function):
 	 * <ul>
 	 * <li>{@code -one-and-only}: converts a given singleton bag to a the single primitive value in the bag</li>
 	 * <li>{@code -bag-size}: gives the size of a given bag</li>
@@ -601,8 +601,8 @@ public final class FirstOrderBagFunctions
 		final Set<Function<?>> mutableSet = new HashSet<>();
 		/**
 		 * 
-		 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in
-		 * section A.3.10. As opposed to Set functions that takes multiple bags as parameters.
+		 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set functions
+		 * that takes multiple bags as parameters.
 		 * 
 		 */
 		mutableSet.add(new SingletonBagToPrimitive<>(paramType, paramBagType));

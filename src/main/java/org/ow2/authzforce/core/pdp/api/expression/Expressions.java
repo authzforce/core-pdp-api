@@ -33,15 +33,12 @@ import org.slf4j.LoggerFactory;
  */
 public final class Expressions
 {
-	private Expressions()
-	{
-	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Expressions.class);
 	private static final IndeterminateEvaluationException NULL_ARG_EVAL_RESULT_INDETERMINATE_EXCEPTION = new IndeterminateEvaluationException(
 			"No value returned by arg evaluation in the current context", StatusHelper.STATUS_PROCESSING_ERROR);
-	private static final IndeterminateEvaluationException NULL_EXPECTED_RETURN_TYPE_INDETERMINATE_EXCEPTION = new IndeterminateEvaluationException(
-			"Undefined expected attribute datatype", StatusHelper.STATUS_SYNTAX_ERROR);
+	private static final IndeterminateEvaluationException NULL_EXPECTED_RETURN_TYPE_INDETERMINATE_EXCEPTION = new IndeterminateEvaluationException("Undefined expected attribute datatype",
+			StatusHelper.STATUS_SYNTAX_ERROR);
 
 	/**
 	 * Evaluate single-valued (primitive) argument expression
@@ -75,8 +72,7 @@ public final class Expressions
 			return returnType.cast(val);
 		} catch (ClassCastException e)
 		{
-			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType,
-					StatusHelper.STATUS_PROCESSING_ERROR, e);
+			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType, StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}
 	}
 
@@ -105,8 +101,12 @@ public final class Expressions
 			return (AttributeValue) val;
 		} catch (ClassCastException e)
 		{
-			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type",
-					StatusHelper.STATUS_PROCESSING_ERROR, e);
+			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type", StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}
+	}
+
+	private Expressions()
+	{
+		// prevent instantiation
 	}
 }

@@ -64,6 +64,8 @@ import org.w3c.dom.Element;
 public abstract class SimpleValue<V> extends AttributeValue
 {
 
+	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
+
 	/**
 	 * Datatype-specific Attribute Value Factory that supports values based on string content with extra XML attributes.
 	 * 
@@ -201,8 +203,6 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 */
 		public abstract AV getInstance(String val);
 	}
-
-	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
 
 	/*
 	 * Make it final to prevent unexpected value change resulting from some function side-effects

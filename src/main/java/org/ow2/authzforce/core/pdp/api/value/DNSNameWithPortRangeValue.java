@@ -66,7 +66,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	private final transient String hostname;
 
 	// the optional port/portRange
-	private final transient PortRange portRange;
+	private final transient NetworkPortRange portRange;
 
 	/*
 	 * true if the hostname starts with a '*', therefore this field is derived from hostname
@@ -84,24 +84,24 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 		return HOSTNAME_PATTERN.matcher(hostname).matches();
 	}
 
-	private static Entry<String, PortRange> parseDnsName(String dnsName) throws IllegalArgumentException
+	private static Entry<String, NetworkPortRange> parseDnsName(String dnsName) throws IllegalArgumentException
 	{
 		assert dnsName != null;
 
 		final String host;
-		final PortRange range;
+		final NetworkPortRange range;
 		final int portSep = dnsName.indexOf(':');
 		if (portSep == -1)
 		{
 			// there is no port/portRange, so just use the name
 			host = dnsName;
-			range = new PortRange();
+			range = NetworkPortRange.MAX;
 		} else
 		{
 			// split the name and the port/portRange
 			host = dnsName.substring(0, portSep);
 			// validate port/portRange
-			range = PortRange.getInstance(dnsName.substring(portSep + 1, dnsName.length()));
+			range = NetworkPortRange.getInstance(dnsName.substring(portSep + 1, dnsName.length()));
 		}
 
 		// verify that the hostname is valid before we store it
@@ -124,7 +124,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	public DNSNameWithPortRangeValue(String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
-		final Entry<String, PortRange> hostAndPortRange = parseDnsName(this.value);
+		final Entry<String, NetworkPortRange> hostAndPortRange = parseDnsName(this.value);
 		this.hostname = hostAndPortRange.getKey();
 		this.portRange = hostAndPortRange.getValue();
 

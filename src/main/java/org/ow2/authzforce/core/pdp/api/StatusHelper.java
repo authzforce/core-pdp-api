@@ -57,6 +57,12 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	public static final StatusHelper OK = new StatusHelper(STATUS_OK, null);
 
 	/**
+	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that allows chaining status codes endlessly unless the implementation enforces a maximum
+	 * depth as done here.
+	 */
+	public static final int MAX_STATUS_CODE_DEPTH = 10;
+
+	/**
 	 * Constructor that takes only the status code.
 	 * 
 	 * @param code
@@ -73,8 +79,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * Constructor that takes both the status code and a message to include with the status.
 	 * 
 	 * @param codes
-	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item
-	 *            in the list, which is the major code
+	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
 	 *            a message to include with the code
 	 */
@@ -84,19 +89,11 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	}
 
 	/**
-	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that allows chaining status codes endlessly unless
-	 * the implementation enforces a maximum depth as done here.
-	 */
-	public static final int MAX_STATUS_CODE_DEPTH = 10;
-
-	/**
-	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note that the specification explicitly says that
-	 * a status code of OK, SyntaxError or ProcessingError may not appear with status detail, so an exception is thrown if one of these status codes is used and
-	 * detail is included.
+	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note that the specification explicitly says that a status code of OK, SyntaxError or
+	 * ProcessingError may not appear with status detail, so an exception is thrown if one of these status codes is used and detail is included.
 	 * 
 	 * @param codes
-	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item
-	 *            in the list, which is the major code
+	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
 	 *            a message to include with the code, or null if there should be no message
 	 * @param detail
