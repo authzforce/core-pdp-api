@@ -45,7 +45,7 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param message
 	 *            exception message
 	 * @param statusCode
-	 *            XACML StatusCode value
+	 *            XACML StatusCode value, must be a valid xs:anyURI (used as XACML StatusCode Value)
 	 */
 	public IndeterminateEvaluationException(String message, String statusCode)
 	{
@@ -59,7 +59,7 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param message
 	 *            exception message
 	 * @param statusCode
-	 *            XACML StatusCode value
+	 *            XACML StatusCode value, must be a Valid xs:anyURI (used as XACML StatusCode Value)
 	 * @param cause
 	 *            internal cause of error
 	 */

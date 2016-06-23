@@ -66,7 +66,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * Constructor that takes only the status code.
 	 * 
 	 * @param code
-	 *            status code
+	 *            status code, must be a valid xs:anyURI
 	 * @param message
 	 *            status message
 	 */
@@ -79,7 +79,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * Constructor that takes both the status code and a message to include with the status.
 	 * 
 	 * @param codes
-	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
+	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
 	 *            a message to include with the code
 	 */
@@ -93,7 +93,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * ProcessingError may not appear with status detail, so an exception is thrown if one of these status codes is used and detail is included.
 	 * 
 	 * @param codes
-	 *            a <code>List</code> of <code>String</code> codes, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
+	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
 	 *            a message to include with the code, or null if there should be no message
 	 * @param detail
