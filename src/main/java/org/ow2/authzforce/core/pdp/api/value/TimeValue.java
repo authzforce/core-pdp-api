@@ -42,7 +42,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code time} is not a valid string representation of xs:time
 	 */
-	public TimeValue(String time) throws IllegalArgumentException
+	public TimeValue(final String time) throws IllegalArgumentException
 	{
 		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(time));
 	}
@@ -55,7 +55,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 * @throws IllegalArgumentException
 	 *             if {@code time == null}
 	 */
-	private TimeValue(XMLGregorianCalendar time) throws IllegalArgumentException
+	private TimeValue(final XMLGregorianCalendar time) throws IllegalArgumentException
 	{
 		super(TYPE_URI, time, DatatypeConstants.TIME);
 	}
@@ -70,7 +70,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code calendar == null}
 	 */
-	public static TimeValue getInstance(XMLGregorianCalendar timeCalendar)
+	public static TimeValue getInstance(final XMLGregorianCalendar timeCalendar)
 	{
 		// we only want the time, so unset all non-time fields
 		timeCalendar.setYear(DatatypeConstants.FIELD_UNDEFINED);
@@ -81,7 +81,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 
 	/** {@inheritDoc} */
 	@Override
-	public TimeValue add(DurationValue<?> durationVal)
+	public TimeValue add(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue());
@@ -90,7 +90,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 
 	/** {@inheritDoc} */
 	@Override
-	public TimeValue subtract(DurationValue<?> durationVal)
+	public TimeValue subtract(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue().negate());

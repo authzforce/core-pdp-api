@@ -34,7 +34,7 @@ public final class Bags
 
 	private static final class Empty<AV extends AttributeValue> extends Bag<AV>
 	{
-		private Empty(Datatype<AV> elementDatatype, IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
+		private Empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
 		{
 			// Collections.emptySet() returns immutable Set
 			super(elementDatatype, Collections.<AV> emptySet(), causeForEmpty);
@@ -43,7 +43,7 @@ public final class Bags
 
 	private static final class Singleton<AV extends AttributeValue> extends Bag<AV>
 	{
-		private Singleton(Datatype<AV> elementDatatype, AV val) throws IllegalArgumentException
+		private Singleton(final Datatype<AV> elementDatatype, final AV val) throws IllegalArgumentException
 		{
 			// Collections.singleton() returns immutable Set
 			super(elementDatatype, Collections.singleton(val), null);
@@ -52,7 +52,7 @@ public final class Bags
 
 	private static final class Multi<AV extends AttributeValue> extends Bag<AV>
 	{
-		private Multi(Datatype<AV> elementDatatype, Collection<AV> values) throws IllegalArgumentException
+		private Multi(final Datatype<AV> elementDatatype, final Collection<AV> values) throws IllegalArgumentException
 		{
 			super(elementDatatype, Collections.unmodifiableCollection(values), null);
 		}
@@ -61,7 +61,7 @@ public final class Bags
 		 * Override equals() to take internal values into account, because the internal Collections.unmodifiableCollection(...) does not do it
 		 */
 		@Override
-		public boolean equals(Object other)
+		public boolean equals(final Object other)
 		{
 			// Effective Java - Item 8
 			if (this == other)
@@ -125,7 +125,7 @@ public final class Bags
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> empty(Datatype<AV> elementDatatype, IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
 	{
 		return new Empty<>(elementDatatype, causeForEmpty);
 	}
@@ -141,7 +141,7 @@ public final class Bags
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> singleton(Datatype<AV> elementDatatype, AV val) throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> singleton(final Datatype<AV> elementDatatype, final AV val) throws IllegalArgumentException
 	{
 		if (val == null)
 		{
@@ -162,7 +162,7 @@ public final class Bags
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> getInstance(Datatype<AV> elementDatatype, Collection<AV> values) throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> getInstance(final Datatype<AV> elementDatatype, final Collection<AV> values) throws IllegalArgumentException
 	{
 		if (values == null || values.isEmpty())
 		{

@@ -48,7 +48,7 @@ public abstract class Datatype<V extends Value>
 	 * @throws IllegalArgumentException
 	 *             if {@code valueClass == null || id == null || functionIdPrefix == null}.
 	 */
-	protected Datatype(Class<V> valueClass, String id, URI functionIdPrefix) throws IllegalArgumentException
+	protected Datatype(final Class<V> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
 	{
 		if (valueClass == null)
 		{
@@ -116,7 +116,7 @@ public abstract class Datatype<V extends Value>
 	 * @throws ClassCastException
 	 *             if the value is not null and is not assignable to the type V.
 	 */
-	public V cast(Value val) throws ClassCastException
+	public V cast(final Value val) throws ClassCastException
 	{
 		return this.valueClass.cast(val);
 	}

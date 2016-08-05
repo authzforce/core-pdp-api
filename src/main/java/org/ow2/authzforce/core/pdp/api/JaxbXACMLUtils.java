@@ -101,7 +101,7 @@ public final class JaxbXACMLUtils
 		try
 		{
 			XACML_3_0_SCHEMA = factory.newSchema(schemaSources);
-		} catch (SAXException e)
+		} catch (final SAXException e)
 		{
 			throw new RuntimeException("Failed to load XML schemas on classpath: " + Arrays.toString(CLASSPATH_RELATIVE_XACML_3_0_SCHEMA_LOCATIONS), e);
 		}
@@ -116,7 +116,7 @@ public final class JaxbXACMLUtils
 		try
 		{
 			XACML_3_0_JAXB_CONTEXT = JAXBContext.newInstance(XACML_3_0_JAXB_PACKAGE_NAME, JaxbXACMLUtils.class.getClassLoader());
-		} catch (JAXBException e)
+		} catch (final JAXBException e)
 		{
 			throw new RuntimeException("Error instantiating JAXB context for (un)marshalling from/to XACML 3.0 objects", e);
 		}
@@ -202,7 +202,7 @@ public final class JaxbXACMLUtils
 	 *            true iff a factory supporting namespace filtering is required
 	 * @return XACML parser factory instance
 	 */
-	public static XACMLParserFactory getXACMLParserFactory(boolean enableFiltering)
+	public static XACMLParserFactory getXACMLParserFactory(final boolean enableFiltering)
 	{
 		return enableFiltering ? NS_FILTERING_XACML_PARSER_FACTORY : NO_NS_FILTERING_XACML_PARSER_FACTORY;
 	}
@@ -222,12 +222,12 @@ public final class JaxbXACMLUtils
 
 		private final DatatypeFactoryRegistry datatypeFactoryRegistry;
 
-		private JaxbXACMLAttributeParsingHelper(DatatypeFactoryRegistry datatypeFactoryRegistry)
+		private JaxbXACMLAttributeParsingHelper(final DatatypeFactoryRegistry datatypeFactoryRegistry)
 		{
 			this.datatypeFactoryRegistry = datatypeFactoryRegistry;
 		}
 
-		protected DatatypeFactory<?> getDatatypeFactory(AttributeValueType jaxbAttributeValue) throws IllegalArgumentException
+		protected DatatypeFactory<?> getDatatypeFactory(final AttributeValueType jaxbAttributeValue) throws IllegalArgumentException
 		{
 			final String datatypeURI = jaxbAttributeValue.getDataType();
 			final DatatypeFactory<?> datatypeFactory = datatypeFactoryRegistry.getExtension(datatypeURI);
@@ -239,7 +239,7 @@ public final class JaxbXACMLUtils
 			return datatypeFactory;
 		}
 
-		private static void validateResourceScope(AttributeGUID attributeGUID, AttributeValueType jaxbAttrVal0) throws IllegalArgumentException
+		private static void validateResourceScope(final AttributeGUID attributeGUID, final AttributeValueType jaxbAttrVal0) throws IllegalArgumentException
 		{
 			/*
 			 * Check whether this is not an unsupported resource-scope attribute. XACML Multiple Decision Profile, § 2.3.3: "... If such a <Attributes> element contains a 'scope' attribute having any
@@ -312,12 +312,13 @@ public final class JaxbXACMLUtils
 		 * @param datatypeFactoryRegistry
 		 *            registry of datatype factories for parsing Attribute values into native Java model
 		 */
-		public NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser(DatatypeFactoryRegistry datatypeFactoryRegistry)
+		public NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser(final DatatypeFactoryRegistry datatypeFactoryRegistry)
 		{
 			this.helper = new JaxbXACMLAttributeParsingHelper(datatypeFactoryRegistry);
 		}
 
-		private static <AV extends AttributeValue> Bag<AV> parseValues(List<AttributeValueType> nonEmptyJaxbAttributeValues, DatatypeFactory<AV> datatypeFactory, XPathCompiler xPathCompiler)
+		private static <AV extends AttributeValue> Bag<AV> parseValues(final List<AttributeValueType> nonEmptyJaxbAttributeValues, final DatatypeFactory<AV> datatypeFactory,
+				final XPathCompiler xPathCompiler)
 		{
 			final Collection<AV> vals = new ArrayDeque<>();
 			for (final AttributeValueType jaxbAttrValue : nonEmptyJaxbAttributeValues)
@@ -330,8 +331,8 @@ public final class JaxbXACMLUtils
 		}
 
 		@Override
-		public void parseAttribute(Map<AttributeGUID, Bag<?>> attributeMap, AttributeGUID attributeGUID, List<AttributeValueType> nonEmptyJaxbAttributeValues, XPathCompiler xPathCompiler)
-				throws IllegalArgumentException
+		public void parseAttribute(final Map<AttributeGUID, Bag<?>> attributeMap, final AttributeGUID attributeGUID, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
+				final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			/*
 			 * Check if it is a resource-scope.
@@ -349,7 +350,7 @@ public final class JaxbXACMLUtils
 			try
 			{
 				datatypeFactory = this.helper.getDatatypeFactory(jaxbAttrVal0);
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeGUID, e);
 			}
@@ -358,7 +359,7 @@ public final class JaxbXACMLUtils
 			try
 			{
 				newAttrVals = parseValues(nonEmptyJaxbAttributeValues, datatypeFactory, xPathCompiler);
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue(s) in Attribute" + attributeGUID, e);
 			}
@@ -411,14 +412,14 @@ public final class JaxbXACMLUtils
 		 * @param datatypeFactoryRegistry
 		 *            registry of datatype factories for parsing Attribute values into native Java model
 		 */
-		public NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser(DatatypeFactoryRegistry datatypeFactoryRegistry)
+		public NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser(final DatatypeFactoryRegistry datatypeFactoryRegistry)
 		{
 			this.helper = new JaxbXACMLAttributeParsingHelper(datatypeFactoryRegistry);
 		}
 
 		@Override
-		public void parseAttribute(Map<AttributeGUID, MutableBag<?>> attributeMap, AttributeGUID attributeGUID, List<AttributeValueType> nonEmptyJaxbAttributeValues, XPathCompiler xPathCompiler)
-				throws IllegalArgumentException
+		public void parseAttribute(final Map<AttributeGUID, MutableBag<?>> attributeMap, final AttributeGUID attributeGUID, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
+				final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			/**
 			 * Determine the attribute datatype to make sure it is supported and all values are of the same datatype. Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a
@@ -431,7 +432,7 @@ public final class JaxbXACMLUtils
 			try
 			{
 				datatypeFactory = this.helper.getDatatypeFactory(jaxbAttrVal0);
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeGUID, e);
 			}
@@ -476,7 +477,7 @@ public final class JaxbXACMLUtils
 					newAttrVals.addFromJAXB(jaxbAttrValue);
 					jaxbValIndex++;
 				}
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue #" + jaxbValIndex + " for Attribute" + attributeGUID, e);
 			}
@@ -511,14 +512,14 @@ public final class JaxbXACMLUtils
 		 * @param datatypeFactoryRegistry
 		 *            registry of datatype factories for parsing Attribute values into native Java model
 		 */
-		public IssuedToNonIssuedCopyingLaxJaxbXACMLAttributeParser(DatatypeFactoryRegistry datatypeFactoryRegistry)
+		public IssuedToNonIssuedCopyingLaxJaxbXACMLAttributeParser(final DatatypeFactoryRegistry datatypeFactoryRegistry)
 		{
 			this.helper = new JaxbXACMLAttributeParsingHelper(datatypeFactoryRegistry);
 		}
 
 		@Override
-		public void parseAttribute(Map<AttributeGUID, MutableBag<?>> attributeMap, AttributeGUID attributeGUID, List<AttributeValueType> nonEmptyJaxbAttributeValues, XPathCompiler xPathCompiler)
-				throws IllegalArgumentException
+		public void parseAttribute(final Map<AttributeGUID, MutableBag<?>> attributeMap, final AttributeGUID attributeGUID, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
+				final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			/**
 			 * Determine the attribute datatype to make sure it is supported and all values are of the same datatype. Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a
@@ -531,7 +532,7 @@ public final class JaxbXACMLUtils
 			try
 			{
 				datatypeFactory = helper.getDatatypeFactory(jaxbAttrVal0);
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeGUID, e);
 			}
@@ -599,7 +600,7 @@ public final class JaxbXACMLUtils
 						jaxbValIndex++;
 					}
 				}
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IllegalArgumentException("Invalid AttributeValue #" + jaxbValIndex + " for Attribute" + attributeGUID, e);
 			}
@@ -637,7 +638,7 @@ public final class JaxbXACMLUtils
 		private final JaxbXACMLAttributeParser<BAG> jaxbAttributeParser;
 		private final NamedAttributeIteratorConverter<BAG> namedAttrIterConverter;
 
-		private JaxbXACMLAttributesParserFactory(JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
+		private JaxbXACMLAttributesParserFactory(final JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
 		{
 			this.jaxbAttributeParser = jaxbAttributeParser;
 			this.namedAttrIterConverter = namedAttributeIteratorConverter;
@@ -664,7 +665,7 @@ public final class JaxbXACMLUtils
 			protected abstract XdmNode parseContent(String categoryName, Content jaxbContent) throws IndeterminateEvaluationException;
 
 			@Override
-			public SingleCategoryAttributes<BAG> parseAttributes(Attributes jaxbAttributes, XPathCompiler xPathCompiler) throws IndeterminateEvaluationException
+			public SingleCategoryAttributes<BAG> parseAttributes(final Attributes jaxbAttributes, final XPathCompiler xPathCompiler) throws IndeterminateEvaluationException
 			{
 				final String categoryName = jaxbAttributes.getCategory();
 				final List<Attribute> categoryAttrs = jaxbAttributes.getAttributes();
@@ -714,7 +715,7 @@ public final class JaxbXACMLUtils
 					try
 					{
 						jaxbAttributeParser.parseAttribute(attrMap, attrGUID, jaxbAttrValues, xPathCompiler);
-					} catch (IllegalArgumentException e)
+					} catch (final IllegalArgumentException e)
 					{
 						throw new IndeterminateEvaluationException("Invalid Attributes/Attribute element", StatusHelper.STATUS_SYNTAX_ERROR, e);
 					}
@@ -756,7 +757,7 @@ public final class JaxbXACMLUtils
 		private final class ContentSkippingJaxbXACMLAttributesParser extends BaseJaxbXACMLAttributesParser
 		{
 			@Override
-			protected XdmNode parseContent(String categoryName, Content jaxbContent) throws IndeterminateEvaluationException
+			protected XdmNode parseContent(final String categoryName, final Content jaxbContent) throws IndeterminateEvaluationException
 			{
 				// Content parsing not supported
 				return null;
@@ -773,7 +774,7 @@ public final class JaxbXACMLUtils
 		 * @param namedAttributeIteratorConverter
 		 *            converts iterator over attributes with values produced by {@code jaxbAttributeParser}, into constant-valued/immutable attribute iterator
 		 */
-		public ContentSkippingJaxbXACMLAttributesParserFactory(JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
+		public ContentSkippingJaxbXACMLAttributesParserFactory(final JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
 		{
 			super(jaxbAttributeParser, namedAttributeIteratorConverter);
 			instance = new ContentSkippingJaxbXACMLAttributesParser();
@@ -801,14 +802,14 @@ public final class JaxbXACMLUtils
 			// XML document builder for parsing Content to XPath data model for XPath evaluation
 			private final DocumentBuilder xmlDocBuilder;
 
-			private FullJaxbXACMLAttributesParser(DocumentBuilder xmlDocumentBuilder)
+			private FullJaxbXACMLAttributesParser(final DocumentBuilder xmlDocumentBuilder)
 			{
 				assert xmlDocumentBuilder != null;
 				xmlDocBuilder = xmlDocumentBuilder;
 			}
 
 			@Override
-			public XdmNode parseContent(String categoryName, Content jaxbContent) throws IndeterminateEvaluationException
+			public XdmNode parseContent(final String categoryName, final Content jaxbContent) throws IndeterminateEvaluationException
 			{
 				if (jaxbContent == null)
 				{
@@ -835,7 +836,7 @@ public final class JaxbXACMLUtils
 				try
 				{
 					return xmlDocBuilder.wrap(childElt);
-				} catch (IllegalArgumentException e)
+				} catch (final IllegalArgumentException e)
 				{
 					throw new IndeterminateEvaluationException("Error parsing Content of Attributes[@Category=" + categoryName + "] for XPath evaluation", StatusHelper.STATUS_SYNTAX_ERROR, e);
 				}
@@ -856,7 +857,8 @@ public final class JaxbXACMLUtils
 		 * @param xmlProcessor
 		 *            SAXON XML processor to process the Attributes/Content node
 		 */
-		public FullJaxbXACMLAttributesParserFactory(JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter, Processor xmlProcessor)
+		public FullJaxbXACMLAttributesParserFactory(final JaxbXACMLAttributeParser<BAG> jaxbAttributeParser, final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter,
+				final Processor xmlProcessor)
 		{
 			super(jaxbAttributeParser, namedAttributeIteratorConverter);
 			assert xmlProcessor != null;

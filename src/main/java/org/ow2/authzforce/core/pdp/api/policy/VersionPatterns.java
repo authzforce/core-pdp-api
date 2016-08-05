@@ -23,9 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Version patterns used in policy references to match specific policy
- * version(s). This class also provides a simple set of comparison methods for
- * matching against the patterns.
+ * Version patterns used in policy references to match specific policy version(s). This class also provides a simple set of comparison methods for matching against the patterns.
  * 
  */
 public class VersionPatterns
@@ -45,7 +43,7 @@ public class VersionPatterns
 		private final List<Integer> matchNumbers;
 		private final PolicyVersion asLiteral;
 
-		private PolicyVersionPattern(String xacmlVersionMatch) throws IllegalArgumentException
+		private PolicyVersionPattern(final String xacmlVersionMatch) throws IllegalArgumentException
 		{
 			assert xacmlVersionMatch != null;
 			if (xacmlVersionMatch.isEmpty() || xacmlVersionMatch.startsWith(".") || xacmlVersionMatch.endsWith("."))
@@ -61,31 +59,31 @@ public class VersionPatterns
 				final String token = tokens[i];
 				switch (token)
 				{
-					case "*":
-						matchNumbers.add(WILDCARD);
-						patternCharFound = true;
-						break;
-					case "+":
-						patternCharFound = true;
-						matchNumbers.add(PLUS);
-						break;
-					default:
-						final int number;
-						try
-						{
-							number = Integer.parseInt(tokens[i], 10);
-						} catch (NumberFormatException e)
-						{
-							throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'", e);
-						}
+				case "*":
+					matchNumbers.add(WILDCARD);
+					patternCharFound = true;
+					break;
+				case "+":
+					patternCharFound = true;
+					matchNumbers.add(PLUS);
+					break;
+				default:
+					final int number;
+					try
+					{
+						number = Integer.parseInt(tokens[i], 10);
+					} catch (final NumberFormatException e)
+					{
+						throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'", e);
+					}
 
-						if (number < 0)
-						{
-							throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'. Number #" + i + " (=" + number + ") is not a positive integer");
-						}
+					if (number < 0)
+					{
+						throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'. Number #" + i + " (=" + number + ") is not a positive integer");
+					}
 
-						matchNumbers.add(number);
-						break;
+					matchNumbers.add(number);
+					break;
 				}
 			}
 
@@ -99,7 +97,7 @@ public class VersionPatterns
 			return xacmlVersionMatch;
 		}
 
-		private boolean matches(PolicyVersion version)
+		private boolean matches(final PolicyVersion version)
 		{
 			final Iterator<Integer> versionNumsIterator = version.getNumberSequence().iterator();
 			final Iterator<Integer> matchNumsIterator = this.matchNumbers.iterator();
@@ -109,32 +107,30 @@ public class VersionPatterns
 				final int versionNum = versionNumsIterator.next();
 				switch (matchNum)
 				{
-					case PLUS:
-						// always matches everything from here
-						return true;
-					case WILDCARD:
-						// always matches any versionNumbers[i], so go on
-						break;
-					default:
-						if (matchNum != versionNum)
-						{
-							return false;
-						}
+				case PLUS:
+					// always matches everything from here
+					return true;
+				case WILDCARD:
+					// always matches any versionNumbers[i], so go on
+					break;
+				default:
+					if (matchNum != versionNum)
+					{
+						return false;
+					}
 
-						// else same number, so go on
-						break;
+					// else same number, so go on
+					break;
 				}
 			}
 
 			/*
-			 * At this point, last matchNum is either a wildcard or integer.
-			 * Version matches iff there is no extra number in either
-			 * matchNumbers or versionNumbers.
+			 * At this point, last matchNum is either a wildcard or integer. Version matches iff there is no extra number in either matchNumbers or versionNumbers.
 			 */
 			return !matchNumsIterator.hasNext() && !versionNumsIterator.hasNext();
 		}
 
-		public boolean isLaterOrMatches(PolicyVersion version)
+		public boolean isLaterOrMatches(final PolicyVersion version)
 		{
 			final Iterator<Integer> versionNumsIterator = version.getNumberSequence().iterator();
 			final Iterator<Integer> matchNumsIterator = this.matchNumbers.iterator();
@@ -144,44 +140,38 @@ public class VersionPatterns
 				final int versionNum = versionNumsIterator.next();
 				switch (matchNum)
 				{
-					case PLUS:
-						// always matches everything from here
-						return true;
-					case WILDCARD:
-						/*
-						 * Always matches any versionNumbers[i], and we could
-						 * always find an acceptable version V > version
-						 * argument that matches this pattern (matchNumbers) by
-						 * taking a single number greater than versionNumbers[i]
-						 * at the same index in V. So versionNumbers is earlier
-						 * than the latest acceptable.
-						 */
-						return true;
-					default:
-						if (matchNum < versionNum)
-						{
-							return false;
-						}
+				case PLUS:
+					// always matches everything from here
+					return true;
+				case WILDCARD:
+					/*
+					 * Always matches any versionNumbers[i], and we could always find an acceptable version V > version argument that matches this pattern (matchNumbers) by taking a single number
+					 * greater than versionNumbers[i] at the same index in V. So versionNumbers is earlier than the latest acceptable.
+					 */
+					return true;
+				default:
+					if (matchNum < versionNum)
+					{
+						return false;
+					}
 
-						if (matchNum > versionNum)
-						{
-							return true;
-						}
+					if (matchNum > versionNum)
+					{
+						return true;
+					}
 
-						// else same number, so go on
-						break;
+					// else same number, so go on
+					break;
 				}
 			}
 
 			/*
-			 * At this point, we know matchNumbers is a sequence of numbers (no
-			 * wildcard/plus symbol). It is later than or matches versionNumbers
-			 * iff there is no extra number in versionNums.
+			 * At this point, we know matchNumbers is a sequence of numbers (no wildcard/plus symbol). It is later than or matches versionNumbers iff there is no extra number in versionNums.
 			 */
 			return !versionNumsIterator.hasNext();
 		}
 
-		public boolean isEarlierOrMatches(PolicyVersion version)
+		public boolean isEarlierOrMatches(final PolicyVersion version)
 		{
 			final Iterator<Integer> versionNumsIterator = version.getNumberSequence().iterator();
 			final Iterator<Integer> matchNumsIterator = this.matchNumbers.iterator();
@@ -191,40 +181,38 @@ public class VersionPatterns
 				final int versionNum = versionNumsIterator.next();
 				switch (matchNum)
 				{
-					case PLUS:
-						// always matches everything from here
+				case PLUS:
+					// always matches everything from here
+					return true;
+				case WILDCARD:
+					if (versionNum != 0)
+					{
+						/*
+						 * We can find an earlier matching version (with any number < versionNum here).
+						 */
 						return true;
-					case WILDCARD:
-						if (versionNum != 0)
-						{
-							/*
-							 * We can find an earlier matching version (with any
-							 * number < versionNum here).
-							 */
-							return true;
-						}
+					}
 
-						// versionNum = 0. Result depends on the next numbers.
-						break;
-					default:
-						if (matchNum < versionNum)
-						{
-							return true;
-						}
+					// versionNum = 0. Result depends on the next numbers.
+					break;
+				default:
+					if (matchNum < versionNum)
+					{
+						return true;
+					}
 
-						if (matchNum > versionNum)
-						{
-							return false;
-						}
+					if (matchNum > versionNum)
+					{
+						return false;
+					}
 
-						// else same number, so go on
-						break;
+					// else same number, so go on
+					break;
 				}
 			}
 
 			/*
-			 * If there is no extra numbers in matchNumbers.length, it is
-			 * earlier or matches versionNums
+			 * If there is no extra numbers in matchNumbers.length, it is earlier or matches versionNums
 			 */
 			return !matchNumsIterator.hasNext();
 		}
@@ -232,23 +220,19 @@ public class VersionPatterns
 	}
 
 	/**
-	 * Creates a <code>VersionConstraints</code> with the three optional
-	 * constraint strings. Each of the three strings must conform to the
-	 * VersionMatchType type defined in the XACML schema. Any of the strings may
-	 * be null to specify that the given constraint is not used.
+	 * Creates a <code>VersionConstraints</code> with the three optional constraint strings. Each of the three strings must conform to the VersionMatchType type defined in the XACML schema. Any of the
+	 * strings may be null to specify that the given constraint is not used.
 	 * 
 	 * @param versionMatch
 	 *            matching expression for the version; or null if none
 	 * @param earliestMatch
-	 *            matching expression for the earliest acceptable version; or
-	 *            null if none
+	 *            matching expression for the earliest acceptable version; or null if none
 	 * @param latestMatch
-	 *            matching expression for the earliest acceptable version; or
-	 *            null if none
+	 *            matching expression for the earliest acceptable version; or null if none
 	 * @throws IllegalArgumentException
 	 *             if one of the match expressions is invalid
 	 */
-	public VersionPatterns(String versionMatch, String earliestMatch, String latestMatch) throws IllegalArgumentException
+	public VersionPatterns(final String versionMatch, final String earliestMatch, final String latestMatch) throws IllegalArgumentException
 	{
 		this.versionPattern = versionMatch == null ? null : new PolicyVersionPattern(versionMatch);
 		this.earliestVersionPattern = earliestMatch == null ? null : new PolicyVersionPattern(earliestMatch);
@@ -266,7 +250,8 @@ public class VersionPatterns
 			}
 		}
 
-		if (this.earliestVersionPattern != null && this.earliestVersionPattern.asLiteral != null && this.latestVersionPattern != null && this.latestVersionPattern.asLiteral != null && earliestVersionPattern.asLiteral.compareTo(latestVersionPattern.asLiteral) > 0)
+		if (this.earliestVersionPattern != null && this.earliestVersionPattern.asLiteral != null && this.latestVersionPattern != null && this.latestVersionPattern.asLiteral != null
+				&& earliestVersionPattern.asLiteral.compareTo(latestVersionPattern.asLiteral) > 0)
 		{
 			throw new IllegalArgumentException("EarliestVersion (literal) '" + earliestVersionPattern + "' > LatestVersion (literal) '" + latestVersionPattern + "'!");
 		}
@@ -280,7 +265,8 @@ public class VersionPatterns
 	@Override
 	public String toString()
 	{
-		return String.format("Version=%s,EarliestVersion=%s,LatestVersion=%s", (versionPattern == null) ? "*" : versionPattern, (earliestVersionPattern == null) ? "*" : earliestVersionPattern, (latestVersionPattern == null) ? "*" : latestVersionPattern);
+		return String.format("Version=%s,EarliestVersion=%s,LatestVersion=%s", (versionPattern == null) ? "*" : versionPattern, (earliestVersionPattern == null) ? "*" : earliestVersionPattern,
+				(latestVersionPattern == null) ? "*" : latestVersionPattern);
 	}
 
 	/**
@@ -290,7 +276,7 @@ public class VersionPatterns
 	 *            input version to be checked
 	 * @return true iff LatestVersion matched
 	 */
-	public boolean matchLatestVersion(PolicyVersion version)
+	public boolean matchLatestVersion(final PolicyVersion version)
 	{
 		return latestVersionPattern == null || latestVersionPattern.isLaterOrMatches(version);
 	}
@@ -302,7 +288,7 @@ public class VersionPatterns
 	 *            input version to be checked
 	 * @return true iff EarliestVersion matched
 	 */
-	public boolean matchEarliestVersion(PolicyVersion version)
+	public boolean matchEarliestVersion(final PolicyVersion version)
 	{
 		return earliestVersionPattern == null || earliestVersionPattern.isEarlierOrMatches(version);
 	}
@@ -314,7 +300,7 @@ public class VersionPatterns
 	 *            input version to be checked
 	 * @return true iff Version matched
 	 */
-	public boolean matchVersion(PolicyVersion version)
+	public boolean matchVersion(final PolicyVersion version)
 	{
 		return versionPattern == null || versionPattern.matches(version);
 	}
@@ -330,8 +316,7 @@ public class VersionPatterns
 	}
 
 	/**
-	 * Get EarliestVersion pattern: matching expression for the earliest
-	 * acceptable version
+	 * Get EarliestVersion pattern: matching expression for the earliest acceptable version
 	 * 
 	 * @return EarliestVersion to be matched
 	 */
@@ -341,8 +326,7 @@ public class VersionPatterns
 	}
 
 	/**
-	 * Get LatestVersion pattern: matching expression for the latest acceptable
-	 * version
+	 * Get LatestVersion pattern: matching expression for the latest acceptable version
 	 * 
 	 * @return LatestVersion to be matched
 	 */

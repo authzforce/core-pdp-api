@@ -44,7 +44,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 	 * @param value
 	 *            the <code>byte []</code> value to be represented
 	 */
-	public HexBinaryValue(byte[] value)
+	public HexBinaryValue(final byte[] value)
 	{
 		super(TYPE_URI, value);
 	}
@@ -57,7 +57,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation of xs:hexBinary
 	 */
-	public HexBinaryValue(String val) throws IllegalArgumentException
+	public HexBinaryValue(final String val) throws IllegalArgumentException
 	{
 		this(DatatypeConverter.parseHexBinary(val));
 	}
@@ -76,7 +76,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

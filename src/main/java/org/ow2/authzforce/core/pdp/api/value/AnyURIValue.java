@@ -74,7 +74,7 @@ public final class AnyURIValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for xs:anyURI
 	 */
-	public AnyURIValue(String value) throws IllegalArgumentException
+	public AnyURIValue(final String value) throws IllegalArgumentException
 	{
 		super(TYPE_URI, value);
 	}

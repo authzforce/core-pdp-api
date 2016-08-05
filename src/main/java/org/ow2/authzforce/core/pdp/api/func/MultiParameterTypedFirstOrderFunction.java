@@ -50,7 +50,7 @@ public abstract class MultiParameterTypedFirstOrderFunction<RETURN_T extends Val
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.size() < 2 })
 	 * 
 	 */
-	public MultiParameterTypedFirstOrderFunction(String name, Datatype<RETURN_T> returnType, boolean varargs, List<? extends Datatype<?>> parameterTypes)
+	public MultiParameterTypedFirstOrderFunction(final String name, final Datatype<RETURN_T> returnType, final boolean varargs, final List<? extends Datatype<?>> parameterTypes)
 	{
 		super(name);
 		this.functionSignature = new MultiParameterTypedFirstOrderFunctionSignature<>(name, returnType, varargs, parameterTypes);

@@ -47,7 +47,8 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 	 * @throws IllegalArgumentException
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.size() < 2 })
 	 */
-	MultiParameterTypedFirstOrderFunctionSignature(String name, Datatype<RETURN> returnType, boolean varArgs, List<? extends Datatype<?>> parameterTypes) throws IllegalArgumentException
+	MultiParameterTypedFirstOrderFunctionSignature(final String name, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends Datatype<?>> parameterTypes)
+			throws IllegalArgumentException
 	{
 		super(name, returnType, varArgs);
 		if (parameterTypes == null)
@@ -86,7 +87,7 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

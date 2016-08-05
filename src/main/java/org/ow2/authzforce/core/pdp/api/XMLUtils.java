@@ -74,7 +74,7 @@ public final class XMLUtils
 		try
 		{
 			SAXON_PROCESSOR = new Processor(new StreamSource(saxonConfURL.toString()));
-		} catch (SaxonApiException e)
+		} catch (final SaxonApiException e)
 		{
 			throw new RuntimeException("Error loading Saxon processor from configuration file at this location: " + SAXON_CONFIGURATION_CLASSPATH_LOCATION, e);
 		}
@@ -99,7 +99,7 @@ public final class XMLUtils
 	private static final IllegalArgumentException NULL_NAMESPACE_PREFIX_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace prefix in namespace prefix-URI mappings");
 	private static final IllegalArgumentException NULL_NAMESPACE_URI_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace URI in namespace prefix-URI mappings");
 
-	private static XPathCompiler newXPathCompiler(XPATHVersion xpathVersion) throws IllegalArgumentException
+	private static XPathCompiler newXPathCompiler(final XPATHVersion xpathVersion) throws IllegalArgumentException
 	{
 		final XPathCompiler xpathCompiler = SAXON_PROCESSOR.newXPathCompiler();
 		xpathCompiler.setLanguageVersion(xpathVersion.getVersionNumber());
@@ -135,7 +135,7 @@ public final class XMLUtils
 	 * @throws IllegalArgumentException
 	 *             if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null
 	 */
-	public static XPathCompiler newXPathCompiler(String xpathVersionURI, Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
+	public static XPathCompiler newXPathCompiler(final String xpathVersionURI, final Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
 	{
 		if (namespaceURIsByPrefix == null || namespaceURIsByPrefix.isEmpty())
 		{
@@ -189,12 +189,12 @@ public final class XMLUtils
 		 * @throws IllegalArgumentException
 		 *             in case of invalid XPath
 		 */
-		public XPathEvaluator(String path, XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public XPathEvaluator(final String path, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			try
 			{
 				this.exec = xPathCompiler.compile(path);
-			} catch (SaxonApiException e)
+			} catch (final SaxonApiException e)
 			{
 				throw new IllegalArgumentException(this + ": Invalid XPath", e);
 			}
@@ -285,7 +285,7 @@ public final class XMLUtils
 		 * @param unmarshaller
 		 *            JAXB unmarshaller
 		 */
-		public SAXBasedNamespaceFilteringParser(Unmarshaller unmarshaller)
+		public SAXBasedNamespaceFilteringParser(final Unmarshaller unmarshaller)
 		{
 			final XMLReader xmlReader;
 			try
@@ -301,7 +301,7 @@ public final class XMLUtils
 			{
 
 				@Override
-				public void startPrefixMapping(String prefix, String uri) throws SAXException
+				public void startPrefixMapping(final String prefix, final String uri) throws SAXException
 				{
 					nsPrefixUriMap.put(prefix, uri);
 					super.startPrefixMapping(prefix, uri);
@@ -314,7 +314,7 @@ public final class XMLUtils
 		}
 
 		@Override
-		public Object parse(InputSource input) throws JAXBException
+		public Object parse(final InputSource input) throws JAXBException
 		{
 			if (input == null)
 			{
@@ -334,7 +334,7 @@ public final class XMLUtils
 		}
 
 		@Override
-		public Object parse(URL url) throws JAXBException
+		public Object parse(final URL url) throws JAXBException
 		{
 			if (url == null)
 			{
@@ -367,7 +367,7 @@ public final class XMLUtils
 		 * @param unmarshaller
 		 *            JAXB unmarshaller
 		 */
-		public NoNamespaceFilteringParser(Unmarshaller unmarshaller)
+		public NoNamespaceFilteringParser(final Unmarshaller unmarshaller)
 		{
 			this.unmarshaller = unmarshaller;
 		}
@@ -378,13 +378,13 @@ public final class XMLUtils
 		 * @see org.ow2.authzforce.core.NamespaceFilteringParser#parse(org.xml.sax.InputSource)
 		 */
 		@Override
-		public Object parse(InputSource input) throws JAXBException
+		public Object parse(final InputSource input) throws JAXBException
 		{
 			return this.unmarshaller.unmarshal(input);
 		}
 
 		@Override
-		public Object parse(URL url) throws JAXBException
+		public Object parse(final URL url) throws JAXBException
 		{
 			return this.unmarshaller.unmarshal(url);
 		}

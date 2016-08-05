@@ -42,7 +42,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code date} is not a valid string representation of xs:date
 	 */
-	public DateValue(String date) throws IllegalArgumentException
+	public DateValue(final String date) throws IllegalArgumentException
 	{
 		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(date));
 	}
@@ -55,7 +55,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 * @throws IllegalArgumentException
 	 *             if {@code date == null}
 	 */
-	private DateValue(XMLGregorianCalendar date) throws IllegalArgumentException
+	private DateValue(final XMLGregorianCalendar date) throws IllegalArgumentException
 	{
 		super(TYPE_URI, date, DatatypeConstants.DATE);
 	}
@@ -70,7 +70,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code calendar == null}
 	 */
-	public static DateValue getInstance(XMLGregorianCalendar calendar) throws IllegalArgumentException
+	public static DateValue getInstance(final XMLGregorianCalendar calendar) throws IllegalArgumentException
 	{
 		// we only want the date, so unset time fields
 		calendar.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
@@ -79,7 +79,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 
 	/** {@inheritDoc} */
 	@Override
-	public DateValue add(DurationValue<?> durationVal)
+	public DateValue add(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue());
@@ -88,7 +88,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 
 	/** {@inheritDoc} */
 	@Override
-	public DateValue subtract(DurationValue<?> durationVal)
+	public DateValue subtract(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue().negate());

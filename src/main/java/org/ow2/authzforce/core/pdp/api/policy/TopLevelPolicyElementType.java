@@ -24,19 +24,20 @@ package org.ow2.authzforce.core.pdp.api.policy;
  */
 public enum TopLevelPolicyElementType
 {
-	 /**
+	/**
 	 * Policy
 	 */
-	POLICY("Policy"), 
-	
+	POLICY("Policy"),
+
 	/**
-	 * PolicySet 
+	 * PolicySet
 	 */
 	POLICY_SET("PolicySet");
-	
+
 	private final String toString;
 
-	TopLevelPolicyElementType(String displayName) {
+	TopLevelPolicyElementType(final String displayName)
+	{
 		this.toString = displayName;
 	}
 

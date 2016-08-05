@@ -46,7 +46,7 @@ public abstract class DurationValue<DAV extends DurationValue<DAV>> extends Simp
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation for this datatype
 	 */
-	public DurationValue(String datatypeId, Duration duration) throws IllegalArgumentException
+	public DurationValue(final String datatypeId, final Duration duration) throws IllegalArgumentException
 	{
 		super(datatypeId, duration);
 	}
@@ -60,7 +60,7 @@ public abstract class DurationValue<DAV extends DurationValue<DAV>> extends Simp
 	 * @throws org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException
 	 *             if and only if result is {@link javax.xml.datatype.DatatypeConstants#INDETERMINATE}
 	 */
-	public final int compare(DAV o) throws IndeterminateEvaluationException
+	public final int compare(final DAV o) throws IndeterminateEvaluationException
 	{
 		final int result = this.value.compare(o.value);
 		if (result == DatatypeConstants.INDETERMINATE)

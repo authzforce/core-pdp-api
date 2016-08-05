@@ -46,7 +46,7 @@ public final class Base64BinaryValue extends SimpleValue<byte[]>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation for this value datatype
 	 */
-	public Base64BinaryValue(String val) throws IllegalArgumentException
+	public Base64BinaryValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, DatatypeConverter.parseBase64Binary(val));
 	}
@@ -65,7 +65,7 @@ public final class Base64BinaryValue extends SimpleValue<byte[]>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

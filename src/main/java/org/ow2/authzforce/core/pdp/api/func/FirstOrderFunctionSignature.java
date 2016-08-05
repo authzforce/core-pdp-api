@@ -96,7 +96,7 @@ public abstract class FirstOrderFunctionSignature<RETURN_T extends Value>
 	 * @throws IllegalArgumentException
 	 *             if ( {@code name == null || returnType == null })
 	 */
-	protected FirstOrderFunctionSignature(String name, Datatype<RETURN_T> returnType, boolean varArgs) throws IllegalArgumentException
+	protected FirstOrderFunctionSignature(final String name, final Datatype<RETURN_T> returnType, final boolean varArgs) throws IllegalArgumentException
 	{
 		if (name == null)
 		{

@@ -73,7 +73,7 @@ public final class AttributeGUID
 	 * @param attrDes
 	 *            attribute designator
 	 */
-	public AttributeGUID(AttributeDesignatorType attrDes)
+	public AttributeGUID(final AttributeDesignatorType attrDes)
 	{
 		this(attrDes.getCategory(), attrDes.getIssuer(), attrDes.getAttributeId());
 	}
@@ -88,7 +88,7 @@ public final class AttributeGUID
 	 * @param attrId
 	 *            (non-null)
 	 */
-	public AttributeGUID(String attrCat, String attrIssuer, String attrId)
+	public AttributeGUID(final String attrCat, final String attrIssuer, final String attrId)
 	{
 		if (attrCat == null || attrId == null)
 		{
@@ -122,7 +122,7 @@ public final class AttributeGUID
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

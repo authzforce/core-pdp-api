@@ -48,7 +48,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 		return this.functionId;
 	}
 
-	protected BaseFunction(String functionId)
+	protected BaseFunction(final String functionId)
 	{
 		this.functionId = functionId;
 		this.indeterminateArgMessagePrefix = "Function " + functionId + ": Indeterminate arg #";
@@ -67,7 +67,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	}
 
 	@Override
-	public final RETURN_T evaluate(EvaluationContext context) throws IndeterminateEvaluationException
+	public final RETURN_T evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		// Expression#evaluate()
 		/*
@@ -93,7 +93,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	}
 
 	@Override
-	public final boolean equals(Object obj)
+	public final boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{
@@ -117,7 +117,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	 *            function argument index (#x) that could not be determined
 	 * @return "Indeterminate arg#x" exception
 	 */
-	public final String getIndeterminateArgMessage(int argIndex)
+	public final String getIndeterminateArgMessage(final int argIndex)
 	{
 		return indeterminateArgMessagePrefix + argIndex;
 	}
@@ -129,7 +129,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	 *            function argument index (#x) that could not be determined
 	 * @return "Indeterminate arg#x" exception
 	 */
-	public final IndeterminateEvaluationException getIndeterminateArgException(int argIndex)
+	public final IndeterminateEvaluationException getIndeterminateArgException(final int argIndex)
 	{
 		return new IndeterminateEvaluationException(getIndeterminateArgMessage(argIndex), StatusHelper.STATUS_PROCESSING_ERROR);
 	}

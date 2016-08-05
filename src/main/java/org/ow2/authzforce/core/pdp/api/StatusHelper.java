@@ -70,7 +70,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * @param message
 	 *            status message
 	 */
-	public StatusHelper(String code, String message)
+	public StatusHelper(final String code, final String message)
 	{
 		this(Collections.singletonList(code), message, null);
 	}
@@ -83,7 +83,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * @param message
 	 *            a message to include with the code
 	 */
-	public StatusHelper(List<String> codes, String message)
+	public StatusHelper(final List<String> codes, final String message)
 	{
 		this(codes, message, null);
 	}
@@ -102,7 +102,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * @throws IllegalArgumentException
 	 *             if detail is included for a status code that doesn't allow detail
 	 */
-	public StatusHelper(List<String> codes, String message, StatusDetail detail) throws IllegalArgumentException
+	public StatusHelper(final List<String> codes, final String message, final StatusDetail detail) throws IllegalArgumentException
 	{
 		if (codes == null)
 		{
@@ -138,7 +138,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * @param depth
 	 * @return
 	 */
-	private static StatusCode stringsToStatusCode(Iterator<String> codesIterator, int depth)
+	private static StatusCode stringsToStatusCode(final Iterator<String> codesIterator, final int depth)
 	{
 		if (!codesIterator.hasNext())
 		{

@@ -73,8 +73,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private final static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(List<? extends Expression<?>> args, EvaluationContext context, Datatype<AV> argReturnType, Deque<AV> resultsToUpdate)
-			throws IndeterminateEvaluationException
+	private final static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Datatype<AV> argReturnType,
+			final Deque<AV> resultsToUpdate) throws IndeterminateEvaluationException
 	{
 		assert args != null;
 		final Deque<AV> results = resultsToUpdate == null ? new ArrayDeque<AV>() : resultsToUpdate;
@@ -89,7 +89,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 			try
 			{
 				argVal = Expressions.eval(arg, context, argReturnType);
-			} catch (IndeterminateEvaluationException e)
+			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), StatusHelper.STATUS_PROCESSING_ERROR, e);
 			}
@@ -115,7 +115,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private final static Deque<AttributeValue> evalPrimitiveArgs(List<? extends Expression<?>> args, EvaluationContext context, Deque<AttributeValue> resultsToUpdate)
+	private final static Deque<AttributeValue> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Deque<AttributeValue> resultsToUpdate)
 			throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -131,7 +131,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 			try
 			{
 				argVal = Expressions.evalPrimitive(arg, context);
-			} catch (IndeterminateEvaluationException e)
+			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), StatusHelper.STATUS_PROCESSING_ERROR, e);
 			}
@@ -142,8 +142,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		return results;
 	}
 
-	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(List<Expression<?>> args, EvaluationContext context, Datatype<Bag<AV>> argReturnType, Bag<AV>[] results)
-			throws IndeterminateEvaluationException
+	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType,
+			final Bag<AV>[] results) throws IndeterminateEvaluationException
 	{
 		assert args != null;
 
@@ -169,7 +169,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 			try
 			{
 				argResult = Expressions.eval(arg, context, argReturnType);
-			} catch (IndeterminateEvaluationException e)
+			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, StatusHelper.STATUS_PROCESSING_ERROR, e);
 			}
@@ -181,14 +181,14 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		return results;
 	}
 
-	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(List<Expression<?>> args, EvaluationContext context, Datatype<Bag<AV>> argReturnType)
+	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType)
 			throws IndeterminateEvaluationException
 	{
 		final Bag<AV>[] results = (Bag<AV>[]) Array.newInstance(argReturnType.getValueClass(), args.size());
 		return evalBagArgs(args, context, argReturnType, results);
 	}
 
-	private static final void checkArgType(Datatype<?> argType, int argIndex, Datatype<?> expectedType, String funcId) throws IllegalArgumentException
+	private static final void checkArgType(final Datatype<?> argType, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
 	{
 		if (!argType.equals(expectedType))
 		{
@@ -196,7 +196,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		}
 	}
 
-	private static final void checkArgType(AttributeValue arg, int argIndex, Datatype<?> expectedType, String funcId) throws IllegalArgumentException
+	private static final void checkArgType(final AttributeValue arg, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
 	{
 		if (!arg.getClass().equals(expectedType.getValueClass()))
 		{
@@ -213,7 +213,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	{
 
 		@Override
-		public void check(int requestTimeArgCount) throws IndeterminateEvaluationException
+		public void check(final int requestTimeArgCount) throws IndeterminateEvaluationException
 		{
 			// null checker does nothing, just there for polymorphism
 		}
@@ -225,14 +225,14 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		private final int minRequestTimeArgCount;
 		private final String funcDesc;
 
-		private DefaultRequestTimeArgCountChecker(String functionDescription, int minRequestTimeArgCount)
+		private DefaultRequestTimeArgCountChecker(final String functionDescription, final int minRequestTimeArgCount)
 		{
 			this.minRequestTimeArgCount = minRequestTimeArgCount;
 			this.funcDesc = functionDescription;
 		}
 
 		@Override
-		public void check(int requestTimeArgCount) throws IndeterminateEvaluationException
+		public void check(final int requestTimeArgCount) throws IndeterminateEvaluationException
 		{
 			if (requestTimeArgCount < minRequestTimeArgCount)
 			{
@@ -263,7 +263,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @throws IllegalArgumentException
 	 *             if inputs are invalid for this function or one of <code>remainingArgTypes</code> is a bag type.
 	 */
-	public FirstOrderFunctionCall(FirstOrderFunctionSignature<RETURN> functionSig, List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+	public FirstOrderFunctionCall(final FirstOrderFunctionSignature<RETURN> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
+			throws IllegalArgumentException
 	{
 		this.funcId = functionSig.name;
 		final List<? extends Datatype<?>> paramTypes = functionSig.getParameterTypes();
@@ -366,7 +367,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @see com.thalesgroup.authzforce.core.func.FunctionCall#evaluate(com.thalesgroup.authzforce .core.test.EvaluationCtx)
 	 */
 	@Override
-	public final RETURN evaluate(EvaluationContext context) throws IndeterminateEvaluationException
+	public final RETURN evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		return evaluate(context, (AttributeValue[]) null);
 	}
@@ -386,7 +387,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 	 * @throws IndeterminateEvaluationException
 	 *             if <code>checkremainingArgTypes = true</code> and <code>remainingArgs</code> do not check OK, or if they do but there was an error evaluating the function with such arguments
 	 */
-	public final RETURN evaluate(EvaluationContext context, boolean checkRemainingArgTypes, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+	public final RETURN evaluate(final EvaluationContext context, final boolean checkRemainingArgTypes, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 	{
 		if (checkRemainingArgTypes)
 		{
@@ -449,7 +450,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerEval(FirstOrderFunctionSignature<RETURN_T> functionSignature, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+		protected EagerEval(final FirstOrderFunctionSignature<RETURN_T> functionSignature, final List<Expression<?>> args, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSignature, args, remainingArgTypes);
 			final List<? extends Datatype<?>> paramTypes = functionSignature.getParameterTypes();
@@ -557,7 +558,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerMultiPrimitiveTypeEval(FirstOrderFunctionSignature<RETURN_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+		protected EagerMultiPrimitiveTypeEval(final FirstOrderFunctionSignature<RETURN_T> functionSig, final List<Expression<?>> args, final Datatype<?>... remainingArgTypes)
+				throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
 		}
@@ -579,7 +581,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @see com.thalesgroup.authzforce.core.func.FirstOrderFunctionCall#evaluate(com.thalesgroup. authzforce .core.test.EvaluationCtx , com.thalesgroup.authzforce.core.datatypes.AttributeValue[])
 		 */
 		@Override
-		public final RETURN_T evaluate(EvaluationContext context, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final Deque<AttributeValue> finalArgs = new ArrayDeque<>(totalArgCount);
 			if (argExpressions != null)
@@ -587,7 +589,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 				try
 				{
 					evalPrimitiveArgs(argExpressions, context, finalArgs);
-				} catch (IndeterminateEvaluationException e)
+				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
@@ -639,8 +641,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
-		protected EagerSinglePrimitiveTypeEval(SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, PARAM_T> functionSig, List<Expression<?>> args, Datatype<?>... remainingArgTypes)
-				throws IllegalArgumentException
+		protected EagerSinglePrimitiveTypeEval(final SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, PARAM_T> functionSig, final List<Expression<?>> args,
+				final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
 
@@ -665,7 +667,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @see com.thalesgroup.authzforce.core.func.FirstOrderFunctionCall#evaluate(com.thalesgroup. authzforce .core.test.EvaluationCtx , com.thalesgroup.authzforce.core.datatypes.AttributeValue[])
 		 */
 		@Override
-		public final RETURN_T evaluate(EvaluationContext context, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final Deque<PARAM_T> finalArgs = new ArrayDeque<>(totalArgCount);
 			if (argExpressions != null)
@@ -673,7 +675,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 				try
 				{
 					evalPrimitiveArgs(argExpressions, context, parameterType, finalArgs);
-				} catch (IndeterminateEvaluationException e)
+				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
@@ -689,7 +691,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 					try
 					{
 						finalArgs.add(parameterClass.cast(remainingArg));
-					} catch (ClassCastException e)
+					} catch (final ClassCastException e)
 					{
 						throw new IndeterminateEvaluationException("Function " + this.functionId + ": Type of arg #" + finalArgs.size() + " not valid: " + remainingArg.getDataType() + ". Required: "
 								+ parameterType + ".", StatusHelper.STATUS_PROCESSING_ERROR);
@@ -728,7 +730,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		 * @param args
 		 *            arguments' Expressions
 		 */
-		protected EagerBagEval(SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, List<Expression<?>> args) throws IllegalArgumentException
+		protected EagerBagEval(final SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, Bag<PARAM_BAG_ELEMENT_T>> functionSig, final List<Expression<?>> args) throws IllegalArgumentException
 		{
 			super(functionSig, args);
 			if (argExpressions == null)
@@ -756,7 +758,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		protected abstract RETURN_T evaluate(Bag<PARAM_BAG_ELEMENT_T>[] bagArgs) throws IndeterminateEvaluationException;
 
 		@Override
-		public RETURN_T evaluate(EvaluationContext context, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 
 			/*
@@ -772,7 +774,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 			{
 				bagArgs = evalBagArgs(argExpressions, context, paramBagType);
 
-			} catch (IndeterminateEvaluationException e)
+			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
 			}
@@ -802,8 +804,8 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		private final Datatype<PRIMITIVE_PARAM_T> primitiveParamType;
 		private final Class<PRIMITIVE_PARAM_T[]> primitiveParamArrayClass;
 
-		protected EagerPartlyBagEval(FirstOrderFunctionSignature<RETURN_T> functionSig, BagDatatype<PRIMITIVE_PARAM_T> bagParamType, Class<PRIMITIVE_PARAM_T[]> primitiveArrayClass,
-				List<Expression<?>> args, Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
+		protected EagerPartlyBagEval(final FirstOrderFunctionSignature<RETURN_T> functionSig, final BagDatatype<PRIMITIVE_PARAM_T> bagParamType, final Class<PRIMITIVE_PARAM_T[]> primitiveArrayClass,
+				final List<Expression<?>> args, final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
 			super(functionSig, args, remainingArgTypes);
 			if (argExpressions == null || (numOfArgExpressions = argExpressions.size()) <= numOfSameTypePrimitiveParamsBeforeBag)
@@ -828,7 +830,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 		protected abstract RETURN_T evaluate(Deque<PRIMITIVE_PARAM_T> primArgsBeforeBag, Bag<PRIMITIVE_PARAM_T>[] bagArgs, PRIMITIVE_PARAM_T[] remainingArgs) throws IndeterminateEvaluationException;
 
 		@Override
-		public final RETURN_T evaluate(EvaluationContext context, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			/*
 			 * We checked in constructor that argExpressions.size > numOfSameTypePrimitiveParamsBeforeBag
@@ -839,7 +841,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 			{
 				primArgsBeforeBag = evalPrimitiveArgs(argExpressions.subList(0, numOfSameTypePrimitiveParamsBeforeBag), context, primitiveParamType, null);
 				bagArgs = evalBagArgs(argExpressions.subList(numOfSameTypePrimitiveParamsBeforeBag, numOfArgExpressions), context, bagParamType);
-			} catch (IndeterminateEvaluationException e)
+			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
 			}
@@ -853,7 +855,7 @@ public abstract class FirstOrderFunctionCall<RETURN extends Value> implements Fu
 				try
 				{
 					castRemainingArgs = primitiveParamArrayClass.cast(remainingArgs);
-				} catch (ClassCastException e)
+				} catch (final ClassCastException e)
 				{
 					throw new IndeterminateEvaluationException("Function " + functionId + ": Type of request-time args (# >= " + argExpressions.size() + ") not valid: "
 							+ remainingArgs.getClass().getComponentType() + ". Required: " + primitiveParamType + ".", StatusHelper.STATUS_PROCESSING_ERROR);

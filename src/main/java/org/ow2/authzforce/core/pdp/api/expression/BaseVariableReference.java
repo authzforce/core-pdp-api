@@ -82,7 +82,7 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 	 *            longest chain of VariableReference Reference in <code>expr</code> (V1 -> V2 -> ... -> Vn, where "V1 -> V2" means VariableReference V1's expression contains one or more
 	 *            VariableReferences to V2)
 	 */
-	public BaseVariableReference(String varId, Expression<V> varExpr, Deque<String> longestVarRefChain)
+	public BaseVariableReference(final String varId, final Expression<V> varExpr, final Deque<String> longestVarRefChain)
 	{
 		this.variableId = varId;
 		this.expression = varExpr;
@@ -96,7 +96,7 @@ public class BaseVariableReference<V extends Value> implements VariableReference
 	 * this will throw an exception.
 	 */
 	@Override
-	public V evaluate(EvaluationContext context) throws IndeterminateEvaluationException
+	public V evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		/*
 		 * Even if context == null, evaluation may work because expression may be static/constant (e.g. AttributeValue or Apply on AttributeValues). This is called static evaluation and is used for

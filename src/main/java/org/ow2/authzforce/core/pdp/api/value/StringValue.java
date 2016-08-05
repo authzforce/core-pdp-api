@@ -47,7 +47,7 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation of xsd:string
 	 */
-	public static StringValue parse(String val) throws IllegalArgumentException
+	public static StringValue parse(final String val) throws IllegalArgumentException
 	{
 		return new StringValue(DatatypeConverter.parseString(val));
 	}
@@ -59,14 +59,14 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 * @param validXsdString
 	 *            A string containing a valid lexical representation of xsd:string
 	 */
-	public StringValue(String validXsdString)
+	public StringValue(final String validXsdString)
 	{
 		super(TYPE_URI, validXsdString);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int compareTo(StringValue o)
+	public int compareTo(final StringValue o)
 	{
 		return this.value.compareTo(o.value);
 	}
@@ -78,13 +78,15 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 *            other value to be compared against
 	 * @return true if the other attribute value is not null and it represents an equivalent String ignoring case; false otherwise
 	 */
-	public boolean equalsIgnoreCase(StringValue other)
+	public boolean equalsIgnoreCase(final StringValue other)
 	{
 		return this.value.equalsIgnoreCase(other.value);
 	}
 
 	/**
-	 * <p>trim</p>
+	 * <p>
+	 * trim
+	 * </p>
 	 *
 	 * @see String#trim()
 	 * @return StringAttributeValue with value resulting from <code>value.trim()</code>
@@ -97,14 +99,16 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	}
 
 	/**
-	 * <p>toLowerCase</p>
+	 * <p>
+	 * toLowerCase
+	 * </p>
 	 *
 	 * @see String#toLowerCase(Locale)
 	 * @param locale
 	 *            Locale
 	 * @return StringAttributeValue with value resulting from <code>value.toLowerCase(L)</code>
 	 */
-	public StringValue toLowerCase(Locale locale)
+	public StringValue toLowerCase(final Locale locale)
 	{
 		final String result = value.toLowerCase(locale);
 		// if the value is same as result, return itself, else return new value from result
@@ -118,7 +122,7 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 *            boolean
 	 * @return string equivalent ("true" or "false")
 	 */
-	public static StringValue getInstance(Boolean value)
+	public static StringValue getInstance(final Boolean value)
 	{
 		return value ? TRUE : FALSE;
 	}
@@ -130,7 +134,7 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 *            boolean
 	 * @return string equivalent ("true" or "false")
 	 */
-	public static StringValue getInstance(BooleanValue value)
+	public static StringValue getInstance(final BooleanValue value)
 	{
 		return value == BooleanValue.TRUE ? TRUE : FALSE;
 	}

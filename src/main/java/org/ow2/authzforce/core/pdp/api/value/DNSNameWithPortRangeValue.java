@@ -80,13 +80,13 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * 
 	 * TODO: find out whether it's better to use DomainValidator from Apache commons-validator instead, but first make sure this issue is fixed: https://issues.apache.org/jira/browse/VALIDATOR-366
 	 */
-	private static boolean isValidHostName(String hostname)
+	private static boolean isValidHostName(final String hostname)
 	{
 		assert hostname != null;
 		return HOSTNAME_PATTERN.matcher(hostname).matches();
 	}
 
-	private static Entry<String, NetworkPortRange> parseDnsName(String dnsName) throws IllegalArgumentException
+	private static Entry<String, NetworkPortRange> parseDnsName(final String dnsName) throws IllegalArgumentException
 	{
 		assert dnsName != null;
 
@@ -123,7 +123,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if format of {@code val} does not comply with the dnsName datatype definition
 	 */
-	public DNSNameWithPortRangeValue(String val) throws IllegalArgumentException
+	public DNSNameWithPortRangeValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
 		final Entry<String, NetworkPortRange> hostAndPortRange = parseDnsName(this.value);
@@ -186,7 +186,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{

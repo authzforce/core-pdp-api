@@ -25,8 +25,8 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * Superclass of "first-order" functions of single-type parameters, i.e. whose all parameters have the same datatype. Supplies several useful methods, making it easier to implement such
- * "first-order" function.
+ * Superclass of "first-order" functions of single-type parameters, i.e. whose all parameters have the same datatype. Supplies several useful methods, making it easier to implement such "first-order"
+ * function.
  * 
  * @param <RETURN_T>
  *            function return type
@@ -52,7 +52,8 @@ public abstract class SingleParameterTypedFirstOrderFunction<RETURN_T extends Va
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.size() < 1 })
 	 * 
 	 */
-	public SingleParameterTypedFirstOrderFunction(String name, Datatype<RETURN_T> returnType, boolean varargs, List<? extends Datatype<PARAM_T>> parameterTypes) throws IllegalArgumentException
+	public SingleParameterTypedFirstOrderFunction(final String name, final Datatype<RETURN_T> returnType, final boolean varargs, final List<? extends Datatype<PARAM_T>> parameterTypes)
+			throws IllegalArgumentException
 	{
 		super(name);
 		this.functionSignature = new SingleParameterTypedFirstOrderFunctionSignature<>(name, returnType, varargs, parameterTypes);

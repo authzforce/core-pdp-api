@@ -52,7 +52,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public StringValue getInstance(String val)
+		public StringValue getInstance(final String val)
 		{
 			return StringValue.parse(val);
 		}
@@ -67,7 +67,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public BooleanValue getInstance(String val)
+		public BooleanValue getInstance(final String val)
 		{
 			return BooleanValue.getInstance(val);
 		}
@@ -82,7 +82,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public IntegerValue getInstance(String val)
+		public IntegerValue getInstance(final String val)
 		{
 			return new IntegerValue(val);
 		}
@@ -97,7 +97,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public DoubleValue getInstance(String val)
+		public DoubleValue getInstance(final String val)
 		{
 			return new DoubleValue(val);
 		}
@@ -112,7 +112,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public TimeValue getInstance(String val)
+		public TimeValue getInstance(final String val)
 		{
 			return new TimeValue(val);
 		}
@@ -127,7 +127,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public DateValue getInstance(String val)
+		public DateValue getInstance(final String val)
 		{
 			return new DateValue(val);
 		}
@@ -142,7 +142,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public DateTimeValue getInstance(String val)
+		public DateTimeValue getInstance(final String val)
 		{
 			return new DateTimeValue(val);
 		}
@@ -157,7 +157,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public AnyURIValue getInstance(String val)
+		public AnyURIValue getInstance(final String val)
 		{
 			return new AnyURIValue(val);
 		}
@@ -172,7 +172,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public HexBinaryValue getInstance(String val)
+		public HexBinaryValue getInstance(final String val)
 		{
 			return new HexBinaryValue(val);
 		}
@@ -186,7 +186,7 @@ public final class StandardDatatypes
 			URI.create(Function.XACML_NS_1_0 + "base64Binary"))
 	{
 		@Override
-		public Base64BinaryValue getInstance(String val)
+		public Base64BinaryValue getInstance(final String val)
 		{
 			return new Base64BinaryValue(val);
 		}
@@ -201,7 +201,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public X500NameValue getInstance(String val)
+		public X500NameValue getInstance(final String val)
 		{
 			return new X500NameValue(val);
 		}
@@ -216,7 +216,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public RFC822NameValue getInstance(String val)
+		public RFC822NameValue getInstance(final String val)
 		{
 			return new RFC822NameValue(val);
 		}
@@ -229,7 +229,7 @@ public final class StandardDatatypes
 			URI.create(Function.XACML_NS_2_0 + "ipAddress"))
 	{
 		@Override
-		public IPAddressValue getInstance(String value)
+		public IPAddressValue getInstance(final String value)
 		{
 			return new IPAddressValue(value);
 		}
@@ -244,7 +244,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public DNSNameWithPortRangeValue getInstance(String value)
+		public DNSNameWithPortRangeValue getInstance(final String value)
 		{
 			return new DNSNameWithPortRangeValue(value);
 		}
@@ -259,7 +259,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public DayTimeDurationValue getInstance(String val)
+		public DayTimeDurationValue getInstance(final String val)
 		{
 			return new DayTimeDurationValue(val);
 		}
@@ -274,7 +274,7 @@ public final class StandardDatatypes
 	{
 
 		@Override
-		public YearMonthDurationValue getInstance(String val)
+		public YearMonthDurationValue getInstance(final String val)
 		{
 			return new YearMonthDurationValue(val);
 		}
@@ -287,7 +287,7 @@ public final class StandardDatatypes
 	public static final SimpleValue.Factory<XPathValue> XPATH_FACTORY = new SimpleValue.Factory<XPathValue>(XPathValue.class, XPathValue.TYPE_URI, URI.create(Function.XACML_NS_3_0 + "xpath"))
 	{
 		@Override
-		public XPathValue getInstance(String value, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public XPathValue getInstance(final String value, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			return new XPathValue(value, otherXmlAttributes, xPathCompiler);
 		}

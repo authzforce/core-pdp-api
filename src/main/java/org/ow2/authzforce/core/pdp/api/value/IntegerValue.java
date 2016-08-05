@@ -61,7 +61,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 * @param val
 	 *            Java equivalent of xsd:integer
 	 */
-	public IntegerValue(BigInteger val)
+	public IntegerValue(final BigInteger val)
 	{
 		super(TYPE_URI, val);
 	}
@@ -75,7 +75,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 * @param val
 	 *            integer value as Java long
 	 */
-	public IntegerValue(long val)
+	public IntegerValue(final long val)
 	{
 		this(BigInteger.valueOf(val));
 	}
@@ -88,14 +88,14 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation of xs:integer
 	 */
-	public IntegerValue(String val) throws IllegalArgumentException
+	public IntegerValue(final String val) throws IllegalArgumentException
 	{
 		this(DatatypeConverter.parseInteger(val));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int compareTo(IntegerValue o)
+	public int compareTo(final IntegerValue o)
 	{
 		return this.value.compareTo(o.value);
 	}
@@ -109,7 +109,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 
 	/** {@inheritDoc} */
 	@Override
-	public IntegerValue add(Deque<IntegerValue> others)
+	public IntegerValue add(final Deque<IntegerValue> others)
 	{
 		BigInteger sum = value;
 		while (!others.isEmpty())
@@ -122,7 +122,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 
 	/** {@inheritDoc} */
 	@Override
-	public IntegerValue multiply(Deque<IntegerValue> others)
+	public IntegerValue multiply(final Deque<IntegerValue> others)
 	{
 		BigInteger product = value;
 		while (!others.isEmpty())
@@ -135,14 +135,14 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 
 	/** {@inheritDoc} */
 	@Override
-	public IntegerValue divide(IntegerValue divisor) throws ArithmeticException
+	public IntegerValue divide(final IntegerValue divisor) throws ArithmeticException
 	{
 		return new IntegerValue(value.divide(divisor.value));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public IntegerValue subtract(IntegerValue subtractedVal)
+	public IntegerValue subtract(final IntegerValue subtractedVal)
 	{
 		return new IntegerValue(value.subtract(subtractedVal.value));
 	}
@@ -156,7 +156,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 * @throws java.lang.ArithmeticException
 	 *             if divisor is zero
 	 */
-	public IntegerValue remainder(IntegerValue divisor) throws ArithmeticException
+	public IntegerValue remainder(final IntegerValue divisor) throws ArithmeticException
 	{
 		return new IntegerValue(value.remainder(divisor.value));
 	}
@@ -211,7 +211,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 * @throws java.lang.ArithmeticException
 	 *             if the value of this will not exactly fit in a int.
 	 */
-	public static int intValueExact(BigInteger val)
+	public static int intValueExact(final BigInteger val)
 	{
 		if (val.compareTo(MAX_INT_AS_BIGINT) == 1 || val.compareTo(MIN_INT_AS_BIGINT) == -1)
 		{

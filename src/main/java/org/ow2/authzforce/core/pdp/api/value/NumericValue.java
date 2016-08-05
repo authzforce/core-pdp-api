@@ -42,7 +42,7 @@ public abstract class NumericValue<N extends Number, NAV extends NumericValue<N,
 	 * @param val
 	 *            a N object.
 	 */
-	protected NumericValue(String datatypeId, N val)
+	protected NumericValue(final String datatypeId, final N val)
 	{
 		super(datatypeId, val);
 	}

@@ -105,7 +105,7 @@ public final class XPathValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for this value datatype
 	 */
-	public XPathValue(String xpath, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler) throws IllegalArgumentException
+	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
 		super(TYPE_URI, xpath);
 		this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
@@ -145,7 +145,7 @@ public final class XPathValue extends SimpleValue<String>
 	 * @throws org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException
 	 *             error evaluating the XPath expression
 	 */
-	public XdmValue evaluate(EvaluationContext context) throws IndeterminateEvaluationException
+	public XdmValue evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		if (context == null)
 		{
@@ -167,7 +167,7 @@ public final class XPathValue extends SimpleValue<String>
 		{
 			xpathSelector.setContextItem(contentNode);
 			return xpathSelector.evaluate();
-		} catch (SaxonApiException e)
+		} catch (final SaxonApiException e)
 		{
 			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, StatusHelper.STATUS_SYNTAX_ERROR, e);
 		}
@@ -193,7 +193,7 @@ public final class XPathValue extends SimpleValue<String>
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

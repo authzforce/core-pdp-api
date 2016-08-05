@@ -25,8 +25,8 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
  * 
- * Expression wrapper for constant values to be used as Expression, e.g. to be used as function argument. This is an alternative to {@link Value} extending
- * {@link Expression} directly, which would break the Acyclic Dependency principle since {@link Expression} already has a reference to {@link Value}.
+ * Expression wrapper for constant values to be used as Expression, e.g. to be used as function argument. This is an alternative to {@link Value} extending {@link Expression} directly, which would
+ * break the Acyclic Dependency principle since {@link Expression} already has a reference to {@link Value}.
  * 
  * @param <V>
  *            concrete value type
@@ -53,7 +53,7 @@ public abstract class ValueExpression<V extends Value> implements Expression<V>
 	 *             if {@code datatype == null || v == null}
 	 * 
 	 */
-	protected ValueExpression(Datatype<V> datatype, V v, boolean isStatic) throws IllegalArgumentException
+	protected ValueExpression(final Datatype<V> datatype, final V v, final boolean isStatic) throws IllegalArgumentException
 	{
 		if (datatype == null)
 		{
@@ -80,7 +80,7 @@ public abstract class ValueExpression<V extends Value> implements Expression<V>
 	 * Returns the value itself
 	 */
 	@Override
-	public final V evaluate(EvaluationContext context) throws IndeterminateEvaluationException
+	public final V evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		return this.value;
 	}

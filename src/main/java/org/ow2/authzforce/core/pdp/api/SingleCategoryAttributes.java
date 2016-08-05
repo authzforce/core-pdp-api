@@ -55,7 +55,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException("Cannot remove element via Immutable iterator");
 		private final Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator;
 
-		private MutableBagBasedImmutableIterator(Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator)
+		private MutableBagBasedImmutableIterator(final Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator)
 		{
 			this.mutableIterator = mutableIterator;
 		}
@@ -85,106 +85,106 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 * Attribute Iterator Converter for {@link MutableBag}
 	 */
 	public static final NamedAttributeIteratorConverter<MutableBag<?>> MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<MutableBag<?>>()
-	{
+			{
 
 		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> convert(Iterator<Entry<AttributeGUID, MutableBag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeGUID, Bag<?>>> convert(final Iterator<Entry<AttributeGUID, MutableBag<?>>> namedAttributeIterator)
 		{
 			return new MutableBagBasedImmutableIterator(namedAttributeIterator);
 		}
 
-	};
+			};
 
-	/**
-	 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity function/transformation)
-	 */
-	public static final NamedAttributeIteratorConverter<Bag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<Bag<?>>()
-	{
+			/**
+			 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity function/transformation)
+			 */
+			public static final NamedAttributeIteratorConverter<Bag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<Bag<?>>()
+					{
 
-		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> convert(Iterator<Entry<AttributeGUID, Bag<?>>> namedAttributeIterator)
-		{
-			return namedAttributeIterator;
-		}
+				@Override
+				public Iterator<Entry<AttributeGUID, Bag<?>>> convert(final Iterator<Entry<AttributeGUID, Bag<?>>> namedAttributeIterator)
+				{
+					return namedAttributeIterator;
+				}
 
-	};
+					};
 
-	private final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes;
+					private final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes;
 
-	private final Attributes attrsToIncludeInResult;
+					private final Attributes attrsToIncludeInResult;
 
-	/*
-	 * Corresponds to Attributes/Content marshalled to XPath data model for XPath evaluation (e.g. AttributeSelector or XPath-based evaluation). This is set to null if no Content provided or no
-	 * feature using XPath evaluation against Content is enabled.
-	 */
-	private final XdmNode extraContent;
+					/*
+					 * Corresponds to Attributes/Content marshalled to XPath data model for XPath evaluation (e.g. AttributeSelector or XPath-based evaluation). This is set to null if no Content provided or no
+					 * feature using XPath evaluation against Content is enabled.
+					 */
+					private final XdmNode extraContent;
 
-	private volatile boolean iteratorCalled = false;
+					private volatile boolean iteratorCalled = false;
 
-	private final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter;
+					private final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter;
 
-	/**
-	 * Instantiates this class
-	 * 
-	 * @param namedAttributes
-	 *            Named attributes (in the XACML sense) where each entry consists of the identifier of the attribute and its value bag
-	 * @param namedAttributeIteratorConverter
-	 *            converts the iterator of {@code namedAttributes} into constant-valued attribute iterator
-	 * @param attributesToIncludeInResult
-	 *            Attributes with only the Attribute elements to include in final Result (IncludeInResult = true in original XACML request) or null if there was none
-	 * @param extraContent
-	 *            Attributes/Content parsed into XPath data model for XPath evaluation
-	 */
-	public SingleCategoryAttributes(Set<Entry<AttributeGUID, AV_BAG>> namedAttributes, NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter, Attributes attributesToIncludeInResult,
-			XdmNode extraContent)
-	{
-		// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
-		if (namedAttributes == null || namedAttributes.isEmpty())
-		{
-			this.namedAttributes = Collections.emptySet();
-		} else
-		{
-			this.namedAttributes = namedAttributes;
-		}
+					/**
+					 * Instantiates this class
+					 * 
+					 * @param namedAttributes
+					 *            Named attributes (in the XACML sense) where each entry consists of the identifier of the attribute and its value bag
+					 * @param namedAttributeIteratorConverter
+					 *            converts the iterator of {@code namedAttributes} into constant-valued attribute iterator
+					 * @param attributesToIncludeInResult
+					 *            Attributes with only the Attribute elements to include in final Result (IncludeInResult = true in original XACML request) or null if there was none
+					 * @param extraContent
+					 *            Attributes/Content parsed into XPath data model for XPath evaluation
+					 */
+					public SingleCategoryAttributes(final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
+			final Attributes attributesToIncludeInResult, final XdmNode extraContent)
+					{
+						// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
+						if (namedAttributes == null || namedAttributes.isEmpty())
+						{
+							this.namedAttributes = Collections.emptySet();
+						} else
+						{
+							this.namedAttributes = namedAttributes;
+						}
 
-		this.namedAttributeIteratorConverter = namedAttributeIteratorConverter;
-		this.attrsToIncludeInResult = attributesToIncludeInResult;
-		this.extraContent = extraContent;
-	}
+						this.namedAttributeIteratorConverter = namedAttributeIteratorConverter;
+						this.attrsToIncludeInResult = attributesToIncludeInResult;
+						this.extraContent = extraContent;
+					}
 
-	/**
-	 * Gets the Content parsed into XPath data model for XPath evaluation; or null if no Content
-	 * 
-	 * @return the Content in XPath data model
-	 */
-	public XdmNode getExtraContent()
-	{
-		return extraContent;
-	}
+					/**
+					 * Gets the Content parsed into XPath data model for XPath evaluation; or null if no Content
+					 * 
+					 * @return the Content in XPath data model
+					 */
+					public XdmNode getExtraContent()
+					{
+						return extraContent;
+					}
 
-	/**
-	 * Get Attributes to include in the final Result (IncludeInResult = true in original XACML request)
-	 * 
-	 * @return the attributes to include in the final Result; null if nothing to include
-	 */
-	public Attributes getAttributesToIncludeInResult()
-	{
-		return attrsToIncludeInResult;
-	}
+					/**
+					 * Get Attributes to include in the final Result (IncludeInResult = true in original XACML request)
+					 * 
+					 * @return the attributes to include in the final Result; null if nothing to include
+					 */
+					public Attributes getAttributesToIncludeInResult()
+					{
+						return attrsToIncludeInResult;
+					}
 
-	@Override
-	public Iterator<Entry<AttributeGUID, Bag<?>>> iterator()
-	{
-		if (iteratorCalled)
-		{
-			throw UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION;
-		}
+					@Override
+					public Iterator<Entry<AttributeGUID, Bag<?>>> iterator()
+					{
+						if (iteratorCalled)
+						{
+							throw UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION;
+						}
 
-		if (namedAttributes.isEmpty())
-		{
-			return Collections.<Entry<AttributeGUID, Bag<?>>> emptyIterator();
-		}
+						if (namedAttributes.isEmpty())
+						{
+							return Collections.<Entry<AttributeGUID, Bag<?>>> emptyIterator();
+						}
 
-		return namedAttributeIteratorConverter.convert(this.namedAttributes.iterator());
-	}
+						return namedAttributeIteratorConverter.convert(this.namedAttributes.iterator());
+					}
 }

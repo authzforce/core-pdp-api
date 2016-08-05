@@ -46,13 +46,13 @@ public final class X500NameValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if value is not a valid XACML X500Name
 	 */
-	public X500NameValue(String value) throws IllegalArgumentException
+	public X500NameValue(final String value) throws IllegalArgumentException
 	{
 		super(TYPE_URI, value);
 		try
 		{
 			this.ldapName = new LdapName(value);
-		} catch (InvalidNameException e)
+		} catch (final InvalidNameException e)
 		{
 			throw new IllegalArgumentException("Invalid value (X.500 Name) for datatype: " + TYPE_URI, e);
 		}
@@ -65,7 +65,7 @@ public final class X500NameValue extends SimpleValue<String>
 	 *            the second argument
 	 * @return true if and only if this matches some terminal sequence of RDNs from the <code>other</other>'s value when compared using x500Name-equal.
 	 */
-	public boolean match(X500NameValue other)
+	public boolean match(final X500NameValue other)
 	{
 		/*
 		 * As the Javadoc says, "The right most RDN is at index 0, and the left most RDN is at index n-1. For example, the distinguished name: " CN=Steve Kille, O=Isode Limited, C=GB
@@ -89,7 +89,7 @@ public final class X500NameValue extends SimpleValue<String>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

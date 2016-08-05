@@ -57,7 +57,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		GREATER_THAN("-greater-than", new Checker()
 		{
 			@Override
-			public boolean check(int comparisonResult)
+			public boolean check(final int comparisonResult)
 			{
 				return comparisonResult > 0;
 			}
@@ -68,7 +68,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		GREATER_THAN_OR_EQUAL("-greater-than-or-equal", new Checker()
 		{
 			@Override
-			public boolean check(int comparisonResult)
+			public boolean check(final int comparisonResult)
 			{
 				return comparisonResult >= 0;
 			}
@@ -79,7 +79,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		LESS_THAN("-less-than", new Checker()
 		{
 			@Override
-			public boolean check(int comparisonResult)
+			public boolean check(final int comparisonResult)
 			{
 				return comparisonResult < 0;
 			}
@@ -90,7 +90,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		LESS_THAN_OR_EQUAL("-less-than-or-equal", new Checker()
 		{
 			@Override
-			public boolean check(int comparisonResult)
+			public boolean check(final int comparisonResult)
 			{
 				return comparisonResult <= 0;
 			}
@@ -99,13 +99,13 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		private final String functionSuffix;
 		private final Checker checker;
 
-		private PostCondition(String funcSuffix, Checker checker)
+		private PostCondition(final String funcSuffix, final Checker checker)
 		{
 			this.functionSuffix = funcSuffix;
 			this.checker = checker;
 		}
 
-		boolean isTrue(int comparisonResult)
+		boolean isTrue(final int comparisonResult)
 		{
 			return checker.check(comparisonResult);
 		}
@@ -128,20 +128,20 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		 * @param condition
 		 *            post-condition to hold true when comparing the result of <code>arg0.compareTo(arg1)</code> to zero; where compateTo() function is similar to {@link Comparable#compareTo(Object)}.
 		 */
-		private CallFactory(SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, V> functionSig, PostCondition postCondition)
+		private CallFactory(final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, V> functionSig, final PostCondition postCondition)
 		{
 			this.funcSig = functionSig;
 			this.postCondition = postCondition;
 			illegalComparisonMsgPrefix = "Function " + funcSig.getName() + ": cannot compare arguments: ";
 		}
 
-		private FirstOrderFunctionCall<BooleanValue> getInstance(List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
+		private FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
 			return new EagerSinglePrimitiveTypeEval<BooleanValue, V>(funcSig, argExpressions, remainingArgTypes)
-			{
+					{
 
 				@Override
-				protected BooleanValue evaluate(Deque<V> args) throws IndeterminateEvaluationException
+				protected BooleanValue evaluate(final Deque<V> args) throws IndeterminateEvaluationException
 				{
 					// Now that we have real values, perform the comparison operation
 					final V arg0 = args.poll();
@@ -150,7 +150,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 					try
 					{
 						comparResult = arg0.compareTo(arg1);
-					} catch (IllegalArgumentException e)
+					} catch (final IllegalArgumentException e)
 					{
 						// See BaseTimeValue#compareTo() for example of comparison throwing such exception
 						throw new IndeterminateEvaluationException(illegalComparisonMsgPrefix + arg0.getContent() + ", " + arg1.getContent(), StatusHelper.STATUS_PROCESSING_ERROR, e);
@@ -158,7 +158,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 					// Return the result as a BooleanAttributeValue.
 					return BooleanValue.valueOf(postCondition.isTrue(comparResult));
 				}
-			};
+					};
 		}
 
 	}
@@ -184,7 +184,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	 * @throws IllegalArgumentException
 	 *             if the function is unknown
 	 */
-	public ComparisonFunction(Datatype<AV> paramType, PostCondition postCondition)
+	public ComparisonFunction(final Datatype<AV> paramType, final PostCondition postCondition)
 	{
 		super(paramType.getFuncIdPrefix() + postCondition.functionSuffix, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, postCondition);
@@ -197,7 +197,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public FirstOrderFunctionCall<BooleanValue> newCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes)
+	public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
 	{
 		return funcCallFactory.getInstance(argExpressions, remainingArgTypes);
 	}

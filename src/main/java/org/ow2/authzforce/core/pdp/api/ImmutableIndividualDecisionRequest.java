@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+
+import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
  * Mutable Individual Decision Request
@@ -49,8 +49,8 @@ public class ImmutableIndividualDecisionRequest implements IndividualDecisionReq
 	 * @param returnPolicyIdList
 	 *            XACML Request's ReturnPolicyIdList flag
 	 */
-	public ImmutableIndividualDecisionRequest(Map<AttributeGUID, Bag<?>> namedAttributes, Map<String, XdmNode> extraContentNodesByCategory,
-			List<Attributes> includedInResult, boolean returnPolicyIdList)
+	public ImmutableIndividualDecisionRequest(final Map<AttributeGUID, Bag<?>> namedAttributes, final Map<String, XdmNode> extraContentNodesByCategory, final List<Attributes> includedInResult,
+			final boolean returnPolicyIdList)
 	{
 		// these maps/lists may be updated later by put(...) method defined in this class
 		attributes = namedAttributes == null ? null : Collections.unmodifiableMap(namedAttributes);
@@ -65,11 +65,10 @@ public class ImmutableIndividualDecisionRequest implements IndividualDecisionReq
 	 * @param baseRequest
 	 *            replicated existing request. Further changes to it are not reflected back to this new instance.
 	 */
-	public ImmutableIndividualDecisionRequest(IndividualDecisionRequest baseRequest)
+	public ImmutableIndividualDecisionRequest(final IndividualDecisionRequest baseRequest)
 	{
 		// these maps/lists may be updated later by put(...) method defined in this class
-		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(), baseRequest.getReturnedAttributes(), baseRequest
-				.isApplicablePolicyIdentifiersReturned());
+		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(), baseRequest.getReturnedAttributes(), baseRequest.isApplicablePolicyIdentifiersReturned());
 	}
 
 	/*

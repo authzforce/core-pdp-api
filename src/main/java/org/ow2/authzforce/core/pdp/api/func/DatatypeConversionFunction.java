@@ -73,31 +73,31 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 		private final SingleParameterTypedFirstOrderFunctionSignature<RETURN, PARAM> funcSig;
 		private final String invalidArgMsgPrefix;
 
-		private CallFactory(SingleParameterTypedFirstOrderFunctionSignature<RETURN, PARAM> functionSignature, TypeConverter<RETURN, PARAM> converter)
+		private CallFactory(final SingleParameterTypedFirstOrderFunctionSignature<RETURN, PARAM> functionSignature, final TypeConverter<RETURN, PARAM> converter)
 		{
 			this.funcSig = functionSignature;
 			this.converter = converter;
 			this.invalidArgMsgPrefix = "Function " + functionSignature.getName() + ": invalid arg: ";
 		}
 
-		public FirstOrderFunctionCall<RETURN> getInstance(List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes)
+		public FirstOrderFunctionCall<RETURN> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
 			return new EagerSinglePrimitiveTypeEval<RETURN, PARAM>(funcSig, argExpressions, remainingArgTypes)
-			{
+					{
 				@Override
-				protected RETURN evaluate(Deque<PARAM> args) throws IndeterminateEvaluationException
+				protected RETURN evaluate(final Deque<PARAM> args) throws IndeterminateEvaluationException
 				{
 					final PARAM arg0 = args.getFirst();
 					try
 					{
 						return converter.convert(arg0);
-					} catch (IllegalArgumentException e)
+					} catch (final IllegalArgumentException e)
 					{
 						throw new IndeterminateEvaluationException(invalidArgMsgPrefix + arg0, StatusHelper.STATUS_PROCESSING_ERROR, e);
 					}
 				}
 
-			};
+					};
 		}
 	}
 
@@ -117,7 +117,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 	 *            type converter
 	 * 
 	 */
-	public DatatypeConversionFunction(String functionID, Datatype<PARAM_T> paramType, Datatype<RETURN_T> returnType, TypeConverter<RETURN_T, PARAM_T> converter)
+	public DatatypeConversionFunction(final String functionID, final Datatype<PARAM_T> paramType, final Datatype<RETURN_T> returnType, final TypeConverter<RETURN_T, PARAM_T> converter)
 	{
 		super(functionID, returnType, false, Arrays.asList(paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, converter);
@@ -125,7 +125,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 
 	/** {@inheritDoc} */
 	@Override
-	public FirstOrderFunctionCall<RETURN_T> newCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+	public FirstOrderFunctionCall<RETURN_T> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 	{
 		return this.funcCallFactory.getInstance(argExpressions, remainingArgTypes);
 	}
