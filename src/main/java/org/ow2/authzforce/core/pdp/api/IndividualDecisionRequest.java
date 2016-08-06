@@ -21,10 +21,10 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.List;
 import java.util.Map;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+
+import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
  * Individual Decision Request, i.e. native Java equivalent of XACML Request that corresponds to one XACML Result element
@@ -59,6 +59,6 @@ public interface IndividualDecisionRequest
 	 * 
 	 * @return true iff original XACML Request's ReturnPolicyIdList == true
 	 */
-	boolean isApplicablePolicyIdentifiersReturned();
+	boolean isApplicablePolicyIdListReturned();
 
 }

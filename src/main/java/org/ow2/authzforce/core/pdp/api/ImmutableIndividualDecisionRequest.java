@@ -68,7 +68,7 @@ public class ImmutableIndividualDecisionRequest implements IndividualDecisionReq
 	public ImmutableIndividualDecisionRequest(final IndividualDecisionRequest baseRequest)
 	{
 		// these maps/lists may be updated later by put(...) method defined in this class
-		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(), baseRequest.getReturnedAttributes(), baseRequest.isApplicablePolicyIdentifiersReturned());
+		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(), baseRequest.getReturnedAttributes(), baseRequest.isApplicablePolicyIdListReturned());
 	}
 
 	/*
@@ -108,7 +108,7 @@ public class ImmutableIndividualDecisionRequest implements IndividualDecisionReq
 	 * @return the returnApplicablePolicyIdList
 	 */
 	@Override
-	public boolean isApplicablePolicyIdentifiersReturned()
+	public boolean isApplicablePolicyIdListReturned()
 	{
 		return returnApplicablePolicyIdList;
 	}
