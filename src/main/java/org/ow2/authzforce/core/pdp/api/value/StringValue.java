@@ -31,6 +31,11 @@ import javax.xml.bind.DatatypeConverter;
 public final class StringValue extends SimpleValue<String> implements Comparable<StringValue>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#string";

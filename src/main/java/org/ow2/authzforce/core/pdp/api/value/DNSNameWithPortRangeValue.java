@@ -33,6 +33,11 @@ import java.util.regex.Pattern;
 public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:dnsName";
@@ -63,10 +68,16 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * control for instance.
 	 */
 	// the required hostname
-	private final transient String hostname;
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final String hostname;
 
 	// the optional port/portRange
-	private final transient NetworkPortRange portRange;
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final NetworkPortRange portRange;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 

@@ -36,6 +36,11 @@ import javax.mail.internet.InternetAddress;
 public final class RFC822NameValue extends SimpleValue<String>
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final IllegalArgumentException INVALID_RFC822NAME_MATCH_ARG0_EXCEPTION = new IllegalArgumentException("Invalid first arg to function 'rfc822Name-match': empty string");
 
 	/**

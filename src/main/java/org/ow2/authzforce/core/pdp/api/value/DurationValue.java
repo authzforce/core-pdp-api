@@ -37,6 +37,11 @@ public abstract class DurationValue<DAV extends DurationValue<DAV>> extends Simp
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Instantiates duration attribute value from string representation
 	 *
 	 * @param datatypeId

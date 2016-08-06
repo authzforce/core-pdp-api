@@ -30,6 +30,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public final class TimeValue extends BaseTimeValue<TimeValue>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * XACML URI of this datatype
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#time";

@@ -37,6 +37,11 @@ import javax.xml.namespace.QName;
  */
 public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends SimpleValue<XMLGregorianCalendar> implements Comparable<TAV>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final XMLGregorianCalendar validate(final XMLGregorianCalendar time, final QName xmlSchemaDatatype)
 	{
 		if (!time.getXMLSchemaType().equals(xmlSchemaDatatype))

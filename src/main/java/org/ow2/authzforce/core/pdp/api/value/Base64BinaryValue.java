@@ -32,6 +32,11 @@ import javax.xml.bind.DatatypeConverter;
 public final class Base64BinaryValue extends SimpleValue<byte[]>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#base64Binary";

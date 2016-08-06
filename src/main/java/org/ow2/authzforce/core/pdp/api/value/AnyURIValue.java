@@ -58,6 +58,10 @@ public final class AnyURIValue extends SimpleValue<String>
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#anyURI";

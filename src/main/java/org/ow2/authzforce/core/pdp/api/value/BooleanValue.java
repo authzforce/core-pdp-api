@@ -29,6 +29,11 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class BooleanValue extends SimpleValue<Boolean>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private final int hashCode;
 
 	/**

@@ -32,6 +32,11 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Standard identifier for the OK status
 	 */
 	public static final String STATUS_OK = "urn:oasis:names:tc:xacml:1.0:status:ok";

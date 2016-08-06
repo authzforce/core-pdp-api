@@ -34,11 +34,20 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
  */
 public final class CombinerParameterEvaluator extends CombinerParameter
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final UnsupportedOperationException UNSUPPORTED_SET_ATTRIBUTE_VALUE_OPERATION_EXCEPTION = new UnsupportedOperationException(
 			"CombinerParameterEvaluator.setAttributeValue() not allowed");
 
 	private final AttributeValue attrValue;
-	private transient final int hashCode;
+
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final int hashCode;
 
 	/*
 	 * (non-Javadoc)

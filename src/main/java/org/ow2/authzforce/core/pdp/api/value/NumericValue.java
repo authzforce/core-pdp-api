@@ -33,6 +33,11 @@ import java.util.Deque;
 public abstract class NumericValue<N extends Number, NAV extends NumericValue<N, NAV>> extends SimpleValue<N>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * <p>
 	 * Constructor for NumericValue.
 	 * </p>

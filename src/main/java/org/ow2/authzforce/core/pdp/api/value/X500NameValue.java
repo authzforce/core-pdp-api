@@ -30,6 +30,11 @@ import javax.naming.ldap.LdapName;
 public final class X500NameValue extends SimpleValue<String>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * XACML datatype URI
 	 */
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:1.0:data-type:x500Name";

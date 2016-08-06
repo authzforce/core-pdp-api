@@ -18,6 +18,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -26,8 +27,13 @@ import java.util.Objects;
  * 
  * @version $Id: $
  */
-public final class NetworkPortRange
+public final class NetworkPortRange implements Serializable
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Minimum network socket port number (decimal).

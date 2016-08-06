@@ -18,6 +18,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,7 +34,9 @@ import net.sf.saxon.s9api.XdmValue;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
+import org.ow2.authzforce.core.pdp.api.XMLUtils;
 import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
+import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
 
 /**
  * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -53,6 +56,11 @@ import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
  */
 public final class XPathValue extends SimpleValue<String>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Official name of this type
 	 */
@@ -83,7 +91,11 @@ public final class XPathValue extends SimpleValue<String>
 
 	private final String xpathCategory;
 
-	private final transient XPathEvaluator xpathEvaluator;
+	/*
+	 * Forced to be transient and non-final to comply with Serializable contract, because not Serializable, therefore should be deserialized with readObjec() which cannot assign final variable
+	 * Therefore developers must make sure this is only assigned by readObject() or constructors once and for all.
+	 */
+	private/* final */transient XPathEvaluator xpathEvaluator;
 
 	private final IndeterminateEvaluationException missingAttributesContentException;
 
@@ -132,6 +144,12 @@ public final class XPathValue extends SimpleValue<String>
 				StatusHelper.STATUS_SYNTAX_ERROR);
 		this.xpathEvalExceptionMessage = this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'";
 		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", StatusHelper.STATUS_PROCESSING_ERROR);
+	}
+
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
+	{
+		in.defaultReadObject();
+		this.xpathEvaluator = new XPathEvaluator(this.value, XMLUtils.newXPathCompiler(XPATHVersion.V2_0.getURI(), null));
 	}
 
 	/**

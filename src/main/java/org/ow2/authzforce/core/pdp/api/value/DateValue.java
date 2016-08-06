@@ -30,6 +30,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public final class DateValue extends BaseTimeValue<DateValue>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * XACML URI of this datatype
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#date";

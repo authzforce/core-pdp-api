@@ -64,6 +64,11 @@ import org.w3c.dom.Element;
 public abstract class SimpleValue<V> extends AttributeValue
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
 
 	/**

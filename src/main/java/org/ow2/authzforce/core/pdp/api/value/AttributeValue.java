@@ -46,6 +46,11 @@ public abstract class AttributeValue extends AttributeValueType implements Value
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report
 	 * indicates it should be and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance matters for performance: https://www.java.net/node/666491 The
 	 * alternative would be to use ThreadLocal to limit thread-safety issues in the future.
