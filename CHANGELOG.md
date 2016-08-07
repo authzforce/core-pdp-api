@@ -5,6 +5,7 @@ All notable changes to this project are documented in this file following the [K
 ### Changed 
 - Project parent version (3.4.0): all JAXB-annotated classes derived from XACML schema now implements java.io.Serializable interface. This affects subclasses StatusHelper, CombinerParameterEvaluator and concrete XXXValue classes (extending XACML AttributeValue)
 - All method parameters made final when applicable
+- IndividualDecisionRequest#isApplicablePolicyIdentifiersReturned() method renamed to isApplicablePolicyIdListReturned()
 
 ### Removed
 - CombiningAlgSet and FunctionSet classes (Github issue #1), now useless.

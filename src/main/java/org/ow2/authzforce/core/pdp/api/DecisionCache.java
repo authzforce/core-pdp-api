@@ -22,14 +22,11 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
-
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractDecisionCache;
 
 /**
- * Authorization (XACML) decision result cache. Implements {@link Closeable} because a cache may use resources external to the JVM such as a disk or connection
- * to a remote server for persistence, replication, clustering, etc. Therefore, these resources must be released by calling {@link #close()} when it is no
- * longer needed.
+ * Authorization (XACML) decision result cache. Implements {@link Closeable} because a cache may use resources external to the JVM such as a disk or connection to a remote server for persistence,
+ * replication, clustering, etc. Therefore, these resources must be released by calling {@link #close()} when it is no longer needed.
  * 
  */
 public interface DecisionCache extends Closeable
@@ -54,23 +51,23 @@ public interface DecisionCache extends Closeable
 	}
 
 	/**
-	 * Gets the decision result(s) from the cache for the given decision request(s). The ability to get multiple cached results at once allows the Cache
-	 * implementation to optimize the retrieval by requesting all in the same request, e.g. if the cache is in a remote storage/server.
+	 * Gets the decision result(s) from the cache for the given decision request(s). The ability to get multiple cached results at once allows the Cache implementation to optimize the retrieval by
+	 * requesting all in the same request, e.g. if the cache is in a remote storage/server.
 	 * 
-	 * @param individualDecisionRequests
-	 *            decision request(s)
-	 * @return a map where each entry key is a request from {@code requests}, and the value is the corresponding result from cache, or null if no such result
-	 *         found in cache. Each request in {@code requests} but be a key in the Map returned, and the Map size must be equal to {@code requests.size()}.
+	 * @param decisionInputs
+	 *            individual decision input(s)
+	 * @return a map where each entry key is an input from {@code decisionInputs}, and the value is the corresponding decision result from cache, or null if no such result found in cache. Each input
+	 *         in {@code decisionInputs} but be a key in the Map returned, and the Map size must be equal to {@code decisionInputs.size()}.
 	 */
-	Map<IndividualDecisionRequest, Result> getAll(List<? extends IndividualDecisionRequest> individualDecisionRequests);
+	<DECISION_INPUT_T extends DecisionInput> Map<DECISION_INPUT_T, DecisionResult> getAll(List<DECISION_INPUT_T> decisionInputs);
 
 	/**
-	 * Puts a XACML decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to
-	 * optimize the creation/update by doing them all in the same request, e.g. if the cache is in a remote storage/server.
+	 * Puts a XACML decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing
+	 * them all in the same request, e.g. if the cache is in a remote storage/server.
 	 * 
 	 * @param resultsByRequest
 	 *            (request, result) pairs as key-value pairs to be cached
 	 */
-	void putAll(Map<IndividualDecisionRequest, Result> resultsByRequest);
+	<DECISION_INPUT_T extends DecisionInput> void putAll(Map<DECISION_INPUT_T, DecisionResult> resultsByRequest);
 
 }
