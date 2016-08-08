@@ -32,6 +32,11 @@ import javax.xml.bind.DatatypeConverter;
 public final class DoubleValue extends NumericValue<Double, DoubleValue> implements Comparable<DoubleValue>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#double";
@@ -44,7 +49,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 * @param value
 	 *            the <code>double</code> value to be represented
 	 */
-	public DoubleValue(double value)
+	public DoubleValue(final double value)
 	{
 		super(TYPE_URI, value);
 	}
@@ -62,14 +67,14 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation of xs:double
 	 */
-	public DoubleValue(String val) throws IllegalArgumentException
+	public DoubleValue(final String val) throws IllegalArgumentException
 	{
 		this(DatatypeConverter.parseDouble(val));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int compareTo(DoubleValue o)
+	public int compareTo(final DoubleValue o)
 	{
 		return this.value.compareTo(o.value);
 	}
@@ -83,7 +88,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 
 	/** {@inheritDoc} */
 	@Override
-	public DoubleValue add(Deque<DoubleValue> others)
+	public DoubleValue add(final Deque<DoubleValue> others)
 	{
 
 		double sum = value;
@@ -97,7 +102,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 
 	/** {@inheritDoc} */
 	@Override
-	public DoubleValue multiply(Deque<DoubleValue> others)
+	public DoubleValue multiply(final Deque<DoubleValue> others)
 	{
 		double product = value;
 		while (!others.isEmpty())
@@ -110,7 +115,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 
 	/** {@inheritDoc} */
 	@Override
-	public DoubleValue divide(DoubleValue divisor) throws ArithmeticException
+	public DoubleValue divide(final DoubleValue divisor) throws ArithmeticException
 	{
 		/*
 		 * Quotes from Java Language Specification (Java SE 7 Edition), §4.2.3. Floating-Point Types, Formats, and Values http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.2 Quotes: "A
@@ -172,7 +177,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 
 	/** {@inheritDoc} */
 	@Override
-	public DoubleValue subtract(DoubleValue subtractedVal)
+	public DoubleValue subtract(final DoubleValue subtractedVal)
 	{
 		return new DoubleValue(this.value - subtractedVal.value);
 	}

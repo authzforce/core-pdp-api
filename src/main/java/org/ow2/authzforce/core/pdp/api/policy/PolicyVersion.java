@@ -50,7 +50,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	// cached hashCode() result
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
-	protected PolicyVersion(String version, List<Integer> numbers)
+	protected PolicyVersion(final String version, final List<Integer> numbers)
 	{
 		assert version != null;
 		this.numbers = Collections.unmodifiableList(numbers);
@@ -63,10 +63,9 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	 * @param version
 	 *            version string
 	 * @throws IllegalArgumentException
-	 *             if version is null or not valid according to pattern
-	 *             definition in XACML schema: "(\d+\.)*\d+"
+	 *             if version is null or not valid according to pattern definition in XACML schema: "(\d+\.)*\d+"
 	 */
-	public PolicyVersion(String version) throws IllegalArgumentException
+	public PolicyVersion(final String version) throws IllegalArgumentException
 	{
 		if (version == null)
 		{
@@ -86,7 +85,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 			try
 			{
 				number = Integer.parseInt(tokens[i], 10);
-			} catch (NumberFormatException e)
+			} catch (final NumberFormatException e)
 			{
 				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'", e);
 			}
@@ -115,7 +114,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)
@@ -133,7 +132,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	}
 
 	@Override
-	public int compareTo(PolicyVersion other)
+	public int compareTo(final PolicyVersion other)
 	{
 		if (other == null)
 		{
@@ -163,8 +162,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	// }
 
 	/**
-	 * Return the original version string from which this object was
-	 * instantiated
+	 * Return the original version string from which this object was instantiated
 	 */
 	@Override
 	public String toString()

@@ -35,6 +35,10 @@ public final class IPAddressValue extends SimpleValue<String>
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:ipAddress";
@@ -42,7 +46,8 @@ public final class IPAddressValue extends SimpleValue<String>
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
-	private static void parseIPv4Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
+	private static void parseIPv4Address(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
+			throws IllegalArgumentException
 	{
 		assert val != null;
 
@@ -51,8 +56,8 @@ public final class IPAddressValue extends SimpleValue<String>
 		final NetworkPortRange range;
 
 		// start out by seeing where the delimiters are
-		int maskPos = val.indexOf("/");
-		int rangePos = val.indexOf(":");
+		final int maskPos = val.indexOf("/");
+		final int rangePos = val.indexOf(":");
 
 		// now check to see which components we have
 		if (maskPos == rangePos)
@@ -107,13 +112,14 @@ public final class IPAddressValue extends SimpleValue<String>
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
-	private static void parseIPv6Address(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
+	private static void parseIPv6Address(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
+			throws IllegalArgumentException
 	{
 		// Let's validate
 		final InetAddress address;
 		final InetAddress mask;
 		final NetworkPortRange range;
-		int len = val.length();
+		final int len = val.length();
 
 		// get the required address component
 		int endIndex = val.indexOf(']');
@@ -128,7 +134,7 @@ public final class IPAddressValue extends SimpleValue<String>
 			// if there's a mask, it's also an IPv6 address
 			if (val.charAt(endIndex + 1) == '/')
 			{
-				int startIndex = endIndex + 3;
+				final int startIndex = endIndex + 3;
 				endIndex = val.indexOf(']', startIndex);
 				mask = InetAddresses.forString(val.substring(startIndex, endIndex));
 			} else
@@ -155,7 +161,8 @@ public final class IPAddressValue extends SimpleValue<String>
 		returnedRange.value = range;
 	}
 
-	private static void parseIPAddress(String val, Holder<InetAddress> returnedAddress, Holder<InetAddress> returnedMask, Holder<NetworkPortRange> returnedRange) throws IllegalArgumentException
+	private static void parseIPAddress(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
+			throws IllegalArgumentException
 	{
 		// an IPv6 address starts with a '['
 		if (val.indexOf('[') == 0)
@@ -174,7 +181,10 @@ public final class IPAddressValue extends SimpleValue<String>
 	private final InetAddress address;
 	private final InetAddress mask;
 
-	private final transient NetworkPortRange portRange;
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final NetworkPortRange portRange;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
@@ -186,7 +196,7 @@ public final class IPAddressValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid XACML IPAddress string
 	 */
-	public IPAddressValue(String val) throws IllegalArgumentException
+	public IPAddressValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
 		final Holder<InetAddress> addressHolder = new Holder<>();
@@ -248,7 +258,7 @@ public final class IPAddressValue extends SimpleValue<String>
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{

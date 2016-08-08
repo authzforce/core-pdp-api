@@ -3,10 +3,10 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>3.3.7</version>
+      <version>3.4.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>5.0.0</version>
+   <version>6.0.0</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthZForce CE - Core PDP API</description>
    <url>https://tuleap.ow2.org/projects/authzforce</url>
@@ -59,8 +59,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.5</version>
-            <!-- target JDK already set by parent project's maven.compiler.target property -->
             <configuration>
                <verbose>true</verbose>
             </configuration>
@@ -77,14 +75,6 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
-            <version>3.0.2</version>
-            <configuration>
-               <!-- Enables analysis which takes more memory but finds more bugs. If you run out of memory, changes the value of the effort element to 'Low'. -->
-               <effort>Max</effort>
-               <!-- Reports all bugs (other values are medium and max) -->
-               <threshold>Low</threshold>
-               <failOnError>true</failOnError>
-            </configuration>
             <executions>
                <execution>
                   <phase>verify</phase>
@@ -110,7 +100,6 @@
                   <id>format-sources-license</id>
                   <phase>process-sources</phase>
                   <goals>
-<!--                      <goal>remove</goal> -->
                      <goal>format</goal>
                   </goals>
                </execution>
@@ -118,7 +107,6 @@
                   <id>format-test-sources-license</id>
                   <phase>process-test-sources</phase>
                   <goals>
-<!--                      <goal>remove</goal> -->
                      <goal>format</goal>
                   </goals>
                </execution>

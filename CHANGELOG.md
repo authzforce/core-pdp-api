@@ -1,6 +1,20 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## 6.0.0
+### Changed 
+- Project parent version (3.4.0): all JAXB-annotated classes derived from XACML schema now implements java.io.Serializable interface. This affects subclasses StatusHelper, CombinerParameterEvaluator and concrete XXXValue classes (extending XACML AttributeValue)
+- All method parameters made final when applicable
+- IndividualDecisionRequest#isApplicablePolicyIdentifiersReturned() method renamed to isApplicablePolicyIdListReturned()
+
+### Removed
+- CombiningAlgSet and FunctionSet classes (Github issue #1), now useless.
+
+
+## 5.0.0
+### Changed
+- Attribute Provider Extension interface (CloseableAttributeProviderModule interface): new parameter to pass global PDP environment properties to AttributeProvider extensions
+
 ## 4.0.2
 ### Fixed
 - Code-style issues reported by Codacy

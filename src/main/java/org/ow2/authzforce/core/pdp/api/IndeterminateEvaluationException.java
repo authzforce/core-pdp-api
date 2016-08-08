@@ -26,9 +26,9 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 /**
  * Exception wrapper for XACML Indeterminate/error caused by evaluation
  * <p>
- * TODO: although we consider Exceptions as a good solution (from a Java standpoint) to propagate error information with a full traceable stacktrace, from a
- * functional/logical point of view, we could improve performance by using return codes instead, whenever possible, especially where we don't lose any useful
- * error info by doing so: cf. http://java-performance.info/throwing-an-exception-in-java-is-very-slow/
+ * TODO: although we consider Exceptions as a good solution (from a Java standpoint) to propagate error information with a full traceable stacktrace, from a functional/logical point of view, we could
+ * improve performance by using return codes instead, whenever possible, especially where we don't lose any useful error info by doing so: cf.
+ * http://java-performance.info/throwing-an-exception-in-java-is-very-slow/
  * </p>
  */
 public class IndeterminateEvaluationException extends Exception
@@ -47,7 +47,7 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param statusCode
 	 *            XACML StatusCode value, must be a valid xs:anyURI (used as XACML StatusCode Value)
 	 */
-	public IndeterminateEvaluationException(String message, String statusCode)
+	public IndeterminateEvaluationException(final String message, final String statusCode)
 	{
 		super(message);
 		this.xacmlStatusCode = statusCode;
@@ -63,7 +63,7 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param cause
 	 *            internal cause of error
 	 */
-	public IndeterminateEvaluationException(String message, String statusCode, Throwable cause)
+	public IndeterminateEvaluationException(final String message, final String statusCode, final Throwable cause)
 	{
 		super(message, cause);
 		this.xacmlStatusCode = statusCode;

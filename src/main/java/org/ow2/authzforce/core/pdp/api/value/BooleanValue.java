@@ -29,6 +29,11 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class BooleanValue extends SimpleValue<Boolean>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private final int hashCode;
 
 	/**
@@ -58,7 +63,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if string parameter does not conform to lexical value space defined in XML Schema Part 2: Datatypes for xsd:boolean.
 	 */
-	public static BooleanValue getInstance(String s) throws IllegalArgumentException
+	public static BooleanValue getInstance(final String s) throws IllegalArgumentException
 	{
 		// implementation designed to avoid creating new objects
 		// contrary to Saxon's original code, we don't allow whitespaces to apply the XML schema
@@ -68,7 +73,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 		switch (s.length())
 		{
 		case 1:
-			char c = s.charAt(0);
+			final char c = s.charAt(0);
 			if (c == '1')
 			{
 				return TRUE;
@@ -106,7 +111,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 	 * This constructor is private because it should not be used by anyone other than the static initializer in this class. Instead, please use one of the getInstance methods, which will ensure that
 	 * only two BooleanAttributeValue objects are created, thus avoiding excess object creation.
 	 */
-	private BooleanValue(boolean value)
+	private BooleanValue(final boolean value)
 	{
 		super(TYPE_URI, value);
 		hashCode = this.value.hashCode();
@@ -119,7 +124,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 	 *            boolean input
 	 * @return instance
 	 */
-	public static BooleanValue valueOf(boolean b)
+	public static BooleanValue valueOf(final boolean b)
 	{
 		return b ? TRUE : FALSE;
 	}
@@ -148,7 +153,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

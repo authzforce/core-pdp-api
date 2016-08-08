@@ -19,14 +19,17 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 /**
- * Representation of an xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and
- * thread-safe.
+ * Representation of an xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and thread-safe.
  *
  * 
  * @version $Id: $
  */
 public final class DayTimeDurationValue extends DurationValue<DayTimeDurationValue>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Official name of this type
 	 */
@@ -40,7 +43,7 @@ public final class DayTimeDurationValue extends DurationValue<DayTimeDurationVal
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation for xs:dayTimeDuration
 	 */
-	public DayTimeDurationValue(String val) throws IllegalArgumentException
+	public DayTimeDurationValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
 	}

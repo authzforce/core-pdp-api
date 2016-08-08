@@ -64,6 +64,11 @@ import org.w3c.dom.Element;
 public abstract class SimpleValue<V> extends AttributeValue
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
 
 	/**
@@ -87,7 +92,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected Factory(Class<AV> instanceClass, String datatypeId, URI functionIdPrefix)
+		protected Factory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
@@ -120,7 +125,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 *             representation for this datatype
 		 */
 		@Override
-		public AV getInstance(List<Serializable> content, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			final String inputStrVal;
 
@@ -172,13 +177,13 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected StringContentOnlyFactory(Class<AV> instanceClass, String datatypeId, URI functionIdPrefix)
+		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
 
 		@Override
-		public AV getInstance(String val, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler)
+		public AV getInstance(final String val, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler)
 		{
 			if (otherXmlAttributes != null && !otherXmlAttributes.isEmpty())
 			{
@@ -224,7 +229,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code datatype == null || jaxbVal == null}
 	 */
-	protected SimpleValue(String datatypeId, V rawVal) throws IllegalArgumentException
+	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException
 	{
 		super(datatypeId, null, null);
 		if (rawVal == null)
@@ -297,7 +302,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{

@@ -89,7 +89,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		private final Matcher<T0, T1> matcher;
 		private final FirstOrderFunctionSignature<BooleanValue> funcSig;
 
-		private CallFactory(FirstOrderFunctionSignature<BooleanValue> functionSig, Datatype<T0> paramType0, Datatype<T1> paramType1, Matcher<T0, T1> matcher)
+		private CallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSig, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 		{
 
 			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types: expected: " + paramType0 + "," + paramType1 + "; actual: ";
@@ -100,12 +100,12 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 			this.funcSig = functionSig;
 		}
 
-		protected FirstOrderFunctionCall<BooleanValue> getInstance(List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes)
+		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
 			return new EagerMultiPrimitiveTypeEval<BooleanValue>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
-				protected final BooleanValue evaluate(Deque<AttributeValue> args) throws IndeterminateEvaluationException
+				protected final BooleanValue evaluate(final Deque<AttributeValue> args) throws IndeterminateEvaluationException
 				{
 					final AttributeValue rawArg0 = args.poll();
 					final AttributeValue rawArg1 = args.poll();
@@ -116,7 +116,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					{
 						arg0 = paramClass0.cast(rawArg0);
 						arg1 = paramClass1.cast(rawArg1);
-					} catch (ClassCastException e)
+					} catch (final ClassCastException e)
 					{
 						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(), StatusHelper.STATUS_PROCESSING_ERROR, e);
 					}
@@ -125,7 +125,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					try
 					{
 						isMatched = matcher.match(arg0, arg1);
-					} catch (PatternSyntaxException e)
+					} catch (final PatternSyntaxException e)
 					{
 						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
 					}
@@ -177,7 +177,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 *            matching algorithm
 	 * 
 	 */
-	public NonEqualTypeMatchFunction(String functionName, Datatype<T0> paramType0, Datatype<T1> paramType1, Matcher<T0, T1> matcher)
+	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 	{
 		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = new CallFactory<>(this.functionSignature, paramType0, paramType1, matcher);
@@ -196,7 +196,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 *            match function call factory builder
 	 * 
 	 */
-	public NonEqualTypeMatchFunction(String functionName, Datatype<T0> paramType0, Datatype<T1> paramType1, CallFactoryBuilder<T0, T1> callFactoryBuilder)
+	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final CallFactoryBuilder<T0, T1> callFactoryBuilder)
 	{
 		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = callFactoryBuilder.build(functionSignature, paramType0, paramType1);
@@ -204,7 +204,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 
 	/** {@inheritDoc} */
 	@Override
-	public FirstOrderFunctionCall<BooleanValue> newCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+	public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 	{
 		/*
 		 * Actual argument types are expected to be different, therefore we use the supertype AttributeValue as generic parameter type for all when creating the function call
@@ -224,7 +224,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		private final Matcher<StringValue, AV> regexMatcher = new Matcher<StringValue, AV>()
 		{
 			@Override
-			public boolean match(StringValue regex, AV arg1)
+			public boolean match(final StringValue regex, final AV arg1)
 			{
 				return RegexpMatchFunctionHelper.match(regex, arg1);
 			}
@@ -234,14 +234,14 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		{
 			private final RegexpMatchFunctionHelper regexFuncHelper;
 
-			private RegexpMatchCallFactory(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<AV> secondParamType)
+			private RegexpMatchCallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSignature, final Datatype<AV> secondParamType)
 			{
 				super(functionSignature, StandardDatatypes.STRING_FACTORY.getDatatype(), secondParamType, regexMatcher);
 				regexFuncHelper = new RegexpMatchFunctionHelper(functionSignature, secondParamType);
 			}
 
 			@Override
-			protected FirstOrderFunctionCall<BooleanValue> getInstance(List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes)
+			protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 			{
 				final FirstOrderFunctionCall<BooleanValue> compiledRegexFuncCall = regexFuncHelper.getCompiledRegexMatchCall(argExpressions, remainingArgTypes);
 				/*
@@ -253,7 +253,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		}
 
 		@Override
-		public CallFactory<StringValue, AV> build(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<StringValue> paramType0, Datatype<AV> paramType1)
+		public CallFactory<StringValue, AV> build(final FirstOrderFunctionSignature<BooleanValue> functionSignature, final Datatype<StringValue> paramType0, final Datatype<AV> paramType1)
 		{
 			return new RegexpMatchCallFactory(functionSignature, paramType1);
 		}

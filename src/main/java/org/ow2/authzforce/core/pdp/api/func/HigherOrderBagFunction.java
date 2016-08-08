@@ -55,7 +55,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 	 * @param subFunctionReturnType
 	 *            sub-function's return datatype; may be null to indicate any datatype (e.g. map function's sub-function return datatype can be any primitive type)
 	 */
-	protected HigherOrderBagFunction(String functionId, Datatype<RETURN_T> returnType, Datatype<?> subFunctionReturnType)
+	protected HigherOrderBagFunction(final String functionId, final Datatype<RETURN_T> returnType, final Datatype<?> subFunctionReturnType)
 	{
 		super(functionId);
 		this.returnType = returnType;
@@ -86,7 +86,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 
 	/** {@inheritDoc} */
 	@Override
-	public final FunctionCall<RETURN_T> newCall(List<Expression<?>> inputs) throws IllegalArgumentException
+	public final FunctionCall<RETURN_T> newCall(final List<Expression<?>> inputs) throws IllegalArgumentException
 	{
 		final int numInputs = inputs.size();
 		checkNumberOfArgs(numInputs);

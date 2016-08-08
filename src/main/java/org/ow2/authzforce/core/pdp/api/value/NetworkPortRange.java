@@ -18,6 +18,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -26,8 +27,13 @@ import java.util.Objects;
  * 
  * @version $Id: $
  */
-public final class NetworkPortRange
+public final class NetworkPortRange implements Serializable
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Minimum network socket port number (decimal).
@@ -54,7 +60,7 @@ public final class NetworkPortRange
 	 * @param upperBound
 	 *            the upper-bound port number
 	 */
-	private NetworkPortRange(int lowerBound, int upperBound)
+	private NetworkPortRange(final int lowerBound, final int upperBound)
 	{
 		if (lowerBound < MIN_NET_PORT_NUMBER)
 		{
@@ -96,7 +102,7 @@ public final class NetworkPortRange
 	 *             if the port range syntax is not: {@literal portnumber | "-"portnumber | portnumber"-"[portnumber]}; or one of the {@literal portnumber} values is not a valid decimal number in the
 	 *             interval [{@value #MIN_NET_PORT_NUMBER}, {@value #MAX_NET_PORT_NUMBER}]
 	 */
-	public static NetworkPortRange getInstance(String value) throws IllegalArgumentException
+	public static NetworkPortRange getInstance(final String value) throws IllegalArgumentException
 	{
 		// first off, make sure there's actually a port range
 		if (value == null || value.isEmpty())
@@ -170,7 +176,7 @@ public final class NetworkPortRange
 	 * Returns true if the input is an instance of this class and if its value equals the value contained in this class.
 	 */
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (this == o)
 		{

@@ -65,7 +65,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
 	 */
-	protected Bag(Datatype<AV> elementDatatype, Collection<AV> values, IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
+	protected Bag(final Datatype<AV> elementDatatype, final Collection<AV> values, final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
 	{
 		assert values != null;
 
@@ -90,7 +90,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
 	 */
-	protected Bag(Datatype<AV> elementType) throws IllegalArgumentException
+	protected Bag(final Datatype<AV> elementType) throws IllegalArgumentException
 	{
 		this(elementType, Collections.<AV> emptySet(), null);
 	}
@@ -142,7 +142,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	 *            element whose presence in this bag is to be tested
 	 * @return true if this collection contains the specified element
 	 */
-	public final boolean contains(AV v)
+	public final boolean contains(final AV v)
 	{
 		return values.contains(v);
 	}
@@ -158,7 +158,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(final Object other)
 	{
 		// Effective Java - Item 8
 		if (this == other)

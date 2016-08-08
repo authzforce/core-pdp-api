@@ -36,6 +36,11 @@ import javax.mail.internet.InternetAddress;
 public final class RFC822NameValue extends SimpleValue<String>
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final IllegalArgumentException INVALID_RFC822NAME_MATCH_ARG0_EXCEPTION = new IllegalArgumentException("Invalid first arg to function 'rfc822Name-match': empty string");
 
 	/**
@@ -55,18 +60,18 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 * @param address
 	 *            Java equivalent of RFC822Name
 	 */
-	public RFC822NameValue(InternetAddress address)
+	public RFC822NameValue(final InternetAddress address)
 	{
 		this(address.toString());
 	}
 
-	private static String validate(String stringForm) throws IllegalArgumentException
+	private static String validate(final String stringForm) throws IllegalArgumentException
 	{
 		try
 		{
 			final InternetAddress email = new InternetAddress(stringForm, true);
 			email.validate();
-		} catch (AddressException e)
+		} catch (final AddressException e)
 		{
 			throw new IllegalArgumentException("Invalid RFC822Name: " + stringForm, e);
 		}
@@ -85,7 +90,7 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation of XACML rfc822Name
 	 */
-	public RFC822NameValue(String value) throws IllegalArgumentException
+	public RFC822NameValue(final String value) throws IllegalArgumentException
 	{
 		super(TYPE_URI, validate(value));
 		/*
@@ -142,7 +147,7 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)
@@ -169,7 +174,7 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 *            used as first argument to the function
 	 * @return true if match
 	 */
-	public boolean match(String maybePartialRfc822Name)
+	public boolean match(final String maybePartialRfc822Name)
 	{
 		final int arobaseIndex = maybePartialRfc822Name.indexOf('@');
 		if (arobaseIndex != -1)

@@ -54,23 +54,23 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 		private final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> funcSig;
 		private final Matcher<PARAM_T> matcher;
 
-		protected CallFactory(SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> functionSignature, Matcher<PARAM_T> matcher)
+		protected CallFactory(final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> functionSignature, final Matcher<PARAM_T> matcher)
 		{
 			this.funcSig = functionSignature;
 			this.matcher = matcher;
 		}
 
-		protected FirstOrderFunctionCall<BooleanValue> getInstance(List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
+		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
 			return new EagerSinglePrimitiveTypeEval<BooleanValue, PARAM_T>(funcSig, argExpressions, remainingArgTypes)
-			{
+					{
 				@Override
-				protected final BooleanValue evaluate(Deque<PARAM_T> args) throws IndeterminateEvaluationException
+				protected final BooleanValue evaluate(final Deque<PARAM_T> args) throws IndeterminateEvaluationException
 				{
 					return BooleanValue.valueOf(matcher.match(args.poll(), args.poll()));
 				}
 
-			};
+					};
 		}
 
 	}
@@ -125,7 +125,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 	 * @param matcher
 	 *            raw match method
 	 */
-	public EqualTypeMatchFunction(String functionName, Datatype<PARAM> paramType, Matcher<PARAM> matcher)
+	public EqualTypeMatchFunction(final String functionName, final Datatype<PARAM> paramType, final Matcher<PARAM> matcher)
 	{
 		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, matcher);
@@ -141,7 +141,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 	 * @param callFactoryBuilder
 	 *            raw match method
 	 */
-	public EqualTypeMatchFunction(String functionName, Datatype<PARAM> paramType, CallFactoryBuilder<PARAM> callFactoryBuilder)
+	public EqualTypeMatchFunction(final String functionName, final Datatype<PARAM> paramType, final CallFactoryBuilder<PARAM> callFactoryBuilder)
 	{
 		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
 		this.funcCallFactory = callFactoryBuilder.build(functionSignature);
@@ -154,7 +154,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public FirstOrderFunctionCall<BooleanValue> newCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes)
+	public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
 	{
 		return funcCallFactory.getInstance(argExpressions, remainingArgTypes);
 	}
@@ -168,7 +168,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 	public static final class EqualMatcher<PARAM extends AttributeValue> implements Matcher<PARAM>
 	{
 		@Override
-		public boolean match(PARAM arg0, PARAM arg1)
+		public boolean match(final PARAM arg0, final PARAM arg1)
 		{
 			return arg0.equals(arg1);
 		}
@@ -183,7 +183,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue> extends Single
 	public static final class EqualIgnoreCaseMatcher<PARAM extends SimpleValue<String>> implements Matcher<PARAM>
 	{
 		@Override
-		public boolean match(PARAM arg0, PARAM arg1)
+		public boolean match(final PARAM arg0, final PARAM arg1)
 		{
 			return arg0.getUnderlyingValue().equalsIgnoreCase(arg1.getUnderlyingValue());
 		}

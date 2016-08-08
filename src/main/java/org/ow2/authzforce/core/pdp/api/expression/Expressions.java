@@ -53,7 +53,7 @@ public final class Expressions
 	 * @throws IndeterminateEvaluationException
 	 *             if no value returned from evaluation, or <code>returnType</code> is not a supertype of the result value datatype
 	 */
-	public static <V extends Value> V eval(Expression<?> arg, EvaluationContext context, Datatype<V> returnType) throws IndeterminateEvaluationException
+	public static <V extends Value> V eval(final Expression<?> arg, final EvaluationContext context, final Datatype<V> returnType) throws IndeterminateEvaluationException
 	{
 		if (returnType == null)
 		{
@@ -70,7 +70,7 @@ public final class Expressions
 		try
 		{
 			return returnType.cast(val);
-		} catch (ClassCastException e)
+		} catch (final ClassCastException e)
 		{
 			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType, StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}
@@ -87,7 +87,7 @@ public final class Expressions
 	 * @throws IndeterminateEvaluationException
 	 *             if no value returned from evaluation, or <code>returnType</code> is not a supertype of the result value datatype
 	 */
-	public static AttributeValue evalPrimitive(Expression<?> arg, EvaluationContext context) throws IndeterminateEvaluationException
+	public static AttributeValue evalPrimitive(final Expression<?> arg, final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		final Value val = arg.evaluate(context);
 		LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", arg, val);
@@ -99,7 +99,7 @@ public final class Expressions
 		try
 		{
 			return (AttributeValue) val;
-		} catch (ClassCastException e)
+		} catch (final ClassCastException e)
 		{
 			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type", StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}

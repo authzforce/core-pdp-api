@@ -69,7 +69,8 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 	 * @throws IllegalArgumentException
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.isEmpty()})
 	 */
-	public SingleParameterTypedFirstOrderFunctionSignature(String name, Datatype<RETURN> returnType, boolean varArgs, List<? extends Datatype<PARAM>> parameterTypes) throws IllegalArgumentException
+	public SingleParameterTypedFirstOrderFunctionSignature(final String name, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends Datatype<PARAM>> parameterTypes)
+			throws IllegalArgumentException
 	{
 		super(name, returnType, varArgs);
 		if (parameterTypes == null)
@@ -120,7 +121,7 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

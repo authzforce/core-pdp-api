@@ -19,26 +19,15 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.List;
-import java.util.Map;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
-import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 
 /**
  * Individual Decision Request, i.e. native Java equivalent of XACML Request that corresponds to one XACML Result element
  *
  */
-public interface IndividualDecisionRequest
+public interface IndividualDecisionRequest extends DecisionInput
 {
-
-	/**
-	 * Get named attributes by name
-	 * 
-	 * @return map of attribute name-value pairs, null if none (but {@link #getExtraContentsByCategory()} result may not be empty)
-	 */
-	Map<AttributeGUID, Bag<?>> getNamedAttributes();
 
 	/**
 	 * Get Attributes elements containing only child Attribute elements with IncludeInResult=true
@@ -46,19 +35,5 @@ public interface IndividualDecisionRequest
 	 * @return list of Attributes elements to include in final Result; null if none
 	 */
 	List<Attributes> getReturnedAttributes();
-
-	/**
-	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation) by attribute category
-	 * 
-	 * @return extra XML Contents by category; null if none
-	 */
-	Map<String, XdmNode> getExtraContentsByCategory();
-
-	/**
-	 * Get ReturnPolicyIdList flag
-	 * 
-	 * @return true iff original XACML Request's ReturnPolicyIdList == true
-	 */
-	boolean isApplicablePolicyIdentifiersReturned();
 
 }

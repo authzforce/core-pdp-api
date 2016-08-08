@@ -70,8 +70,8 @@ public final class RegexpMatchFunctionHelper
 		private final String invalidRemainingArg1TypeMsg;
 		private final String funcId;
 
-		private CompiledRegexMatchFunctionCall(FirstOrderFunctionSignature<BooleanValue> functionSig, List<Expression<?>> argExpressions, Datatype<?>[] remainingArgTypes,
-				RegularExpression compiledRegex, Datatype<? extends SimpleValue<String>> matchedValueType, String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
+		private CompiledRegexMatchFunctionCall(final FirstOrderFunctionSignature<BooleanValue> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes,
+				final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
 		{
 			super(functionSig, argExpressions, remainingArgTypes);
 			this.funcId = functionSig.getName();
@@ -86,7 +86,7 @@ public final class RegexpMatchFunctionHelper
 		}
 
 		@Override
-		public BooleanValue evaluate(EvaluationContext context, AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public BooleanValue evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final SimpleValue<String> arg1;
 			if (argExpressionsAfterRegex.isEmpty())
@@ -95,7 +95,7 @@ public final class RegexpMatchFunctionHelper
 				try
 				{
 					arg1 = matchedValClass.cast(remainingArgs[0]);
-				} catch (ClassCastException e)
+				} catch (final ClassCastException e)
 				{
 					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
@@ -104,7 +104,7 @@ public final class RegexpMatchFunctionHelper
 				try
 				{
 					arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, matchedValType);
-				} catch (IndeterminateEvaluationException e)
+				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException("Function " + this.funcId + ": Indeterminate arg #1", StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
@@ -126,7 +126,7 @@ public final class RegexpMatchFunctionHelper
 	 * @throws IllegalArgumentException
 	 *             {@code regex} is not a valid regular expression
 	 */
-	public static boolean match(StringValue regex, SimpleValue<String> arg1) throws IllegalArgumentException
+	public static boolean match(final StringValue regex, final SimpleValue<String> arg1) throws IllegalArgumentException
 	{
 		/*
 		 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
@@ -135,7 +135,7 @@ public final class RegexpMatchFunctionHelper
 		try
 		{
 			compiledRegex = Configuration.getPlatform().compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
-		} catch (XPathException e)
+		} catch (final XPathException e)
 		{
 			throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
 		}
@@ -157,7 +157,7 @@ public final class RegexpMatchFunctionHelper
 	 * @param matchedDatatype
 	 *            datatype of value to be matched against the regular expression
 	 */
-	public RegexpMatchFunctionHelper(FirstOrderFunctionSignature<BooleanValue> matchFunctionSignature, Datatype<? extends SimpleValue<String>> matchedDatatype)
+	public RegexpMatchFunctionHelper(final FirstOrderFunctionSignature<BooleanValue> matchFunctionSignature, final Datatype<? extends SimpleValue<String>> matchedDatatype)
 	{
 		this.funcSig = matchFunctionSignature;
 		this.matchedValueType = matchedDatatype;
@@ -175,7 +175,7 @@ public final class RegexpMatchFunctionHelper
 	 *            types of remaining arguments (after input expressions)
 	 * @return function call using compiled regex from first argument if constant value; or null if first argument is not constant
 	 */
-	public FirstOrderFunctionCall<BooleanValue> getCompiledRegexMatchCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes)
+	public FirstOrderFunctionCall<BooleanValue> getCompiledRegexMatchCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
 	{
 		// check if first arg = regex is constant value, in which case pre-compile the regex
 		final RegularExpression compiledRegex;
@@ -191,7 +191,7 @@ public final class RegexpMatchFunctionHelper
 				try
 				{
 					input0Val = Expressions.eval(input0, null, StandardDatatypes.STRING_FACTORY.getDatatype());
-				} catch (IndeterminateEvaluationException e)
+				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IllegalArgumentException(indeterminateArg0StaticPreEvalMsg + input0, e);
 				}
@@ -202,7 +202,7 @@ public final class RegexpMatchFunctionHelper
 					 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
 					 */
 					compiledRegex = Configuration.getPlatform().compileRegularExpression(regex, "", "XP20", null);
-				} catch (XPathException e)
+				} catch (final XPathException e)
 				{
 					throw new IllegalArgumentException(invalidRegexMsg + regex + "'", e);
 				}

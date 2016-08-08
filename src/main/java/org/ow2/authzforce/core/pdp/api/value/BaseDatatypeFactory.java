@@ -42,7 +42,7 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 	{
 		private final transient int hashCode;
 
-		private PrimitiveDatatype(Class<AV> valueClass, String id, URI functionIdPrefix) throws IllegalArgumentException
+		private PrimitiveDatatype(final Class<AV> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
 		{
 			super(valueClass, id, functionIdPrefix);
 			// there should be one-to-one mapping between valueClass and id, so hashing
@@ -73,7 +73,7 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 		}
 
 		@Override
-		public boolean equals(Object obj)
+		public boolean equals(final Object obj)
 		{
 			// Effective Java - Item 8
 			if (this == obj)
@@ -108,7 +108,7 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 	private final transient int hashCode;
 	private final transient String toString;
 
-	protected BaseDatatypeFactory(Class<INSTANCE_AV> instanceClass, String datatypeId, URI functionIdPrefix)
+	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
 	{
 		if (instanceClass == null)
 		{
@@ -192,7 +192,7 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public final boolean equals(Object obj)
+	public final boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

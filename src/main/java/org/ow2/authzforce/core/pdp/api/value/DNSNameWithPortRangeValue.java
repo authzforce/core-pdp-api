@@ -33,6 +33,11 @@ import java.util.regex.Pattern;
 public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:dnsName";
@@ -63,10 +68,16 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * control for instance.
 	 */
 	// the required hostname
-	private final transient String hostname;
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final String hostname;
 
 	// the optional port/portRange
-	private final transient NetworkPortRange portRange;
+	/*
+	 * Forced to be non-transient (although derived from other fields) to comply with Serializable contract while staying final
+	 */
+	private final NetworkPortRange portRange;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
@@ -80,13 +91,13 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * 
 	 * TODO: find out whether it's better to use DomainValidator from Apache commons-validator instead, but first make sure this issue is fixed: https://issues.apache.org/jira/browse/VALIDATOR-366
 	 */
-	private static boolean isValidHostName(String hostname)
+	private static boolean isValidHostName(final String hostname)
 	{
 		assert hostname != null;
 		return HOSTNAME_PATTERN.matcher(hostname).matches();
 	}
 
-	private static Entry<String, NetworkPortRange> parseDnsName(String dnsName) throws IllegalArgumentException
+	private static Entry<String, NetworkPortRange> parseDnsName(final String dnsName) throws IllegalArgumentException
 	{
 		assert dnsName != null;
 
@@ -123,7 +134,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if format of {@code val} does not comply with the dnsName datatype definition
 	 */
-	public DNSNameWithPortRangeValue(String val) throws IllegalArgumentException
+	public DNSNameWithPortRangeValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
 		final Entry<String, NetworkPortRange> hostAndPortRange = parseDnsName(this.value);
@@ -186,7 +197,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 */
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{

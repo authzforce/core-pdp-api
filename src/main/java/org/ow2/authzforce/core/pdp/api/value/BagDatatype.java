@@ -36,13 +36,13 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	 */
 	private static final String ID = "#BAG#";
 
-	private Datatype<AV> elementType;
+	private final Datatype<AV> elementType;
 
 	// cached method results
 	private final String toString;
 	private final int hashCode;
 
-	private static <V extends AttributeValue> Class<Bag<V>> getBagClass(Datatype<V> elementDatatype) throws IllegalArgumentException
+	private static <V extends AttributeValue> Class<Bag<V>> getBagClass(final Datatype<V> elementDatatype) throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -53,7 +53,7 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 		return (Class<Bag<V>>) bag.getClass();
 	}
 
-	BagDatatype(Datatype<AV> elementDatatype) throws IllegalArgumentException
+	BagDatatype(final Datatype<AV> elementDatatype) throws IllegalArgumentException
 	{
 		super(getBagClass(elementDatatype), ID, URI.create(elementDatatype.getFuncIdPrefix() + "-bag"));
 
@@ -101,7 +101,7 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

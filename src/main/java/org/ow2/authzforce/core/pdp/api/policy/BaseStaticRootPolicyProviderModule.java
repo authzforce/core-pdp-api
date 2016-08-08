@@ -57,7 +57,7 @@ public abstract class BaseStaticRootPolicyProviderModule implements StaticRootPo
 		 * @throws IllegalArgumentException
 		 *             if {@code refPolicyProviderMod} is null
 		 */
-		private BaseStaticRefPolicyProvider(StaticRefPolicyProviderModule refPolicyProviderMod) throws IllegalArgumentException
+		private BaseStaticRefPolicyProvider(final StaticRefPolicyProviderModule refPolicyProviderMod) throws IllegalArgumentException
 		{
 			if (refPolicyProviderMod == null)
 			{
@@ -89,15 +89,15 @@ public abstract class BaseStaticRootPolicyProviderModule implements StaticRootPo
 		 *             {@code refPolicyProviderModFactory.getInstance(jaxbRefPolicyProvider, xacmlParserFactory, maxPolicySetRefDepth, expressionFactory, combiningAlgRegistry, environmentProperties)}
 		 *             does not implement {@link StaticRefPolicyProviderModule}
 		 */
-		private <CONF extends AbstractPolicyProvider> BaseStaticRefPolicyProvider(CONF jaxbRefPolicyProvider, RefPolicyProviderModule.Factory<CONF> refPolicyProviderModFactory,
-				XACMLParserFactory xacmlParserFactory, ExpressionFactory expressionFactory, CombiningAlgRegistry combiningAlgRegistry, int maxPolicySetRefDepth,
-				EnvironmentProperties environmentProperties) throws IllegalArgumentException
+		private <CONF extends AbstractPolicyProvider> BaseStaticRefPolicyProvider(final CONF jaxbRefPolicyProvider, final RefPolicyProviderModule.Factory<CONF> refPolicyProviderModFactory,
+				final XACMLParserFactory xacmlParserFactory, final ExpressionFactory expressionFactory, final CombiningAlgRegistry combiningAlgRegistry, final int maxPolicySetRefDepth,
+				final EnvironmentProperties environmentProperties) throws IllegalArgumentException
 		{
 			this(refPolicyProviderModFactory == null ? null : validate(refPolicyProviderModFactory.getInstance(jaxbRefPolicyProvider, xacmlParserFactory, maxPolicySetRefDepth, expressionFactory,
 					combiningAlgRegistry, environmentProperties)));
 		}
 
-		private static StaticRefPolicyProviderModule validate(RefPolicyProviderModule refPolicyProviderModule) throws IllegalArgumentException
+		private static StaticRefPolicyProviderModule validate(final RefPolicyProviderModule refPolicyProviderModule) throws IllegalArgumentException
 		{
 			if (!(refPolicyProviderModule instanceof StaticRefPolicyProviderModule))
 			{
@@ -115,8 +115,8 @@ public abstract class BaseStaticRootPolicyProviderModule implements StaticRootPo
 		 * @see org.ow2.authzforce.core.policy.RefPolicyProvider#findPolicy(java. lang. String, com.sun.xacml.VersionConstraints, java.lang.Class, java.util.Deque)
 		 */
 		@Override
-		public TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String idRef, VersionPatterns constraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
-				throws IndeterminateEvaluationException
+		public TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final VersionPatterns constraints, final Deque<String> policySetRefChain,
+				final EvaluationContext evaluationCtx) throws IndeterminateEvaluationException
 		{
 			/*
 			 * It is the responsability of the refPolicyProviderMod to update policySetRefChain and check against maxPolicySetRefDepth - using RefPolicyProvider.Utils class - whenever a
@@ -126,7 +126,7 @@ public abstract class BaseStaticRootPolicyProviderModule implements StaticRootPo
 		}
 
 		@Override
-		public StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String idRef, VersionPatterns constraints, Deque<String> policySetRefChain)
+		public StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final VersionPatterns constraints, final Deque<String> policySetRefChain)
 				throws IndeterminateEvaluationException
 		{
 			/*
@@ -167,9 +167,9 @@ public abstract class BaseStaticRootPolicyProviderModule implements StaticRootPo
 	 *             {@code refPolicyProviderModFactory.getInstance(jaxbRefPolicyProvider, xacmlParserFactory, maxPolicySetRefDepth, expressionFactory, combiningAlgRegistry, environmentProperties)} does
 	 *             not implement {@link StaticRefPolicyProviderModule}
 	 */
-	protected <CONF extends AbstractPolicyProvider> BaseStaticRootPolicyProviderModule(ExpressionFactory expressionFactory, CombiningAlgRegistry combiningAlgRegistry,
-			XACMLParserFactory xacmlParserFactory, CONF jaxbRefPolicyProviderConf, RefPolicyProviderModule.Factory<CONF> refPolicyProviderModFactory, int maxPolicySetRefDepth,
-			EnvironmentProperties envProps) throws IllegalArgumentException
+	protected <CONF extends AbstractPolicyProvider> BaseStaticRootPolicyProviderModule(final ExpressionFactory expressionFactory, final CombiningAlgRegistry combiningAlgRegistry,
+			final XACMLParserFactory xacmlParserFactory, final CONF jaxbRefPolicyProviderConf, final RefPolicyProviderModule.Factory<CONF> refPolicyProviderModFactory, final int maxPolicySetRefDepth,
+			final EnvironmentProperties envProps) throws IllegalArgumentException
 	{
 		// create ref-policy Provider
 		if (jaxbRefPolicyProviderConf == null)

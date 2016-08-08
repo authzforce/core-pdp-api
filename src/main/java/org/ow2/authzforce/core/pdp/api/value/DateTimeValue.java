@@ -32,6 +32,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * XACML URI of this datatype
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#dateTime";
@@ -44,7 +48,7 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code dateTime} is not a valid string representation for this value datatype
 	 */
-	public DateTimeValue(String dateTime) throws IllegalArgumentException
+	public DateTimeValue(final String dateTime) throws IllegalArgumentException
 	{
 		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
 	}
@@ -57,7 +61,7 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code dateTime} does not correspond to a valid xs:dateTime
 	 */
-	public DateTimeValue(XMLGregorianCalendar dateTime) throws IllegalArgumentException
+	public DateTimeValue(final XMLGregorianCalendar dateTime) throws IllegalArgumentException
 	{
 		super(TYPE_URI, dateTime, DatatypeConstants.DATETIME);
 	}
@@ -70,14 +74,14 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code dateTime} does not correspond to a valid xs:dateTime
 	 */
-	public DateTimeValue(GregorianCalendar dateTime)
+	public DateTimeValue(final GregorianCalendar dateTime)
 	{
 		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DateTimeValue add(DurationValue<?> durationVal)
+	public DateTimeValue add(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue());
@@ -86,7 +90,7 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 
 	/** {@inheritDoc} */
 	@Override
-	public DateTimeValue subtract(DurationValue<?> durationVal)
+	public DateTimeValue subtract(final DurationValue<?> durationVal)
 	{
 		final XMLGregorianCalendar cal = (XMLGregorianCalendar) value.clone();
 		cal.add(durationVal.getUnderlyingValue().negate());

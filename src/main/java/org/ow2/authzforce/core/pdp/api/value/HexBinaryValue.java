@@ -32,6 +32,11 @@ import javax.xml.bind.DatatypeConverter;
 public final class HexBinaryValue extends SimpleValue<byte[]>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#hexBinary";
@@ -44,7 +49,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 	 * @param value
 	 *            the <code>byte []</code> value to be represented
 	 */
-	public HexBinaryValue(byte[] value)
+	public HexBinaryValue(final byte[] value)
 	{
 		super(TYPE_URI, value);
 	}
@@ -57,7 +62,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation of xs:hexBinary
 	 */
-	public HexBinaryValue(String val) throws IllegalArgumentException
+	public HexBinaryValue(final String val) throws IllegalArgumentException
 	{
 		this(DatatypeConverter.parseHexBinary(val));
 	}
@@ -76,7 +81,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		// Effective Java - Item 8
 		if (this == obj)

@@ -35,7 +35,7 @@ public abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunct
 {
 	private static final Datatype<?>[] EMPTY_DATATYPE_DEF_ARRAY = new Datatype<?>[] {};
 
-	protected FirstOrderFunction(String name)
+	protected FirstOrderFunction(final String name)
 	{
 		super(name);
 	}
@@ -66,7 +66,7 @@ public abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunct
 	public abstract FirstOrderFunctionCall<RETURN> newCall(List<Expression<?>> argExpressions, Datatype<?>... remainingArgTypes) throws IllegalArgumentException;
 
 	@Override
-	public final FunctionCall<RETURN> newCall(List<Expression<?>> argExpressions) throws IllegalArgumentException
+	public final FunctionCall<RETURN> newCall(final List<Expression<?>> argExpressions) throws IllegalArgumentException
 	{
 		return newCall(argExpressions, EMPTY_DATATYPE_DEF_ARRAY);
 	}

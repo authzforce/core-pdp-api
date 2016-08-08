@@ -37,14 +37,12 @@ public interface PDP
 	/**
 	 * Evaluates a XML/JAXB-based XACML decision request
 	 * <p>
-	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc), then the result will be a
-	 * decision of INDETERMINATE.
+	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc), then the result will be a decision of INDETERMINATE.
 	 * 
 	 * @param request
 	 *            the request to evaluate
 	 * @param namespaceURIsByPrefix
-	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context
-	 *            for XPath evaluation
+	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation
 	 * @return the response to the request
 	 */
 	Response evaluate(Request request, Map<String, String> namespaceURIsByPrefix);
@@ -59,18 +57,16 @@ public interface PDP
 	Response evaluate(Request request);
 
 	/**
-	 * Generic API (serialization-format-agnostic) for evaluating decision requests according to XACML specification. To be used instead of
-	 * {@link #evaluate(Request)} or {@link #evaluate(Request, Map)} when calling the PDP Java API directly (native Java call, e.g. embedded PDP), or when the
-	 * original request format is NOT XML.
+	 * Generic API (serialization-format-agnostic) for evaluating decision requests according to XACML specification. To be used instead of {@link #evaluate(Request)} or
+	 * {@link #evaluate(Request, Map)} when calling the PDP Java API directly (native Java call, e.g. embedded PDP), or when the original request format is NOT XML.
 	 * <p>
-	 * Note that AuthzForce PDP core implementation {@link #evaluate(Request, Map)} calls this method internally to get the final result. Therefore, for better
-	 * performances (from a caller's point of view), you should call this method directly whenever possible.
+	 * Note that AuthzForce PDP core implementation {@link #evaluate(Request, Map)} calls this method internally to get the final result. Therefore, for better performances (from a caller's point of
+	 * view), you should call this method directly whenever possible.
 	 * 
 	 * @param individualDecisionRequests
-	 *            one or more Individual Decision Requests, as defined in the XACML Multiple Decision Profile (also mentioned in the Hierarchical Resource
-	 *            Profile)
+	 *            one or more Individual Decision Requests, as defined in the XACML Multiple Decision Profile (also mentioned in the Hierarchical Resource Profile)
 	 * @return decision results, one per item of {@code individualDecisionRequests}
 	 */
-	List<Result> evaluate(List<? extends IndividualDecisionRequest> individualDecisionRequests);
+	<R extends IndividualDecisionRequest> List<Result> evaluate(List<R> individualDecisionRequests);
 
 }

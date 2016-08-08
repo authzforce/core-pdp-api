@@ -58,7 +58,7 @@ public abstract class BaseAttributeProviderModule implements CloseableAttributeP
 	 * @throws IllegalArgumentException
 	 *             if instanceId null
 	 */
-	protected BaseAttributeProviderModule(String instanceID) throws IllegalArgumentException
+	protected BaseAttributeProviderModule(final String instanceID) throws IllegalArgumentException
 	{
 		if (instanceID == null)
 		{
@@ -87,7 +87,7 @@ public abstract class BaseAttributeProviderModule implements CloseableAttributeP
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{
