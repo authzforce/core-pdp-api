@@ -28,7 +28,8 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
  * PEP actions (obligations/advice)
  * 
  */
-public interface PepActions {
+public interface PepActions
+{
 	/**
 	 * PEP action (obligation/advice) factory
 	 *
@@ -36,7 +37,8 @@ public interface PepActions {
 	 *            JAXB-annotated PEP action type
 	 * @version $Id: $
 	 */
-	public interface Factory<JAXB_T> {
+	interface Factory<JAXB_T>
+	{
 		/**
 		 * Creates instance of PEP action (obligation/advice)
 		 *

@@ -33,8 +33,8 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
- * Pre-made constant decision evaluation results corresponding to XACML NotApplicable, Permit and Deny with only the Decision element set (no obligation/advice, no returned attribute, etc.).
- * Use this to return a {@link DecisionResult} if no other element/attribute is needed in the result besides the Decision.
+ * Pre-made constant decision evaluation results corresponding to XACML NotApplicable, Permit and Deny with only the Decision element set (no obligation/advice, no returned attribute, etc.). Use this
+ * to return a {@link DecisionResult} if no other element/attribute is needed in the result besides the Decision.
  */
 public final class DecisionResults
 {
@@ -45,9 +45,9 @@ public final class DecisionResults
 
 	private static final class SimpleImmutableDecisionResult implements PdpDecisionResult
 	{
-		private static final IllegalArgumentException NULL_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Decision");
-		private static final IllegalArgumentException INVALID_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException("Not a simple decision result. Expected: NotApplicable, Permit, Deny (without any field other than the Decision)");
-		
+		private static final IllegalArgumentException INVALID_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException(
+				"Not a simple decision result. Expected: NotApplicable, Permit, Deny (without any field other than the Decision)");
+
 		private static final Result SIMPLE_NOT_APPLICABLE_XACML = new Result(DecisionType.NOT_APPLICABLE, null, null, null, null, null);
 		private static final Result SIMPLE_PERMIT_XACML = new Result(DecisionType.PERMIT, null, null, null, null, null);
 		private static final Result SIMPLE_DENY_XACML = new Result(DecisionType.DENY, null, null, null, null, null);
@@ -60,10 +60,7 @@ public final class DecisionResults
 
 		private SimpleImmutableDecisionResult(final DecisionType decision)
 		{
-			if (decision == null)
-			{
-				throw NULL_DECISION_ARGUMENT_EXCEPTION;
-			}
+			assert decision != null;
 
 			this.decision = decision;
 			this.hashCode = this.decision.hashCode();
