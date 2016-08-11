@@ -103,16 +103,6 @@ public interface DecisionResult
 	DecisionType getExtendedIndeterminate();
 
 	/**
-	 * Merge extra PEP actions and/or matched policy identifiers. Used when combining results from child Rules of Policy or child Policies of PolicySet
-	 * 
-	 * @param newPepActions
-	 *            new PEP actions
-	 * @param newMatchedPolicyIdList
-	 *            new matched policy identifiers
-	 */
-	void merge(PepActions newPepActions, List<JAXBElement<IdReferenceType>> newMatchedPolicyIdList);
-
-	/**
 	 * Convert this to XACML Result
 	 * 
 	 * @param returnedAttributes
