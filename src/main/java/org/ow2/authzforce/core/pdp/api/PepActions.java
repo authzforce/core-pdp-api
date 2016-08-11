@@ -21,44 +21,52 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.List;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeAssignment;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
 
 /**
  * PEP actions (obligations/advice)
  * 
  */
-public interface PepActions
-{
+public interface PepActions {
 	/**
-	 * Get the internal obligation list
+	 * PEP action (obligation/advice) factory
+	 *
+	 * @param <JAXB_T>
+	 *            JAXB-annotated PEP action type
+	 * @version $Id: $
+	 */
+	public interface Factory<JAXB_T> {
+		/**
+		 * Creates instance of PEP action (obligation/advice)
+		 *
+		 * @param attributeAssignments
+		 *            XML/JAXB AttributeAssignments in the PEP action
+		 * @param actionId
+		 *            action ID (ObligationId, AdviceId)
+		 * @return PEP action
+		 */
+		JAXB_T getInstance(List<AttributeAssignment> attributeAssignments, String actionId);
+
+		/**
+		 * Get name of PEP Action element in XACML model, e.g. 'Obligation'
+		 *
+		 * @return action element name
+		 */
+		String getActionXmlElementName();
+	}
+
+	/**
+	 * Get an immutable list of the obligations
 	 * 
 	 * @return obligations; empty if no obligation (always non-null)
 	 */
-	List<Obligation> getObligations();
+	List<Obligation> getObligatory();
 
 	/**
-	 * Get the internal advice list
+	 * Get an immutable list of the advice elements
 	 * 
 	 * @return advice; empty if no obligation (always non-null)
 	 */
-	List<Advice> getAdvices();
-
-	/**
-	 * Merge extra PEP actions. Used when combining results from child Rules of Policy or child Policies of PolicySet
-	 * 
-	 * @param newObligations
-	 *            new obligation list
-	 * @param newAdvices
-	 *            new advice list
-	 * 
-	 */
-	void merge(List<Obligation> newObligations, List<Advice> newAdvices);
-
-	/**
-	 * Merge extra PEP actions. Used when combining results from child Rules of Policy or child Policies of PolicySet
-	 * 
-	 * @param pepActions
-	 *            PEP actions
-	 */
-	void merge(PepActions pepActions);
+	List<Advice> getAdvisory();
 }

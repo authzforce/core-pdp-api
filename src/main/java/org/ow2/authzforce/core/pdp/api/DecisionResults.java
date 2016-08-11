@@ -33,21 +33,21 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
- * Result of evaluation of {@link Decidable} (Policy, Rule...). This is different from the final Result in the Response by the PDP as it does not have the Attributes to be included in the final
- * Result; and Obligations/Advices are packaged together in a {@link PepActions} field.
- * 
+ * Pre-made constant decision evaluation results corresponding to XACML NotApplicable, Permit and Deny with only the Decision element set (no obligation/advice, no returned attribute, etc.).
+ * Use this to return a {@link DecisionResult} if no other element/attribute is needed in the result besides the Decision.
  */
 public final class DecisionResults
 {
 	private DecisionResults()
 	{
-
+		// prevent external instantiation by making default constructor private
 	}
 
-	private static final class ImmutableSimpleDecisionResult implements DecisionResult
+	private static final class SimpleImmutableDecisionResult implements PdpDecisionResult
 	{
-		private static final IllegalArgumentException ILLEGAL_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Decision");
-
+		private static final IllegalArgumentException NULL_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Decision");
+		private static final IllegalArgumentException INVALID_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException("Not a simple decision result. Expected: NotApplicable, Permit, Deny (without any field other than the Decision)");
+		
 		private static final Result SIMPLE_NOT_APPLICABLE_XACML = new Result(DecisionType.NOT_APPLICABLE, null, null, null, null, null);
 		private static final Result SIMPLE_PERMIT_XACML = new Result(DecisionType.PERMIT, null, null, null, null, null);
 		private static final Result SIMPLE_DENY_XACML = new Result(DecisionType.DENY, null, null, null, null, null);
@@ -58,11 +58,11 @@ public final class DecisionResults
 
 		private final transient String toString;
 
-		private ImmutableSimpleDecisionResult(final DecisionType decision)
+		private SimpleImmutableDecisionResult(final DecisionType decision)
 		{
 			if (decision == null)
 			{
-				throw ILLEGAL_DECISION_ARGUMENT_EXCEPTION;
+				throw NULL_DECISION_ARGUMENT_EXCEPTION;
 			}
 
 			this.decision = decision;
@@ -86,12 +86,12 @@ public final class DecisionResults
 				return true;
 			}
 
-			if (!(obj instanceof ImmutableSimpleDecisionResult))
+			if (!(obj instanceof SimpleImmutableDecisionResult))
 			{
 				return false;
 			}
 
-			final ImmutableSimpleDecisionResult other = (ImmutableSimpleDecisionResult) obj;
+			final SimpleImmutableDecisionResult other = (SimpleImmutableDecisionResult) obj;
 			return this.decision == other.getDecision();
 		}
 
@@ -183,23 +183,23 @@ public final class DecisionResults
 				return SIMPLE_DENY_XACML;
 			}
 
-			return new Result(this.decision, null, null, null, null, null);
+			throw INVALID_DECISION_ARGUMENT_EXCEPTION;
 		}
 	}
 
 	/**
-	 * NotApplicable decision result
+	 * NotApplicable decision result where only the Decision element is set, no Status, no obligation/advice, etc.
 	 */
-	public static final DecisionResult SIMPLE_NOT_APPLICABLE = new ImmutableSimpleDecisionResult(DecisionType.NOT_APPLICABLE);
+	public static final PdpDecisionResult SIMPLE_NOT_APPLICABLE = new SimpleImmutableDecisionResult(DecisionType.NOT_APPLICABLE);
 
 	/**
 	 * Deny result with no obligation/advice/Included attribute/policy identifiers. Deny decision and nothing else.
 	 */
-	public static final DecisionResult SIMPLE_DENY = new ImmutableSimpleDecisionResult(DecisionType.DENY);
+	public static final PdpDecisionResult SIMPLE_DENY = new SimpleImmutableDecisionResult(DecisionType.DENY);
 
 	/**
 	 * Permit result with no obligation/advice/Included attribute/policy identifiers. Permit decision and nothing else.
 	 */
-	public static final DecisionResult SIMPLE_PERMIT = new ImmutableSimpleDecisionResult(DecisionType.PERMIT);
+	public static final PdpDecisionResult SIMPLE_PERMIT = new SimpleImmutableDecisionResult(DecisionType.PERMIT);
 
 }
