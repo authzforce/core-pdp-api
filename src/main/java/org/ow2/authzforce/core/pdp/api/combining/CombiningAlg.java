@@ -23,13 +23,13 @@ import java.util.List;
 import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.MutablePepActions;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
 
 /**
- * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no obligation/advice may be included in the
- * <code>Result</code> that doesn't match the permit/deny decision being returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no
- * obligations/advice may be included in the result. If the decision of the combining algorithm is PERMIT or DENY, then obligations/advice with a matching
- * fulfillOn/AppliesTo effect are also included in the result.
+ * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no obligation/advice may be included in the <code>Result</code> that doesn't match the
+ * permit/deny decision being returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no obligations/advice may be included in the result. If the decision of the combining algorithm
+ * is PERMIT or DENY, then obligations/advice with a matching fulfillOn/AppliesTo effect are also included in the result.
  * 
  * @param <T>
  *            type of combined element (Policy, Rule...)
@@ -48,10 +48,12 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 		 * 
 		 * @param context
 		 *            the request evaluation context
+		 * @param mutablePepActions
+		 *            PepActions where to add the PepActions elements returned by the evaluations of the combined elements, if any
 		 * 
 		 * @return combined result
 		 */
-		DecisionResult eval(EvaluationContext context);
+		DecisionResult eval(EvaluationContext context, MutablePepActions mutablePepActions);
 	}
 
 	/**
@@ -75,6 +77,5 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 	 * @throws IllegalArgumentException
 	 *             if {@code params} are invalid for this algorithm
 	 */
-	Evaluator getInstance(List<CombiningAlgParameter<? extends T>> params, List<? extends T> combinedElements) throws UnsupportedOperationException,
-			IllegalArgumentException;
+	Evaluator getInstance(List<CombiningAlgParameter<? extends T>> params, List<? extends T> combinedElements) throws UnsupportedOperationException, IllegalArgumentException;
 }
