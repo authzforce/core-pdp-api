@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeAssignment;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
@@ -63,12 +65,19 @@ public interface PepActions
 	 * 
 	 * @return obligations; empty if no obligation (always non-null)
 	 */
-	List<Obligation> getObligatory();
+	ImmutableList<Obligation> getObligatory();
 
 	/**
 	 * Get an immutable list of the advice elements
 	 * 
 	 * @return advice; empty if no obligation (always non-null)
 	 */
-	List<Advice> getAdvisory();
+	ImmutableList<Advice> getAdvisory();
+
+	/**
+	 * Is there any obligation/advice?
+	 * 
+	 * @return true iff there is none
+	 */
+	boolean isEmpty();
 }

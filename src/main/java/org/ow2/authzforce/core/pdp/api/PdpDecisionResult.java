@@ -24,57 +24,42 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBElement;
-
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
 
 /**
- * PDP's final evaluation result (for each Individual Decision Request as defined in XACML Multiple Decision Profile) that may
- * be converted to a XACML {@link Result} for inclusion in the final
- * {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.Response}. Compared to intermediate Policy/Rule evaluation results, it has extra fields such as the optional list of identifiers of all policies found
- * applicable during the evaluation.
+ * PDP's final evaluation result (for each Individual Decision Request as defined in XACML Multiple Decision Profile)
+ * that may be converted to a XACML {@link Result} for inclusion in the final
+ * {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.Response}. Compared to intermediate Policy/Rule evaluation
+ * results, it has extra fields such as the optional list of identifiers of all policies found applicable during the
+ * evaluation.
  * 
  */
-public interface PdpDecisionResult extends DecisionResult {
-	/**
-	 * Get identifiers of policies found applicable for the decision request
-	 * 
-	 * @return identifiers of policies found applicable for the decision
-	 *         request, or null if this feature is not supported by the PDP that
-	 *         produced this result (therefore this information is not
-	 *         available)
-	 */
-	List<JAXBElement<IdReferenceType>> getApplicablePolicyIdList();
+public interface PdpDecisionResult extends DecisionResult
+{
 
 	/**
-	 * Get identifiers of the named attributes actually used during evaluation,
-	 * i.e. for which
-	 * {@link EvaluationContext#getAttributeDesignatorResult(AttributeGUID, Datatype)}
-	 * was called. This may be useful for the caller to know on which specific
-	 * request parts the decision relied upon.
+	 * Get identifiers of the named attributes actually used during evaluation, i.e. for which
+	 * {@link EvaluationContext#getAttributeDesignatorResult(AttributeGUID, Datatype)} was called. This may be useful
+	 * for the caller to know on which specific request parts the decision relied upon.
 	 * 
 	 * @return the list of used named attributes
 	 */
 	Set<AttributeGUID> getUsedNamedAttributes();
 
 	/**
-	 * Get identifiers of the Attributes/Content parts actually used during
-	 * evaluation, i.e. for which
-	 * {@link EvaluationContext#getAttributeSelectorResult(AttributeSelectorId, Datatype)}
-	 * was called. This may be useful for the caller to know on which specific
-	 * request parts the decision relied upon.
+	 * Get identifiers of the Attributes/Content parts actually used during evaluation, i.e. for which
+	 * {@link EvaluationContext#getAttributeSelectorResult(AttributeSelectorId, Datatype)} was called. This may be
+	 * useful for the caller to know on which specific request parts the decision relied upon.
 	 * 
 	 * @return the list of used Attributes/Content(s)
 	 */
 	Set<AttributeSelectorId> getUsedExtraAttributeContents();
 
 	/**
-	 * Convert this to XACML Result. Note that an XACML Result has less
-	 * information than this.
+	 * Convert this to XACML Result. Note that an XACML Result has less information than this.
 	 * 
 	 * @param returnedAttributes
 	 *            XACML Request attributes with IncludeInResult=true

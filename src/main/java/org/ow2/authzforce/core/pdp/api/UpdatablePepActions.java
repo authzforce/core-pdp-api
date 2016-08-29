@@ -22,19 +22,21 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import com.google.common.collect.ImmutableList;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
 
 /**
- * Base PEP actions (obligations/advice)
+ * Updatable PEP actions (obligations/advice). "Updatable" means here that it only accepts new PEP actions (cannot be
+ * removed from it)
  *
  * @version $Id: $
  */
-public final class MutablePepActions implements PepActions
+public final class UpdatablePepActions implements PepActions
 {
 	// always non-null fields
 	private final List<Obligation> obligationList;
@@ -50,7 +52,7 @@ public final class MutablePepActions implements PepActions
 	 * @param advices
 	 *            advice list; null if no advice
 	 */
-	public MutablePepActions(final List<Obligation> obligations, final List<Advice> advices)
+	public UpdatablePepActions(final List<Obligation> obligations, final List<Advice> advices)
 	{
 		this.obligationList = obligations == null ? new ArrayList<Obligation>() : obligations;
 		this.adviceList = advices == null ? new ArrayList<Advice>() : advices;
@@ -59,7 +61,7 @@ public final class MutablePepActions implements PepActions
 	/**
 	 * Instantiates PEP actions set initially with empty obligation and advice list
 	 */
-	public MutablePepActions()
+	public UpdatablePepActions()
 	{
 		this(null, null);
 	}
@@ -70,9 +72,9 @@ public final class MutablePepActions implements PepActions
 	 * Get the internal obligation list
 	 */
 	@Override
-	public List<Obligation> getObligatory()
+	public ImmutableList<Obligation> getObligatory()
 	{
-		return Collections.unmodifiableList(obligationList);
+		return ImmutableList.copyOf(obligationList);
 	}
 
 	/**
@@ -81,9 +83,9 @@ public final class MutablePepActions implements PepActions
 	 * Get the internal advice list
 	 */
 	@Override
-	public List<Advice> getAdvisory()
+	public ImmutableList<Advice> getAdvisory()
 	{
-		return Collections.unmodifiableList(adviceList);
+		return ImmutableList.copyOf(adviceList);
 	}
 
 	/** {@inheritDoc} */
@@ -107,12 +109,12 @@ public final class MutablePepActions implements PepActions
 			return true;
 		}
 
-		if (!(obj instanceof MutablePepActions))
+		if (!(obj instanceof UpdatablePepActions))
 		{
 			return false;
 		}
 
-		final MutablePepActions other = (MutablePepActions) obj;
+		final UpdatablePepActions other = (UpdatablePepActions) obj;
 		return this.obligationList.equals(other.obligationList) && this.adviceList.equals(other.adviceList);
 	}
 
@@ -159,6 +161,12 @@ public final class MutablePepActions implements PepActions
 	public String toString()
 	{
 		return "[obligations=" + obligationList + ", advices=" + adviceList + "]";
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return this.obligationList.isEmpty() && this.adviceList.isEmpty();
 	}
 
 }

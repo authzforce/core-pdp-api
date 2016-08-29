@@ -23,19 +23,23 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 /**
- * Superclass of date/time attribute values, i.e. XML schema date/time values. The choice of the Java type <code>XMLGregorianCalendar</code> is based on JAXB schema-to-Java mapping spec:
+ * Superclass of date/time attribute values, i.e. XML schema date/time values. The choice of the Java type
+ * <code>XMLGregorianCalendar</code> is based on JAXB schema-to-Java mapping spec:
  * https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
  *
  * @param <TAV>
- *            type of result returned by arithmetic functions with this type of arguments: {@link #add(DurationValue)}, {@link #subtract(DurationValue)}, etc. Basically, we expect that arithmetic
- *            functions applied to this type T will return a result of the same type T.
+ *            type of result returned by arithmetic functions with this type of arguments: {@link #add(DurationValue)},
+ *            {@link #subtract(DurationValue)}, etc. Basically, we expect that arithmetic functions applied to this type
+ *            T will return a result of the same type T.
  * 
  * @version $Id: $
  */
 /*
- * Do not replace "Time" with "Temporal" in the class name because it is NOT used for Durations (dayTimeDuration, yearMonthDuration...)
+ * Do not replace "Time" with "Temporal" in the class name because it is NOT used for Durations (dayTimeDuration,
+ * yearMonthDuration...)
  */
-public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends SimpleValue<XMLGregorianCalendar> implements Comparable<TAV>
+public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends SimpleValue<XMLGregorianCalendar>
+		implements Comparable<TAV>
 {
 	/**
 	 * 
@@ -46,7 +50,9 @@ public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends Simp
 	{
 		if (!time.getXMLSchemaType().equals(xmlSchemaDatatype))
 		{
-			throw new IllegalArgumentException("Invalid XML schema type (" + time.getXMLSchemaType() + ") of value '" + time + "'. Expected: " + xmlSchemaDatatype);
+			throw new IllegalArgumentException(
+					"Invalid Attribute Value '" + time + "' (actual XML schema type: " + time.getXMLSchemaType()
+							+ ")  for specified/expected Attribute DataType '" + xmlSchemaDatatype + '"');
 		}
 
 		return time;
@@ -64,7 +70,8 @@ public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends Simp
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code datatype == null || val == null}
 	 */
-	public BaseTimeValue(final String datatypeId, final XMLGregorianCalendar val, final QName xsdDatatypeQName) throws IllegalArgumentException
+	public BaseTimeValue(final String datatypeId, final XMLGregorianCalendar val, final QName xsdDatatypeQName)
+			throws IllegalArgumentException
 	{
 		super(datatypeId, validate(val, xsdDatatypeQName));
 	}
@@ -90,7 +97,8 @@ public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends Simp
 	/**
 	 * {@inheritDoc}
 	 *
-	 * Compares internal date/time value ({@link XMLGregorianCalendar}) to another, using {@link XMLGregorianCalendar#compare(XMLGregorianCalendar)}
+	 * Compares internal date/time value ({@link XMLGregorianCalendar}) to another, using
+	 * {@link XMLGregorianCalendar#compare(XMLGregorianCalendar)}
 	 */
 	@Override
 	public final int compareTo(final TAV o) throws IllegalArgumentException
@@ -98,7 +106,8 @@ public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends Simp
 		final int result = this.value.compare(o.value);
 		if (result == DatatypeConstants.INDETERMINATE)
 		{
-			throw new IllegalArgumentException("Comparison of XML schema date/time '" + this.value + "' to '" + o.value + "' is indeterminate");
+			throw new IllegalArgumentException(
+					"Comparison of XML schema date/time '" + this.value + "' to '" + o.value + "' is indeterminate");
 		}
 
 		return result;

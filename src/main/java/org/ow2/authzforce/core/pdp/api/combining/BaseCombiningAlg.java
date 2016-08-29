@@ -18,10 +18,14 @@
  */
 package org.ow2.authzforce.core.pdp.api.combining;
 
+import java.util.List;
+
 import org.ow2.authzforce.core.pdp.api.Decidable;
 
+import com.google.common.collect.ImmutableList;
+
 /**
- * The base type for combining algorithms.
+ * The base class for combining algorithms.
  * 
  * @param <T>
  *            type of combined element (Policy, Rule...)
@@ -39,8 +43,9 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 	 * @param id
 	 *            the algorithm's id
 	 *            <p>
-	 *            WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI for
-	 *            example. That's why we use String instead.
+	 *            WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML
+	 *            schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI for example. That's why
+	 *            we use String instead.
 	 *            </p>
 	 *            <p>
 	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI
@@ -80,5 +85,39 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 	public final Class<T> getCombinedElementType()
 	{
 		return combinedElementType;
+	}
+
+	/**
+	 * This class provides a skeletal implementation of the {@link CombiningAlg.Evaluator} interface to minimize the
+	 * effort required to implement this interface.
+	 * 
+	 * @param <T>
+	 *            type of combined element
+	 */
+	public static abstract class Evaluator<T extends Decidable> implements CombiningAlg.Evaluator
+	{
+		private final ImmutableList<T> combinedElements;
+
+		/**
+		 * Creates instance
+		 * 
+		 * @param combinedElements
+		 *            combined elements
+		 */
+		public Evaluator(final List<? extends T> combinedElements)
+		{
+			assert combinedElements != null;
+			this.combinedElements = ImmutableList.copyOf(combinedElements);
+		}
+
+		/**
+		 * Get combined elements
+		 * 
+		 * @return combined elements
+		 */
+		public Iterable<T> getCombinedElements()
+		{
+			return combinedElements;
+		}
 	}
 }

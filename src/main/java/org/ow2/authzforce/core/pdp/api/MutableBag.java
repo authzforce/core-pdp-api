@@ -23,38 +23,45 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
-
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 
+import net.sf.saxon.s9api.XPathCompiler;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
+
 /**
- * Growable bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the total number of values for a given attribute - typically in a XACML request -
- * is not known in advance. For example, for the same AttributeId (e.g. with Issuer = null), there might be multiple <Attribute> elements, in which case values must be merged for later matching
- * <AttributeDesignator> evaluation. Indeed, as discussed on the xacml-dev mailing list (see https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html), the following excerpt from the XACML
- * 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same <Attribute> with same meta-data but different values should be considered equivalent to a single <Attribute> element with same
- * meta-data and merged values (multi-valued Attribute). Moreover, the conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in a multi-value bag
- * during evaluation of the AttributeDesignator.
+ * Growable bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the
+ * total number of values for a given attribute - typically in a XACML request - is not known in advance. For example,
+ * for the same AttributeId (e.g. with Issuer = null), there might be multiple <Attribute> elements, in which case
+ * values must be merged for later matching <AttributeDesignator> evaluation. Indeed, as discussed on the xacml-dev
+ * mailing list (see https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html), the following excerpt from
+ * the XACML 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same <Attribute> with same meta-data but
+ * different values should be considered equivalent to a single <Attribute> element with same meta-data and merged
+ * values (multi-valued Attribute). Moreover, the conformance test 'IIIA024' expects this behavior: the multiple
+ * subject-id Attributes are expected to result in a multi-value bag during evaluation of the AttributeDesignator.
  * <p>
- * To be instantiated only in a given evaluation request context (handled by a single thread), otherwise not guaranteed thread-safe.
+ * To be instantiated only in a given evaluation request context (handled by a single thread), otherwise not guaranteed
+ * thread-safe.
  * 
  * 
  * @param <AV>
- *            element type (primitive). Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a bag containing bags, or a bag containing values of differing types; i.e., a
- *            bag in XACML SHALL contain only values that are of the same data-type."
+ *            element type (primitive). Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of
+ *            a bag containing bags, or a bag containing values of differing types; i.e., a bag in XACML SHALL contain
+ *            only values that are of the same data-type."
  */
-public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
+public final class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 {
 	private static final UnsupportedOperationException UNSUPPORTED_ADD_OPERATION_EXCEPTION = new UnsupportedOperationException(
 			"Operation forbidden: immutable bag (toImmutable() method already called)");
 
-	private static final IllegalArgumentException ILLEGAL_JAXB_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined XACML AttributeValue");
+	private static final IllegalArgumentException ILLEGAL_JAXB_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException(
+			"Undefined XACML AttributeValue");
 
-	private static final IllegalArgumentException ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
+	private static final IllegalArgumentException ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException(
+			"Undefined attribute value");
 
 	private final DatatypeFactory<AV> elementDatatypeFactory;
 
@@ -87,7 +94,8 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 	 * @return the new parsed value
 	 * 
 	 * @throws IllegalArgumentException
-	 *             if {@code jaxbAttributeValue == null} or if the datatype of {@code jaxbAttributeValue} is different from other(s) in the attribute bag
+	 *             if {@code jaxbAttributeValue == null} or if the datatype of {@code jaxbAttributeValue} is different
+	 *             from other(s) in the attribute bag
 	 */
 	public AV addFromJAXB(final AttributeValueType jaxbAttributeValue) throws IllegalArgumentException
 	{
@@ -101,7 +109,8 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 			throw ILLEGAL_JAXB_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION;
 		}
 
-		final AV resultValue = this.elementDatatypeFactory.getInstance(jaxbAttributeValue.getContent(), jaxbAttributeValue.getOtherAttributes(), xPathCompiler);
+		final AV resultValue = this.elementDatatypeFactory.getInstance(jaxbAttributeValue.getContent(),
+				jaxbAttributeValue.getOtherAttributes(), xPathCompiler);
 		vals.add(resultValue);
 		return resultValue;
 	}
@@ -112,7 +121,8 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 	 * @param value
 	 *            AttributeValue from a XACML Attribute element
 	 * @throws IllegalArgumentException
-	 *             if {@code value == null} or if the datatype of {@code value} is different from other(s) in the attribute bag
+	 *             if {@code value == null} or if the datatype of {@code value} is different from other(s) in the
+	 *             attribute bag
 	 */
 	public void add(final AttributeValue value) throws IllegalArgumentException
 	{
@@ -129,10 +139,12 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 		try
 		{
 			vals.add(this.elementType.cast(value));
-		} catch (final ClassCastException e)
+		}
+		catch (final ClassCastException e)
 		{
-			throw new IllegalArgumentException("Invalid datatype of AttributeValue in Attribute element: " + value.getDataType() + ". Expected: " + elementType
-					+ " (datatype of other value(s) already found in the same attribute bag)");
+			throw new IllegalArgumentException(
+					"Invalid datatype of AttributeValue in Attribute element: " + value.getDataType() + ". Expected: "
+							+ elementType + " (datatype of other value(s) already found in the same attribute bag)");
 		}
 	}
 
@@ -152,8 +164,10 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 	}
 
 	/**
-	 * Appends all of the elements in the specified collection to the end of this bag, in the order that they are returned by the specified collection's iterator (optional operation). The behavior of
-	 * this operation is undefined if the specified collection is modified while the operation is in progress. (Note that this will occur if the specified collection is this list, and it's nonempty.)
+	 * Appends all of the elements in the specified collection to the end of this bag, in the order that they are
+	 * returned by the specified collection's iterator (optional operation). The behavior of this operation is undefined
+	 * if the specified collection is modified while the operation is in progress. (Note that this will occur if the
+	 * specified collection is this list, and it's nonempty.)
 	 * 
 	 * @param list
 	 *            collection containing elements to be added to this list
@@ -162,7 +176,8 @@ public class MutableBag<AV extends AttributeValue> implements Iterable<AV>
 	 * @throws ClassCastException
 	 *             if one of the values in {@code list} is not assignable to the type {@code AV}
 	 */
-	public void addAll(final Collection<? extends AttributeValue> list) throws IllegalArgumentException, ClassCastException
+	public void addAll(final Collection<? extends AttributeValue> list)
+			throws IllegalArgumentException, ClassCastException
 	{
 		for (final AttributeValue newVal : list)
 		{

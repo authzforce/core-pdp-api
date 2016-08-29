@@ -23,7 +23,8 @@ import java.util.Locale;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * Representation of an xs:string value. This class supports parsing xs:string values. All objects of this class are immutable and all methods of the class are thread-safe.
+ * Representation of an xs:string value. This class supports parsing xs:string values. All objects of this class are
+ * immutable and all methods of the class are thread-safe.
  *
  * 
  * @version $Id: $
@@ -44,7 +45,8 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	private static final StringValue FALSE = new StringValue("false");
 
 	/**
-	 * Convert the lexical XSD string argument into a String value, using {@link javax.xml.bind.DatatypeConverter#parseString(String)}.
+	 * Convert the lexical XSD string argument into a String value, using
+	 * {@link javax.xml.bind.DatatypeConverter#parseString(String)}.
 	 *
 	 * @param val
 	 *            A string containing a lexical representation of xsd:string
@@ -58,8 +60,9 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	}
 
 	/**
-	 * Convert string argument - assumed a valid xsd:string into a String value. Use with caution as no xsd:string format validation is done here. For internal purposes only. If you need proper input
-	 * validation, use {@link #parse(String)} instead.
+	 * Convert string argument - assumed a valid xsd:string into a String value. Use with caution as no xsd:string
+	 * format validation is done here. For internal purposes only. If you need proper input validation, use
+	 * {@link #parse(String)} instead.
 	 *
 	 * @param validXsdString
 	 *            A string containing a valid lexical representation of xsd:string
@@ -81,7 +84,8 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 *
 	 * @param other
 	 *            other value to be compared against
-	 * @return true if the other attribute value is not null and it represents an equivalent String ignoring case; false otherwise
+	 * @return true if the other attribute value is not null and it represents an equivalent String ignoring case; false
+	 *         otherwise
 	 */
 	public boolean equalsIgnoreCase(final StringValue other)
 	{
@@ -120,17 +124,17 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 		return result.equals(value) ? this : new StringValue(result);
 	}
 
-	/**
-	 * Get string representation of boolean
-	 *
-	 * @param value
-	 *            boolean
-	 * @return string equivalent ("true" or "false")
-	 */
-	public static StringValue getInstance(final Boolean value)
-	{
-		return value ? TRUE : FALSE;
-	}
+	// /**
+	// * Get string representation of boolean
+	// *
+	// * @param value
+	// * boolean
+	// * @return string equivalent ("true" or "false")
+	// */
+	// public static StringValue getInstance(final Boolean value)
+	// {
+	// return value.booleanValue() ? TRUE : FALSE;
+	// }
 
 	/**
 	 * Converts BooleanAttributeValue to String

@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Set;
 
 /**
  * Registry of extensions of specific type.
@@ -29,17 +30,6 @@ import java.util.Comparator;
  */
 public interface PdpExtensionRegistry<T extends PdpExtension>
 {
-	/**
-	 * Adds the extension to the registry
-	 * 
-	 * @param extension
-	 *            extension
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if an extension with same ID is already registered
-	 */
-	void addExtension(T extension) throws IllegalArgumentException;
-
 	/**
 	 * Get an extension by ID.
 	 * 
@@ -51,12 +41,19 @@ public interface PdpExtensionRegistry<T extends PdpExtension>
 	T getExtension(String identity);
 
 	/**
+	 * Get extensions
+	 * 
+	 * @return set of extensions currently registered
+	 */
+	Set<T> getExtensions();
+
+	/**
 	 * PDP extension comparator (compares IDs)
 	 *
 	 * @param <E>
 	 *            extension type
 	 */
-	class PdpExtensionComparator<E extends PdpExtension> implements Comparator<E>, Serializable
+	final class PdpExtensionComparator<E extends PdpExtension> implements Comparator<E>, Serializable
 	{
 
 		/**
