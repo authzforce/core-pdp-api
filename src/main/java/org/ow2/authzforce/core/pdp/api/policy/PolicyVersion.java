@@ -41,8 +41,10 @@ import java.util.List;
  */
 public final class PolicyVersion implements Comparable<PolicyVersion>
 {
-	private static final IllegalArgumentException UNDEFINED_VERSION_EXCEPTION = new IllegalArgumentException("Policy(Set) Version undefined");
-	private static final IllegalArgumentException UNDEFINED_COMPARED_VERSION_EXCEPTION = new IllegalArgumentException("Other Policy(Set) Version for comparison is undefined");
+	private static final IllegalArgumentException UNDEFINED_VERSION_EXCEPTION = new IllegalArgumentException(
+			"Policy(Set) Version undefined");
+	private static final IllegalArgumentException UNDEFINED_COMPARED_VERSION_EXCEPTION = new IllegalArgumentException(
+			"Other Policy(Set) Version for comparison is undefined");
 
 	private final String version;
 	private final List<Integer> numbers;
@@ -81,18 +83,20 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 		final List<Integer> intTokens = new ArrayList<>(tokens.length);
 		for (int i = 0; i < tokens.length; i++)
 		{
-			final int number;
+			final Integer number;
 			try
 			{
-				number = Integer.parseInt(tokens[i], 10);
-			} catch (final NumberFormatException e)
+				number = Integer.valueOf(tokens[i], 10);
+			}
+			catch (final NumberFormatException e)
 			{
 				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'", e);
 			}
 
-			if (number < 0)
+			if (number.intValue() < 0)
 			{
-				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'. Number #" + i + " (=" + number + ") is not a positive integer");
+				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'. Number #" + i
+						+ " (=" + number + ") is not a positive integer");
 			}
 
 			intTokens.add(number);

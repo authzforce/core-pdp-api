@@ -18,23 +18,40 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.Set;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
+import com.koloboke.collect.set.hash.HashObjSets;
+
 /**
- * Immutable bag of values (elements) as defined in §7.3.2 of XACML core specification (Attribute bags): <i>The values in a bag are not ordered, and some of the values may be duplicates. There SHALL
- * be no notion of a bag containing bags, or a bag containing values of differing types; i.e., a bag in XACML SHALL contain only values that are of the same data-type</i>
+ * Bag of values (elements) as defined in §7.3.2 of XACML core specification (Attribute bags): <i>The values in a bag
+ * are not ordered, and some of the values may be duplicates. There SHALL be no notion of a bag containing bags, or a
+ * bag containing values of differing types; i.e., a bag in XACML SHALL contain only values that are of the same
+ * data-type</i>
  * <p>
- * Immutability is required to ensure values of a given attribute remain constant during an evaluation of a request, as mandated by the XACML spec, section 7.3.5:
+ * All implementations of this interface must override all the methods of this class except the final ones (this class
+ * only throws {@link UnsupportedOperationException} for these), and guarantee the immutability of their bag instances.
+ * In particular, {@link #iterator()} must return an immutable {@link java.util.Iterator}
+ * ({@link java.util.Iterator#remove() not supported}. It is required to ensure that values of a given attribute remain
+ * constant during an evaluation of a request, as mandated by the XACML spec, section 7.3.5:
  * </p>
  * <p>
- * <i>
- * "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as if each bag of attribute values is fully populated in the context before it is first tested, and is thereafter immutable during evaluation. (That is, every subsequent test of that attribute shall use the same bag of values that was initially tested.)"
- * </i>
+ * <i> "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as
+ * if each bag of attribute values is fully populated in the context before it is first tested, and is thereafter
+ * immutable during evaluation. (That is, every subsequent test of that attribute shall use the same bag of values that
+ * was initially tested.)" </i>
+ * </p>
+ * <p>
+ * {@link #equals(Object)} are implemented according to XACML definition of set-equals function, i.e. ignoring
+ * duplicates, and {@link #hashCode()} accordingly.
+ * </p>
+ * <p>
+ * NB for developers: we could make this class abstract and let subclasses implement methods except the ones with
+ * 'final' modifier. However, we need a common Bag superclass (esp. for internal subclasses in {@link Bags}) that is
+ * concrete, in order to use it as the {@link Class} instance returned by {@link BagDatatype#getClass()} and be able to
+ * use it in {@link BagDatatype#cast(Value)} to cast any bag instance.
  * </p>
  * 
  * @param <AV>
@@ -42,57 +59,36 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
  */
 public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 {
-	private static final IllegalArgumentException NULL_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined bag datatype argument");
-
-	private final Collection<AV> values;
-	private final IndeterminateEvaluationException causeForEmpty;
-	protected final Datatype<AV> elementDatatype;
-
-	// cached toString()/hashCode() results
-	protected int hashCode = 0;
-	private transient volatile String toString = null; // Effective Java - Item 71
+	private static final UnsupportedOperationException UNSUPPORTED_OPERATION_EXCEPTION = new UnsupportedOperationException();
 
 	/**
-	 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
-	 * 
-	 * @param elementDatatype
-	 *            element datatype
-	 * 
-	 * @param values
-	 *            bag values (content).
-	 * @param causeForEmpty
-	 *            reason why this bag is empty if it is; null if it isn't
-	 * @throws IllegalArgumentException
-	 *             if {@code elementDatatype == null}
+	 * Bag content validator
 	 */
-	protected Bag(final Datatype<AV> elementDatatype, final Collection<AV> values, final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
+	public interface Validator
 	{
-		assert values != null;
 
-		if (elementDatatype == null)
-		{
-			throw NULL_DATATYPE_EXCEPTION;
-		}
-
-		this.elementDatatype = elementDatatype;
-		/*
-		 * We need to make sure that this.values cannot be modified. However, using Collections.unmodifiableCollection(values) is a bad idea here, because the result (UnmodifiableCollection class)
-		 * does not override Object#hashCode() and Object#equals(). But we want deeper equals, i.e. take internal values of collection into account for hashCode() and equals(). At the same time, to
-		 * preserve immutability, since the only way to modify is to call remove() on iterator(), we override iterator() method to make sure the remove() method is not supported.
+		/**
+		 * Validates the bag content, e.g. that it is not empty
+		 * 
+		 * @param bag
+		 *            input bag
+		 * @throws IndeterminateEvaluationException
+		 *             if validation fails
 		 */
-		this.values = values;
-		this.causeForEmpty = causeForEmpty;
+		void validate(Bag<?> bag) throws IndeterminateEvaluationException;
+
 	}
 
-	/**
-	 * Empty bag Constructor
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if {@code elementDatatype == null}
-	 */
-	protected Bag(final Datatype<AV> elementType) throws IllegalArgumentException
+	private final Datatype<AV> elementDatatype;
+
+	// cached toString()/hashCode() results
+	private volatile int hashCode = 0;
+
+	protected Bag(Datatype<AV> elementDatatype)
 	{
-		this(elementType, Collections.<AV> emptySet(), null);
+		assert elementDatatype != null;
+
+		this.elementDatatype = elementDatatype;
 	}
 
 	/**
@@ -102,63 +98,15 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	 */
 	public final Datatype<AV> getElementDatatype()
 	{
-		return elementDatatype;
+		return this.elementDatatype;
 	}
 
 	/**
-	 * Returns true iff the bag contains no value
-	 * 
-	 * @return true iff the bag contains no value
+	 * Override Object#equals() to apply XACML spec §7.3.2: "The values in a bag are not ordered, and some of the values
+	 * may be duplicates". Implemented according to XACML definition of set-equals
 	 */
-	public final boolean isEmpty()
-	{
-		return values.isEmpty();
-	}
-
-	/**
-	 * Get the reason why {@link #isEmpty()} returns true iff it does; or null if it doesn't or if reason is unknown.
-	 * 
-	 * @return reason why the bag is empty, if it is
-	 */
-	public final IndeterminateEvaluationException getReasonWhyEmpty()
-	{
-		return this.causeForEmpty;
-	}
-
-	/**
-	 * Get bag size
-	 * 
-	 * @return bag size
-	 */
-	public final int size()
-	{
-		return values.size();
-	}
-
-	/**
-	 * Returns true if this bag contains the specified element. More formally, returns true if and only if this bag contains at least one element e such that (v==null ? e==null : v.equals(e)).
-	 * 
-	 * @param v
-	 *            element whose presence in this bag is to be tested
-	 * @return true if this collection contains the specified element
-	 */
-	public final boolean contains(final AV v)
-	{
-		return values.contains(v);
-	}
-
-	/**
-	 * Get the single value in the bag if it is a singleton
-	 * 
-	 * @return the one-and-only one value in the bag; null if bag is empty or contains multiple values
-	 */
-	public final AV getSingleValue()
-	{
-		return values.isEmpty() || values.size() > 1 ? null : values.iterator().next();
-	}
-
 	@Override
-	public boolean equals(final Object other)
+	public final boolean equals(final Object other)
 	{
 		// Effective Java - Item 8
 		if (this == other)
@@ -172,39 +120,147 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 		}
 
 		final Bag<?> otherBag = (Bag<?>) other;
-		return this.elementDatatype.equals(otherBag.elementDatatype) && this.values.equals(otherBag.values);
-	}
-
-	@Override
-	public int hashCode()
-	{// immutable class -> cache this method result
-		if (hashCode == 0)
+		if (!this.elementDatatype.equals(otherBag.getElementDatatype()))
 		{
-			/*
-			 * There must be one-to-one mapping between datatype and datatype, so no need to hash both. Plus, causeForEmpty is just some optional info, ignore it in hash.
-			 */
-			hashCode = Objects.hash(elementDatatype, values);
+			return false;
 		}
 
+		/*
+		 * XACML spec §7.3.2: "The values in a bag are not ordered, and some of the values may be duplicates".
+		 */
+		/*
+		 * Check first that otherBag is a subset of this (this contains all otherBag values)
+		 */
+		final Iterator<? extends AttributeValue> otherIterator = otherBag.iterator();
+		while (otherIterator.hasNext())
+		{
+			final AttributeValue otherVal = otherIterator.next();
+			if (!contains(elementDatatype.cast(otherVal)))
+			{
+				return false;
+			}
+		}
+
+		/*
+		 * Check that this is a subset of otherBag (otherBag contains all values of this)
+		 */
+		final Bag<AV> otherBagOfAV = (Bag<AV>) otherBag;
+		final Iterator<AV> thisIterator = this.iterator();
+		while (thisIterator.hasNext())
+		{
+			if (!otherBagOfAV.contains(thisIterator.next()))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Override Object#hashCode() to apply XACML spec §7.3.2: "The values in a bag are not ordered, and some of the
+	 * values may be duplicates"
+	 */
+	@Override
+	public final int hashCode()
+	{
+		// the values in
+		if (hashCode == 0)
+		{
+			if (isEmpty())
+			{
+				hashCode = 1;
+			}
+			else
+			{
+				// bag is not empty
+				final Iterator<AV> i = iterator();
+				final AV val0 = i.next();
+				/*
+				 * XACML spec §7.3.2: "The values in a bag are not ordered". Also equals() ignores duplicates. So we
+				 * handle them like Java Set.
+				 */
+				hashCode += val0.hashCode();
+
+				if (i.hasNext())
+				{
+					final Set<AV> setView = HashObjSets.newUpdatableSet(size());
+					setView.add(val0);
+					do
+					{
+						final AV obj = i.next();
+						if (obj != null && setView.add(obj))
+						{
+							/*
+							 * XACML spec §7.3.2: "The values in a bag are not ordered". Also equals() ignores
+							 * duplicates. So we handle them like Java Set.
+							 */
+							hashCode += obj.hashCode();
+						}
+					} while (i.hasNext());
+				}
+			}
+		}
 		return hashCode;
 	}
 
-	@Override
-	public final String toString()
+	/**
+	 * Returns true iff the bag contains no value
+	 * 
+	 * @return true iff the bag contains no value
+	 */
+	public boolean isEmpty()
 	{
-		// immutable class -> cache this method result
-		if (toString == null)
-		{
-			toString = "Bag[elementType = " + elementDatatype + ", values = " + values + ", causeForEmpty = " + causeForEmpty + "]";
-		}
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
+	}
 
-		return toString;
+	/**
+	 * Get the reason why {@link #isEmpty()} returns true iff it does; or null if it doesn't or if reason is unknown.
+	 * 
+	 * @return reason why the bag is empty, if it is
+	 */
+	public IndeterminateEvaluationException getReasonWhyEmpty()
+	{
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
+	}
+
+	/**
+	 * Get bag size
+	 * 
+	 * @return bag size
+	 */
+	public int size()
+	{
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
+	}
+
+	/**
+	 * Returns true if this bag contains the specified element. More formally, returns true if and only if this bag
+	 * contains at least one element e such that (v==null ? e==null : v.equals(e)).
+	 * 
+	 * @param v
+	 *            element whose presence in this bag is to be tested
+	 * @return true if this collection contains the specified element
+	 */
+	public boolean contains(final AV v)
+	{
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
+	}
+
+	/**
+	 * Get the single value in the bag if it is a singleton
+	 * 
+	 * @return the one-and-only one value in the bag; null if bag is empty or contains multiple values
+	 */
+	public AV getSingleValue()
+	{
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
 	}
 
 	@Override
-	public final Iterator<AV> iterator()
+	public Iterator<AV> iterator()
 	{
-		return values.iterator();
+		throw UNSUPPORTED_OPERATION_EXCEPTION;
 	}
 
 }

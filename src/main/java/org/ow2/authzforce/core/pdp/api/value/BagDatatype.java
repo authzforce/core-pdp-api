@@ -29,12 +29,14 @@ import java.net.URI;
 public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 {
 
-	private static final IllegalArgumentException NULL_ARG_EXCEPTION = new IllegalArgumentException("Undefined element datatype arg");
+	private static final IllegalArgumentException NULL_ARG_EXCEPTION = new IllegalArgumentException(
+			"Undefined element datatype arg");
 
 	/**
-	 * Bag datatype ID, for internal identification purposes. This is an invalid URI on purpose, to avoid conflict with any custom XACML datatype URI (datatype extension).
+	 * Bag datatype ID, for internal identification purposes. This is an invalid URI on purpose, to avoid conflict with
+	 * any custom XACML datatype URI (datatype extension).
 	 */
-	private static final String ID = "#BAG#";
+	private static final String ID = "bag";
 
 	private final Datatype<AV> elementType;
 
@@ -42,13 +44,18 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	private final String toString;
 	private final int hashCode;
 
-	private static <V extends AttributeValue> Class<Bag<V>> getBagClass(final Datatype<V> elementDatatype) throws IllegalArgumentException
+	private static <V extends AttributeValue> Class<Bag<V>> getBagClass(final Datatype<V> elementDatatype)
+			throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
 			throw NULL_ARG_EXCEPTION;
 		}
 
+		/*
+		 * We need to create the instance of bag superclass with V as type parameter, so that we can use it to cast any
+		 * bag instance in cast(Value) method. (Therefore, we cannot use a subclass to do it, only Bag superclass.)
+		 */
 		final Bag<V> bag = new Bag<>(elementDatatype);
 		return (Class<Bag<V>>) bag.getClass();
 	}
@@ -63,7 +70,8 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	}
 
 	/**
-	 * Returns the bag element datatype (datatype of every element in a bag of this datatype). Same as {@link #getTypeParameter()}.
+	 * Returns the bag element datatype (datatype of every element in a bag of this datatype). Same as
+	 * {@link #getTypeParameter()}.
 	 * 
 	 * @return bag element datatype
 	 */

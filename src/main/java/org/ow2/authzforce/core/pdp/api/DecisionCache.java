@@ -59,7 +59,7 @@ public interface DecisionCache extends Closeable
 	 * @return a map where each entry key is an input from {@code decisionInputs}, and the value is the corresponding decision result from cache, or null if no such result found in cache. Each input
 	 *         in {@code decisionInputs} but be a key in the Map returned, and the Map size must be equal to {@code decisionInputs.size()}.
 	 */
-	<DECISION_INPUT_T extends DecisionInput> Map<DECISION_INPUT_T, DecisionResult> getAll(List<DECISION_INPUT_T> decisionInputs);
+	<DECISION_INPUT_T extends PdpDecisionInput> Map<DECISION_INPUT_T, PdpDecisionResult> getAll(List<DECISION_INPUT_T> decisionInputs);
 
 	/**
 	 * Puts a XACML decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing
@@ -68,6 +68,6 @@ public interface DecisionCache extends Closeable
 	 * @param resultsByRequest
 	 *            (request, result) pairs as key-value pairs to be cached
 	 */
-	<DECISION_INPUT_T extends DecisionInput> void putAll(Map<DECISION_INPUT_T, DecisionResult> resultsByRequest);
+	<DECISION_INPUT_T extends PdpDecisionInput> void putAll(Map<DECISION_INPUT_T, PdpDecisionResult> resultsByRequest);
 
 }

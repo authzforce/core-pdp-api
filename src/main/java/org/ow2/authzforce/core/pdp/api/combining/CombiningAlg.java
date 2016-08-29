@@ -20,15 +20,22 @@ package org.ow2.authzforce.core.pdp.api.combining;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import org.ow2.authzforce.core.pdp.api.Decidable;
-import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.ExtendedDecision;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
+import org.ow2.authzforce.core.pdp.api.UpdatableList;
+import org.ow2.authzforce.core.pdp.api.UpdatablePepActions;
+
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 
 /**
- * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no obligation/advice may be included in the
- * <code>Result</code> that doesn't match the permit/deny decision being returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no
- * obligations/advice may be included in the result. If the decision of the combining algorithm is PERMIT or DENY, then obligations/advice with a matching
+ * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no
+ * obligation/advice may be included in the <code>Result</code> that doesn't match the permit/deny decision being
+ * returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no obligations/advice may be included in
+ * the result. If the decision of the combining algorithm is PERMIT or DENY, then obligations/advice with a matching
  * fulfillOn/AppliesTo effect are also included in the result.
  * 
  * @param <T>
@@ -48,10 +55,21 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 		 * 
 		 * @param context
 		 *            the request evaluation context
+		 * @param updatablePepActions
+		 *            output collection where to add the obligation/advice elements returned by the evaluations of the
+		 *            combined elements, if any
+		 * @param updatableApplicablePolicyIdList
+		 *            output list where to add policies found "applicable" during evaluation if
+		 *            {@code context.isApplicablePolicyIdListRequested()}. See
+		 *            {@link EvaluationContext#isApplicablePolicyIdListRequested()} for a definition of "applicable" in
+		 *            this context. The caller must set this to null iff
+		 *            {@code !context.isApplicablePolicyIdListRequested()} (the list of applicable policies is not
+		 *            requested).
 		 * 
 		 * @return combined result
 		 */
-		DecisionResult eval(EvaluationContext context);
+		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions,
+				UpdatableList<JAXBElement<IdReferenceType>> updatableApplicablePolicyIdList);
 	}
 
 	/**
@@ -75,6 +93,6 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 	 * @throws IllegalArgumentException
 	 *             if {@code params} are invalid for this algorithm
 	 */
-	Evaluator getInstance(List<CombiningAlgParameter<? extends T>> params, List<? extends T> combinedElements) throws UnsupportedOperationException,
-			IllegalArgumentException;
+	Evaluator getInstance(List<CombiningAlgParameter<? extends T>> params, List<? extends T> combinedElements)
+			throws UnsupportedOperationException, IllegalArgumentException;
 }

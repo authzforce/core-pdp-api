@@ -1,6 +1,24 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+
+## 7.0.0
+### Added
+- Dependency: com.koloboke:koloboke-impl-jdk6-7:1.0.0 for better (performance and API) HashMap/HashSet. More info:
+http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/
+
+### Changed
+- CombiningAlg.Evaluator (Combining Algorithm evaluator interface): 
+  - Return type changed to ExtendedDecision (Decision, Status, Extended Indeterminate if Decision is Indeterminate), simpler than formerly DecisionResult
+  - evaluate() takes 2 extra "out" parameters: UpdatablePepActions and UpdatableApplicablePolicies used to add/return PEP actions and applicable policies collected during evaluation
+- DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow to handle 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
+- EvaluationContext interface: addApplicablePolicy(...) replaces by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
+- Deprecated Expression#getJAXBElement() usually used to get the original XACML from which the Expression was parsed (no longer considered useful)
+- Bag#equals() re-implemented like XACML function set-equals
+- Switch implementation of unmodifidable lists to Guava ImmutableList
+- Made all implementations of DecisionResult immutable
+
+
 ## 6.0.0
 ### Changed 
 - Project parent version (3.4.0): all JAXB-annotated classes derived from XACML schema now implements java.io.Serializable interface. This affects subclasses StatusHelper, CombinerParameterEvaluator and concrete XXXValue classes (extending XACML AttributeValue)
@@ -8,7 +26,7 @@ All notable changes to this project are documented in this file following the [K
 - IndividualDecisionRequest#isApplicablePolicyIdentifiersReturned() method renamed to isApplicablePolicyIdListReturned()
 
 ### Removed
-- CombiningAlgSet and FunctionSet classes (Github issue #1), now useless.
+- CombiningAlgSet and FunctionSet classes (GitHub issue #1), now useless.
 
 
 ## 5.0.0

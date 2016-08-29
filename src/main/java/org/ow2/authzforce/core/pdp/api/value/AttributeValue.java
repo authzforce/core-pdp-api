@@ -27,14 +27,18 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
-
 import org.w3c.dom.Element;
 
+import com.google.common.base.Preconditions;
+import com.koloboke.collect.map.hash.HashObjObjMaps;
+
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
+
 /**
- * The base type for all atomic/non-bag values used in a policy or request/response, this abstract class represents a value for a given attribute type. All the standard primitive datatypes defined in
- * the XACML specification extend this. If you want to provide a new datatype, extend {@link DatatypeFactory} to provide a factory for it. Following JAXB fields (inherited from
- * {@link AttributeValueType}) are made immutable by this class:
+ * The base type for all atomic/non-bag values used in a policy or request/response, this abstract class represents a
+ * value for a given attribute type. All the standard primitive datatypes defined in the XACML specification extend
+ * this. If you want to provide a new datatype, extend {@link DatatypeFactory} to provide a factory for it. Following
+ * JAXB fields (inherited from {@link AttributeValueType}) are made immutable by this class:
  * <ul>
  * <li>content (also accessible via {@link #getContent()} )</li>
  * <li>dataType (also accessible via {@link #getDataType()})</li>
@@ -51,9 +55,11 @@ public abstract class AttributeValue extends AttributeValueType implements Value
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report
-	 * indicates it should be and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance matters for performance: https://www.java.net/node/666491 The
-	 * alternative would be to use ThreadLocal to limit thread-safety issues in the future.
+	 * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types.
+	 * DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report indicates it should be
+	 * and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance
+	 * matters for performance: https://www.java.net/node/666491 The alternative would be to use ThreadLocal to limit
+	 * thread-safety issues in the future.
 	 */
 	protected static final DatatypeFactory XML_TEMPORAL_DATATYPE_FACTORY;
 	static
@@ -61,15 +67,17 @@ public abstract class AttributeValue extends AttributeValueType implements Value
 		try
 		{
 			XML_TEMPORAL_DATATYPE_FACTORY = DatatypeFactory.newInstance();
-		} catch (final DatatypeConfigurationException e)
+		}
+		catch (final DatatypeConfigurationException e)
 		{
-			throw new RuntimeException("Error instantiating XML datatype factory for parsing strings corresponding to XML schema date/time/duration values into Java types", e);
+			throw new RuntimeException(
+					"Error instantiating XML datatype factory for parsing strings corresponding to XML schema date/time/duration values into Java types",
+					e);
 		}
 	}
 
-	private static final IllegalArgumentException UNDEF_ATTR_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined attribute datatype");
-
-	private static final UnsupportedOperationException UNSUPPORTED_SET_DATATYPE_OPERATION_EXCEPTION = new UnsupportedOperationException("AttributeValue.setDataType() not allowed");
+	private static final UnsupportedOperationException UNSUPPORTED_SET_DATATYPE_OPERATION_EXCEPTION = new UnsupportedOperationException(
+			"AttributeValue.setDataType() not allowed");
 
 	/*
 	 * (non-Javadoc)
@@ -87,30 +95,25 @@ public abstract class AttributeValue extends AttributeValueType implements Value
 	 * Default constructor
 	 * 
 	 * @param datatypeId
-	 *            datatype ID. Note: Do not use the Datatype class here, because if we do, we break the acyclic dependency principle
+	 *            datatype ID. Note: Do not use the Datatype class here, because if we do, we break the acyclic
+	 *            dependency principle
 	 * @param content
-	 *            list of JAXB content elements of the following types: {@link String}, {@link Element}. Made immutable by this constructor.
+	 *            list of JAXB content elements of the following types: {@link String}, {@link Element}. Made immutable
+	 *            by this constructor.
 	 * @param otherAttributes
 	 *            other attributes, made immutable by this constructor.
 	 * @throws IllegalArgumentException
 	 *             if {@code datatype == null}
 	 */
-	protected AttributeValue(final String datatypeId, final List<Serializable> content, final Map<QName, String> otherAttributes) throws IllegalArgumentException
+	protected AttributeValue(final String datatypeId, final List<Serializable> content,
+			final Map<QName, String> otherAttributes) throws IllegalArgumentException
 	{
 		// assert datatype != null;
 		// assert content != null;
 		// make fields immutable (datatype made immutable through overriding setDatatype())
-		super(content == null ? null : Collections.unmodifiableList(content), validateAndGetId(datatypeId), otherAttributes == null ? null : Collections.unmodifiableMap(otherAttributes));
-	}
-
-	private static String validateAndGetId(final String datatypeId)
-	{
-		if (datatypeId == null)
-		{
-			throw UNDEF_ATTR_DATATYPE_EXCEPTION;
-		}
-
-		return datatypeId;
+		super(content == null ? null : Collections.unmodifiableList(content),
+				Preconditions.checkNotNull(datatypeId, "Undefined attribute datatype"),
+				otherAttributes == null ? null : HashObjObjMaps.newImmutableMap(otherAttributes));
 	}
 
 }

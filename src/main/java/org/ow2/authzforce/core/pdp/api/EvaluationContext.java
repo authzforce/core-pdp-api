@@ -22,16 +22,17 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.sf.saxon.s9api.XdmNode;
-
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
+import net.sf.saxon.s9api.XdmNode;
+
 /**
- * Manages context for the policy evaluation of a given authorization decision request. Typically, an instance of this is instantiated whenever the PDP gets a request and needs to perform an
- * evaluation to a authorization decision. Such a context is used and possibly updated all along the evaluation of the request.
+ * Manages context for the policy evaluation of a given authorization decision request. Typically, an instance of this
+ * is instantiated whenever the PDP gets a request and needs to perform an evaluation to a authorization decision. Such
+ * a context is used and possibly updated all along the evaluation of the request.
  * 
  */
 public interface EvaluationContext
@@ -40,7 +41,8 @@ public interface EvaluationContext
 	/**
 	 * Returns available context evaluation result for given AttributeDesignator.
 	 * <p>
-	 * WARNING: java.net.URI cannot be used here for XACML datatype/category/id, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI. [1]
+	 * WARNING: java.net.URI cannot be used here for XACML datatype/category/id, because not equivalent to XML schema
+	 * anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI. [1]
 	 * http://www.w3.org/TR/xmlschema-2/#anyURI
 	 * </p>
 	 * 
@@ -49,26 +51,33 @@ public interface EvaluationContext
 	 * @param attributeDatatype
 	 *            attribute datatype
 	 * 
-	 * @return attribute value(s), null iff attribute unknown (not set) in this context, empty if attribute known in this context but no value
+	 * @return attribute value(s), null iff attribute unknown (not set) in this context, empty if attribute known in
+	 *         this context but no value
 	 * @throws IndeterminateEvaluationException
-	 *             if error occurred trying to determine the attribute value(s) in context. This is different from finding without error that the attribute is not in the context (and/or no value),
-	 *             e.g. if there is a result but type is different from {@code datatypeClass}.
+	 *             if error occurred trying to determine the attribute value(s) in context. This is different from
+	 *             finding without error that the attribute is not in the context (and/or no value), e.g. if there is a
+	 *             result but type is different from {@code datatypeClass}.
 	 */
-	<AV extends AttributeValue> Bag<AV> getAttributeDesignatorResult(AttributeGUID attributeGUID, Datatype<AV> attributeDatatype) throws IndeterminateEvaluationException;
+	<AV extends AttributeValue> Bag<AV> getAttributeDesignatorResult(AttributeGUID attributeGUID,
+			Datatype<AV> attributeDatatype) throws IndeterminateEvaluationException;
 
 	/**
-	 * Get immutable iterator over the context attributes. DO NOT ever use this method to retrieve one or more specific attributes, in which case you must use
-	 * {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} instead. This is only for iterating over all the attributes, e.g. for debugging/auditing.
+	 * Get immutable iterator over the context attributes. DO NOT ever use this method to retrieve one or more specific
+	 * attributes, in which case you must use {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} instead.
+	 * This is only for iterating over all the attributes, e.g. for debugging/auditing.
 	 * 
-	 * @return context attributes iterator (implementations must guarantee that the iterator is immutable, i.e. does not allow changing the internal context)
+	 * @return context attributes iterator (implementations must guarantee that the iterator is immutable, i.e. does not
+	 *         allow changing the internal context)
 	 */
 	Iterator<Entry<AttributeGUID, Bag<?>>> getAttributes();
 
 	/**
-	 * Put Attribute values in the context, only if the attribute is not already known to this context. Indeed, an attribute value cannot be overridden once it is set in the context to comply with
-	 * 7.3.5 Attribute retrieval: "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as if each bag of attribute values is fully populated
-	 * in the context before it is first tested, and is thereafter immutable during evaluation." Therefore, {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} should be called always
-	 * before calling this, for the same {@code attributeGUID}
+	 * Put Attribute values in the context, only if the attribute is not already known to this context. Indeed, an
+	 * attribute value cannot be overridden once it is set in the context to comply with 7.3.5 Attribute retrieval:
+	 * "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as
+	 * if each bag of attribute values is fully populated in the context before it is first tested, and is thereafter
+	 * immutable during evaluation." Therefore, {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} should be
+	 * called always before calling this, for the same {@code attributeGUID}
 	 * 
 	 * @param attributeGUID
 	 *            attribute's global ID
@@ -79,28 +88,32 @@ public interface EvaluationContext
 	boolean putAttributeDesignatorResultIfAbsent(AttributeGUID attributeGUID, Bag<?> result);
 
 	/**
-	 * Returns available context evaluation result for a given AttributeSelector. This feature is optional. Any implementation that does not implement this method may throw
-	 * {@link UnsupportedOperationException}.
+	 * Returns available context evaluation result for a given AttributeSelector. This feature is optional. Any
+	 * implementation that does not implement this method may throw {@link UnsupportedOperationException} .
 	 * <p>
-	 * WARNING: java.net.URI cannot be used here for XACML datatype/category/contextSelectorId, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in
-	 * java.net.URI. [1] http://www.w3.org/TR/xmlschema-2/#anyURI
+	 * WARNING: java.net.URI cannot be used here for XACML datatype/category/contextSelectorId, because not equivalent
+	 * to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI. [1]
+	 * http://www.w3.org/TR/xmlschema-2/#anyURI
 	 * </p>
 	 * 
 	 * @param attributeSelectorId
 	 *            AttributeSelector ID
 	 * @param attributeDatatype
 	 *            expected datatype (type of each element in the result bag)
-	 * @return attribute value(s), null iff AttributeSelector's bag of values unknown (not set) in this context because not evaluated yet; empty if it was evaluated in this context but not result,
-	 *         i.e. bag is empty
+	 * @return attribute value(s), null iff AttributeSelector's bag of values unknown (not set) in this context because
+	 *         not evaluated yet; empty if it was evaluated in this context but not result, i.e. bag is empty
 	 * @throws IndeterminateEvaluationException
-	 *             if error occurred trying to determine the result in context. This is different from finding without error that the result is not in the context (and/or no value), e.g. if there is a
-	 *             result but type is different from {@code datatypeClass}.
+	 *             if error occurred trying to determine the result in context. This is different from finding without
+	 *             error that the result is not in the context (and/or no value), e.g. if there is a result but type is
+	 *             different from {@code datatypeClass}.
 	 */
-	<AV extends AttributeValue> Bag<AV> getAttributeSelectorResult(AttributeSelectorId attributeSelectorId, Datatype<AV> attributeDatatype) throws IndeterminateEvaluationException;
+	<AV extends AttributeValue> Bag<AV> getAttributeSelectorResult(AttributeSelectorId attributeSelectorId,
+			Datatype<AV> attributeDatatype) throws IndeterminateEvaluationException;
 
 	/**
-	 * Put an Attribute Selector's values in the context, only if the AttributeSelector has not been already evaluated in this context. Therefore
-	 * {@link #getAttributeSelectorResult(AttributeSelectorId, Datatype)} should be called always before calling this, for the same {@code attributeSelectorId}
+	 * Put an Attribute Selector's values in the context, only if the AttributeSelector has not been already evaluated
+	 * in this context. Therefore {@link #getAttributeSelectorResult(AttributeSelectorId, Datatype)} should be called
+	 * always before calling this, for the same {@code attributeSelectorId}
 	 * 
 	 * @param attributeSelectorId
 	 *            AttributeSelector ID
@@ -110,10 +123,12 @@ public interface EvaluationContext
 	 * @throws IndeterminateEvaluationException
 	 *             if AttributeSelector evaluation is not supported (this is an optional feature of XACML specification)
 	 */
-	boolean putAttributeSelectorResultIfAbsent(AttributeSelectorId attributeSelectorId, Bag<?> result) throws IndeterminateEvaluationException;
+	boolean putAttributeSelectorResultIfAbsent(AttributeSelectorId attributeSelectorId, Bag<?> result)
+			throws IndeterminateEvaluationException;
 
 	/**
-	 * Returns the {@literal<Content>} of the {@literal<Attibutes>} identified by a given category, to be used for AttributeSelector evaluation.
+	 * Returns the {@literal<Content>} of the {@literal<Attibutes>} identified by a given category, to be used for
+	 * AttributeSelector evaluation.
 	 * 
 	 * @param category
 	 *            category of the Attributes element from which to get the Content.
@@ -124,8 +139,8 @@ public interface EvaluationContext
 	XdmNode getAttributesContent(String category);
 
 	/**
-	 * Get value of a VariableDefinition's expression evaluated in this context and whose value has been cached with {@link #putVariableIfAbsent(String, Value)} . To be used when evaluating
-	 * VariableReferences.
+	 * Get value of a VariableDefinition's expression evaluated in this context and whose value has been cached with
+	 * {@link #putVariableIfAbsent(String, Value)} . To be used when evaluating VariableReferences.
 	 * 
 	 * @param variableId
 	 *            identifies the VariableDefinition
@@ -135,14 +150,17 @@ public interface EvaluationContext
 	 * @throws IndeterminateEvaluationException
 	 *             if actual datatype of variable value in context does not match expected {@code datatype}
 	 */
-	<V extends Value> V getVariableValue(String variableId, Datatype<V> datatype) throws IndeterminateEvaluationException;
+	<V extends Value> V getVariableValue(String variableId, Datatype<V> datatype)
+			throws IndeterminateEvaluationException;
 
 	/**
-	 * Caches the value of a VariableDefinition's expression evaluated in this context only if variable is not already set in this context, for later retrieval by
-	 * {@link #getVariableValue(String, Datatype)} when evaluating ValueReferences to the same VariableId.
+	 * Caches the value of a VariableDefinition's expression evaluated in this context only if variable is not already
+	 * set in this context, for later retrieval by {@link #getVariableValue(String, Datatype)} when evaluating
+	 * ValueReferences to the same VariableId.
 	 * <p>
-	 * The variable is set only if it was absent from context. In other words, this method does/must not allow setting the same variable twice. The reason is compliance with XACML spec 7.8
-	 * VariableReference evaluation: "the value of an Expression element remains the same for the entire policy evaluation."
+	 * The variable is set only if it was absent from context. In other words, this method does/must not allow setting
+	 * the same variable twice. The reason is compliance with XACML spec 7.8 VariableReference evaluation: "the value of
+	 * an Expression element remains the same for the entire policy evaluation."
 	 * </p>
 	 * 
 	 * @param variableId
@@ -199,24 +217,34 @@ public interface EvaluationContext
 	Object remove(String key);
 
 	/**
-	 * Flag representing XACML Request ReturnPolicyIdList
+	 * Get an immutable set of the identifiers of the named attributes actually used during evaluation, i.e. for which
+	 * {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} was called.
+	 * <p>
+	 * NB: this is different from the attributes identified in {@link #getAttributes()} since these include all original
+	 * Request attributes, some of which may not be used actually during the policy evaluation (e.g. if no
+	 * AttributeDesignator matches, or the evaluation returns before reaching any matching AttributeDesignator).
+	 * Therefore, there may be as much or less attributes in the
 	 * 
-	 * @return true iff list of matched policy IDs must be returned
-	 */
-	boolean isApplicablePolicyIdListReturned();
-
-	/**
-	 * Get identifiers of the named attributes actually used during evaluation, i.e. for which {@link #getAttributeDesignatorResult(AttributeGUID, Datatype)} was called
-	 * 
-	 * @return the list of used named attributes, or null if this method is not supported by the PDP or not requested in evaluation parameters
+	 * @return the list of named attributes used during evaluation
 	 */
 	Set<AttributeGUID> getUsedNamedAttributes();
 
 	/**
-	 * Get identifiers of the Attributes/Content parts actually used during evaluation, i.e. for which {@link #getAttributeSelectorResult(AttributeSelectorId, Datatype)} was called
+	 * Get an immutable set of the identifiers of the Attributes/Content parts actually used during evaluation, i.e. for
+	 * which {@link #getAttributeSelectorResult(AttributeSelectorId, Datatype)} was called
 	 * 
-	 * @return the list of used Attributes/Content(s), or null if this method is not supported by the PDP or not requested in evaluation parameters
+	 * @return the list of Attributes/Content(s) used during evaluation
 	 */
 	Set<AttributeSelectorId> getUsedExtraAttributeContents();
+
+	/**
+	 * Equivalent of XACML Request ReturnPolicyIdList attribute. XACML §5.4.2: "This attribute is used to request that
+	 * the PDP return a list of all fully applicable policies and policy sets which were used in the decision as a part
+	 * of the decision response." For a more precise definition of "applicable" in this context, see
+	 * {@link DecisionResult#getApplicablePolicies()}.
+	 * 
+	 * @return true iff original XACML Request's ReturnPolicyIdList=true
+	 */
+	boolean isApplicablePolicyIdListRequested();
 
 }

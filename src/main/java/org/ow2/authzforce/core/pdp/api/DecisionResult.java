@@ -21,105 +21,53 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.xml.bind.JAXBElement;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+import com.google.common.collect.ImmutableList;
 
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 
 /**
- * Result of evaluation of {@link Decidable} (Policy, Rule...). This is different from the final Result in the Response by the PDP as it does not have the Attributes to be included in the final
- * Result; and Obligations/Advices are packaged together in a {@link PepActions} field.
+ * Result of evaluation of {@link Decidable} (Policy, Rule...) with Obligations/Advice elements packaged together in a
+ * {@link PepActions} field. This is used as intermediate result by the PDP and therefore it is different from the final
+ * Result in the Response by the PDP since, for instance, it does not have the optional list of identifiers of all
+ * policies found applicable during the evaluation (see {@link PdpDecisionResult} for more information).
  * 
  */
-public interface DecisionResult
+public interface DecisionResult extends ExtendedDecision
 {
 
 	/**
-	 * Get XACML Decision
-	 * 
-	 * @return decision
-	 */
-	DecisionType getDecision();
-
-	/**
-	 * Get PEP actions (Obligations/Advices)
+	 * Get PEP actions (Obligations/Advices), may be null if the decision is neither Permit or Deny
 	 * 
 	 * @return PEP actions
 	 */
-	PepActions getPepActions();
+	ImmutablePepActions getPepActions();
 
 	/**
-	 * Status code/message/detail
-	 * 
-	 * @return status
-	 */
-	Status getStatus();
-
-	/**
-	 * Get identifiers of policies found applicable for the decision request
-	 * 
-	 * @return identifiers of policies found applicable for the decision request, or null if this feature is not supported by the PDP that produced this result (therefore this information is not
-	 *         available)
-	 */
-	List<JAXBElement<IdReferenceType>> getApplicablePolicyIdList();
-
-	/**
-	 * Get identifiers of the named attributes actually used during evaluation, i.e. for which {@link EvaluationContext#getAttributeDesignatorResult(AttributeGUID, Datatype)} was called. This may be
-	 * useful for the caller to know on which specific request parts the decision relied upon.
-	 * 
-	 * @return the list of used named attributes
-	 */
-	Set<AttributeGUID> getUsedNamedAttributes();
-
-	/**
-	 * Get identifiers of the Attributes/Content parts actually used during evaluation, i.e. for which {@link EvaluationContext#getAttributeSelectorResult(AttributeSelectorId, Datatype)} was called.
-	 * This may be useful for the caller to know on which specific request parts the decision relied upon.
-	 * 
-	 * @return the list of used Attributes/Content(s)
-	 */
-	Set<AttributeSelectorId> getUsedExtraAttributeContents();
-
-	/**
-	 * Provides the Extended Indeterminate value, only in case {@link #getDecision()} returns {@value DecisionType#INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0
-	 * core: <i>potential effect value which could have occurred if there would not have been an error causing the “Indeterminate”</i>. We use the following convention:
+	 * Get the list of the "applicable" policy elements (XACML Policy/PolicySet elements) that contributed to this
+	 * decision.
+	 * <p>
+	 * The XACML specification is ambiguous about what is considered an "applicable" policy, especially it does not
+	 * state clearly which policies should be added to the PolicyIdentifierList in the final XACML Result. See the
+	 * discussion here for more info: https://lists.oasis-open.org/archives/xacml-comment/201605/msg00004.html. Here we
+	 * define an "applicable" policy more explicitly:
+	 * <p>
+	 * A policy is "applicable" if and only if its evaluation result is different from NotApplicable (not NotApplicable
+	 * means Applicable, shouldn't it?), and one of these two conditions is met:
 	 * <ul>
-	 * <li>{@link DecisionType#DENY} means "Indeterminate{D}"</li>
-	 * <li>{@link DecisionType#PERMIT} means "Indeterminate{P}"</li>
-	 * <li>{@link DecisionType#INDETERMINATE} means "Indeterminate{DP}"</li>
-	 * <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
+	 * <li>The policy/policy reference has no enclosing policy, i.e. it is the root policy in PDP's evaluation.</li>
+	 * <li>The policy has an enclosing policy and the enclosing policy is "applicable". (This definition is
+	 * recursive.)</li>
 	 * </ul>
+	 * More formally:
+	 * {@code isApplicable(policy) iff evaluate(policy) != NotApplicable && (policy.parent == null || isApplicable(policy.parent)) }
 	 * 
-	 * @return extended Indeterminate value
-	 * 
+	 * @return identifiers of policies found applicable for the decision request. Must be null if and only if the
+	 *         decision is NotApplicable. In particular, if the decision is different from NotApplicable but no
+	 *         applicable policy is returned (e.g. it was not requested to return such a list in the request), the
+	 *         returned list must be an empty list, not null.
 	 */
-	DecisionType getExtendedIndeterminate();
-
-	/**
-	 * Merge extra PEP actions and/or matched policy identifiers. Used when combining results from child Rules of Policy or child Policies of PolicySet
-	 * 
-	 * @param newPepActions
-	 *            new PEP actions
-	 * @param newMatchedPolicyIdList
-	 *            new matched policy identifiers
-	 */
-	void merge(PepActions newPepActions, List<JAXBElement<IdReferenceType>> newMatchedPolicyIdList);
-
-	/**
-	 * Convert this to XACML Result
-	 * 
-	 * @param returnedAttributes
-	 *            XACML Request attributes with IncludeInResult=true
-	 * 
-	 * @return XACML Result
-	 */
-	Result toXACMLResult(List<Attributes> returnedAttributes);
+	ImmutableList<JAXBElement<IdReferenceType>> getApplicablePolicies();
 
 }

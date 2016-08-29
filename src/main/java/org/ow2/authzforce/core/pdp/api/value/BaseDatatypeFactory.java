@@ -29,8 +29,10 @@ import java.net.URI;
  */
 public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> implements DatatypeFactory<INSTANCE_AV>
 {
-	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException("Undefined instanceClass argument");
-	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException("Undefined datatypeId argument");
+	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException(
+			"Undefined instanceClass argument");
+	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException(
+			"Undefined datatypeId argument");
 
 	/**
 	 * Primitive datatype
@@ -38,11 +40,12 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 	 * @param <AV>
 	 *            attribute value type
 	 */
-	private static class PrimitiveDatatype<AV extends AttributeValue> extends Datatype<AV>
+	private static final class PrimitiveDatatype<AV extends AttributeValue> extends Datatype<AV>
 	{
 		private final transient int hashCode;
 
-		private PrimitiveDatatype(final Class<AV> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
+		private PrimitiveDatatype(final Class<AV> valueClass, final String id, final URI functionIdPrefix)
+				throws IllegalArgumentException
 		{
 			super(valueClass, id, functionIdPrefix);
 			// there should be one-to-one mapping between valueClass and id, so hashing
@@ -108,7 +111,8 @@ public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> im
 	private final transient int hashCode;
 	private final transient String toString;
 
-	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
+	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId,
+			final URI functionIdPrefix)
 	{
 		if (instanceClass == null)
 		{
