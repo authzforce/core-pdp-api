@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
-## Unreleased
+## 7.0.0
 ### Added
 - Dependency: com.koloboke:koloboke-impl-jdk6-7:1.0.0 for better (performance and API) HashMap/HashSet. More info:
 http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/
@@ -15,10 +15,8 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
 - EvaluationContext interface: addApplicablePolicy(...) replaces by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
 - Deprecated Expression#getJAXBElement() usually used to get the original XACML from which the Expression was parsed (no longer considered useful)
 - Bag#equals() re-implemented like XACML function set-equals
-- Switch implementation of unmodifidable lists to Guava's ImmutableList
+- Switch implementation of unmodifidable lists to Guava ImmutableList
 - Made all implementations of DecisionResult immutable
-
-### Fixed
 
 
 ## 6.0.0
