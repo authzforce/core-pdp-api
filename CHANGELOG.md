@@ -12,10 +12,10 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
   - Return type changed to ExtendedDecision (Decision, Status, Extended Indeterminate if Decision is Indeterminate), simpler than formerly DecisionResult
   - evaluate() takes 2 extra "out" parameters: UpdatablePepActions and UpdatableApplicablePolicies used to add/return PEP actions and applicable policies collected during evaluation
 - DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow to handle 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
-- EvaluationContext interface: addApplicablePolicy(...) replaces by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
+- EvaluationContext interface: addApplicablePolicy(...) replaced by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
 - Deprecated Expression#getJAXBElement() usually used to get the original XACML from which the Expression was parsed (no longer considered useful)
 - Bag#equals() re-implemented like XACML function set-equals
-- Switch implementation of unmodifidable lists to Guava ImmutableList
+- Change implementation of unmodifidable lists to Guava ImmutableList
 - Made all implementations of DecisionResult immutable
 
 
