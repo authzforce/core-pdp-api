@@ -108,7 +108,7 @@ public final class FirstOrderBagFunctions
 				throw invalidArgEmptyException;
 			}
 
-			return bag.getSingleValue();
+			return bag.getSingleElement();
 		}
 	}
 
