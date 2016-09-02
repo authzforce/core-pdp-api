@@ -23,12 +23,10 @@ import java.util.Objects;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeSelectorType;
 
 /**
- * AttributeSelector identifier (category, contextSelectorId, path). Why not use AttributeSelector directly? Because we
- * don't care about MustBePresent or Datatype for lookup here. This is used for example as key in a map to retrieve
- * corresponding AttributeValue when it has already been evaluated.
+ * AttributeSelector identifier (category, contextSelectorId, path). Why not use AttributeSelector directly? Because we don't care about MustBePresent or Datatype for lookup here. This is used for
+ * example as key in a map to retrieve corresponding AttributeValue when it has already been evaluated.
  * <p>
- * WARNING: java.net.URI cannot be used here for XACML category and ContextSelectorId, because not equivalent to XML
- * schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
+ * WARNING: java.net.URI cannot be used here for XACML category and ContextSelectorId, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
  * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
@@ -37,10 +35,8 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeSelectorType;
  */
 public final class AttributeSelectorId
 {
-	private static final IllegalArgumentException NULL_PATH_ARGUMENT_EXCEPTION = new IllegalArgumentException(
-			"Undefined AttributeSelector Path");
-	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException(
-			"Undefined AttributeSelector Category");
+	private static final IllegalArgumentException NULL_PATH_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeSelector Path");
+	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeSelector Category");
 	private final String category;
 	private final String path;
 	private final String contextSelectorId;
@@ -133,12 +129,7 @@ public final class AttributeSelectorId
 		}
 
 		final AttributeSelectorId other = (AttributeSelectorId) obj;
-		if (!this.category.equals(other.category) || !this.path.equals(other.path))
-		{
-			return false;
-		}
-		return this.contextSelectorId == null ? other.contextSelectorId == null
-				: this.contextSelectorId.equals(other.contextSelectorId);
+		return this.category.equals(other.category) && this.path.equals(other.path) && Objects.equals(this.contextSelectorId, other.contextSelectorId);
 	}
 
 	/*

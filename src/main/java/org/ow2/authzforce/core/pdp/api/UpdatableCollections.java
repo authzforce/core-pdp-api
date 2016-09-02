@@ -110,15 +110,10 @@ public final class UpdatableCollections
 	private static final UpdatableList<?> EMPTY_LIST = new EmptyList<>();
 
 	/**
-	 * Get instance of UpdatableList that does not update anything and
-	 * {@link UpdatableList#copy()} always return an empty list. This
-	 * implementation does not raise any exception on
-	 * {@link UpdatableList#add(Object)} and
-	 * {@link UpdatableList#addAll(Collection)} method but merely return false
-	 * always. This is useful merely for polymorphism.
+	 * Get instance of UpdatableList that does not update anything and {@link UpdatableList#copy()} always return an empty list. This implementation does not raise any exception on
+	 * {@link UpdatableList#add(Object)} and {@link UpdatableList#addAll(Collection)} method but merely return false always. This is useful merely for polymorphism.
 	 * 
-	 * @return "empty" list, i.e. list that silently ignores updates and always
-	 *         stays empty
+	 * @return "empty" list, i.e. list that silently ignores updates and always stays empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E> UpdatableList<E> emptyList()
@@ -162,15 +157,10 @@ public final class UpdatableCollections
 	private static final UpdatableSet<?> EMPTY_SET = new EmptySet<>();
 
 	/**
-	 * Get instance of UpdatableSet that does not update anything and
-	 * {@link UpdatableSet#copy()} always return an empty Set. This
-	 * implementation does not raise any exception on
-	 * {@link UpdatableSet#add(Object)} and
-	 * {@link UpdatableSet#addAll(Collection)} method but merely return false
-	 * always. This is useful merely for polymorphism.
+	 * Get instance of UpdatableSet that does not update anything and {@link UpdatableSet#copy()} always return an empty Set. This implementation does not raise any exception on
+	 * {@link UpdatableSet#add(Object)} and {@link UpdatableSet#addAll(Collection)} method but merely return false always. This is useful merely for polymorphism.
 	 * 
-	 * @return "empty" Set, i.e. list that silently ignores updates and always
-	 *         stays empty
+	 * @return "empty" Set, i.e. list that silently ignores updates and always stays empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E> UpdatableSet<E> emptySet()
@@ -265,14 +255,10 @@ public final class UpdatableCollections
 	private static final UpdatableMap<?, ?> EMPTY_MAP = new EmptyMap<>();
 
 	/**
-	 * Get instance of UpdatableMap that does not update anything and
-	 * {@link UpdatableMap#copy()} always return an empty Map. This
-	 * implementation does not raise any exception on
-	 * {@link UpdatableMap#put(K,V)} and {@link UpdatableMap#putAll(Map)} method
-	 * but merely return false always. This is useful merely for polymorphism.
+	 * Get instance of UpdatableMap that does not update anything and {@link UpdatableMap#copy()} always return an empty Map. This implementation does not raise any exception on
+	 * {@link UpdatableMap#put(Object, Object)} and {@link UpdatableMap#putAll(Map)} method but merely return false always. This is useful merely for polymorphism.
 	 * 
-	 * @return "empty" Set, i.e. list that silently ignores updates and always
-	 *         stays empty
+	 * @return "empty" Set, i.e. list that silently ignores updates and always stays empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V> UpdatableMap<K, V> emptyMap()

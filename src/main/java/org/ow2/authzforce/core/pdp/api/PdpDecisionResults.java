@@ -26,18 +26,17 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
-import com.google.common.collect.ImmutableList;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
+import com.google.common.collect.ImmutableList;
+
 /**
- * Pre-made constant decision evaluation results corresponding to XACML NotApplicable, Permit and Deny with only the
- * Decision element set (no obligation/advice, no returned attribute, etc.). Use this to return a {@link DecisionResult}
- * if no other element/attribute is needed in the result besides the Decision.
+ * Pre-made constant decision evaluation results corresponding to XACML NotApplicable, Permit and Deny with only the Decision element set (no obligation/advice, no returned attribute, etc.). Use this
+ * to return a {@link DecisionResult} if no other element/attribute is needed in the result besides the Decision.
  */
 public final class PdpDecisionResults
 {
@@ -51,8 +50,7 @@ public final class PdpDecisionResults
 		private static final IllegalArgumentException INVALID_DECISION_ARGUMENT_EXCEPTION = new IllegalArgumentException(
 				"Not a simple decision result. Expected: NotApplicable, Permit, Deny (without any field other than the Decision)");
 
-		private static final Result SIMPLE_NOT_APPLICABLE_XACML = new Result(DecisionType.NOT_APPLICABLE, null, null,
-				null, null, null);
+		private static final Result SIMPLE_NOT_APPLICABLE_XACML = new Result(DecisionType.NOT_APPLICABLE, null, null, null, null, null);
 		private static final Result SIMPLE_PERMIT_XACML = new Result(DecisionType.PERMIT, null, null, null, null, null);
 		private static final Result SIMPLE_DENY_XACML = new Result(DecisionType.DENY, null, null, null, null, null);
 
@@ -93,8 +91,7 @@ public final class PdpDecisionResults
 			}
 
 			final PdpDecisionResult other = (PdpDecisionResult) obj;
-			return this.decision == other.getDecision() && other.getStatus() == null
-					&& (other.getPepActions() == null || other.getPepActions().isEmpty())
+			return this.decision == other.getDecision() && other.getStatus() == null && (other.getPepActions() == null || other.getPepActions().isEmpty())
 					&& (other.getApplicablePolicies() == null || other.getApplicablePolicies().isEmpty());
 		}
 
@@ -193,8 +190,7 @@ public final class PdpDecisionResults
 	/**
 	 * NotApplicable decision result where only the Decision element is set, no Status, no obligation/advice, etc.
 	 */
-	public static final PdpDecisionResult SIMPLE_NOT_APPLICABLE = new SimpleImmutableDecisionResult(
-			DecisionType.NOT_APPLICABLE);
+	public static final PdpDecisionResult SIMPLE_NOT_APPLICABLE = new SimpleImmutableDecisionResult(DecisionType.NOT_APPLICABLE);
 
 	/**
 	 * Deny result with no obligation/advice/Included attribute/policy identifiers. Deny decision and nothing else.

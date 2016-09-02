@@ -89,8 +89,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null
-					&& other.getStatus() == null;
+			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null && other.getStatus() == null;
 		}
 
 		/** {@inheritDoc} */
@@ -114,8 +113,7 @@ public final class ExtendedDecisions
 	/**
 	 * Simple immutable NoApplicable Decision result (no status)
 	 */
-	public static final ExtendedDecision SIMPLE_NOT_APPLICABLE = new SimpleImmutableExtendedDecision(
-			DecisionType.NOT_APPLICABLE);
+	public static final ExtendedDecision SIMPLE_NOT_APPLICABLE = new SimpleImmutableExtendedDecision(DecisionType.NOT_APPLICABLE);
 
 	/**
 	 * For Indeterminate result
@@ -123,15 +121,13 @@ public final class ExtendedDecisions
 	private static final class IndeterminateExtendedDecision implements ExtendedDecision
 	{
 		/**
-		 * Extended Indeterminate value, as defined in section 7.10 of XACML 3.0 core: <i>potential effect value which
-		 * could have occurred if there would not have been an error causing the “Indeterminate”</i>. We use the
-		 * following convention:
+		 * Extended Indeterminate value, as defined in section 7.10 of XACML 3.0 core: <i>potential effect value which could have occurred if there would not have been an error causing the
+		 * “Indeterminate”</i>. We use the following convention:
 		 * <ul>
 		 * <li>{@link DecisionType#DENY} means "Indeterminate{D}"</li>
 		 * <li>{@link DecisionType#PERMIT} means "Indeterminate{P}"</li>
 		 * <li>{@link DecisionType#INDETERMINATE} means "Indeterminate{DP}"</li>
-		 * <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and
-		 * therefore any extended Indeterminate value should be ignored</li>
+		 * <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
 		 * </ul>
 		 * 
 		 */
@@ -186,8 +182,7 @@ public final class ExtendedDecisions
 			final ExtendedDecision other = (ExtendedDecision) obj;
 
 			// Status is optional in XACML
-			return other.getDecision() == DecisionType.INDETERMINATE
-					&& extIndeterminate.equals(other.getExtendedIndeterminate()) && status.equals(other.getStatus());
+			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && status.equals(other.getStatus());
 		}
 
 		/** {@inheritDoc} */
@@ -196,8 +191,7 @@ public final class ExtendedDecisions
 		{
 			if (toString == null)
 			{
-				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate
-						+ ", status= " + status + " )";
+				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + status + " )";
 			}
 			return toString;
 		}
@@ -273,8 +267,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null && status == null
-					? other.getStatus() == null : status.equals(other.getStatus());
+			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null && Objects.equals(status, other.getStatus());
 		}
 
 		@Override
@@ -307,8 +300,7 @@ public final class ExtendedDecisions
 		}
 	}
 
-	private static final RuntimeException NULL_INDETERMINATE_CAUSE_RUNTIME_EXCEPTION = new RuntimeException(
-			"No cause provided for Indeterminate result");
+	private static final RuntimeException NULL_INDETERMINATE_CAUSE_RUNTIME_EXCEPTION = new RuntimeException("No cause provided for Indeterminate result");
 
 	private ExtendedDecisions()
 	{
@@ -320,9 +312,8 @@ public final class ExtendedDecisions
 	 * 
 	 *
 	 * @param status
-	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or
-	 *            internal error on attribute resolution but not resulting in Indeterminate because of special combining
-	 *            algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
+	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or internal error on attribute resolution but not resulting in Indeterminate
+	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return permit result, more particularly {@link #SIMPLE_PERMIT} iff {@code status  == null}.
 	 */
 	public static ExtendedDecision getPermit(final Status status)
@@ -340,9 +331,8 @@ public final class ExtendedDecisions
 	 * 
 	 *
 	 * @param status
-	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or
-	 *            internal error on attribute resolution but not resulting in Indeterminate because of special combining
-	 *            algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
+	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or internal error on attribute resolution but not resulting in Indeterminate
+	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return deny result, more particularly {@link #SIMPLE_DENY} iff {@code status  == null}.
 	 */
 	public static ExtendedDecision getDeny(final Status status)
@@ -360,9 +350,8 @@ public final class ExtendedDecisions
 	 * 
 	 *
 	 * @param status
-	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or
-	 *            internal error on attribute resolution but not resulting in Indeterminate because of special combining
-	 *            algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
+	 *            status; even if decision is Permit/Deny, there may be a status "ok" (standard status in XACML 3.0) or internal error on attribute resolution but not resulting in Indeterminate
+	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return deny result, more particularly {@link #SIMPLE_NOT_APPLICABLE} iff {@code status  == null}.
 	 */
 	public static ExtendedDecision getNotApplicable(final Status status)
@@ -379,14 +368,12 @@ public final class ExtendedDecisions
 	 * Instantiates a Indeterminate Decision result with a given error info (status)
 	 *
 	 * @param extendedIndeterminate
-	 *            (required) Extended Indeterminate value (XACML 3.0 Core, section 7.10). We use the following
-	 *            convention:
+	 *            (required) Extended Indeterminate value (XACML 3.0 Core, section 7.10). We use the following convention:
 	 *            <ul>
 	 *            <li>{@link DecisionType#DENY} means "Indeterminate{D}"</li>
 	 *            <li>{@link DecisionType#PERMIT} means "Indeterminate{P}"</li>
 	 *            <li>{@link DecisionType#INDETERMINATE} or null means "Indeterminate{DP}"</li>
-	 *            <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not
-	 *            Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
+	 *            <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
 	 *            </ul>
 	 * @param cause
 	 *            (required) reason/code for Indeterminate
@@ -399,8 +386,7 @@ public final class ExtendedDecisions
 			throw NULL_INDETERMINATE_CAUSE_RUNTIME_EXCEPTION;
 		}
 
-		return new IndeterminateExtendedDecision(
-				extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
+		return new IndeterminateExtendedDecision(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
 	}
 
 }

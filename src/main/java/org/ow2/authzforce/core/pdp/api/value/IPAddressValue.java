@@ -68,7 +68,8 @@ public final class IPAddressValue extends SimpleValue<String>
 			address = InetAddresses.forString(val);
 			mask = null;
 			range = NetworkPortRange.MAX;
-		} else if (maskPos != -1)
+		}
+		else if (maskPos != -1)
 		{
 			// there is also a mask (and maybe a range)
 			/*
@@ -83,7 +84,8 @@ public final class IPAddressValue extends SimpleValue<String>
 				 */
 				mask = InetAddresses.forString(val.substring(maskPos + 1, rangePos));
 				range = NetworkPortRange.getInstance(val.substring(rangePos + 1, val.length()));
-			} else
+			}
+			else
 			{
 				// there's no range, so just get the mask
 				/*
@@ -93,7 +95,8 @@ public final class IPAddressValue extends SimpleValue<String>
 				// if the range is null, then create it as unbound
 				range = NetworkPortRange.MAX;
 			}
-		} else
+		}
+		else
 		{
 			// there is a range, but no mask
 			/*
@@ -137,7 +140,8 @@ public final class IPAddressValue extends SimpleValue<String>
 				final int startIndex = endIndex + 3;
 				endIndex = val.indexOf(']', startIndex);
 				mask = InetAddresses.forString(val.substring(startIndex, endIndex));
-			} else
+			}
+			else
 			{
 				mask = null;
 			}
@@ -146,11 +150,13 @@ public final class IPAddressValue extends SimpleValue<String>
 			if (endIndex != len - 1 && val.charAt(endIndex + 1) == ':')
 			{
 				range = NetworkPortRange.getInstance(val.substring(endIndex + 2, len));
-			} else
+			}
+			else
 			{
 				range = NetworkPortRange.MAX;
 			}
-		} else
+		}
+		else
 		{
 			mask = null;
 			range = NetworkPortRange.MAX;
@@ -168,7 +174,8 @@ public final class IPAddressValue extends SimpleValue<String>
 		if (val.indexOf('[') == 0)
 		{
 			parseIPv6Address(val, returnedAddress, returnedMask, returnedRange);
-		} else
+		}
+		else
 		{
 			parseIPv4Address(val, returnedAddress, returnedMask, returnedRange);
 		}
@@ -272,12 +279,7 @@ public final class IPAddressValue extends SimpleValue<String>
 
 		final IPAddressValue other = (IPAddressValue) obj;
 		// address and range non-null
-		if (!this.address.equals(other.address) || !this.portRange.equals(other.portRange))
-		{
-			return false;
-		}
-
-		return this.mask == null ? other.mask == null : this.mask.equals(other.mask);
+		return this.address.equals(other.address) && this.portRange.equals(other.portRange) && Objects.equals(this.mask, other.mask);
 	}
 
 	/** {@inheritDoc} */
