@@ -48,7 +48,7 @@ public interface ExtendedDecision
 
 	/**
 	 * Provides the Extended Indeterminate value, only in case {@link #getDecision()} returns
-	 * {@value DecisionType#INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0 core:
+	 * {@link DecisionType#INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0 core:
 	 * <i>potential effect value which could have occurred if there would not have been an error causing the
 	 * “Indeterminate”</i>. We use the following convention:
 	 * <ul>

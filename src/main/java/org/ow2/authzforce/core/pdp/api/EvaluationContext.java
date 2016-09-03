@@ -127,7 +127,7 @@ public interface EvaluationContext
 			throws IndeterminateEvaluationException;
 
 	/**
-	 * Returns the {@literal<Content>} of the {@literal<Attibutes>} identified by a given category, to be used for
+	 * Returns the {@literal <Content>} of the {@literal <Attibutes>} identified by a given category, to be used for
 	 * AttributeSelector evaluation.
 	 * 
 	 * @param category
