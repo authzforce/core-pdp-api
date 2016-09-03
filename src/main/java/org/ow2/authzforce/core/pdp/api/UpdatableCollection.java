@@ -20,44 +20,40 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Collection;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableCollection;
 
 /**
- * Updatable list; "updatable" means elements can only be added to the list (no
- * removal, no clear)
+ * Updatable collection; "updatable" means elements can only be added to the
+ * collection (no removal, no clear)
  * 
  * @param <E>
- *            the type of elements in this list
+ *            the type of elements in this collection
  */
-public interface UpdatableList<E> extends UpdatableCollection<E>
+public interface UpdatableCollection<E>
 {
 	/**
-	 * Append element to the end of the list
+	 * Append element to the collection
 	 * 
 	 * @param e
 	 *            new element to append
 	 * @return true iff the list changed as a result of the call
 	 */
-	@Override
 	boolean add(E e);
 
 	/**
-	 * Appends all the elements in the specified list to the end of this list,
-	 * in the same order
+	 * Appends all the elements in the specified collection to this collection
 	 * 
 	 * @param c
 	 *            list containing elements to be added to this list
 	 * @return true iff the list changed as a result of the call
 	 */
-	@Override
 	boolean addAll(Collection<? extends E> c);
 
 	/**
-	 * Creates an immutable list copy with all the elements currently in this
-	 * list
+	 * Creates an immutable copy with all the elements currently in this
+	 * collection
 	 * 
-	 * @return immutable copy of the list
+	 * @return immutable copy of the collection
 	 */
-	@Override
-	ImmutableList<E> copy();
+	ImmutableCollection<E> copy();
 }

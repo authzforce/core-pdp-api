@@ -23,9 +23,8 @@ import java.util.Objects;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
- * This class provides a skeletal implementation of the {@link DecisionResult} interface to minimize the effort required
- * to implement this interface. Note that this class only overrides/implements {@link #equals(Object)},
- * {@link #hashCode()} and {@link #getStatus()}.
+ * This class provides a skeletal implementation of the {@link DecisionResult} interface to minimize the effort required to implement this interface. Note that this class only overrides/implements
+ * {@link #equals(Object)}, {@link #hashCode()} and {@link #getStatus()}.
  */
 public abstract class AbstractDecisionResult implements DecisionResult
 {
@@ -50,8 +49,7 @@ public abstract class AbstractDecisionResult implements DecisionResult
 	{
 		if (hashCode == 0)
 		{
-			hashCode = Objects.hash(this.getDecision(), this.getExtendedIndeterminate(), this.status,
-					this.getPepActions());
+			hashCode = Objects.hash(this.getDecision(), this.getExtendedIndeterminate(), this.status, this.getPepActions());
 		}
 
 		return hashCode;
@@ -72,21 +70,13 @@ public abstract class AbstractDecisionResult implements DecisionResult
 		}
 
 		final DecisionResult other = (DecisionResult) obj;
-		if (this.getDecision() != other.getDecision()
-				|| this.getExtendedIndeterminate() != other.getExtendedIndeterminate())
+		if (this.getDecision() != other.getDecision() || this.getExtendedIndeterminate() != other.getExtendedIndeterminate())
 		{
 			return false;
 		}
 
 		// Status is optional in XACML
-		if (this.status == null)
-		{
-			if (other.getStatus() != null)
-			{
-				return false;
-			}
-		}
-		else if (!this.status.equals(other.getStatus()))
+		if (!Objects.equals(this.status, other.getStatus()))
 		{
 			return false;
 		}

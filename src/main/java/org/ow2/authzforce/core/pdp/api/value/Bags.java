@@ -19,25 +19,22 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.Bag.Validator;
 
+import com.google.common.collect.ImmutableMultiset;
+
 /**
- * This class consists exclusively of static methods that operate on or return {@link Bag}s. NOTE: do not merge this
- * into {@link Bag} at risk of violating the Acyclic Dependencies principle.
+ * This class consists exclusively of static methods that operate on or return {@link Bag}s. NOTE: do not merge this into {@link Bag} at risk of violating the Acyclic Dependencies principle.
  *
  */
 public final class Bags
 {
-	private static final IllegalArgumentException NULL_DATATYPE_EXCEPTION = new IllegalArgumentException(
-			"Undefined bag datatype argument");
-	private static final IllegalArgumentException NULL_BAG_ELEMENT_EXCEPTION = new IllegalArgumentException(
-			"Null value in bag");
+	private static final IllegalArgumentException NULL_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined bag datatype argument");
+	private static final IllegalArgumentException NULL_BAG_ELEMENT_EXCEPTION = new IllegalArgumentException("Null value in bag");
 
 	/**
 	 * Empty bag
@@ -49,26 +46,10 @@ public final class Bags
 	{
 		private final IndeterminateEvaluationException causeForEmpty;
 
-		// cached toString() result
-		private transient volatile String toString = null; // Effective Java - Item 71
-
 		private Empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty)
 		{
-			super(elementDatatype);
+			super(elementDatatype, ImmutableMultiset.<AV> of());
 			this.causeForEmpty = causeForEmpty;
-		}
-
-		@Override
-		public Iterator<AV> iterator()
-		{
-			// Collections.emptySet() returns constant (immutable) Set
-			return Collections.<AV>emptySet().iterator();
-		}
-
-		@Override
-		public boolean isEmpty()
-		{
-			return true;
 		}
 
 		@Override
@@ -78,78 +59,11 @@ public final class Bags
 		}
 
 		@Override
-		public int size()
-		{
-			return 0;
-		}
-
-		@Override
-		public boolean contains(AV v)
-		{
-			return false;
-		}
-
-		@Override
-		public AV getSingleValue()
+		public AV getSingleElement()
 		{
 			return null;
 		}
 
-		@Override
-		public String toString()
-		{
-			// immutable class -> cache this method result
-			if (toString == null)
-			{
-				toString = "Bag( elementType = " + getElementDatatype() + ", values = {}, causeForEmpty = "
-						+ causeForEmpty + " )";
-			}
-
-			return toString;
-		}
-	}
-
-	private static final class SingletonIterator<AV extends AttributeValue> implements Iterator<AV>
-	{
-
-		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException(
-				"Cannot remove element: Bag is immutable");
-
-		private static final NoSuchElementException NO_SUCH_ELEMENT_EXCEPTION = new NoSuchElementException();
-
-		private final AV value;
-
-		private boolean hasNext = true;
-
-		private SingletonIterator(AV value)
-		{
-			assert value != null;
-			this.value = value;
-		}
-
-		@Override
-		public boolean hasNext()
-		{
-			return hasNext;
-		}
-
-		@Override
-		public AV next()
-		{
-			if (!hasNext())
-			{
-				throw NO_SUCH_ELEMENT_EXCEPTION;
-			}
-
-			hasNext = false;
-			return value;
-		}
-
-		@Override
-		public void remove()
-		{
-			throw UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION;
-		}
 	}
 
 	/**
@@ -160,24 +74,12 @@ public final class Bags
 	 */
 	private static final class Singleton<AV extends AttributeValue> extends Bag<AV>
 	{
-
-		private final AV value;
-
-		// cached toString() result
-		private transient volatile String toString = null; // Effective Java - Item 71
+		private final AV singleVal;
 
 		private Singleton(final Datatype<AV> elementDatatype, final AV val)
 		{
-			super(elementDatatype);
-			assert val != null;
-
-			this.value = val;
-		}
-
-		@Override
-		public boolean isEmpty()
-		{
-			return false;
+			super(elementDatatype, ImmutableMultiset.of(val));
+			this.singleVal = val;
 		}
 
 		@Override
@@ -187,40 +89,9 @@ public final class Bags
 		}
 
 		@Override
-		public int size()
+		public AV getSingleElement()
 		{
-			return 1;
-		}
-
-		@Override
-		public boolean contains(AV v)
-		{
-			return value.equals(v);
-		}
-
-		@Override
-		public AV getSingleValue()
-		{
-			return value;
-		}
-
-		@Override
-		public Iterator<AV> iterator()
-		{
-			return new SingletonIterator<>(value);
-		}
-
-		@Override
-		public String toString()
-		{
-			// immutable class -> cache this method result
-			if (toString == null)
-			{
-				toString = "Bag( elementType = " + getElementDatatype() + ", values = {" + value
-						+ "}, causeForEmpty = null )";
-			}
-
-			return toString;
+			return this.singleVal;
 		}
 	}
 
@@ -232,14 +103,8 @@ public final class Bags
 	 */
 	private static final class Multi<AV extends AttributeValue> extends Bag<AV>
 	{
-		private final Collection<AV> values;
-
-		// cached toString() result
-		private transient volatile String toString = null; // Effective Java - Item 71
-
 		/**
-		 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to
-		 * reuse an existing bag Datatype object, saving the allocation of such object.
+		 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
 		 * 
 		 * @param elementDatatype
 		 *            element datatype
@@ -251,26 +116,10 @@ public final class Bags
 		 * @throws IllegalArgumentException
 		 *             if {@code elementDatatype == null}
 		 */
-		private Multi(final Datatype<AV> elementDatatype, final Collection<AV> values)
+		private Multi(final Datatype<AV> elementDatatype, final Collection<? extends AV> values)
 		{
-			super(elementDatatype);
-			assert values != null && values.size() > 1;
-
-			/*
-			 * We need to make sure that this.values cannot be modified. However, using
-			 * Collections.unmodifiableCollection(values) is a bad idea here, because the result (UnmodifiableCollection
-			 * class) does not override Object#hashCode() and Object#equals(). But we want deeper equals, i.e. take
-			 * internal values of collection into account for hashCode() and equals(). At the same time, to preserve
-			 * immutability, since the only way to modify is to call remove() on iterator(), we override iterator()
-			 * method to make sure the remove() method is not supported.
-			 */
-			this.values = Collections.unmodifiableCollection(values);
-		}
-
-		@Override
-		public boolean isEmpty()
-		{
-			return false;
+			super(elementDatatype, ImmutableMultiset.copyOf(values));
+			assert values.size() > 1;
 		}
 
 		@Override
@@ -280,46 +129,15 @@ public final class Bags
 		}
 
 		@Override
-		public int size()
+		public AV getSingleElement()
 		{
-			return values.size();
+			return size() == 1 ? elements().iterator().next() : null;
 		}
 
-		@Override
-		public boolean contains(final AV v)
-		{
-			return values.contains(v);
-		}
-
-		@Override
-		public AV getSingleValue()
-		{
-			return values.iterator().next();
-		}
-
-		@Override
-		public Iterator<AV> iterator()
-		{
-			return values.iterator();
-		}
-
-		@Override
-		public String toString()
-		{
-			// immutable class -> cache this method result
-			if (toString == null)
-			{
-				toString = "Bag( elementType = " + getElementDatatype() + ", values = " + values
-						+ ", causeForEmpty = null )";
-			}
-
-			return toString;
-		}
 	}
 
 	/**
-	 * Creates instance of immutable empty bag with given exception as reason for bag being empty (no attribute value),
-	 * e.g. error occurred during evaluation
+	 * Creates instance of immutable empty bag with given exception as reason for bag being empty (no attribute value), e.g. error occurred during evaluation
 	 * 
 	 * @param causeForEmpty
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
@@ -329,8 +147,7 @@ public final class Bags
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> empty(final Datatype<AV> elementDatatype,
-			final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty) throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -351,8 +168,7 @@ public final class Bags
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> singleton(final Datatype<AV> elementDatatype, final AV val)
-			throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> singleton(final Datatype<AV> elementDatatype, final AV val) throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -371,17 +187,14 @@ public final class Bags
 	 * Creates instance of immutable bag of values.
 	 * 
 	 * @param values
-	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it
-	 *            may be a Set for result of bag/Set functions (intersection, union...)
+	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
 	 * @param elementDatatype
 	 *            bag element datatype
 	 * @return bag
 	 * @throws IllegalArgumentException
-	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null:
-	 *             {@code values != null && !values.isEmpty() && values.iterator().next() == null}
+	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
-	public static <AV extends AttributeValue> Bag<AV> getInstance(final Datatype<AV> elementDatatype,
-			final Collection<AV> values) throws IllegalArgumentException
+	public static <AV extends AttributeValue> Bag<AV> getInstance(final Datatype<AV> elementDatatype, final Collection<AV> values) throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -411,8 +224,7 @@ public final class Bags
 	}
 
 	/**
-	 * Checks the bag is not empty, typically used to enforce MustBePresent=True on XACML
-	 * AttributeDesignator/AttributeSelector elements
+	 * Checks the bag is not empty, typically used to enforce MustBePresent=True on XACML AttributeDesignator/AttributeSelector elements
 	 */
 	public static final class NonEmptinessValidator implements Validator
 	{
@@ -425,20 +237,19 @@ public final class Bags
 		 * @param messageIfEmpty
 		 *            message used as exception message if bag is empty
 		 */
-		public NonEmptinessValidator(String messageIfEmpty)
+		public NonEmptinessValidator(final String messageIfEmpty)
 		{
 			this.messageIfEmpty = messageIfEmpty;
 		}
 
 		@Override
-		public void validate(Bag<?> bag) throws IndeterminateEvaluationException
+		public void validate(final Bag<?> bag) throws IndeterminateEvaluationException
 		{
 			assert bag != null;
 
 			if (bag.isEmpty())
 			{
-				throw new IndeterminateEvaluationException(messageIfEmpty, StatusHelper.STATUS_MISSING_ATTRIBUTE,
-						bag.getReasonWhyEmpty());
+				throw new IndeterminateEvaluationException(messageIfEmpty, StatusHelper.STATUS_MISSING_ATTRIBUTE, bag.getReasonWhyEmpty());
 			}
 
 		}
@@ -446,14 +257,13 @@ public final class Bags
 	}
 
 	/**
-	 * Dumb validator that does nothing, typically used for MustBePresent=False on XACML
-	 * AttributeDesignator/AttributeSelector elements
+	 * Dumb validator that does nothing, typically used for MustBePresent=False on XACML AttributeDesignator/AttributeSelector elements
 	 */
 	public static final Validator DUMB_VALIDATOR = new Validator()
 	{
 
 		@Override
-		public void validate(Bag<?> bag)
+		public void validate(final Bag<?> bag)
 		{
 			// do nothing since the flag is disabled
 		}

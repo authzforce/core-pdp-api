@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import java.net.URI;
 
+import com.google.common.collect.ImmutableMultiset;
+
 /**
  * Bag datatype for bags of primitive datatypes
  * 
@@ -33,8 +35,9 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 			"Undefined element datatype arg");
 
 	/**
-	 * Bag datatype ID, for internal identification purposes. This is an invalid URI on purpose, to avoid conflict with
-	 * any custom XACML datatype URI (datatype extension).
+	 * Bag datatype ID, for internal identification purposes. This is an invalid
+	 * URI on purpose, to avoid conflict with any custom XACML datatype URI
+	 * (datatype extension).
 	 */
 	private static final String ID = "bag";
 
@@ -53,10 +56,12 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 		}
 
 		/*
-		 * We need to create the instance of bag superclass with V as type parameter, so that we can use it to cast any
-		 * bag instance in cast(Value) method. (Therefore, we cannot use a subclass to do it, only Bag superclass.)
+		 * We need to create the instance of bag superclass with V as type
+		 * parameter, so that we can use it to cast any bag instance in
+		 * cast(Value) method. (Therefore, we cannot use a subclass to do it,
+		 * such as a so-called EmptyBag, only the Bag superclass.)
 		 */
-		final Bag<V> bag = new Bag<>(elementDatatype);
+		final Bag<V> bag = new Bag<>(elementDatatype, ImmutableMultiset.<V> of());
 		return (Class<Bag<V>>) bag.getClass();
 	}
 
@@ -70,8 +75,8 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	}
 
 	/**
-	 * Returns the bag element datatype (datatype of every element in a bag of this datatype). Same as
-	 * {@link #getTypeParameter()}.
+	 * Returns the bag element datatype (datatype of every element in a bag of
+	 * this datatype). Same as {@link #getTypeParameter()}.
 	 * 
 	 * @return bag element datatype
 	 */
@@ -123,7 +128,8 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 		}
 
 		final BagDatatype<?> other = (BagDatatype<?>) obj;
-		// there should be a one-to-one mapping between valueClass and id, so checking
+		// there should be a one-to-one mapping between valueClass and id, so
+		// checking
 		// only one of these two is necessary
 		return this.elementType.equals(other.elementType);
 

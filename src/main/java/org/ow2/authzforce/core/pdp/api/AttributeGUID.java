@@ -23,12 +23,10 @@ import java.util.Objects;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
 /**
- * Attribute's Globally unique identifier, as opposed to AttributeId which is local to a specific category and/or
- * issuer. Why not use AttributeDesignator? Because we don't care about MustBePresent or Datatype for lookup here. This
- * is used for example as key in a map to retrieve corresponding AttributeValue or AttributeProvider module.
+ * Attribute's Globally unique identifier, as opposed to AttributeId which is local to a specific category and/or issuer. Why not use AttributeDesignator? Because we don't care about MustBePresent or
+ * Datatype for lookup here. This is used for example as key in a map to retrieve corresponding AttributeValue or AttributeProvider module.
  * <p>
- * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI
- * type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
+ * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
  * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
@@ -148,18 +146,11 @@ public final class AttributeGUID
 		// category cannot be null (see constructor)
 		// id cannot be null (see constructor)
 		/*
-		 * According to XACML Core spec, 7.3.4 Attribute Matching, if the Issuer is not supplied in the
-		 * AttributeDesignator, ignore it in the match. But if the Issuer is supplied, it must match only an
-		 * AttributeGUID with the same Issuer. So here we compare everything, including the Issuer, but in order to
-		 * handle the first case (Issuer-less AttributeDesignator), we'll make sure that there is an Issuer-less version
-		 * in the request context for each Issuer-full Attribute
+		 * According to XACML Core spec, 7.3.4 Attribute Matching, if the Issuer is not supplied in the AttributeDesignator, ignore it in the match. But if the Issuer is supplied, it must match only
+		 * an AttributeGUID with the same Issuer. So here we compare everything, including the Issuer, but in order to handle the first case (Issuer-less AttributeDesignator), we'll make sure that
+		 * there is an Issuer-less version in the request context for each Issuer-full Attribute
 		 */
-		if (!category.equals(other.category) || !id.equals(other.id))
-		{
-			return false;
-		}
-
-		return issuer == null ? other.issuer == null : issuer.equals(other.issuer);
+		return category.equals(other.category) && id.equals(other.id) && Objects.equals(issuer, other.issuer);
 	}
 
 	/*
