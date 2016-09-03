@@ -39,9 +39,6 @@ public interface ExtraPolicyMetadata
 	/**
 	 * Get policy version, e.g. for auditing
 	 * 
-	 * @param evaluationCtx
-	 *            request evaluation context
-	 * 
 	 * @return evaluated policy(Set) Version
 	 */
 	PolicyVersion getVersion();

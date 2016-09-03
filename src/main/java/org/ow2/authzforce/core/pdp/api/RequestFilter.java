@@ -64,10 +64,6 @@ public interface RequestFilter
 		 *            true iff XPath evaluation against Attributes/Content element is required (e.g. for AttributeSelector or xpathExpression evaluation). A
 		 *            preprocessor may skip Content parsing for XPath evaluation, if and only if this is false. (Be aware that a preprocessor may support the
 		 *            MultipleDecision Profile or Hierarchical Profile and therefore require Content parsing for other purposes defined by these profiles.)
-		 * @param attributesContentJaxbCtx
-		 *            JAXBContext that was used to unmarshall Attributes/Content elements in the Request. This context is used to create a new instance of
-		 *            marshaller to pass it as JAXBSource to {@code xmlProcesor} to convert to XDM data model for XPATH evaluation. May be null if
-		 *            {@code requireContentForXPath} is false.
 		 * @param xmlProcessor
 		 *            XML processor for parsing Attributes/Content prior to XPATH evaluation (e.g. AttributeSelectors). May be null if
 		 *            {@code requireContentForXPath} is false.
