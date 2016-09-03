@@ -1,6 +1,14 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## Unreleased
+### Added 
+- Bag.elements() method, returns a Multiset (Guava) view of a bag's elements, useful in particular to implement functions with bags like XACML set-*
+
+### Fixed
+- Bag.equals() ignoring duplicates (like XACML set-equals function). Fixed by using Guava Multiset as backend structure and Multiset.equals(), to comply with the mathematical definition of a bag/multiset and XACML definition which is basically the same.
+- RootPolicyProvider modules, more specifically BaseStaticRootPolicyProviderModule subclasses, kept a reference to static refPolicyProvider, even after policies have been resolved statically at initialization time, preventing garbage collection. Fix: modules now implement StaticRootPolicyProviderModule interface directly and creates the refPolicyProvider on their own, instead of delegating to superclass BaseStaticRootPolicyProviderModule (now removed).
+
 
 ## 7.0.0
 ### Added
