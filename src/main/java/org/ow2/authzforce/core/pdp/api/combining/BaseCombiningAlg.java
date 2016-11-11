@@ -23,7 +23,7 @@ import org.ow2.authzforce.core.pdp.api.Decidable;
 import com.google.common.collect.ImmutableList;
 
 /**
- * The base class for combining algorithms.
+ * This class provides a skeletal implementation of the {@link CombiningAlg} interface to minimize the effort required to implement this interface.
  * 
  * @param <T>
  *            type of combined element (Policy, Rule...)
