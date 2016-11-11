@@ -35,6 +35,8 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 
 	private final Class<T> combinedElementType;
 
+	private transient final String toString;
+
 	/**
 	 * Constructor
 	 * 
@@ -54,6 +56,7 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 	{
 		this.combinedElementType = combinedType;
 		this.id = id;
+		this.toString = "Combining Algorithm '" + id + "'";
 	}
 
 	@Override
@@ -70,7 +73,7 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 	@Override
 	public final String toString()
 	{
-		return this.id;
+		return this.toString;
 	}
 
 	/**
@@ -102,7 +105,6 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 		 */
 		public Evaluator(final Iterable<? extends T> combinedElements)
 		{
-			assert combinedElements != null;
 			this.combinedElements = ImmutableList.copyOf(combinedElements);
 		}
 
@@ -116,4 +118,5 @@ public abstract class BaseCombiningAlg<T extends Decidable> implements Combining
 			return combinedElements;
 		}
 	}
+
 }

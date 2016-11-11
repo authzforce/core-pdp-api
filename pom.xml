@@ -45,15 +45,23 @@
 				any DNS resolution -->
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>20.0</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency> -->
 			<!-- For better HashMap/HashSet implementations than Oracle/OpenJDK (better 
 				API, better performance) More info: http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/ -->
-			<groupId>com.koloboke</groupId>
-			<artifactId>koloboke-impl-jdk6-7</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+<!-- 			<groupId>com.koloboke</groupId> -->
+<!--          <artifactId>koloboke-api-jdk6-7</artifactId> -->
+<!-- 			<artifactId>koloboke-impl-jdk6-7</artifactId> -->
+<!-- 			<version>1.0.0</version> -->
+<!-- 		</dependency> -->
+      <dependency>
+         <!-- For better HashMap/HashSet implementations than Oracle/OpenJDK (better 
+            API, better performance) More info: http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/ -->
+         <groupId>com.koloboke</groupId>
+       <artifactId>koloboke-impl-jdk6-7</artifactId>
+         <version>1.0.0</version>
+      </dependency>
 
 		<!-- AuthZForce dependencies -->
 		<dependency>
