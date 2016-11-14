@@ -18,15 +18,15 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry;
-import org.ow2.authzforce.core.pdp.api.expression.ValueExpression;
-
 import net.sf.saxon.s9api.XPathCompiler;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 
+import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry;
+import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
+
 /**
- * Registry of AttributeValue Factories supporting multiple datatypes. Any implementation of this must guarantee that there is a one-to-one relationship between
- * AttributeValue (sub)classes and datatype URIs (AttributeValueType DataType field)
+ * Registry of AttributeValue Factories supporting multiple datatypes. Any implementation of this must guarantee that there is a one-to-one relationship between AttributeValue (sub)classes and
+ * datatype URIs (AttributeValueType DataType field)
  * 
  */
 public interface DatatypeFactoryRegistry extends PdpExtensionRegistry<DatatypeFactory<?>>
@@ -39,9 +39,10 @@ public interface DatatypeFactoryRegistry extends PdpExtensionRegistry<DatatypeFa
 	 *            AttributeValue from OASIS XACML model
 	 * @param xPathCompiler
 	 *            XPath compiler for evaluating/compiling any XPath expression in {@code value}
-	 * @return AttributeValue expression
+	 * @return expression, e.g. {@link org.ow2.authzforce.core.pdp.api.expression.ConstantExpression} for constant AttributeValues, or something like XPathExpression for context-dependent
+	 *         xpathExpression-type of AttributeValues (quite similar to AttributeSelector)
 	 * @throws IllegalArgumentException
 	 *             value datatype unknown/not supported, or if value cannot be parsed into the value's defined datatype
 	 */
-	ValueExpression<? extends AttributeValue> createValueExpression(AttributeValueType value, XPathCompiler xPathCompiler) throws IllegalArgumentException;
+	ConstantExpression<? extends AttributeValue> newExpression(AttributeValueType value, XPathCompiler xPathCompiler) throws IllegalArgumentException;
 }

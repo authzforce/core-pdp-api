@@ -19,7 +19,7 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 /**
- * Value that can be used directly as function argument and result from Expression evaluation. It may be atomic/primitive or a bag of values.
+ * Value (literal constant) that can be used directly as function argument and result from Expression evaluation. It may be atomic/primitive or a bag of values.
  *
  */
 public interface Value

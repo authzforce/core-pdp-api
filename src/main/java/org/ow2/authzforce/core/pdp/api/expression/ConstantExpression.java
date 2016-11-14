@@ -25,19 +25,18 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
  * 
- * Expression wrapper for constant values to be used as Expression, e.g. to be used as function argument. This is an alternative to {@link Value} extending {@link Expression} directly, which would
- * break the Acyclic Dependency principle since {@link Expression} already has a reference to {@link Value}.
+ * Expression wrapper for constant values - that do not depend on the evaluation context - to be used as Expressions, e.g. to be used as function argument. This is an alternative to {@link Value}
+ * extending {@link Expression} directly, which would break the Acyclic Dependency principle since {@link Expression} already has a reference to {@link Value}.
  * 
  * @param <V>
  *            concrete value type
  *
  */
-public abstract class ValueExpression<V extends Value> implements Expression<V>
+public abstract class ConstantExpression<V extends Value> implements Expression<V>
 {
 	private static final IllegalArgumentException UNDEF_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined expression return type");
 	private static final IllegalArgumentException UNDEF_VALUE_EXCEPTION = new IllegalArgumentException("Undefined value");
 	private final Datatype<V> datatype;
-	private final boolean isStatic;
 	protected final V value;
 
 	/**
@@ -47,13 +46,11 @@ public abstract class ValueExpression<V extends Value> implements Expression<V>
 	 *            value datatype
 	 * @param v
 	 *            constant value
-	 * @param isStatic
-	 *            true iff the expression based on this value always evaluate to the same constant (not the case for xpathExpressions for instance)
 	 * @throws IllegalArgumentException
 	 *             if {@code datatype == null || v == null}
 	 * 
 	 */
-	protected ValueExpression(final Datatype<V> datatype, final V v, final boolean isStatic) throws IllegalArgumentException
+	protected ConstantExpression(final Datatype<V> datatype, final V v) throws IllegalArgumentException
 	{
 		if (datatype == null)
 		{
@@ -67,7 +64,6 @@ public abstract class ValueExpression<V extends Value> implements Expression<V>
 
 		this.datatype = datatype;
 		this.value = v;
-		this.isStatic = isStatic;
 	}
 
 	@Override
@@ -86,17 +82,7 @@ public abstract class ValueExpression<V extends Value> implements Expression<V>
 	}
 
 	@Override
-	public final boolean isStatic()
-	{
-		return isStatic;
-	}
-
-	/**
-	 * Gets underlying value
-	 * 
-	 * @return value wrapped in this expression
-	 */
-	public V getValue()
+	public final V getValue()
 	{
 		return this.value;
 	}

@@ -25,13 +25,6 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
-import org.ow2.authzforce.core.pdp.api.EvaluationContext;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
-import org.ow2.authzforce.core.pdp.api.XMLUtils;
-import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
-import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
-
 import net.sf.saxon.lib.StandardURIChecker;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -39,23 +32,31 @@ import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
 
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.StatusHelper;
+import org.ow2.authzforce.core.pdp.api.XMLUtils;
+import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
+import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
+
 /**
- * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the
- * class are thread-safe.
+ * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
  * <p>
- * XACML 3.0 Core spec, §A.3.15: "An XPath expression evaluates to a node-set, which is a set of XML nodes that match
- * the expression. A node or node-set is not in the formal data-type system of XACML. All comparison or other operations
- * on node-sets are performed in isolation of the particular [XPATH-based] function specified. The context nodes and
- * namespace mappings of the XPath expressions are defined by the XPath data-type, see section B.3."
+ * XACML 3.0 Core spec, §A.3.15: "An XPath expression evaluates to a node-set, which is a set of XML nodes that match the expression. A node or node-set is not in the formal data-type system of XACML.
+ * All comparison or other operations on node-sets are performed in isolation of the particular [XPATH-based] function specified. The context nodes and namespace mappings of the XPath expressions are
+ * defined by the XPath data-type, see section B.3."
  * <p>
- * In short, the xpathExpression is evaluated in the context of calling XPath-based functions on a given evaluation
- * context only. These functions typically use {@link #evaluate(EvaluationContext)} to get the matching node-set.
+ * In short, the xpathExpression is evaluated in the context of calling XPath-based functions on a given evaluation context only. These functions typically use {@link #evaluate(EvaluationContext)} to
+ * get the matching node-set.
  * <p>
- * WARNING: this class is not optimized for request-time evaluation but for policy initialization-time. Therefore, its
- * use is not recommended for evaluating xpathExpressions in XACML Request. We consider it not useful in the latter
- * case, as the Requester (PEP) could evaluate the xpathExpressions in the first place, and does not need the PDP to do
- * it.
- *
+ * WARNING: this class is not optimized for request-time evaluation but for policy initialization-time. Therefore, its use is not recommended for evaluating xpathExpressions in XACML Request. We
+ * consider it not useful in the latter case, as the Requester (PEP) could evaluate the xpathExpressions in the first place, and does not need the PDP to do it.
+ * <p>
+ * NB (considerations for developers): the standard datatype 'xpathExpression' may seem like a special case because xpathExpression evaluation depends on the context; therefore it might seem like a
+ * good idea to have 'xpathExpression' be implemented as a subclass of {@link org.ow2.authzforce.core.pdp.api.expression.Expression} instead. However, we prefer to avoid that for simplicity. Indeed,
+ * if we need to evaluate a 'xpathExpression', in standard XACML, xpathExpressions are used only as parameters of XPath-based functions (A.3.15), and such functions just need to cast input values to
+ * this {@link XPathValue} class and call {@link #evaluate(EvaluationContext)} for evaluation. Outside the context of XPath-based functions, we may consider xpathExpressions as simple literal
+ * constants like other AttributeValues.
  * 
  * @version $Id: $
  */
@@ -72,14 +73,12 @@ public final class XPathValue extends SimpleValue<String>
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression";
 
 	/**
-	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression
-	 * is applied: {@value} .
+	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
 	 */
 	public static final String XPATH_CATEGORY_ATTRIBUTE_LOCALNAME = "XPathCategory";
 
 	/**
-	 * QName of XPathCategory attribute in xpathExpression, using {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} as local
-	 * name. This is allowed by XACML schema as part of:
+	 * QName of XPathCategory attribute in xpathExpression, using {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} as local name. This is allowed by XACML schema as part of:
 	 * 
 	 * <pre>
 	 * {@code
@@ -87,23 +86,20 @@ public final class XPathValue extends SimpleValue<String>
 	 * }
 	 * </pre>
 	 * 
-	 * ... therefore namespace returned by JAXB is empty "". More info: https://jaxb.java.net/tutorial/section_6_2_7_5
-	 * -Collecting-Unspecified-Attributes-XmlAnyAttribute .html#Collecting%20Unspecified%20Attributes:%20XmlAnyAttribute
+	 * ... therefore namespace returned by JAXB is empty "". More info: https://jaxb.java.net/tutorial/section_6_2_7_5 -Collecting-Unspecified-Attributes-XmlAnyAttribute
+	 * .html#Collecting%20Unspecified%20Attributes:%20XmlAnyAttribute
 	 */
 	public static final QName XPATH_CATEGORY_ATTRIBUTE_QNAME = new QName("", XPATH_CATEGORY_ATTRIBUTE_LOCALNAME);
 
-	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException(
-			"Undefined XPathCategory for XPath expression value");
+	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
 	private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
 			"Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
 
 	private final String xpathCategory;
 
 	/*
-	 * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType)
-	 * but XPathEvaluator is not natively Serializable, therefore must be deserialized with readObject() which cannot
-	 * assign final variable. Therefore developers must make sure this is only assigned by readObject() or constructors
-	 * once and for all.
+	 * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType) but XPathEvaluator is not natively Serializable, therefore must be deserialized
+	 * with readObject() which cannot assign final variable. Therefore developers must make sure this is only assigned by readObject() or constructors once and for all.
 	 */
 	private final transient XPathEvaluator xpathEvaluator;
 
@@ -121,15 +117,13 @@ public final class XPathValue extends SimpleValue<String>
 	 * @param xpath
 	 *            XPath
 	 * @param otherXmlAttributes
-	 *            other XML attributes on the xpathExpression AttributeValue node, one of which is expected to be the
-	 *            attribute {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME}
+	 *            other XML attributes on the xpathExpression AttributeValue node, one of which is expected to be the attribute {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME}
 	 * @param xPathCompiler
 	 *            XPath compiler for compiling/evaluating {@code xpath}
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for this value datatype
 	 */
-	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes,
-			final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
 		super(TYPE_URI, xpath);
 		this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
@@ -145,27 +139,20 @@ public final class XPathValue extends SimpleValue<String>
 
 		this.xpathEvaluator = new XPathEvaluator(xpath, xPathCompiler);
 		/*
-		 * Please note that StandardURIChecker maintains a thread-local cache of validated URIs (cache size is 50 and
-		 * eviction policy is LRU)
+		 * Please note that StandardURIChecker maintains a thread-local cache of validated URIs (cache size is 50 and eviction policy is LRU)
 		 */
 		if (!StandardURIChecker.getInstance().isValidURI(xpathCategory))
 		{
 			throw new IllegalArgumentException("Invalid value for XPathCategory (xs:anyURI): " + xpathCategory);
 		}
 
-		this.missingAttributesContentException = new IndeterminateEvaluationException(
-				this + ": No <Content> element found in Attributes of Category=" + xpathCategory,
+		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory,
 				StatusHelper.STATUS_SYNTAX_ERROR);
-		this.xpathEvalExceptionMessage = this
-				+ ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory
-				+ "'";
-		this.missingContextException = new IndeterminateEvaluationException(
-				this + ":  undefined evaluation context: XPath value cannot be evaluated",
-				StatusHelper.STATUS_PROCESSING_ERROR);
+		this.xpathEvalExceptionMessage = this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'";
+		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", StatusHelper.STATUS_PROCESSING_ERROR);
 	}
 
-	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException,
-			NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
 		in.defaultReadObject();
 		/*
@@ -177,11 +164,9 @@ public final class XPathValue extends SimpleValue<String>
 	}
 
 	/**
-	 * Convenient method to get the XML nodes ("node-set") matching the XPath expression from the Content node of the
-	 * XACML Attributes element with category <i>XPathCategory</i> in this {@code context}. <i>XPathCategory</i> is
-	 * extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to
-	 * {@link #XPathValue(String, Map, XPathCompiler)} when creating this instance. To be used by XPath-based functions
-	 * defined in section A.3.15 of XACML 3.0 Core specification.
+	 * Convenient method to get the XML nodes ("node-set") matching the XPath expression from the Content node of the XACML Attributes element with category <i>XPathCategory</i> in this
+	 * {@code context}. <i>XPathCategory</i> is extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to {@link #XPathValue(String, Map, XPathCompiler)} when
+	 * creating this instance. To be used by XPath-based functions defined in section A.3.15 of XACML 3.0 Core specification.
 	 *
 	 * @param context
 	 *            current evaluation context
@@ -203,9 +188,8 @@ public final class XPathValue extends SimpleValue<String>
 		}
 
 		/*
-		 * An XPathExecutable is immutable, and therefore thread-safe. It is simpler to load a new XPathSelector each
-		 * time the expression is to be evaluated. However, the XPathSelector is serially reusable within a single
-		 * thread. See Saxon Javadoc.
+		 * An XPathExecutable is immutable, and therefore thread-safe. It is simpler to load a new XPathSelector each time the expression is to be evaluated. However, the XPathSelector is serially
+		 * reusable within a single thread. See Saxon Javadoc.
 		 */
 		final XPathSelector xpathSelector = xpathEvaluator.load();
 		try
@@ -215,8 +199,7 @@ public final class XPathValue extends SimpleValue<String>
 		}
 		catch (final SaxonApiException e)
 		{
-			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, StatusHelper.STATUS_SYNTAX_ERROR,
-					e);
+			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, StatusHelper.STATUS_SYNTAX_ERROR, e);
 		}
 	}
 

@@ -25,14 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableList;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
 
+import com.google.common.collect.ImmutableList;
+
 /**
- * Updatable PEP actions (obligations/advice). "Updatable" means here that it only accepts new PEP actions (cannot be
- * removed from it)
+ * Updatable PEP actions (obligations/advice). "Updatable" means here that it only accepts new PEP actions (cannot be removed from it)
  *
  * @version $Id: $
  */
@@ -54,8 +53,8 @@ public final class UpdatablePepActions implements PepActions
 	 */
 	public UpdatablePepActions(final List<Obligation> obligations, final List<Advice> advices)
 	{
-		this.obligationList = obligations == null ? new ArrayList<Obligation>() : obligations;
-		this.adviceList = advices == null ? new ArrayList<Advice>() : advices;
+		this.obligationList = obligations == null ? new ArrayList<>() : obligations;
+		this.adviceList = advices == null ? new ArrayList<>() : advices;
 	}
 
 	/**

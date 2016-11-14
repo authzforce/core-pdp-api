@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import java.net.URI;
 
+import org.ow2.authzforce.core.pdp.api.PdpExtension;
+
 /**
  * Expression evaluation return type
  * 
@@ -28,33 +30,32 @@ import java.net.URI;
  */
 public abstract class Datatype<V extends Value>
 {
-	private static final IllegalArgumentException NULL_VALUE_CLASS_EXCEPTION = new IllegalArgumentException(
-			"Undefined value (datatype implementation) class arg");
-	private static final IllegalArgumentException NULL_ID_EXCEPTION = new IllegalArgumentException(
-			"Undefined datatype ID arg");
-	private static final IllegalArgumentException NULL_FUNC_ID_PREFIX_EXCEPTION = new IllegalArgumentException(
-			"Undefined datatype-based function ID prefix arg");
+	/**
+	 * Prefix used by AuthZForce non-standard datatypes (PDP extensions). Third-party (outside AuthZForce project) contributions must use a different prefix to avoid conflicts.
+	 */
+	public static final String AUTHZFORCE_EXTENSION_PREFIX = PdpExtension.AUTHZFORCE_EXTENSION_PREFIX + "datatype:";
+
+	private static final IllegalArgumentException NULL_VALUE_CLASS_EXCEPTION = new IllegalArgumentException("Undefined value (datatype implementation) class arg");
+	private static final IllegalArgumentException NULL_ID_EXCEPTION = new IllegalArgumentException("Undefined datatype ID arg");
+	private static final IllegalArgumentException NULL_FUNC_ID_PREFIX_EXCEPTION = new IllegalArgumentException("Undefined datatype-based function ID prefix arg");
 
 	private final String id;
 	private final Class<V> valueClass;
 	private final String funcIdPrefix;
 
 	/**
-	 * Instantiates generic datatype, i.e. taking a datatype parameter, like Java Generics, but more like Java
-	 * Collection since there is only one type parameter in this case.
+	 * Instantiates generic datatype, i.e. taking a datatype parameter, like Java Generics, but more like Java Collection since there is only one type parameter in this case.
 	 * 
 	 * @param valueClass
 	 *            Java (implementation) class of values of this datatype
 	 * @param id
 	 *            datatype ID
 	 * @param functionIdPrefix
-	 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g.
-	 *            'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 	 * @throws IllegalArgumentException
 	 *             if {@code valueClass == null || id == null || functionIdPrefix == null}.
 	 */
-	protected Datatype(final Class<V> valueClass, final String id, final URI functionIdPrefix)
-			throws IllegalArgumentException
+	protected Datatype(final Class<V> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
 	{
 		if (valueClass == null)
 		{
@@ -97,8 +98,7 @@ public abstract class Datatype<V extends Value>
 	}
 
 	/**
-	 * Gets prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g.
-	 * 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 * Gets prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 	 * 
 	 * @return ID prefix for functions of this datatype
 	 */
@@ -108,8 +108,7 @@ public abstract class Datatype<V extends Value>
 	}
 
 	/**
-	 * Return datatype of sub-elements for this datatype, e.g. the bag element datatype (datatype of every element in a
-	 * bag of this datatype); null if this is a primitive type (no sub-elements)
+	 * Return datatype of sub-elements for this datatype, e.g. the bag element datatype (datatype of every element in a bag of this datatype); null if this is a primitive type (no sub-elements)
 	 * 
 	 * @return datatype parameter, null for primitive datatypes
 	 */

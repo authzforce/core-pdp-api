@@ -23,12 +23,13 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
+import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
-import org.ow2.authzforce.core.pdp.api.func.FirstOrderFunctionCall.EagerBagEval;
-import org.ow2.authzforce.core.pdp.api.func.FirstOrderFunctionCall.EagerPartlyBagEval;
-import org.ow2.authzforce.core.pdp.api.func.FirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
+import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerBagEval;
+import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerPartlyBagEval;
+import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
@@ -41,7 +42,6 @@ import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 import com.google.common.collect.Sets;
-import com.koloboke.collect.set.hash.HashObjSets;
 
 /**
  * First-order bag functions, as opposed to the higher-order bag functions (see {@link HigherOrderBagFunction}); such as the Bag functions of section A.3.10, and the Set functions of A.3.11 of the
@@ -442,7 +442,7 @@ public final class FirstOrderBagFunctions
 		@Override
 		protected Bag<AV> eval(final Bag<AV>[] bags)
 		{
-			final Set<AV> result = HashObjSets.newUpdatableSet();
+			final Set<AV> result = HashCollections.newUpdatableSet();
 			for (final Bag<AV> bag : bags)
 			{
 				for (final AV bagVal : bag)
@@ -554,7 +554,7 @@ public final class FirstOrderBagFunctions
 		final Datatype<AV> paramType = paramTypeFactory.getDatatype();
 		final BagDatatype<AV> paramBagType = paramTypeFactory.getBagDatatype();
 		final Class<AV[]> paramArrayClass = paramTypeFactory.getArrayClass();
-		return HashObjSets.<Function<?>> newImmutableSetOf(
+		return HashCollections.<Function<?>> newImmutableSet(new Function[] {
 		/**
 		 * 
 		 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set functions
@@ -568,7 +568,7 @@ public final class FirstOrderBagFunctions
 				 * Add bag functions that takes multiple bags as parameters. Defined in section A.3.11.
 				 * 
 				 */
-				new Intersection<>(paramType, paramBagType), new AtLeastOneMemberOf<>(paramBagType), new Union<>(paramType, paramBagType), new Subset<>(paramBagType), new SetEquals<>(paramBagType));
+				new Intersection<>(paramType, paramBagType), new AtLeastOneMemberOf<>(paramBagType), new Union<>(paramType, paramBagType), new Subset<>(paramBagType), new SetEquals<>(paramBagType) });
 	}
 
 }

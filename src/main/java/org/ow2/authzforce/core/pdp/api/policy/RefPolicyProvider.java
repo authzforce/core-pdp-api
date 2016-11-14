@@ -59,7 +59,7 @@ public interface RefPolicyProvider
 				return policyRefChain1;
 			}
 
-			final Deque<String> resultPolicyRefChain = policyRefChain1 == null ? new ArrayDeque<String>() : policyRefChain1;
+			final Deque<String> resultPolicyRefChain = policyRefChain1 == null ? new ArrayDeque<>() : policyRefChain1;
 
 			// Validate resulting reference depth
 			if (maxPolicyRefDepth != UNLIMITED_POLICY_REF_DEPTH)

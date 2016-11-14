@@ -40,20 +40,10 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	private static final IllegalArgumentException TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException(
 			"BigInteger argument outside the range which can be represented by a double");
 
-	private static final ArithmeticException TOO_BIGINTEGER_FOR_INT_ARITHMETIC_EXCEPTION = new ArithmeticException("BigInteger argument outside the range which can be represented by an int");
-
 	/**
 	 * Official name of this type
 	 */
 	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#integer";
-
-	/*
-	 * WARNING: these static variables must be declared before ZERO static variable, because the latter needs the former to get initialized, and static variables are initialized in order of
-	 * declaration.
-	 */
-	private static final BigInteger MAX_INT_AS_BIGINT = BigInteger.valueOf(Integer.MAX_VALUE);
-
-	private static final BigInteger MIN_INT_AS_BIGINT = BigInteger.valueOf(Integer.MIN_VALUE);
 
 	/**
 	 * Value zero
@@ -188,8 +178,6 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	/**
 	 *
 	 * Converts this value to an int, checking for lost information. If the value of this BigInteger is out of the range of the int type, then an ArithmeticException is thrown.
-	 * <p>
-	 * TODO: replace with Java 8 native equivalent - BigInteger#intValueExact() - after upgrade to Java 8
 	 * 
 	 * @see <a href="https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow">The CERT Oracle Secure Coding Standard for Java - NUM00-J. Detect or prevent
 	 *      integer overflow</a>
@@ -199,31 +187,7 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 */
 	public int intValueExact() throws ArithmeticException
 	{
-		return intValueExact(value);
-	}
-
-	/**
-	 *
-	 * Converts BigInteger to an int, checking for lost information. If the value of this BigInteger is out of the range of the int type, then an ArithmeticException is thrown.
-	 * <p>
-	 * TODO: replace with Java 8 native equivalent - BigInteger#intValueExact() - after upgrade to Java 8
-	 *
-	 * @param val
-	 *            input value
-	 * @see <a href="https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow">The CERT Oracle Secure Coding Standard for Java - NUM00-J. Detect or prevent
-	 *      integer overflow</a>
-	 * @return this converted to an int
-	 * @throws java.lang.ArithmeticException
-	 *             if the value of this will not exactly fit in a int.
-	 */
-	public static int intValueExact(final BigInteger val)
-	{
-		if (val.compareTo(MAX_INT_AS_BIGINT) == 1 || val.compareTo(MIN_INT_AS_BIGINT) == -1)
-		{
-			throw TOO_BIGINTEGER_FOR_INT_ARITHMETIC_EXCEPTION;
-		}
-
-		return val.intValue();
+		return value.intValueExact();
 	}
 
 	/** {@inheritDoc} */

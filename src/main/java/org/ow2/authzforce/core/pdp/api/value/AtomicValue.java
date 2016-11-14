@@ -16,24 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.ow2.authzforce.core.pdp.api.expression;
+package org.ow2.authzforce.core.pdp.api.value;
 
-import org.ow2.authzforce.core.pdp.api.value.Value;
+import javax.xml.datatype.DatatypeFactory;
 
 /**
- * Variable reference, i.e. reference to a variable definition. Variables are simply Expressions identified by an ID (VariableId) and replace original XACML VariableReferences for actual evaluation.
+ * The base type for all atomic/non-bag values , this abstract class represents a value for a given datatype. All the standard primitive datatypes defined in the XACML specification extend this, as
+ * well as Functions ("special" datatype because they can be used as parameter of higher-order functions). If you want to provide a new datatype, extend {@link DatatypeFactory} to provide a factory
+ * for it.
  * 
- * @param <V>
- *            reference evaluation's return type
  */
-public interface VariableReference<V extends Value> extends Expression<V>
+public interface AtomicValue extends Value
 {
-
-	/**
-	 * Returns referenced variable ID
-	 * 
-	 * @return referenced variable ID
-	 */
-	String getVariableId();
-
+	// marker interface
 }

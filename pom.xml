@@ -1,137 +1,133 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.ow2.authzforce</groupId>
-		<artifactId>authzforce-ce-parent</artifactId>
-		<version>3.4.0</version>
-	</parent>
-	<artifactId>authzforce-ce-core-pdp-api</artifactId>
-	<version>7.1.2-SNAPSHOT</version>
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>AuthZForce CE - Core PDP API</description>
-	<url>https://tuleap.ow2.org/projects/authzforce</url>
-	<scm>
-		<connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
-		<developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
-		<tag>HEAD</tag>
-		<!-- Publicly browsable repository URL. For example, via Gitlab web UI. -->
-		<url>${git.url.base}/core-pdp-api</url>
-	</scm>
-	<dependencies>
-		<!-- Third-party dependencies -->
-		<dependency>
-			<!-- For logging -->
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<!-- For representing Attributes/Content (free form XML) in XML Data Model 
-				(XDM). This is used for XPath evaluation required by XACML AttributeSelector 
-				and XPath-based functions (making reference to [XF]). -->
-			<groupId>net.sf.saxon</groupId>
-			<artifactId>Saxon-HE</artifactId>
-			<version>9.6.0-5</version>
-		</dependency>
-		<dependency>
-			<!-- For validation of XACML RFC822Name (email address) -->
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.5.4</version>
-		</dependency>
-		<dependency>
-			<!-- For extra collections (Multiset class used for XACML Bags, Table 
-				class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses 
-				(XACML IPAdress datatype), Domain names (XACML DNSName datatype), etc. without 
-				any DNS resolution -->
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>20.0</version>
-		</dependency>
-<!-- 		<dependency> -->
-			<!-- For better HashMap/HashSet implementations than Oracle/OpenJDK (better 
-				API, better performance) More info: http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/ -->
-<!-- 			<groupId>com.koloboke</groupId> -->
-<!--          <artifactId>koloboke-api-jdk6-7</artifactId> -->
-<!-- 			<artifactId>koloboke-impl-jdk6-7</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.ow2.authzforce</groupId>
+      <artifactId>authzforce-ce-parent</artifactId>
+      <version>4.0.0-SNAPSHOT</version>
+   </parent>
+   <artifactId>authzforce-ce-core-pdp-api</artifactId>
+   <version>8.0.0-SNAPSHOT</version>
+   <name>${project.groupId}:${project.artifactId}</name>
+   <description>AuthZForce CE - Core PDP API</description>
+   <url>https://tuleap.ow2.org/projects/authzforce</url>
+   <scm>
+      <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
+      <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
+      <tag>HEAD</tag>
+      <!-- Publicly browsable repository URL. For example, via Gitlab web UI. -->
+      <url>${git.url.base}/core-pdp-api</url>
+   </scm>
+   <dependencies>
+      <!-- Third-party dependencies -->
       <dependency>
-         <!-- For better HashMap/HashSet implementations than Oracle/OpenJDK (better 
-            API, better performance) More info: http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/ -->
-         <groupId>com.koloboke</groupId>
-       <artifactId>koloboke-impl-jdk6-7</artifactId>
-         <version>1.0.0</version>
+         <!-- For logging -->
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+      </dependency>
+      <dependency>
+         <!-- For representing Attributes/Content (free form XML) in XML Data Model (XDM). This is used for XPath evaluation required by XACML AttributeSelector and XPath-based functions (making reference 
+            to [XF]). -->
+         <groupId>net.sf.saxon</groupId>
+         <artifactId>Saxon-HE</artifactId>
+      </dependency>
+      <dependency>
+         <!-- For validation of XACML RFC822Name (email address) -->
+         <groupId>com.sun.mail</groupId>
+         <artifactId>mailapi</artifactId>
+         <version>1.5.6</version>
+      </dependency>
+      <dependency>
+         <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAdress datatype), Domain names (XACML 
+            DNSName datatype), etc. without any DNS resolution -->
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
       </dependency>
 
-		<!-- AuthZForce dependencies -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>${artifactId.prefix}-xacml-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>${artifactId.prefix}-pdp-ext-model</artifactId>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<verbose>true</verbose>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-							<goal>cpd-check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- Override license-maven-plugin configuration to exclude Sunxacml 
-					files from adding GPL license headers (different license) -->
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<header>license/thales-gpl.header.txt</header>
-					<skipExistingHeaders>true</skipExistingHeaders>
-					<includes>
-						<include>src/**</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>format-sources-license</id>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>format</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>format-test-sources-license</id>
-						<phase>process-test-sources</phase>
-						<goals>
-							<goal>format</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <!-- AuthZForce dependencies -->
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>${artifactId.prefix}-xacml-model</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>${artifactId.prefix}-pdp-ext-model</artifactId>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <!-- Consider combining with Red Hat Victims and OSS Index. More info on Victims vs. Dependency-check: https://bugzilla.redhat.com/show_bug.cgi?id=1388712 -->
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <configuration>
+            <!-- The plugin has numerous issues with version matching, which triggers false positives so we need a "suppresion" file for those.
+            More info: https://github.com/jeremylong/DependencyCheck/issues -->
+               <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
+            </configuration>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>check</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <configuration>
+               <verbose>true</verbose>
+            </configuration>
+            <executions>
+               <execution>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>check</goal>
+                     <goal>cpd-check</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>check</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <!-- Override license-maven-plugin configuration to exclude Sunxacml files from adding GPL license headers (different license) -->
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <configuration>
+               <header>license/thales-gpl.header.txt</header>
+               <skipExistingHeaders>true</skipExistingHeaders>
+               <includes>
+                  <include>src/**</include>
+               </includes>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>format-sources-license</id>
+                  <phase>process-sources</phase>
+                  <goals>
+                     <goal>format</goal>
+                  </goals>
+               </execution>
+               <execution>
+                  <id>format-test-sources-license</id>
+                  <phase>process-test-sources</phase>
+                  <goals>
+                     <goal>format</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
 </project>

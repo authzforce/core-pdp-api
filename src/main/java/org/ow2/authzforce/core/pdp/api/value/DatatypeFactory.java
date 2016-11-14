@@ -66,7 +66,14 @@ public interface DatatypeFactory<INSTANCE_AV extends AttributeValue> extends Pdp
 	Class<INSTANCE_AV[]> getArrayClass();
 
 	/**
-	 * Create attribute value from XML/JAXB mixed content and other XML attributes
+	 * Create AttributeValue in internal model (suitable for Expression evaluators) from XML/JAXB mixed content and other XML attributes.
+	 * <p>
+	 * NB: the standard datatype 'xpathExpression' may seem like a special case because xpathExpression evaluation depends on the context; therefore it might seem like a good idea to have
+	 * 'xpathExpression' datatype factory - and this interface as a result - use {@link org.ow2.authzforce.core.pdp.api.expression.Expression} as return type of this method instead. However, we prefer
+	 * to avoid that for simplicity. Indeed, if we need to evaluate a 'xpathExpression', we don't need a generic interface like {@link org.ow2.authzforce.core.pdp.api.expression.Expression} because in
+	 * standard XACML, xpathExpressions are used only as parameters of XPath-based functions (A.3.15), and such functions just need to cast input values to
+	 * {@link org.ow2.authzforce.core.pdp.api.value.XPathValue} and call {@link org.ow2.authzforce.core.pdp.api.value.XPathValue#evaluate(org.ow2.authzforce.core.pdp.api.EvaluationContext)} for
+	 * evaluation. Outside the context of XPath-based functions, we may consider xpathExpressions as simple literal constants like other AttributeValues.
 	 * 
 	 * @param content
 	 *            list of (XACML/JAXB) AttributeValueType's mixed content elements of the following types: {@link String}, {@link Element}
@@ -74,16 +81,9 @@ public interface DatatypeFactory<INSTANCE_AV extends AttributeValue> extends Pdp
 	 *            other XML attributes
 	 * @param xPathCompiler
 	 *            XPath compiler for compiling/evaluating XPath expressions in values, e.g. XACML xpathExpression
-	 * @return attribute value in internal model compatible with expression evaluator
+	 * @return attribute value in internal model suitable for Expression evaluators
 	 * @throws IllegalArgumentException
 	 *             if content/otherAttributes are not valid for the datatype handled by this factory
 	 */
 	INSTANCE_AV getInstance(List<Serializable> content, Map<QName, String> otherAttributes, XPathCompiler xPathCompiler) throws IllegalArgumentException;
-
-	/**
-	 * returns true iff the expression based on this value always evaluates to the same constant in any evaluation context (not the case of xpathExpressions for instance).
-	 * 
-	 * @return true iff any value expression created by this factory is static
-	 */
-	boolean isExpressionStatic();
 }

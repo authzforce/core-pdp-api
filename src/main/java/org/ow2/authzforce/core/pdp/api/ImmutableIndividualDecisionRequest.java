@@ -22,12 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
-import com.koloboke.collect.map.hash.HashObjObjMaps;
-
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+
+import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
  * Mutable Individual Decision Request
@@ -51,14 +49,12 @@ public final class ImmutableIndividualDecisionRequest implements IndividualDecis
 	 * @param returnPolicyIdList
 	 *            XACML Request's ReturnPolicyIdList flag
 	 */
-	public ImmutableIndividualDecisionRequest(final Map<AttributeGUID, Bag<?>> namedAttributes,
-			final Map<String, XdmNode> extraContentNodesByCategory, final List<Attributes> includedInResult,
+	public ImmutableIndividualDecisionRequest(final Map<AttributeGUID, Bag<?>> namedAttributes, final Map<String, XdmNode> extraContentNodesByCategory, final List<Attributes> includedInResult,
 			final boolean returnPolicyIdList)
 	{
 		// these maps/lists may be updated later by put(...) method defined in this class
-		attributes = namedAttributes == null ? null : HashObjObjMaps.newImmutableMap(namedAttributes);
-		extraContentsByCategory = extraContentNodesByCategory == null ? null
-				: HashObjObjMaps.newImmutableMap(extraContentNodesByCategory);
+		attributes = namedAttributes == null ? null : HashCollections.newImmutableMap(namedAttributes);
+		extraContentsByCategory = extraContentNodesByCategory == null ? null : HashCollections.newImmutableMap(extraContentNodesByCategory);
 		attributesToIncludeInResult = includedInResult == null ? null : Collections.unmodifiableList(includedInResult);
 		returnApplicablePolicyIdList = returnPolicyIdList;
 	}
@@ -72,8 +68,7 @@ public final class ImmutableIndividualDecisionRequest implements IndividualDecis
 	public ImmutableIndividualDecisionRequest(final IndividualDecisionRequest baseRequest)
 	{
 		// these maps/lists may be updated later by put(...) method defined in this class
-		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(),
-				baseRequest.getReturnedAttributes(), baseRequest.isApplicablePolicyIdListReturned());
+		this(baseRequest.getNamedAttributes(), baseRequest.getExtraContentsByCategory(), baseRequest.getReturnedAttributes(), baseRequest.isApplicablePolicyIdListReturned());
 	}
 
 	/*

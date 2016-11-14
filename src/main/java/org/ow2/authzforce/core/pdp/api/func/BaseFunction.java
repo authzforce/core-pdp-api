@@ -18,13 +18,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import javax.xml.bind.JAXBElement;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.FunctionType;
-
-import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
@@ -52,28 +46,6 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	{
 		this.functionId = functionId;
 		this.indeterminateArgMessagePrefix = "Function " + functionId + ": Indeterminate arg #";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.thalesgroup.authzforce.core.eval.Expression#isStatic()
-	 */
-	@Override
-	public final boolean isStatic()
-	{
-		// the function itself is static: constant identified by its ID
-		return true;
-	}
-
-	@Override
-	public final RETURN_T evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
-	{
-		// Expression#evaluate()
-		/*
-		 * The static function instance itself (as an expression, without any parameter) evaluates to nothing, it is just a function ID
-		 */
-		return null;
 	}
 
 	@Override
@@ -132,17 +104,6 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	public final IndeterminateEvaluationException getIndeterminateArgException(final int argIndex)
 	{
 		return new IndeterminateEvaluationException(getIndeterminateArgMessage(argIndex), StatusHelper.STATUS_PROCESSING_ERROR);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.thalesgroup.authzforce.core.eval.Expression#createJAXBElement()
-	 */
-	@Override
-	public final JAXBElement<FunctionType> getJAXBElement()
-	{
-		return JaxbXACMLUtils.XACML_3_0_OBJECT_FACTORY.createFunction(new FunctionType(this.functionId));
 	}
 
 }

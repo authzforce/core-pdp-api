@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import net.sf.saxon.Configuration;
+import net.sf.saxon.Version;
 import net.sf.saxon.regex.RegularExpression;
 import net.sf.saxon.trans.XPathException;
 
@@ -37,6 +37,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.SimpleValue;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.StringValue;
+import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
  * *-regexp-match function helper
@@ -61,7 +62,7 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
  */
 public final class RegexpMatchFunctionHelper
 {
-	private static final class CompiledRegexMatchFunctionCall extends FirstOrderFunctionCall<BooleanValue>
+	private static final class CompiledRegexMatchFunctionCall extends BaseFirstOrderFunctionCall<BooleanValue>
 	{
 		private final RegularExpression compiledRegex;
 		private final List<Expression<?>> argExpressionsAfterRegex;
@@ -95,16 +96,19 @@ public final class RegexpMatchFunctionHelper
 				try
 				{
 					arg1 = matchedValClass.cast(remainingArgs[0]);
-				} catch (final ClassCastException e)
+				}
+				catch (final ClassCastException e)
 				{
 					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
-			} else
+			}
+			else
 			{
 				try
 				{
 					arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, matchedValType);
-				} catch (final IndeterminateEvaluationException e)
+				}
+				catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException("Function " + this.funcId + ": Indeterminate arg #1", StatusHelper.STATUS_PROCESSING_ERROR, e);
 				}
@@ -134,8 +138,9 @@ public final class RegexpMatchFunctionHelper
 		final RegularExpression compiledRegex;
 		try
 		{
-			compiledRegex = Configuration.getPlatform().compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
-		} catch (final XPathException e)
+			compiledRegex = Version.platform.compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
+		}
+		catch (final XPathException e)
 		{
 			throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
 		}
@@ -146,7 +151,6 @@ public final class RegexpMatchFunctionHelper
 	private final String indeterminateArg1TypeMessage;
 	private final FirstOrderFunctionSignature<BooleanValue> funcSig;
 	private final Datatype<? extends SimpleValue<String>> matchedValueType;
-	private final String indeterminateArg0StaticPreEvalMsg;
 	private final String invalidRegexMsg;
 
 	/**
@@ -162,7 +166,6 @@ public final class RegexpMatchFunctionHelper
 		this.funcSig = matchFunctionSignature;
 		this.matchedValueType = matchedDatatype;
 		this.indeterminateArg1TypeMessage = "Function " + funcSig.getName() + ": Invalid type (expected = " + matchedDatatype + ") of arg #1: ";
-		this.indeterminateArg0StaticPreEvalMsg = "Function " + funcSig.getName() + ": Error pre-evaluating static expression of arg #0 (in null context): ";
 		this.invalidRegexMsg = "Function " + funcSig.getName() + ": Invalid regular expression in arg #0 (evaluated as static expression): '";
 	}
 
@@ -182,31 +185,36 @@ public final class RegexpMatchFunctionHelper
 		if (argExpressions.isEmpty())
 		{
 			compiledRegex = null;
-		} else
+		}
+		else
 		{
 			final Expression<?> input0 = argExpressions.get(0);
-			if (input0.isStatic())
+			/*
+			 * if first arg is constant, pre-compile the regex
+			 */
+			final Value constant = input0.getValue();
+			if (constant != null)
 			{
-				final StringValue input0Val;
-				try
+				if (!(constant instanceof StringValue))
 				{
-					input0Val = Expressions.eval(input0, null, StandardDatatypes.STRING_FACTORY.getDatatype());
-				} catch (final IndeterminateEvaluationException e)
-				{
-					throw new IllegalArgumentException(indeterminateArg0StaticPreEvalMsg + input0, e);
+					throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING_FACTORY.getDatatype()
+							+ ")");
 				}
-				final String regex = input0Val.getUnderlyingValue();
+
+				final String regex = ((StringValue) constant).getUnderlyingValue();
 				try
 				{
 					/*
 					 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
 					 */
-					compiledRegex = Configuration.getPlatform().compileRegularExpression(regex, "", "XP20", null);
-				} catch (final XPathException e)
+					compiledRegex = Version.platform.compileRegularExpression(regex, "", "XP20", null);
+				}
+				catch (final XPathException e)
 				{
 					throw new IllegalArgumentException(invalidRegexMsg + regex + "'", e);
 				}
-			} else
+			}
+			else
 			{
 				compiledRegex = null;
 			}
