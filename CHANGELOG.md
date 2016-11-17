@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
-## Unreleased
+## 8.0.0
 ### Added
 - Extension mechanism to switch HashMap/HashSet implementation; default implementation is based on native JRE and Guava.
 - AtomicValue interface for atomic/primitive values, implemented by Function and AttributeValue
