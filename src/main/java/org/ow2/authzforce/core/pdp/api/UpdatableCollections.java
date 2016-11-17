@@ -27,10 +27,6 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.koloboke.collect.map.hash.HashObjObjMap;
-import com.koloboke.collect.map.hash.HashObjObjMaps;
-import com.koloboke.collect.set.hash.HashObjSet;
-import com.koloboke.collect.set.hash.HashObjSets;
 
 /**
  * Factory for {@code UpdatableList}s
@@ -176,7 +172,7 @@ public final class UpdatableCollections
 	 */
 	private static final class UpdatableHashSet<E> implements UpdatableSet<E>
 	{
-		private final Set<E> set = HashObjSets.newUpdatableSet();
+		private final Set<E> set = HashCollections.newUpdatableSet();
 
 		private UpdatableHashSet()
 		{
@@ -271,7 +267,7 @@ public final class UpdatableCollections
 	 */
 	private static final class UpdatableHashMap<K, V> implements UpdatableMap<K, V>
 	{
-		private final Map<K, V> map = HashObjObjMaps.newUpdatableMap();
+		private final Map<K, V> map = HashCollections.newUpdatableMap();
 
 		private UpdatableHashMap()
 		{

@@ -21,8 +21,8 @@ package org.ow2.authzforce.core.pdp.api.func;
 import java.util.Iterator;
 import java.util.List;
 
-import org.ow2.authzforce.core.pdp.api.expression.BaseVariableReference;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
+import org.ow2.authzforce.core.pdp.api.expression.FunctionExpression;
 import org.ow2.authzforce.core.pdp.api.expression.VariableReference;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
@@ -95,19 +95,21 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 		final Expression<?> input0 = inputsIterator.next();
 		// first arg must be a boolean function
 		final Function<?> inputFunc;
-		if (input0 instanceof Function)
+		if (input0 instanceof FunctionExpression)
 		{
-			inputFunc = (Function<?>) input0;
-		} else if (input0 instanceof BaseVariableReference)
+			inputFunc = ((FunctionExpression) input0).getValue();
+		}
+		else if (input0 instanceof VariableReference)
 		{
-			final Expression<?> varRefExp = ((VariableReference<?>) input0).getReferencedExpression();
-			if (!(varRefExp instanceof Function))
+			final Value varValue = ((VariableReference<?>) input0).getValue();
+			if (!(varValue instanceof Function))
 			{
-				throw new IllegalArgumentException(this + ": Invalid type of first argument: " + varRefExp.getClass().getSimpleName() + ". Required: Function");
+				throw new IllegalArgumentException(this + ": Invalid type of first argument: " + varValue.getClass().getSimpleName() + ". Required: Function");
 			}
 
-			inputFunc = (Function<?>) varRefExp;
-		} else
+			inputFunc = (Function<?>) varValue;
+		}
+		else
 		{
 			throw new IllegalArgumentException(this + ": Invalid type of first argument: " + input0.getClass().getSimpleName() + ". Required: Function");
 		}
@@ -130,7 +132,8 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 			{
 				throw new IllegalArgumentException(this + ": Invalid return type of function in first argument: " + inputFuncReturnType + " (bag type). Required: any primitive type");
 			}
-		} else
+		}
+		else
 		{
 			if (!inputFuncReturnType.equals(subFuncReturnType))
 			{

@@ -25,11 +25,10 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.ow2.authzforce.core.pdp.api.func.Function;
-
-import com.koloboke.collect.set.hash.HashObjSets;
-
 import net.sf.saxon.s9api.XPathCompiler;
+
+import org.ow2.authzforce.core.pdp.api.HashCollections;
+import org.ow2.authzforce.core.pdp.api.func.Function;
 
 /**
  * XACML standard datatypes
@@ -47,8 +46,8 @@ public final class StandardDatatypes
 	/**
 	 * string
 	 */
-	public static final SimpleValue.Factory<StringValue> STRING_FACTORY = new SimpleValue.StringContentOnlyFactory<StringValue>(
-			StringValue.class, StringValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "string"))
+	public static final SimpleValue.StringContentOnlyFactory<StringValue> STRING_FACTORY = new SimpleValue.StringContentOnlyFactory<StringValue>(StringValue.class, StringValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "string"))
 	{
 
 		@Override
@@ -62,8 +61,8 @@ public final class StandardDatatypes
 	/**
 	 * boolean
 	 */
-	public static final SimpleValue.Factory<BooleanValue> BOOLEAN_FACTORY = new SimpleValue.StringContentOnlyFactory<BooleanValue>(
-			BooleanValue.class, BooleanValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "boolean"))
+	public static final SimpleValue.StringContentOnlyFactory<BooleanValue> BOOLEAN_FACTORY = new SimpleValue.StringContentOnlyFactory<BooleanValue>(BooleanValue.class, BooleanValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "boolean"))
 	{
 
 		@Override
@@ -77,8 +76,8 @@ public final class StandardDatatypes
 	/**
 	 * integer
 	 */
-	public static final SimpleValue.Factory<IntegerValue> INTEGER_FACTORY = new SimpleValue.StringContentOnlyFactory<IntegerValue>(
-			IntegerValue.class, IntegerValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "integer"))
+	public static final SimpleValue.StringContentOnlyFactory<IntegerValue> INTEGER_FACTORY = new SimpleValue.StringContentOnlyFactory<IntegerValue>(IntegerValue.class, IntegerValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "integer"))
 	{
 
 		@Override
@@ -92,8 +91,8 @@ public final class StandardDatatypes
 	/**
 	 * double
 	 */
-	public static final SimpleValue.Factory<DoubleValue> DOUBLE_FACTORY = new SimpleValue.StringContentOnlyFactory<DoubleValue>(
-			DoubleValue.class, DoubleValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "double"))
+	public static final SimpleValue.StringContentOnlyFactory<DoubleValue> DOUBLE_FACTORY = new SimpleValue.StringContentOnlyFactory<DoubleValue>(DoubleValue.class, DoubleValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "double"))
 	{
 
 		@Override
@@ -107,8 +106,8 @@ public final class StandardDatatypes
 	/**
 	 * time
 	 */
-	public static final SimpleValue.Factory<TimeValue> TIME_FACTORY = new SimpleValue.StringContentOnlyFactory<TimeValue>(
-			TimeValue.class, TimeValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "time"))
+	public static final SimpleValue.StringContentOnlyFactory<TimeValue> TIME_FACTORY = new SimpleValue.StringContentOnlyFactory<TimeValue>(TimeValue.class, TimeValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "time"))
 	{
 
 		@Override
@@ -122,8 +121,8 @@ public final class StandardDatatypes
 	/**
 	 * date
 	 */
-	public static final SimpleValue.Factory<DateValue> DATE_FACTORY = new SimpleValue.StringContentOnlyFactory<DateValue>(
-			DateValue.class, DateValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "date"))
+	public static final SimpleValue.StringContentOnlyFactory<DateValue> DATE_FACTORY = new SimpleValue.StringContentOnlyFactory<DateValue>(DateValue.class, DateValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "date"))
 	{
 
 		@Override
@@ -137,8 +136,8 @@ public final class StandardDatatypes
 	/**
 	 * dateTime
 	 */
-	public static final SimpleValue.Factory<DateTimeValue> DATETIME_FACTORY = new SimpleValue.StringContentOnlyFactory<DateTimeValue>(
-			DateTimeValue.class, DateTimeValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "dateTime"))
+	public static final SimpleValue.StringContentOnlyFactory<DateTimeValue> DATETIME_FACTORY = new SimpleValue.StringContentOnlyFactory<DateTimeValue>(DateTimeValue.class, DateTimeValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "dateTime"))
 	{
 
 		@Override
@@ -152,8 +151,8 @@ public final class StandardDatatypes
 	/**
 	 * anyURI
 	 */
-	public static final SimpleValue.Factory<AnyURIValue> ANYURI_FACTORY = new SimpleValue.StringContentOnlyFactory<AnyURIValue>(
-			AnyURIValue.class, AnyURIValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "anyURI"))
+	public static final SimpleValue.StringContentOnlyFactory<AnyURIValue> ANYURI_FACTORY = new SimpleValue.StringContentOnlyFactory<AnyURIValue>(AnyURIValue.class, AnyURIValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "anyURI"))
 	{
 
 		@Override
@@ -167,8 +166,8 @@ public final class StandardDatatypes
 	/**
 	 * hexBinary
 	 */
-	public static final SimpleValue.Factory<HexBinaryValue> HEXBINARY_FACTORY = new SimpleValue.StringContentOnlyFactory<HexBinaryValue>(
-			HexBinaryValue.class, HexBinaryValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "hexBinary"))
+	public static final SimpleValue.StringContentOnlyFactory<HexBinaryValue> HEXBINARY_FACTORY = new SimpleValue.StringContentOnlyFactory<HexBinaryValue>(HexBinaryValue.class,
+			HexBinaryValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "hexBinary"))
 	{
 
 		@Override
@@ -182,8 +181,8 @@ public final class StandardDatatypes
 	/**
 	 * base64Binary
 	 */
-	public static final SimpleValue.Factory<Base64BinaryValue> BASE64BINARY_FACTORY = new SimpleValue.StringContentOnlyFactory<Base64BinaryValue>(
-			Base64BinaryValue.class, Base64BinaryValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "base64Binary"))
+	public static final SimpleValue.StringContentOnlyFactory<Base64BinaryValue> BASE64BINARY_FACTORY = new SimpleValue.StringContentOnlyFactory<Base64BinaryValue>(Base64BinaryValue.class,
+			Base64BinaryValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "base64Binary"))
 	{
 		@Override
 		public Base64BinaryValue getInstance(final String val)
@@ -196,8 +195,8 @@ public final class StandardDatatypes
 	/**
 	 * x500Name
 	 */
-	public static final SimpleValue.Factory<X500NameValue> X500NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<X500NameValue>(
-			X500NameValue.class, X500NameValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "x500Name"))
+	public static final SimpleValue.StringContentOnlyFactory<X500NameValue> X500NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<X500NameValue>(X500NameValue.class, X500NameValue.TYPE_URI,
+			URI.create(Function.XACML_NS_1_0 + "x500Name"))
 	{
 
 		@Override
@@ -211,8 +210,8 @@ public final class StandardDatatypes
 	/**
 	 * rfc822Name
 	 */
-	public static final SimpleValue.Factory<RFC822NameValue> RFC822NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<RFC822NameValue>(
-			RFC822NameValue.class, RFC822NameValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "rfc822Name"))
+	public static final SimpleValue.StringContentOnlyFactory<RFC822NameValue> RFC822NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<RFC822NameValue>(RFC822NameValue.class,
+			RFC822NameValue.TYPE_URI, URI.create(Function.XACML_NS_1_0 + "rfc822Name"))
 	{
 
 		@Override
@@ -225,8 +224,8 @@ public final class StandardDatatypes
 	/**
 	 * ipAddress
 	 */
-	public static final SimpleValue.Factory<IPAddressValue> IPADDRESS_FACTORY = new SimpleValue.StringContentOnlyFactory<IPAddressValue>(
-			IPAddressValue.class, IPAddressValue.TYPE_URI, URI.create(Function.XACML_NS_2_0 + "ipAddress"))
+	public static final SimpleValue.StringContentOnlyFactory<IPAddressValue> IPADDRESS_FACTORY = new SimpleValue.StringContentOnlyFactory<IPAddressValue>(IPAddressValue.class,
+			IPAddressValue.TYPE_URI, URI.create(Function.XACML_NS_2_0 + "ipAddress"))
 	{
 		@Override
 		public IPAddressValue getInstance(final String value)
@@ -239,9 +238,8 @@ public final class StandardDatatypes
 	/**
 	 * dnsName
 	 */
-	public static final SimpleValue.Factory<DNSNameWithPortRangeValue> DNSNAME_FACTORY = new SimpleValue.StringContentOnlyFactory<DNSNameWithPortRangeValue>(
-			DNSNameWithPortRangeValue.class, DNSNameWithPortRangeValue.TYPE_URI,
-			URI.create(Function.XACML_NS_2_0 + "dnsName"))
+	public static final SimpleValue.StringContentOnlyFactory<DNSNameWithPortRangeValue> DNSNAME_FACTORY = new SimpleValue.StringContentOnlyFactory<DNSNameWithPortRangeValue>(
+			DNSNameWithPortRangeValue.class, DNSNameWithPortRangeValue.TYPE_URI, URI.create(Function.XACML_NS_2_0 + "dnsName"))
 	{
 
 		@Override
@@ -255,9 +253,8 @@ public final class StandardDatatypes
 	/**
 	 * dayTimeDuration
 	 */
-	public static final SimpleValue.Factory<DayTimeDurationValue> DAYTIMEDURATION_FACTORY = new SimpleValue.StringContentOnlyFactory<DayTimeDurationValue>(
-			DayTimeDurationValue.class, DayTimeDurationValue.TYPE_URI,
-			URI.create(Function.XACML_NS_3_0 + "dayTimeDuration"))
+	public static final SimpleValue.StringContentOnlyFactory<DayTimeDurationValue> DAYTIMEDURATION_FACTORY = new SimpleValue.StringContentOnlyFactory<DayTimeDurationValue>(DayTimeDurationValue.class,
+			DayTimeDurationValue.TYPE_URI, URI.create(Function.XACML_NS_3_0 + "dayTimeDuration"))
 	{
 
 		@Override
@@ -271,9 +268,8 @@ public final class StandardDatatypes
 	/**
 	 * yearMonthDuration
 	 */
-	public static final SimpleValue.Factory<YearMonthDurationValue> YEARMONTHDURATION_FACTORY = new SimpleValue.StringContentOnlyFactory<YearMonthDurationValue>(
-			YearMonthDurationValue.class, YearMonthDurationValue.TYPE_URI,
-			URI.create(Function.XACML_NS_3_0 + "yearMonthDuration"))
+	public static final SimpleValue.StringContentOnlyFactory<YearMonthDurationValue> YEARMONTHDURATION_FACTORY = new SimpleValue.StringContentOnlyFactory<YearMonthDurationValue>(
+			YearMonthDurationValue.class, YearMonthDurationValue.TYPE_URI, URI.create(Function.XACML_NS_3_0 + "yearMonthDuration"))
 	{
 
 		@Override
@@ -287,21 +283,12 @@ public final class StandardDatatypes
 	/**
 	 * xpathExpression
 	 */
-	public static final SimpleValue.Factory<XPathValue> XPATH_FACTORY = new SimpleValue.Factory<XPathValue>(
-			XPathValue.class, XPathValue.TYPE_URI, URI.create(Function.XACML_NS_3_0 + "xpath"))
+	public static final SimpleValue.Factory<XPathValue> XPATH_FACTORY = new SimpleValue.Factory<XPathValue>(XPathValue.class, XPathValue.TYPE_URI, URI.create(Function.XACML_NS_3_0 + "xpath"))
 	{
 		@Override
-		public XPathValue getInstance(final String value, final Map<QName, String> otherXmlAttributes,
-				final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public XPathValue getInstance(final String value, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			return new XPathValue(value, otherXmlAttributes, xPathCompiler);
-		}
-
-		@Override
-		public boolean isExpressionStatic()
-		{
-			// xpathExpression evaluation result depends on the context (request Content node)
-			return false;
 		}
 
 	};
@@ -309,10 +296,16 @@ public final class StandardDatatypes
 	/**
 	 * Set of standard mandatory datatype factories (xpathExpression is optional, therefore excluded)
 	 */
-	public static final Set<SimpleValue.Factory<? extends SimpleValue<? extends Object>>> MANDATORY_DATATYPE_SET = HashObjSets
-			.newImmutableSet(Arrays.asList(STRING_FACTORY, BOOLEAN_FACTORY, INTEGER_FACTORY, DOUBLE_FACTORY,
-					TIME_FACTORY, DATE_FACTORY, DATETIME_FACTORY, ANYURI_FACTORY, HEXBINARY_FACTORY,
-					BASE64BINARY_FACTORY, X500NAME_FACTORY, RFC822NAME_FACTORY, IPADDRESS_FACTORY, DNSNAME_FACTORY,
-					DAYTIMEDURATION_FACTORY, YEARMONTHDURATION_FACTORY));
+	public static final Set<SimpleValue.Factory<? extends SimpleValue<? extends Object>>> MANDATORY_DATATYPE_SET = HashCollections.newImmutableSet(Arrays.asList(STRING_FACTORY, BOOLEAN_FACTORY,
+			INTEGER_FACTORY, DOUBLE_FACTORY, TIME_FACTORY, DATE_FACTORY, DATETIME_FACTORY, ANYURI_FACTORY, HEXBINARY_FACTORY, BASE64BINARY_FACTORY, X500NAME_FACTORY, RFC822NAME_FACTORY,
+			IPADDRESS_FACTORY, DNSNAME_FACTORY, DAYTIMEDURATION_FACTORY, YEARMONTHDURATION_FACTORY));
+
+	/**
+	 * Special datatype for function, since datatype are used to specify - among other things - function parameter types, and function may be used as parameters of high-order functions (e.g. any-of,
+	 * all-of, etc.). Although this is not defined as XACML datatype per se in XACML specification, this datatype is more or less implicit.
+	 */
+	@SuppressWarnings("rawtypes")
+	public static final Datatype<Function> FUNCTION_DATATYPE = new PrimitiveDatatype<>(Function.class, Datatype.AUTHZFORCE_EXTENSION_PREFIX + "function",
+			URI.create(Function.AUTHZFORCE_EXTENSION_PREFIX + "function"));
 
 }

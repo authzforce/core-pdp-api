@@ -71,7 +71,8 @@ public final class RFC822NameValue extends SimpleValue<String>
 		{
 			final InternetAddress email = new InternetAddress(stringForm, true);
 			email.validate();
-		} catch (final AddressException e)
+		}
+		catch (final AddressException e)
 		{
 			throw new IllegalArgumentException("Invalid RFC822Name: " + stringForm, e);
 		}

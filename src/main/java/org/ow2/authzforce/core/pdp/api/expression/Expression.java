@@ -23,16 +23,15 @@ package org.ow2.authzforce.core.pdp.api.expression;
 
 import javax.xml.bind.JAXBElement;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
+
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
-
 /**
- * Super interface of any kinds of expression in a policy that the PDP evaluation engine may evaluate in a given
- * authorization request context:
+ * Super interface of any kinds of expression in a policy that the PDP evaluation engine may evaluate in a given authorization request context:
  * <ul>
  * <li>AttributeValue</li>
  * <li>Apply</li>
@@ -60,29 +59,27 @@ public interface Expression<V extends Value>
 	 * @param context
 	 *            the representation of the request
 	 * 
-	 * @return the result of evaluation that may be a single value T (e.g. function result, AttributeValue, Condition,
-	 *         Match...) or bag of values (e.g. AttributeDesignator, AttributeSelector)
+	 * @return the result of evaluation that may be a single value T (e.g. function result, AttributeValue, Condition, Match...) or bag of values (e.g. AttributeDesignator, AttributeSelector)
 	 * @throws IndeterminateEvaluationException
 	 *             if evaluation "Indeterminate" (see XACML core specification)
 	 */
 	V evaluate(EvaluationContext context) throws IndeterminateEvaluationException;
 
 	/**
-	 * Tells whether this expression is actually a static value, i.e. independent from the evaluation context (e.g.
-	 * AttributeValue, VariableReference to AttributeValue...). This enables expression consumers to do optimizations,
-	 * e.g. functions may pre-compile/pre-evaluate parts of their inputs knowing some are constant values.
+	 * Get the constant value of this expression if it has a constant value, i.e. independent from the evaluation context (e.g. AttributeValue, VariableReference to AttributeValue...). This is
+	 * equivalent to call {@link #evaluate(EvaluationContext)} with {@code context == null}. This enables expression consumers to do optimizations, e.g. functions may pre-compile/pre-evaluate parts of
+	 * their inputs knowing some are constant values.
 	 * 
-	 * @return true iff a static/fixed/constant value
+	 * @return the constant value iff the expression has a static/fixed/constant value; else null (if the expression is not constant). NB: Null is not considered/possible as a constant value for
+	 *         expressions.
 	 */
-	boolean isStatic();
+	V getValue();
 
 	/**
-	 * Gets the instance of the Java representation of the XACML-schema-derived JAXB-annotated Expression
-	 * bound/equivalent to this expression
+	 * Gets the instance of the Java representation of the XACML-schema-derived JAXB-annotated Expression bound/equivalent to this expression
 	 * 
-	 * This may be removed in the future as it is no longer considered useful. Do not rely on it. It is the
-	 * responsibility of the caller that instantiates this Expression to keep a reference to the original XACML/JAXB
-	 * class from which it is instantiated, if the caller ever needs it.
+	 * This may be removed in the future as it is no longer considered useful. Do not rely on it. It is the responsibility of the caller that instantiates this Expression to keep a reference to the
+	 * original XACML/JAXB class from which it is instantiated, if the caller ever needs it.
 	 * 
 	 * @return JAXB element equivalent
 	 */

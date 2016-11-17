@@ -35,6 +35,11 @@ If you wish to contact the developers for other reasons, use [Authzforce contact
 <pre><code>
     $ mvn -Dhttps.proxyHost=proxyhostname -Dhttps.proxyPort=3128 -DnoDeploy=true jgitflow:release-finish
 </code></pre>
+    If the command fails because of a gpg error such as "no gpg-agent available to this session" or "no pinentry", make sure you have installed a pinentry program (e.g. with package `pinentry-gnome3`), and that a gpg-agent is running with this pinentry program, for example:
+ <pre><code>
+    $ gpg-agent --daemon --pinentry-program /usr/bin/pinentry-gnome3
+</code></pre>
+    Then re-run the mvn command as above.
 1. Connect and log in to the OSS Nexus Repository Manager: https://oss.sonatype.org/
 1. Go to Staging Profiles and select the pending repository authzforce-*... you just uploaded with `jgitflow:release-finish`
 1. Click the Release button to release to Maven Central.

@@ -18,9 +18,9 @@
  */
 package org.ow2.authzforce.core.pdp.api.combining;
 
-import java.util.List;
-
 import javax.xml.bind.JAXBElement;
+
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 
 import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
@@ -29,14 +29,10 @@ import org.ow2.authzforce.core.pdp.api.PdpExtension;
 import org.ow2.authzforce.core.pdp.api.UpdatableList;
 import org.ow2.authzforce.core.pdp.api.UpdatablePepActions;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-
 /**
- * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no
- * obligation/advice may be included in the <code>Result</code> that doesn't match the permit/deny decision being
- * returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no obligations/advice may be included in
- * the result. If the decision of the combining algorithm is PERMIT or DENY, then obligations/advice with a matching
- * fulfillOn/AppliesTo effect are also included in the result.
+ * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no obligation/advice may be included in the <code>Result</code> that doesn't match the
+ * permit/deny decision being returned. So, if INDETERMINATE or NOT_APPLICABLE is the returned decision, no obligations/advice may be included in the result. If the decision of the combining algorithm
+ * is PERMIT or DENY, then obligations/advice with a matching fulfillOn/AppliesTo effect are also included in the result.
  * 
  * @param <T>
  *            type of combined element (Policy, Rule...)
@@ -56,20 +52,15 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 		 * @param context
 		 *            the request evaluation context
 		 * @param updatablePepActions
-		 *            output collection where to add the obligation/advice elements returned by the evaluations of the
-		 *            combined elements, if any
+		 *            output collection where to add the obligation/advice elements returned by the evaluations of the combined elements, if any
 		 * @param updatableApplicablePolicyIdList
-		 *            output list where to add policies found "applicable" during evaluation if
-		 *            {@code context.isApplicablePolicyIdListRequested()}. See
-		 *            {@link EvaluationContext#isApplicablePolicyIdListRequested()} for a definition of "applicable" in
-		 *            this context. The caller must set this to null iff
-		 *            {@code !context.isApplicablePolicyIdListRequested()} (the list of applicable policies is not
-		 *            requested).
+		 *            output list where to add policies found "applicable" during evaluation if {@code context.isApplicablePolicyIdListRequested()}. See
+		 *            {@link EvaluationContext#isApplicablePolicyIdListRequested()} for a definition of "applicable" in this context. The caller must set this to null iff
+		 *            {@code !context.isApplicablePolicyIdListRequested()} (the list of applicable policies is not requested).
 		 * 
 		 * @return combined result
 		 */
-		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions,
-				UpdatableList<JAXBElement<IdReferenceType>> updatableApplicablePolicyIdList);
+		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions, UpdatableList<JAXBElement<IdReferenceType>> updatableApplicablePolicyIdList);
 	}
 
 	/**
@@ -83,9 +74,9 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 	 * Creates instance of algorithm. To be implemented by algorithm implementations.
 	 * 
 	 * @param params
-	 *            list of combining algorithm parameters that may be associated with a particular child element
+	 *            combining algorithm parameters (in order of declaration) that may be associated with a particular child element
 	 * @param combinedElements
-	 *            combined child elements
+	 *            combined child elements (in order of declaration)
 	 * 
 	 * @return an instance of algorithm evaluator
 	 * @throws UnsupportedOperationException
@@ -93,6 +84,5 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 	 * @throws IllegalArgumentException
 	 *             if {@code params} are invalid for this algorithm
 	 */
-	Evaluator getInstance(List<CombiningAlgParameter<? extends T>> params, List<? extends T> combinedElements)
-			throws UnsupportedOperationException, IllegalArgumentException;
+	Evaluator getInstance(Iterable<CombiningAlgParameter<? extends T>> params, Iterable<? extends T> combinedElements) throws UnsupportedOperationException, IllegalArgumentException;
 }

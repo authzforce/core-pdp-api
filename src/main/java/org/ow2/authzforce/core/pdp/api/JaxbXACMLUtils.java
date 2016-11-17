@@ -64,8 +64,6 @@ import org.ow2.authzforce.xacml.identifiers.XACMLResourceScope;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.koloboke.collect.map.hash.HashObjObjMaps;
-
 /**
  * XACML processing utilities based on JAXB API
  * 
@@ -729,7 +727,7 @@ public final class JaxbXACMLUtils
 			 * Let's iterate over the attributes to convert the list to a map indexed by the attribute category/id/issuer for quicker access during request evaluation. There might be multiple
 			 * occurrences of <Attribute> with same meta-data (id, etc.), so the map value type need to be expandable/appendable to merge new values when new occurrences are found, e.g. Collection.
 			 */
-			final Map<AttributeGUID, BAG> attrMap = HashObjObjMaps.newUpdatableMap();
+			final Map<AttributeGUID, BAG> attrMap = HashCollections.newUpdatableMap();
 
 			/*
 			 * categoryAttrs is immutable (JAXB-annotated classes have been generated as such using -immutable arg) so we cannot modify it directly to create the list of Attributes included in Result

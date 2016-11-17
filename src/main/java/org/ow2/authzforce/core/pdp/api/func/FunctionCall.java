@@ -27,11 +27,10 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * Function call. This is the recommended way of calling any {@link BaseFunction}. This is quite similar to XACML Apply except it does not include the
- * Description field; and arguments are optimized specifically for each function by extending this class accordinly, therefore they might be quite different
- * from original input Expressions of the Apply. In particular, if some expressions are actually static values (e.g. AttributeValue, VariableReference to
- * AttributeValue, function applied to static values...), these expressions might be pre-compiled/pre-evaluated. For instance, a static regex parameter to
- * regexp-match function may be pre-compiled to a regex for re-use.
+ * Function call. This is the recommended way of calling any {@link BaseFunction}. This is quite similar to XACML Apply except it does not include the Description field; and arguments are optimized
+ * specifically for each function by extending this class accordinly, therefore they might be quite different from original input Expressions of the Apply. In particular, if some expressions are
+ * actually static values (e.g. AttributeValue, VariableReference to AttributeValue, function applied to static values...), these expressions might be pre-compiled/pre-evaluated. For instance, a
+ * static regex parameter to regexp-match function may be pre-compiled to a regex for re-use.
  * 
  * @param <RETURN_T>
  *            call's return type (typically the same as the internal function's)
@@ -39,6 +38,13 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  */
 public interface FunctionCall<RETURN_T extends Value>
 {
+
+	/**
+	 * Get the actual return type of this call (same as the internal function's return type), used as return type for XACML Apply in PDP.
+	 * 
+	 * @return return type
+	 */
+	Datatype<RETURN_T> getReturnType();
 
 	/**
 	 * Make the call in a given evaluation context
@@ -50,12 +56,5 @@ public interface FunctionCall<RETURN_T extends Value>
 	 *             if any evaluation error
 	 */
 	RETURN_T evaluate(EvaluationContext context) throws IndeterminateEvaluationException;
-
-	/**
-	 * Get the actual return type of this call (same as the internal function's return type), used as return type for XACML Apply in PDP.
-	 * 
-	 * @return return type
-	 */
-	Datatype<RETURN_T> getReturnType();
 
 }

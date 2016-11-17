@@ -1,6 +1,35 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+
+## 8.0.0
+### Added
+- Extension mechanism to switch HashMap/HashSet implementation; default implementation is based on native JRE and Guava.
+- AtomicValue interface for atomic/primitive values, implemented by Function and AttributeValue
+- Public class PrimitiveDatatype for primitive value datatypes
+- ConstantExpression interface (replaces ValueExpression) for all constant Value expression
+- FunctionExpression interface, Expression wrapper for Functions (Function no longer extends Expression but AtomicValue) like Value
+- Function datatype constant in StandardDatatypes class, used as formal parameter type for functions in higher-order functions
+- Maven plugin owasp-dependency-check to check vulnerabilities in dependencies 
+
+### Changed
+- Function no longer extends Expression but AtomicValue since Function Expression is now materialized by new FunctionExpression interface
+- Expression interface: method boolean isStatic() replaced by getValue() to get the constant result if expression is static/constant (instead of calling evaluate(null) which forces callers the complexity of handling IndeterminateEvaluationException), null if not
+- ExpressionFactory interface: Function return types replaced with FunctionExpression (new interface)
+- FirstOrderFunctionCall abstract class (base class for first-order function call implementations): changed to interface and abstract class logic moved to new BaseFirstOrderFunctionCall class,
+- DatatypeFactory interface: removed method isExpressionStatic(), now useless since we have new Expression#getValue() method 
+- CombiningAlg (combining algorithm interface) Evaluator interface: more generic
+- Maven parent project version: 3.4.0 -> 4.0.0:
+	- **Java version: 1.7 -> 1.8** (maven.compiler.source/target property)
+	- Guava dependency version: 18.0 -> 20.0
+	- Saxon-HE dependency version: 9.6.0-5 -> 9.7.0-11
+	- com.sun.mail:javax.mail v1.5.4 changed to com.sun.mail:mailapi v1.5.6
+
+### Removed
+- ValueExpression interface, replaced by ConstantExpression
+- Dependency on Koloboke, replaced by extension mechanism mentioned in *Added* section that would allow to switch from the default HashMap/HashSet implementation to Koloboke-based.
+
+
 ## 7.1.1
 ### Fixed
 - Javadoc issues

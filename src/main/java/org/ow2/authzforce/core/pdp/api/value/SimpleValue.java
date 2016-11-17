@@ -136,7 +136,8 @@ public abstract class SimpleValue<V> extends AttributeValue
 			if (!contentIterator.hasNext())
 			{
 				inputStrVal = "";
-			} else
+			}
+			else
 			{
 				final Serializable content0 = contentIterator.next();
 				if (!(content0 instanceof String))
@@ -191,12 +192,6 @@ public abstract class SimpleValue<V> extends AttributeValue
 			}
 
 			return getInstance(val);
-		}
-
-		@Override
-		public boolean isExpressionStatic()
-		{
-			return true;
 		}
 
 		/**

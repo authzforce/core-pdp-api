@@ -26,6 +26,11 @@ package org.ow2.authzforce.core.pdp.api;
 public interface PdpExtension
 {
 	/**
+	 * Prefix used by AuthZForce PDP extensions. Third-party (outside AuthZForce project) contributions must use a different prefix to avoid conflicts.
+	 */
+	String AUTHZFORCE_EXTENSION_PREFIX = "urn:ow2:authzforce:feature:pdp:";
+
+	/**
 	 * Get globally unique ID (e.g. URI) of the extension
 	 * 
 	 * @return extension ID
