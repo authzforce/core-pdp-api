@@ -300,7 +300,12 @@ public final class XMLUtils
 				@Override
 				public void startPrefixMapping(final String prefix, final String uri) throws SAXException
 				{
-					nsPrefixUriMap.put(prefix, uri);
+					final String duplicate = nsPrefixUriMap.putIfAbsent(prefix, uri);
+					if (duplicate != null)
+					{
+						throw new RuntimeException("Duplicate namespace prefix '" + prefix + "'");
+					}
+
 					super.startPrefixMapping(prefix, uri);
 				}
 

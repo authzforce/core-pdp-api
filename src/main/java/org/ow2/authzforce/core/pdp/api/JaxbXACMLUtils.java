@@ -406,8 +406,8 @@ public final class JaxbXACMLUtils
 			 * If there is any existing values for the same attrGUID (<Attribute> with same meta-data) in the map, it will be rejected. This behavior is not fully compliant with XACML (see the Javadoc
 			 * of this class), however it is faster than the compliant alternative.
 			 */
-			final Bag<?> oldVals = attributeMap.put(attributeGUID, newAttrVals);
-			if (oldVals != null)
+			final Bag<?> duplicate = attributeMap.putIfAbsent(attributeGUID, newAttrVals);
+			if (duplicate != null)
 			{
 				throw new IllegalArgumentException("Unsupported syntax: duplicate <Attribute> with metadata: " + attributeGUID);
 			}
