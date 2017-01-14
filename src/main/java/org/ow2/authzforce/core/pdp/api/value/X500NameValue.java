@@ -43,6 +43,52 @@ public final class X500NameValue extends SimpleValue<String>
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
+	private static String escapeDN(final String name)
+	{
+		assert name != null;
+
+		final StringBuilder sb = new StringBuilder();
+		if (name.length() > 0 && (name.charAt(0) == ' ' || name.charAt(0) == '#'))
+		{
+			sb.append('\\'); // add the leading backslash if needed
+		}
+		for (int i = 0; i < name.length(); i++)
+		{
+			final char curChar = name.charAt(i);
+			switch (curChar)
+			{
+				case '\\':
+					sb.append("\\\\");
+					break;
+				case ',':
+					sb.append("\\,");
+					break;
+				case '+':
+					sb.append("\\+");
+					break;
+				case '"':
+					sb.append("\\\"");
+					break;
+				case '<':
+					sb.append("\\<");
+					break;
+				case '>':
+					sb.append("\\>");
+					break;
+				case ';':
+					sb.append("\\;");
+					break;
+				default:
+					sb.append(curChar);
+			}
+		}
+		if (name.length() > 1 && name.charAt(name.length() - 1) == ' ')
+		{
+			sb.insert(sb.length() - 1, '\\'); // add the trailing backslash if needed
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * Returns a new <code>X500NameAttributeValue</code> that represents the X500 Name value indicated by the string provided.
 	 *
@@ -56,8 +102,9 @@ public final class X500NameValue extends SimpleValue<String>
 		super(TYPE_URI, value);
 		try
 		{
-			this.ldapName = new LdapName(value);
-		} catch (final InvalidNameException e)
+			this.ldapName = new LdapName(escapeDN(value));
+		}
+		catch (final InvalidNameException e)
 		{
 			throw new IllegalArgumentException("Invalid value (X.500 Name) for datatype: " + TYPE_URI, e);
 		}

@@ -60,8 +60,7 @@
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
             <configuration>
-            <!-- The plugin has numerous issues with version matching, which triggers false positives so we need a "suppresion" file for those.
-            More info: https://github.com/jeremylong/DependencyCheck/issues -->
+               <!-- The plugin has numerous issues with version matching, which triggers false positives so we need a "suppresion" file for those. More info: https://github.com/jeremylong/DependencyCheck/issues -->
                <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
             </configuration>
             <executions>
@@ -91,6 +90,9 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
+            <configuration>
+               <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
+            </configuration>
             <executions>
                <execution>
                   <phase>verify</phase>

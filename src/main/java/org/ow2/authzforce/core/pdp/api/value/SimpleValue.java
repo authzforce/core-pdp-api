@@ -220,9 +220,9 @@ public abstract class SimpleValue<V> extends AttributeValue
 	 * @param datatypeId
 	 *            attribute datatype ID. MUST NOT be null.
 	 * @param rawVal
-	 *            internal Java native value
+	 *            internal Java native value. MUST NOT be null.
 	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code datatype == null || jaxbVal == null}
+	 *             if {@code datatypeId == null || rawVal == null}
 	 */
 	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException
 	{

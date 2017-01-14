@@ -56,10 +56,13 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	private static final Pattern HOSTNAME_PATTERN;
 	static
 	{
-		final String domainlabel = "\\w[[\\w|\\-]*\\w]?";
-		final String toplabel = "[a-zA-Z][[\\w|\\-]*\\w]?";
+		/*
+		 * Limit repetitions in regex to mitiate Regex DoS attacks
+		 */
+		final String domainlabel = "\\w[[\\w|\\-]{0,1000}\\w]?";
+		final String toplabel = "[a-zA-Z][[\\w|\\-]{0,1000}\\w]?";
 		// Add the possibility of wildcard in the left-most part (specific to XACML definition)
-		final String pattern = "[\\*\\.]?[" + domainlabel + "\\.]*" + toplabel + "\\.?";
+		final String pattern = "[\\*\\.]?[" + domainlabel + "\\.]{0,100}" + toplabel + "\\.?";
 		HOSTNAME_PATTERN = Pattern.compile(pattern);
 	}
 
@@ -109,7 +112,8 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 			// there is no port/portRange, so just use the name
 			host = dnsName;
 			range = NetworkPortRange.MAX;
-		} else
+		}
+		else
 		{
 			// split the name and the port/portRange
 			host = dnsName.substring(0, portSep);
@@ -120,7 +124,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 		// verify that the hostname is valid before we store it
 		if (!isValidHostName(host))
 		{
-			throw new IllegalArgumentException("Bad hostname: " + host);
+			throw new IllegalArgumentException("Bad hostname (invalid format, too many characters or too many levels): " + host);
 		}
 
 		return new SimpleEntry<>(host, range);

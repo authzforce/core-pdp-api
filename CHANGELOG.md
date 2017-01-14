@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file following the [K
 ### Changed
 - Parent project version: 4.0.0 -> 4.1.0 => Saxon-HE dependency version 9.7.0-11 -> 9.7.0-14
 
+### Fixed
+- Security issues reported by findsecbugs plugin
+
 
 ## 8.0.0
 ### Added
