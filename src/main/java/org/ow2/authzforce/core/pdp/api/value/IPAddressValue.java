@@ -56,8 +56,8 @@ public final class IPAddressValue extends SimpleValue<String>
 		final NetworkPortRange range;
 
 		// start out by seeing where the delimiters are
-		final int maskPos = val.indexOf("/");
-		final int rangePos = val.indexOf(":");
+		final int maskPos = val.indexOf('/');
+		final int rangePos = val.indexOf(':');
 
 		// now check to see which components we have
 		if (maskPos == rangePos)

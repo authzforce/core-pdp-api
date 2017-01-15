@@ -5,10 +5,14 @@
   put here to instruct Findbugs to ignore them.
 -->
 <FindBugsFilter>
-
+  <Match>
+  <!-- CRLF injection in logs is considered fixed in the logger configuration, e.g. logback.xml.
+  More info: https://github.com/find-sec-bugs/find-sec-bugs/issues/240
+   -->
+    <Bug pattern="CRLF_INJECTION_LOGS" />
+  </Match>
   <Match>
     <Class name="org.ow2.authzforce.core.pdp.api.value.XPathValue" />
     <Bug pattern="DESERIALIZATION_GADGET" />
   </Match>
-
 </FindBugsFilter>

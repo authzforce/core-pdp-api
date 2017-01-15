@@ -3,10 +3,10 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>4.1.0</version>
+      <version>4.1.1</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>8.1.0</version>
+   <version>8.2.0</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthZForce CE - Core PDP API</description>
    <url>https://tuleap.ow2.org/projects/authzforce</url>
