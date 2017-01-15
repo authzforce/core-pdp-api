@@ -47,6 +47,17 @@ import com.google.common.collect.Sets;
  */
 public final class HashCollections
 {
+	/*
+	 * Arbitrary limit of 1000 characters is there to mitigate Regex DoS attack
+	 */
+	// private static final String JAVA_CLASS_NAME_IDENTIFIER_PART_ASCII_ONLY_REGEX = "[a-zA-Z_$][a-zA-Z\\d_$]{0,1000}";
+
+	/*
+	 * Arbitrary limit of 100 repetitions of class name parts is there to mitigate Regex DoS attack
+	 */
+	// private static final Pattern JAVA_CLASS_NAME_ASCII_ONLY_PATTERN = Pattern.compile("(" + JAVA_CLASS_NAME_IDENTIFIER_PART_ASCII_ONLY_REGEX + "\\.){0,100}"
+	// + JAVA_CLASS_NAME_IDENTIFIER_PART_ASCII_ONLY_REGEX);
+
 	/**
 	 * Name of system property for setting the {@link HashCollectionFactory} implementation class. Default: {@link DefaultHashCollectionFactory}.
 	 */
@@ -58,8 +69,8 @@ public final class HashCollections
 
 	static
 	{
-		final String hashCollectionFactoryClassName = System.getProperty(HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME);
-		if (hashCollectionFactoryClassName == null)
+		final String unvalidatedHashCollectionFactoryClassName = System.getProperty(HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME);
+		if (unvalidatedHashCollectionFactoryClassName == null)
 		{
 			LOGGER.debug("System property '{}' not set -> using {} as (default) implementation of {}", HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME, DefaultHashCollectionFactory.class,
 					HashCollectionFactory.class);
@@ -68,13 +79,30 @@ public final class HashCollections
 		else
 		{
 			// System property set
+			/*
+			 * Validate characters
+			 */
+			// if (!JAVA_CLASS_NAME_ASCII_ONLY_PATTERN.matcher(hashCollectionFactoryClassName).matches())
+			// {
+			// throw new RuntimeException(
+			// "Error instantiating "
+			// + HashCollectionFactory.class
+			// + " from value of system property '"
+			// + HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME
+			// + "': invalid class name (expected to contain only alphanumeric characters, underscore or dollar sign '$', not too big, and to be valid according to the Java Language Specification)");
+			// }
+
+			/*
+			 * Must-be one-line only -> remove CRLF -> prevent CRLF log injection
+			 */
+			final String hashCollectionFactoryClassName = unvalidatedHashCollectionFactoryClassName.split("\\r?\\n", 1)[0];
 			LOGGER.debug("System property '{}' set to '{}'", HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME, hashCollectionFactoryClassName);
 			try
 			{
 				final Class<?> hashCollectionFactoryClass = Class.forName(hashCollectionFactoryClassName);
 				final Object obj = hashCollectionFactoryClass.newInstance();
 				FACTORY = HashCollectionFactory.class.cast(obj);
-				LOGGER.debug("Set {} as implementation of {}", hashCollectionFactoryClass, HashCollectionFactory.class);
+				LOGGER.debug("Set {} as implementation of {}", hashCollectionFactoryClassName, HashCollectionFactory.class);
 			}
 			catch (final ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException e)
 			{

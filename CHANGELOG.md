@@ -2,6 +2,14 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 8.1.0
+### Changed
+- Parent project version: 4.0.0 -> 4.1.0 => Saxon-HE dependency version 9.7.0-11 -> 9.7.0-14
+
+### Fixed
+- Security issues reported by find-sec-bugs plugin
+
+
 ## 8.0.0
 ### Added
 - Extension mechanism to switch HashMap/HashSet implementation; default implementation is based on native JRE and Guava.

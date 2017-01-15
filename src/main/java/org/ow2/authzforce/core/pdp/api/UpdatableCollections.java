@@ -224,6 +224,12 @@ public final class UpdatableCollections
 		}
 
 		@Override
+		public V putIfAbsent(final K key, final V value)
+		{
+			return null;
+		}
+
+		@Override
 		public void putAll(final Map<? extends K, ? extends V> m)
 		{
 			// does nothing so it stays empty
@@ -278,6 +284,12 @@ public final class UpdatableCollections
 		public V put(final K key, final V value)
 		{
 			return map.put(key, value);
+		}
+
+		@Override
+		public V putIfAbsent(final K key, final V value)
+		{
+			return map.putIfAbsent(key, value);
 		}
 
 		@Override

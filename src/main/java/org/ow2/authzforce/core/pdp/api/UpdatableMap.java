@@ -47,6 +47,19 @@ public interface UpdatableMap<K, V>
 	V put(K key, V value);
 
 	/**
+	 * Associates the specified value with the specified key in this map. If the map previously contained a mapping for the key, the old value is replaced by the specified value. (A map m is said to
+	 * contain a mapping for a key k if and only if m.containsKey(k) would return true.)
+	 * 
+	 * @param key
+	 *            key with which the specified value is to be associated
+	 * @param value
+	 *            value to be associated with the specified key
+	 * @return the previous value associated with key, or null if there was no mapping for key. (A null return can also indicate that the map previously associated null with key, if the implementation
+	 *         supports null values.)
+	 */
+	V putIfAbsent(K key, V value);
+
+	/**
 	 * Copies all of the mappings from the specified map to this map (optional operation). The effect of this call is equivalent to that of calling {@link #put(Object,Object) put(k, v)} on this map
 	 * once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified map. The behavior of this operation is undefined if the specified map is modified while the operation is in
 	 * progress.

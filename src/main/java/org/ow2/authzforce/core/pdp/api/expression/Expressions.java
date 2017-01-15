@@ -21,6 +21,7 @@ package org.ow2.authzforce.core.pdp.api.expression;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
+import org.ow2.authzforce.core.pdp.api.StringUtils;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
@@ -61,7 +62,12 @@ public final class Expressions
 		}
 
 		final Value val = arg.evaluate(context);
-		LOGGER.debug("eval( arg = <{}>, <context>, expectedType = <{}> ) -> <{}>", arg, returnType, val);
+		if (LOGGER.isDebugEnabled())
+		{
+			LOGGER.debug("eval( arg = <{}>, <context>, expectedType = <{}> ) -> <{}>", StringUtils.sanitizeForLogging(arg), StringUtils.sanitizeForLogging(returnType),
+					StringUtils.sanitizeForLogging(val));
+		}
+
 		if (val == null)
 		{
 			throw NULL_ARG_EVAL_RESULT_INDETERMINATE_EXCEPTION;
@@ -70,7 +76,8 @@ public final class Expressions
 		try
 		{
 			return returnType.cast(val);
-		} catch (final ClassCastException e)
+		}
+		catch (final ClassCastException e)
 		{
 			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType, StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}
@@ -90,7 +97,14 @@ public final class Expressions
 	public static AttributeValue evalPrimitive(final Expression<?> arg, final EvaluationContext context) throws IndeterminateEvaluationException
 	{
 		final Value val = arg.evaluate(context);
-		LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", arg, val);
+		if (LOGGER.isDebugEnabled())
+		{
+			/*
+			 * Findsecbugs: prevent CRLF log injection
+			 */
+			LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", StringUtils.sanitizeForLogging(arg), StringUtils.sanitizeForLogging(val));
+		}
+
 		if (val == null)
 		{
 			throw NULL_ARG_EVAL_RESULT_INDETERMINATE_EXCEPTION;
@@ -99,7 +113,8 @@ public final class Expressions
 		try
 		{
 			return (AttributeValue) val;
-		} catch (final ClassCastException e)
+		}
+		catch (final ClassCastException e)
 		{
 			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type", StatusHelper.STATUS_PROCESSING_ERROR, e);
 		}
