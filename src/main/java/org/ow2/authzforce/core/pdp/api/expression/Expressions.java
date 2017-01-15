@@ -21,7 +21,6 @@ package org.ow2.authzforce.core.pdp.api.expression;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
-import org.ow2.authzforce.core.pdp.api.StringUtils;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
@@ -64,8 +63,7 @@ public final class Expressions
 		final Value val = arg.evaluate(context);
 		if (LOGGER.isDebugEnabled())
 		{
-			LOGGER.debug("eval( arg = <{}>, <context>, expectedType = <{}> ) -> <{}>", StringUtils.sanitizeForLogging(arg), StringUtils.sanitizeForLogging(returnType),
-					StringUtils.sanitizeForLogging(val));
+			LOGGER.debug("eval( arg = <{}>, <context>, expectedType = <{}> ) -> <{}>", arg, returnType, val);
 		}
 
 		if (val == null)
@@ -102,7 +100,7 @@ public final class Expressions
 			/*
 			 * Findsecbugs: prevent CRLF log injection
 			 */
-			LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", StringUtils.sanitizeForLogging(arg), StringUtils.sanitizeForLogging(val));
+			LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", arg, val);
 		}
 
 		if (val == null)

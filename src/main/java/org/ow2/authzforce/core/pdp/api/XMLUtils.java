@@ -303,7 +303,7 @@ public final class XMLUtils
 					final String duplicate = nsPrefixUriMap.putIfAbsent(prefix, uri);
 					if (duplicate != null)
 					{
-						throw new RuntimeException("Duplicate namespace prefix '" + prefix + "'");
+						throw new RuntimeException("Duplicate declaration of namespace prefix '" + prefix + "' (empty string refers to default namespace)");
 					}
 
 					super.startPrefixMapping(prefix, uri);

@@ -18,8 +18,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
+import javax.security.auth.x500.X500Principal;
 
 /**
  * Representation of an X.500 Directory Name.
@@ -39,55 +38,9 @@ public final class X500NameValue extends SimpleValue<String>
 	 */
 	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:1.0:data-type:x500Name";
 
-	private final LdapName ldapName;
+	private final X500Principal x500Name;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
-
-	private static String escapeDN(final String name)
-	{
-		assert name != null;
-
-		final StringBuilder sb = new StringBuilder();
-		if (name.length() > 0 && (name.charAt(0) == ' ' || name.charAt(0) == '#'))
-		{
-			sb.append('\\'); // add the leading backslash if needed
-		}
-		for (int i = 0; i < name.length(); i++)
-		{
-			final char curChar = name.charAt(i);
-			switch (curChar)
-			{
-				case '\\':
-					sb.append("\\\\");
-					break;
-				case ',':
-					sb.append("\\,");
-					break;
-				case '+':
-					sb.append("\\+");
-					break;
-				case '"':
-					sb.append("\\\"");
-					break;
-				case '<':
-					sb.append("\\<");
-					break;
-				case '>':
-					sb.append("\\>");
-					break;
-				case ';':
-					sb.append("\\;");
-					break;
-				default:
-					sb.append(curChar);
-			}
-		}
-		if (name.length() > 1 && name.charAt(name.length() - 1) == ' ')
-		{
-			sb.insert(sb.length() - 1, '\\'); // add the trailing backslash if needed
-		}
-		return sb.toString();
-	}
 
 	/**
 	 * Returns a new <code>X500NameAttributeValue</code> that represents the X500 Name value indicated by the string provided.
@@ -102,11 +55,11 @@ public final class X500NameValue extends SimpleValue<String>
 		super(TYPE_URI, value);
 		try
 		{
-			this.ldapName = new LdapName(escapeDN(value));
+			this.x500Name = new X500Principal(value);
 		}
-		catch (final InvalidNameException e)
+		catch (final IllegalArgumentException e)
 		{
-			throw new IllegalArgumentException("Invalid value (X.500 Name) for datatype: " + TYPE_URI, e);
+			throw new IllegalArgumentException("Invalid value (X.500 Distinguished Name) for datatype: " + TYPE_URI, e);
 		}
 	}
 
@@ -119,12 +72,50 @@ public final class X500NameValue extends SimpleValue<String>
 	 */
 	public boolean match(final X500NameValue other)
 	{
+		final String otherCanonicalName = other.x500Name.getName(X500Principal.CANONICAL);
+		final String thisCanonicalName = this.x500Name.getName(X500Principal.CANONICAL);
+		final boolean isStringSuffix = otherCanonicalName.endsWith(thisCanonicalName);
+		if (!isStringSuffix)
+		{
+			return false;
+		}
+
 		/*
-		 * As the Javadoc says, "The right most RDN is at index 0, and the left most RDN is at index n-1. For example, the distinguished name: " CN=Steve Kille, O=Isode Limited, C=GB
-		 * " is numbered in the following sequence ranging from 0 to 2: {C=GB, O=Isode Limited, CN=Steve Kille}" Therefore RDNs are in reverse order of declaration in the string representation, so to
-		 * check the match against a terminal sequence of RDNs, we don't use the endsWith() function, but startsWith()
+		 * Not enough to be a String suffix, thisCanonicalName must be a terminal sequence of RDNs of otherCanonicalName
 		 */
-		return other.ldapName.startsWith(this.ldapName.getRdns());
+		final int otherNameLen = otherCanonicalName.length();
+		final int thisNameLen = thisCanonicalName.length();
+		if (otherNameLen == thisNameLen)
+		{
+			// same string
+			return true;
+		}
+
+		// otherNameLen >= thisNameLen +1
+		/*
+		 * Not the same length so otherCanonicalName must be: '...x,thisCanonicalName' where x is not an escape string for ','. Index otherCanonicalName.length() - (thisCanonicalName.length() + 1)
+		 * corresponds to ',' in otherCanonicalName
+		 */
+		final int indexBeforeSuffix = otherNameLen - (thisNameLen + 1);
+		if (otherCanonicalName.charAt(indexBeforeSuffix) != ',')
+		{
+			return false;
+		}
+
+		/*
+		 * We have a comma before this name.
+		 */
+		if (otherNameLen <= thisNameLen + 1)
+		{
+			// nothing else before the comma
+			return true;
+		}
+
+		// otherNameLen >= thisNameLen +2
+		/*
+		 * We have another character before the comma. Make sure this is not a backslash to escape the comma.
+		 */
+		return otherCanonicalName.charAt(indexBeforeSuffix - 1) != '\\';
 	}
 
 	/** {@inheritDoc} */
@@ -133,7 +124,7 @@ public final class X500NameValue extends SimpleValue<String>
 	{
 		if (hashCode == 0)
 		{
-			hashCode = this.ldapName.hashCode();
+			hashCode = this.x500Name.hashCode();
 		}
 
 		return hashCode;
@@ -158,7 +149,7 @@ public final class X500NameValue extends SimpleValue<String>
 		/*
 		 * This equals() has the same effect as the algorithm described in the spec
 		 */
-		return ldapName.equals(other.ldapName);
+		return x500Name.equals(other.x500Name);
 	}
 
 	/** {@inheritDoc} */
@@ -169,11 +160,11 @@ public final class X500NameValue extends SimpleValue<String>
 	}
 
 	// For quick testing
-	// public static void main(String[] args) throws InvalidNameException
+	// public static void main(final String[] args) throws InvalidNameException
 	// {
-	// // System.out.println(new LdapName("cn=John Smith, o=Medico Corp, c=US").equals(new
-	// // LdapName("cn= John Smith,o =Medico Corp, C=US")));
-	// // System.out.println(new LdapName("ou=test+cn=bob,dc =example,dc=com"));
+	// System.out.println(new LdapName("cn=John Smith, o=Medico Corp, c=US").equals(new
+	// LdapName("cn= John Smith,o =Medico Corp, C=US")));
+	// System.out.println(new LdapName(escapeDN("ou=test+cn=bob,dc =example,dc=com")));
 	// System.out.println(new LdapName("cn=John Smith, o=Medico Corp, c=US").endsWith(new
 	// LdapName("o=Medico Corp, c=US").getRdns()));
 	// }
