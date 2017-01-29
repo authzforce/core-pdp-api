@@ -80,7 +80,7 @@ public final class JaxbXACMLUtils
 	/**
 	 * XACML 3.0 schema
 	 */
-	private static final Schema XACML_3_0_SCHEMA;
+	public static final Schema XACML_3_0_SCHEMA;
 	static
 	{
 		final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
