@@ -20,34 +20,30 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Map;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-
 import net.sf.saxon.s9api.XdmNode;
 
+import org.ow2.authzforce.core.pdp.api.value.Bag;
+
 /**
- * PDP's decision input, in other terms the part of the XACML request that is
- * actually used by the PDP for evaluating the policy decision. In particular,
- * this does NOT include the IncludeInResult parameter because the policy
- * evaluation does not depend on it. The attributes with IncludeInResult=true
- * are returned in the Result, no matter what the decision is.
+ * Authorization decision request used as input to PDP engine in AuthzForce-specific model, in other terms the part of the XACML Request that is actually used by the PDP engine for evaluating the policy decision. In particular,
+ * this does NOT include the IncludeInResult parameter because the policy evaluation does not depend on it. The attributes with IncludeInResult=true are returned in the Result, no matter what the
+ * decision is.
  * <p>
- * One interesting use case for this class is decision caching that would
- * consist to map a {@link PdpDecisionInput} to a {@link PdpDecisionResult}.
+ * One interesting use case for this class is decision caching that would consist to map a {@link PdpDecisionRequest} to a {@link PdpDecisionResult}.
  * 
  */
-public interface PdpDecisionInput {
+public interface PdpDecisionRequest
+{
 
 	/**
 	 * Get named attributes by name
 	 * 
-	 * @return map of attribute name-value pairs, null if none (but
-	 *         {@link #getExtraContentsByCategory()} result may not be empty)
+	 * @return map of attribute name-value pairs, null if none (but {@link #getExtraContentsByCategory()} result may not be empty)
 	 */
 	Map<AttributeGUID, Bag<?>> getNamedAttributes();
 
 	/**
-	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation)
-	 * by attribute category
+	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation) by attribute category
 	 * 
 	 * @return extra XML Contents by category; null if none
 	 */

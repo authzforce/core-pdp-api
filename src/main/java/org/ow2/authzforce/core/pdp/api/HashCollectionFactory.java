@@ -59,9 +59,11 @@ public interface HashCollectionFactory
 	 * 
 	 * @param expectedSize
 	 *            expected size of the returned map
-	 * @return a new empty updatable map of the given expected size
+	 * @return a new empty updatable map of the given expected size (postive)
+	 * @throws IllegalArgumentException
+	 *             if {@code expectedSize} is negative
 	 */
-	<K, V> Map<K, V> newUpdatableMap(final int expectedSize);
+	<K, V> Map<K, V> newUpdatableMap(final int expectedSize) throws IllegalArgumentException;
 
 	/**
 	 * Constructs a new updatable map with the same mappings as the specified map.
@@ -175,9 +177,11 @@ public interface HashCollectionFactory
 	 * 
 	 * @param expectedSize
 	 *            the expected size of the returned set
-	 * @return a new empty updatable set of the given expected size
+	 * @return a new empty updatable set of the given expected size (positive)
+	 * @throws IllegalArgumentException
+	 *             if {@code expectedSize} is negative
 	 */
-	<E> Set<E> newUpdatableSet(final int expectedSize);
+	<E> Set<E> newUpdatableSet(final int expectedSize) throws IllegalArgumentException;
 
 	/**
 	 * Constructs a new updatable set containing the elements in the specified iterable.

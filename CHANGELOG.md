@@ -2,6 +2,15 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## Unreleased
+### Changed
+- Changed parent version: 4.1.1 -> 5.0.0
+	-> Changed dependency versions: SLF4J: 1.7.6 -> 1.7.22; Guava: 20.0 -> 21.0
+- Renamed class Pdp to PDPEngine and added methods to evaluate one or multiple Individual Decision Requests
+- Renamed class PdpDecisionInput to PdpDecisionRequest -> changed DecisionCache API
+- Changed DecisionResultFilter API
+
+
 ## 8.2.0
 ### Changed
 - Parent project version: 4.1.1 (upgrades owasp dep check mvn plugin

@@ -26,7 +26,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
  * Individual Decision Request, i.e. native Java equivalent of XACML Request that corresponds to one XACML Result element
  *
  */
-public interface IndividualDecisionRequest extends PdpDecisionInput
+public interface IndividualDecisionRequest extends PdpDecisionRequest
 {
 
 	/**

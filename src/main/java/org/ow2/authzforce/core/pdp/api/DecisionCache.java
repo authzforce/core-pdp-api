@@ -55,24 +55,43 @@ public interface DecisionCache extends Closeable
 	}
 
 	/**
+	 * Get the decision result from the cache for the given decision request.
+	 * 
+	 * @param request
+	 *            individual decision request
+	 * @return the corresponding decision result from cache; null if there is no such result in cache.
+	 */
+	PdpDecisionResult get(PdpDecisionRequest request);
+
+	/**
 	 * Gets the decision result(s) from the cache for the given decision request(s). The ability to get multiple cached results at once allows the Cache implementation to optimize the retrieval by
 	 * requesting all in the same request, e.g. if the cache is in a remote storage/server.
 	 * 
-	 * @param decisionInputs
-	 *            individual decision input(s)
-	 * @return a map where each entry key is an input from {@code decisionInputs}, and the value is the corresponding decision result from cache. If there is no such result in cache, the key must not
-	 *         be present in the map. In other words, each input in {@code decisionInputs} must be a key in the Map returned, except if there is no corresponding result in cache. Therefore, there must
-	 *         not be any null key/value in the map.
+	 * @param requests
+	 *            individual decision request(s)
+	 * @return a map where each entry key is an request from {@code requests}, and the value is the corresponding decision result from cache. If there is no such result in cache, the key must not be
+	 *         present in the map. In other words, each request in {@code requests} must be a key in the Map returned, except if there is no corresponding result in cache. Therefore, there must not be
+	 *         any null key/value in the map.
 	 */
-	<DECISION_INPUT_T extends PdpDecisionInput> Map<DECISION_INPUT_T, PdpDecisionResult> getAll(List<DECISION_INPUT_T> decisionInputs);
+	<DECISION_REQ_T extends PdpDecisionRequest> Map<DECISION_REQ_T, PdpDecisionResult> getAll(List<DECISION_REQ_T> requests);
 
 	/**
-	 * Puts a XACML decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing
-	 * them all in the same request, e.g. if the cache is in a remote storage/server.
+	 * Puts a decision request and corresponding result in cache.
+	 * 
+	 * @param request
+	 *            individual decision request
+	 * @param result
+	 *            the corresponding decision result
+	 */
+	void put(PdpDecisionRequest request, PdpDecisionResult result);
+
+	/**
+	 * Puts decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing them all in
+	 * the same request, e.g. if the cache is in a remote storage/server.
 	 * 
 	 * @param resultsByRequest
 	 *            (request, result) pairs as key-value pairs to be cached
 	 */
-	<DECISION_INPUT_T extends PdpDecisionInput> void putAll(Map<DECISION_INPUT_T, PdpDecisionResult> resultsByRequest);
+	<DECISION_REQ_T extends PdpDecisionRequest> void putAll(Map<DECISION_REQ_T, PdpDecisionResult> resultsByRequest);
 
 }

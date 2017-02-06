@@ -168,22 +168,27 @@ public final class PdpDecisionResults
 		@Override
 		public Result toXACMLResult(final List<Attributes> returnedAttributes)
 		{
-			if (this == SIMPLE_NOT_APPLICABLE)
+			if (returnedAttributes == null || returnedAttributes.isEmpty())
 			{
-				return SIMPLE_NOT_APPLICABLE_XACML;
+				if (this == SIMPLE_NOT_APPLICABLE)
+				{
+					return SIMPLE_NOT_APPLICABLE_XACML;
+				}
+
+				if (this == SIMPLE_PERMIT)
+				{
+					return SIMPLE_PERMIT_XACML;
+				}
+
+				if (this == SIMPLE_DENY)
+				{
+					return SIMPLE_DENY_XACML;
+				}
+
+				throw INVALID_DECISION_ARGUMENT_EXCEPTION;
 			}
 
-			if (this == SIMPLE_PERMIT)
-			{
-				return SIMPLE_PERMIT_XACML;
-			}
-
-			if (this == SIMPLE_DENY)
-			{
-				return SIMPLE_DENY_XACML;
-			}
-
-			throw INVALID_DECISION_ARGUMENT_EXCEPTION;
+			return new Result(this.decision, null, null, null, returnedAttributes, null);
 		}
 	}
 
