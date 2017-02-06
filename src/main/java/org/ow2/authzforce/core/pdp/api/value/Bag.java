@@ -27,42 +27,26 @@ import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
 
 /**
- * Bag of values (elements) as defined in §7.3.2 of XACML core specification
- * (Attribute bags): <i>The values in a bag are not ordered, and some of the
- * values may be duplicates. There SHALL be no notion of a bag containing bags,
- * or a bag containing values of differing types; i.e., a bag in XACML SHALL
- * contain only values that are of the same data-type</i>. Note that this is
- * consistent with the mathematical definition of a bag a.k.a. multiset.
+ * Bag of values (elements) as defined in §7.3.2 of XACML core specification (Attribute bags): <i>The values in a bag are not ordered, and some of the values may be duplicates. There SHALL be no
+ * notion of a bag containing bags, or a bag containing values of differing types; i.e., a bag in XACML SHALL contain only values that are of the same data-type</i>. Note that this is consistent with
+ * the mathematical definition of a bag a.k.a. multiset.
  * <p>
- * All implementations of this interface must override all the methods of this
- * class except the final ones (this class only throws
- * {@link UnsupportedOperationException} for these), and guarantee the
- * immutability of their bag instances. In particular, {@link #iterator()} must
- * return an immutable {@link java.util.Iterator} (
- * {@link java.util.Iterator#remove() not supported}. It is required to ensure
- * that values of a given attribute remain constant during an evaluation of a
- * request, as mandated by the XACML spec, section 7.3.5:
+ * All implementations of this interface must override all the methods of this class except the final ones (this class only throws {@link UnsupportedOperationException} for these), and guarantee the
+ * immutability of their bag instances. In particular, {@link #iterator()} must return an immutable {@link java.util.Iterator} ( {@link java.util.Iterator#remove() not supported}. It is required to
+ * ensure that values of a given attribute remain constant during an evaluation of a request, as mandated by the XACML spec, section 7.3.5:
  * </p>
  * <p>
- * <i> "Regardless of any dynamic modifications of the request context during
- * policy evaluation, the PDP SHALL behave as if each bag of attribute values is
- * fully populated in the context before it is first tested, and is thereafter
- * immutable during evaluation. (That is, every subsequent test of that
- * attribute shall use the same bag of values that was initially tested.)" </i>
+ * <i> "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as if each bag of attribute values is fully populated in the context before it is
+ * first tested, and is thereafter immutable during evaluation. (That is, every subsequent test of that attribute shall use the same bag of values that was initially tested.)" </i>
  * </p>
  * <p>
- * {@link #equals(Object)} are implemented according to the mathematical
- * definition of bag/multiset, and {@link #hashCode()} accordingly. Note that
- * multiplicity matters in multisets, therefore this is different from XACML
- * set-equals function which ignores duplicates.
+ * {@link #equals(Object)} are implemented according to the mathematical definition of bag/multiset, and {@link #hashCode()} accordingly. Note that multiplicity matters in multisets, therefore this is
+ * different from XACML set-equals function which ignores duplicates.
  * </p>
  * <p>
- * NB for developers: we could make this class abstract and let subclasses
- * implement methods except the ones with 'final' modifier. However, we need a
- * common Bag superclass (esp. for internal subclasses in {@link Bags}) that is
- * concrete, in order to use it as the {@link Class} instance returned by
- * {@link BagDatatype#getClass()} and be able to use it in
- * {@link BagDatatype#cast(Value)} to cast any bag instance.
+ * NB for developers: we could make this class abstract and let subclasses implement methods except the ones with 'final' modifier. However, we need a common Bag superclass (esp. for internal
+ * subclasses in {@link Bags}) that is concrete, in order to use it as the {@link Class} instance returned by {@link BagDatatype#getClass()} and be able to use it in {@link BagDatatype#cast(Value)} to
+ * cast any bag instance.
  * </p>
  * 
  * @param <AV>
@@ -93,12 +77,8 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	private final Datatype<AV> elementDatatype;
 
 	/*
-	 * We need to make sure that elements cannot be modified. In particular,
-	 * using Collections.unmodifiableCollection(values) is a bad idea here,
-	 * because the result (UnmodifiableCollection class) does not override
-	 * Object#hashCode() and Object#equals(). But we want deeper equals, i.e.
-	 * take internal values of collection into account for hashCode() and
-	 * equals().
+	 * We need to make sure that elements cannot be modified. In particular, using Collections.unmodifiableCollection(values) is a bad idea here, because the result (UnmodifiableCollection class) does
+	 * not override Object#hashCode() and Object#equals(). But we want deeper equals, i.e. take internal values of collection into account for hashCode() and equals().
 	 */
 	private final ImmutableMultiset<AV> elements;
 
@@ -133,12 +113,8 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	/**
-	 * {@link #equals(Object)} compares the element datatypes, and calls
-	 * {@link #equals(Object)} on the results of {@link #elements()}, therefore
-	 * {@link Multiset#equals(Object)}, which complies with the mathematical
-	 * definition of multisets and XACML spec for bags. Note that this is
-	 * different from XACML set-equals function which does not consider the
-	 * multiplicity of elements like multisets.
+	 * {@link #equals(Object)} compares the element datatypes, and calls {@link #equals(Object)} on the results of {@link #elements()}, therefore {@link Multiset#equals(Object)}, which complies with
+	 * the mathematical definition of multisets and XACML spec for bags. Note that this is different from XACML set-equals function which does not consider the multiplicity of elements like multisets.
 	 */
 	@Override
 	public final boolean equals(final Object other)
@@ -159,8 +135,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	/**
-	 * Override Object#hashCode() to apply XACML spec §7.3.2: "The values in a
-	 * bag are not ordered, and some of the values may be duplicates"
+	 * Override Object#hashCode() to apply XACML spec §7.3.2: "The values in a bag are not ordered, and some of the values may be duplicates"
 	 */
 	@Override
 	public final int hashCode()
@@ -194,9 +169,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	/**
-	 * Returns true if this bag contains the specified element. More formally,
-	 * returns true if and only if this bag contains at least one element e such
-	 * that (v==null ? e==null : v.equals(e)).
+	 * Returns true if this bag contains the specified element. More formally, returns true if and only if this bag contains at least one element e such that (v==null ? e==null : v.equals(e)).
 	 * 
 	 * @param v
 	 *            element whose presence in this bag is to be tested
@@ -219,8 +192,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 		// immutable class -> cache this method result
 		if (toString == null)
 		{
-			toString = "Bag( elementType = " + getElementDatatype() + ", elements = " + elements()
-					+ ", causeForEmpty = " + getReasonWhyEmpty() + " )";
+			toString = "Bag(elementType='" + getElementDatatype() + "', elements=" + elements() + ", causeForEmpty=" + getReasonWhyEmpty() + ")";
 		}
 
 		return toString;
@@ -229,8 +201,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	/**
 	 * Get all elements in the bag.
 	 * <p>
-	 * Beware the <b>non-null</b>: implementations must return an empty multiset
-	 * and not null if the bag is empty.
+	 * Beware the <b>non-null</b>: implementations must return an empty multiset and not null if the bag is empty.
 	 * 
 	 * @return all elements as a <b>non-null</b> multiset
 	 */
@@ -242,8 +213,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	/**
 	 * Get the single element in the bag if it is a singleton
 	 * 
-	 * @return the one-and-only one element in the bag; null if bag is empty or
-	 *         contains multiple elements
+	 * @return the one-and-only one element in the bag; null if bag is empty or contains multiple elements
 	 */
 	public AV getSingleElement()
 	{
@@ -251,8 +221,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	/**
-	 * Get the reason why {@link #isEmpty()} returns true iff it does; or null
-	 * if it doesn't or if reason is unknown.
+	 * Get the reason why {@link #isEmpty()} returns true iff it does; or null if it doesn't or if reason is unknown.
 	 * 
 	 * @return reason why the bag is empty, if it is
 	 */

@@ -21,14 +21,16 @@ package org.ow2.authzforce.core.pdp.api;
 import java.io.Closeable;
 
 /**
- * XACML PDP that implements {@link Closeable} because it may depend on various components that hold resources such as network resources and caches to get: the
- * root policy or policies referenced by the root policy; or to get attributes used in the policies from remote sources when not provided in the Request; or to
- * get cached decisions for requests already evaluated in the past, etc. Therefore, you are required to call {@link #close()} when you no longer need an
- * instance - especially before replacing with a new instance - in order to make sure these resources are released properly by each underlying module (e.g.
- * invalidate the attribute caches and/or network resources).
+ * XACML PDP that implements {@link Closeable} because it may depend on various components that hold resources such as network resources and caches to get: the root policy or policies referenced by
+ * the root policy; or to get attributes used in the policies from remote sources when not provided in the Request; or to get cached decisions for requests already evaluated in the past, etc.
+ * Therefore, you are required to call {@link #close()} when you no longer need an instance - especially before replacing with a new instance - in order to make sure these resources are released
+ * properly by each underlying module (e.g. invalidate the attribute caches and/or network resources).
+ * 
+ * @param <INDIVIDUAL_DECISION_REQ_T>
+ *            PDP implementation-specific type of Individual Decision Request
  * 
  */
-public interface CloseablePDP extends PDP, Closeable
+public interface CloseablePDP<INDIVIDUAL_DECISION_REQ_T extends IndividualPdpDecisionRequest> extends PDPEngine<INDIVIDUAL_DECISION_REQ_T>, Closeable
 {
 	// marker interface
 }

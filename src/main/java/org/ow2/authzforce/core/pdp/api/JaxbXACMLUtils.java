@@ -59,7 +59,7 @@ import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
 import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
-import org.ow2.authzforce.xacml.identifiers.XACMLCategory;
+import org.ow2.authzforce.xacml.identifiers.XACMLAttributeCategory;
 import org.ow2.authzforce.xacml.identifiers.XACMLResourceScope;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -80,7 +80,7 @@ public final class JaxbXACMLUtils
 	/**
 	 * XACML 3.0 schema
 	 */
-	private static final Schema XACML_3_0_SCHEMA;
+	public static final Schema XACML_3_0_SCHEMA;
 	static
 	{
 		final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -222,8 +222,8 @@ public final class JaxbXACMLUtils
 	 */
 	private static final class JaxbXACMLAttributeParsingHelper
 	{
-		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLCategory.XACML_3_0_RESOURCE_CATEGORY_RESOURCE.value(), null,
-				XACMLAttributeId.XACML_RESOURCE_SCOPE.value());
+		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), null,
+				XACMLAttributeId.XACML_2_0_RESOURCE_SCOPE.value());
 
 		private static final IllegalArgumentException UNSUPPORTED_MULTIPLE_SCOPE_EXCEPTION = new IllegalArgumentException("Unsupported resource scope. Expected scope: none or "
 				+ XACMLResourceScope.IMMEDIATE.value() + ". (Profile 'urn:oasis:names:tc:xacml:3.0:profile:multiple:scope' not supported.)");

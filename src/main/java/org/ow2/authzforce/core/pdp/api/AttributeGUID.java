@@ -163,7 +163,7 @@ public final class AttributeGUID
 	{
 		if (toString == null)
 		{
-			toString = "[category=" + category + ", issuer=" + issuer + ", id=" + id + "]";
+			toString = "[category='" + category + "', issuer=" + (issuer == null ? null : "'" + issuer + "'") + ", id='" + id + "']";
 		}
 
 		return toString;

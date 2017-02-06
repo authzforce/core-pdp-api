@@ -24,15 +24,13 @@ import org.ow2.authzforce.xmlns.pdp.ext.AbstractPdpExtension;
  * Marker Interface for PDP extensions bound to a specific XML/JAXB class (used for the configuration of the extension)
  * 
  * @param <T>
- *            XML/JAXB type used as configuration class for the extension. There must be a one-to-one relationship between such types and the JAXB-bound
- *            extensions.
+ *            XML/JAXB type used as configuration class for the extension. There must be a one-to-one relationship between such types and the JAXB-bound extensions.
  * 
  */
 public abstract class JaxbBoundPdpExtension<T extends AbstractPdpExtension> implements PdpExtension
 {
 	/**
-	 * Gets the XML/JAXB class used as configuration class for the extension. There must be a one-to-one relationship between such types and the JAXB-bound
-	 * extensions.
+	 * Gets the XML/JAXB class used as configuration class for the extension. There must be a one-to-one relationship between such types and the JAXB-bound extensions.
 	 * 
 	 * @return XML/JAXB class bound to this extension
 	 */

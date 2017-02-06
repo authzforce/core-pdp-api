@@ -34,8 +34,8 @@ public final class ImmutableIndividualDecisionRequest implements IndividualDecis
 {
 	private final Map<AttributeGUID, Bag<?>> attributes;
 	private final Map<String, XdmNode> extraContentsByCategory;
-	private final List<Attributes> attributesToIncludeInResult;
 	private final boolean returnApplicablePolicyIdList;
+	private final List<Attributes> attributesToIncludeInResult;
 
 	/**
 	 * Create new instance
@@ -111,6 +111,18 @@ public final class ImmutableIndividualDecisionRequest implements IndividualDecis
 	public boolean isApplicablePolicyIdListReturned()
 	{
 		return returnApplicablePolicyIdList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "[namedAttributes=" + attributes + ", extraContentsByCategory=" + extraContentsByCategory + ", attributesToIncludeInResult=" + attributesToIncludeInResult
+				+ ", returnApplicablePolicyIdList=" + returnApplicablePolicyIdList + "]";
 	}
 
 }
