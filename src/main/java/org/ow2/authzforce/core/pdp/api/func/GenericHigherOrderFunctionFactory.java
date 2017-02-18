@@ -31,14 +31,21 @@ import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
  */
 public abstract class GenericHigherOrderFunctionFactory implements PdpExtension
 {
+
 	/**
 	 * Returns instance of the Higher-order function
 	 *
 	 * @param subFunctionReturnTypeFactory
 	 *            sub-function's return datatype factory
-	 * @return higher-order function instance
+	 * @return higher-order function instance (non-null, throw exceptions below if cannot return instance)
+	 * @throws IllegalArgumentException
+	 *             iff {@code subFunctionReturnTypeFactory == null}
+	 * @throws UnsupportedOperationException
+	 *             iff {@code subFunctionReturnTypeFactory} is not supported by this factory
+	 * 
 	 */
-	public abstract <SUB_RETURN_T extends AttributeValue> HigherOrderBagFunction<?, SUB_RETURN_T> getInstance(DatatypeFactory<SUB_RETURN_T> subFunctionReturnTypeFactory);
+	public abstract <SUB_RETURN_T extends AttributeValue> HigherOrderBagFunction<?, SUB_RETURN_T> getInstance(DatatypeFactory<SUB_RETURN_T> subFunctionReturnTypeFactory)
+			throws IllegalArgumentException, UnsupportedOperationException;
 
 	/** {@inheritDoc} */
 	@Override
