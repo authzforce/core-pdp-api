@@ -3,13 +3,13 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1-SNAPSHOT</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
    <version>9.0.1-SNAPSHOT</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthZForce CE - Core PDP API</description>
-   <url>https://tuleap.ow2.org/projects/authzforce</url>
+   <url>${project.url}</url>
    <scm>
       <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
       <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>

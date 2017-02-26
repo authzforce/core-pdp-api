@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
@@ -90,23 +89,17 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 			throw new IllegalArgumentException("status code value undefined");
 		}
 
-		// if the code is ok, syntax error or processing error, there
-		// must not be any detail included
-		detail.ifPresent(new Consumer<StatusDetail>()
+		/*
+		 * According to XACML 3.0 spec, section 5.57, if the code is ok, syntax error or processing error, there must not be any StatusDetail included
+		 */
+		if (detail.isPresent())
 		{
-
-			@Override
-			public void accept(final StatusDetail d)
+			final String c = codes.iterator().next();
+			if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR) || c.equals(STATUS_PROCESSING_ERROR))
 			{
-				final String c = codes.iterator().next();
-				if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR) || c.equals(STATUS_PROCESSING_ERROR))
-				{
-					throw new IllegalArgumentException("status detail cannot be included with " + c);
-				}
-
+				throw new IllegalArgumentException("status detail not allowed with status code: " + c);
 			}
-
-		});
+		}
 
 		final StatusCode statusCodeFromStrings = stringsToStatusCode(codes.iterator(), MAX_STATUS_CODE_DEPTH);
 		if (statusCodeFromStrings == null)
