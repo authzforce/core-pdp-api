@@ -18,7 +18,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.net.URI;
+import java.lang.reflect.Array;
+import java.util.Objects;
+import java.util.Optional;
+
+import com.google.common.reflect.TypeToken;
 
 /**
  * Primitive datatype
@@ -26,63 +30,51 @@ import java.net.URI;
  * @param <AV>
  *            value type
  */
-final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV>
+public final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV>
 {
-	private final transient int hashCode;
 
-	PrimitiveDatatype(final Class<AV> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
-	{
-		super(valueClass, id, functionIdPrefix);
-		// there should be one-to-one mapping between valueClass and id, so hashing
-		// only one of these two is necessary
-		hashCode = getValueClass().hashCode();
-	}
+	private static final ClassCastException DEFAULT_CLASS_CAST_EXCEPTION = new ClassCastException("Input is not a primitive value");
+	private final Class<AV> valueClass;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Default constructor
 	 * 
-	 * @see java.lang.Object#toString()
+	 * @throws NullPointerException
+	 *             if {@code valueClass == null || id == null || functionIdPrefix == null}.
 	 */
-	@Override
-	public String toString()
+	PrimitiveDatatype(final Class<AV> valueClass, final String id, final String functionIdPrefix) throws NullPointerException
 	{
-		return this.getId();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		return hashCode;
+		super(TypeToken.of(Objects.requireNonNull(valueClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix);
+		this.valueClass = valueClass;
 	}
 
 	@Override
-	public boolean equals(final Object obj)
+	public boolean isInstance(final Value val)
 	{
-		// Effective Java - Item 8
-		if (this == obj)
+		return this.valueClass.isInstance(val);
+	}
+
+	@Override
+	public AV cast(final Value val) throws ClassCastException
+	{
+		if (val instanceof AtomicValue)
 		{
-			return true;
+			return this.valueClass.cast(val);
 		}
 
-		if (!(obj instanceof PrimitiveDatatype))
-		{
-			return false;
-		}
-
-		final PrimitiveDatatype<?> other = (PrimitiveDatatype<?>) obj;
-		// there should be a one-to-one mapping between valueClass and id, so checking
-		// only one of these two is necessary
-		return this.getValueClass() == other.getValueClass();
+		throw DEFAULT_CLASS_CAST_EXCEPTION;
 	}
 
 	@Override
-	public Datatype<?> getTypeParameter()
+	public AV[] newArray(final int length)
 	{
-		return null;
+		return (AV[]) Array.newInstance(this.valueClass, length);
 	}
+
+	@Override
+	public Optional<Datatype<?>> getTypeParameter()
+	{
+		return Optional.empty();
+	}
+
 }

@@ -19,7 +19,8 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import java.lang.reflect.Array;
-import java.net.URI;
+
+import com.google.common.reflect.TypeToken;
 
 /**
  * Base class for datatype-specific Attribute Value Factory.
@@ -29,40 +30,39 @@ import java.net.URI;
  */
 public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> implements DatatypeFactory<INSTANCE_AV>
 {
-	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException(
-			"Undefined instanceClass argument");
-	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException(
-			"Undefined datatypeId argument");
-
 	protected final Datatype<INSTANCE_AV> instanceDatatype;
 	private final Bag<INSTANCE_AV> emptyBag;
 	private final BagDatatype<INSTANCE_AV> bagDatatype;
 	private final Class<INSTANCE_AV[]> arrayClass;
 
-	// cached method result
+	// cached method results
 	private final transient int hashCode;
 	private final transient String toString;
 
-	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId,
-			final URI functionIdPrefix)
+	/**
+	 * Base datatype factory constructor
+	 * 
+	 * @param instanceClass
+	 *            (non-null) Java class used as implementation for the expression datatype
+	 * @param datatypeId
+	 *            (non-null) datatype ID
+	 * @param functionIdPrefix
+	 *            (non-null) prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 * @throws NullPointerException
+	 *             if {@code instanceClass == null || datatypeId == null || functionIdPrefix == null}.
+	 */
+	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId, final String functionIdPrefix) throws NullPointerException
 	{
-		if (instanceClass == null)
-		{
-			throw NULL_DATATYPE_CLASS_EXCEPTION;
-		}
-
-		if (datatypeId == null)
-		{
-			throw NULL_DATATYPE_ID_EXCEPTION;
-		}
-
 		this.instanceDatatype = new PrimitiveDatatype<>(instanceClass, datatypeId, functionIdPrefix);
 		this.emptyBag = Bags.empty(instanceDatatype, null);
-		this.bagDatatype = new BagDatatype<>(instanceDatatype);
+		this.bagDatatype = new BagDatatype<>(new TypeToken<Bag<INSTANCE_AV>>()
+		{
+			private static final long serialVersionUID = 1L;
+		}, instanceDatatype);
 		this.arrayClass = (Class<INSTANCE_AV[]>) Array.newInstance(instanceClass, 0).getClass();
 
 		this.toString = getClass().getName() + "[datatype=" + instanceDatatype + "]";
-		this.hashCode = instanceDatatype.getValueClass().hashCode();
+		this.hashCode = instanceDatatype.hashCode();
 	}
 
 	@Override

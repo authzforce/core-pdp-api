@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -58,8 +59,8 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
-import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XACMLAttributeCategory;
+import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XACMLResourceScope;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -222,7 +223,7 @@ public final class JaxbXACMLUtils
 	 */
 	private static final class JaxbXACMLAttributeParsingHelper
 	{
-		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), null,
+		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), Optional.empty(),
 				XACMLAttributeId.XACML_2_0_RESOURCE_SCOPE.value());
 
 		private static final IllegalArgumentException UNSUPPORTED_MULTIPLE_SCOPE_EXCEPTION = new IllegalArgumentException("Unsupported resource scope. Expected scope: none or "
@@ -539,7 +540,7 @@ public final class JaxbXACMLUtils
 				{
 					final MutableBag<?> newIssuerLessAttrVals;
 					// attribute has an Issuer -> prepare to update the matching Issuer-less attribute values
-					final AttributeGUID issuerLessId = new AttributeGUID(attributeGUID.getCategory(), null, attributeGUID.getId());
+					final AttributeGUID issuerLessId = new AttributeGUID(attributeGUID.getCategory(), Optional.empty(), attributeGUID.getId());
 					final MutableBag<?> oldIssuerLessAttrVals = attributeMap.get(issuerLessId);
 					if (oldIssuerLessAttrVals == null)
 					{
@@ -598,7 +599,7 @@ public final class JaxbXACMLUtils
 		@Override
 		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeGUID attributeGUID)
 		{
-			return attributeGUID.getIssuer() != null;
+			return attributeGUID.getIssuer().isPresent();
 		}
 
 	}
@@ -738,7 +739,7 @@ public final class JaxbXACMLUtils
 			while (categoryAttrsIterator.hasNext())
 			{
 				final Attribute jaxbAttr = categoryAttrsIterator.next();
-				final AttributeGUID attrGUID = new AttributeGUID(categoryName, jaxbAttr.getIssuer(), jaxbAttr.getAttributeId());
+				final AttributeGUID attrGUID = new AttributeGUID(categoryName, Optional.ofNullable(jaxbAttr.getIssuer()), jaxbAttr.getAttributeId());
 
 				// The XACML schema specifies there should be at least one AttributeValue
 				final List<AttributeValueType> jaxbAttrValues = jaxbAttr.getAttributeValues();

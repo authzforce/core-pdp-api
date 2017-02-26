@@ -18,9 +18,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.net.URI;
+import java.lang.reflect.Array;
+import java.util.Objects;
+import java.util.Optional;
 
-import com.google.common.collect.ImmutableMultiset;
+import com.google.common.reflect.TypeToken;
 
 /**
  * Bag datatype for bags of primitive datatypes
@@ -31,108 +33,66 @@ import com.google.common.collect.ImmutableMultiset;
 public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 {
 
-	private static final IllegalArgumentException NULL_ARG_EXCEPTION = new IllegalArgumentException(
-			"Undefined element datatype arg");
+	private static final ClassCastException DEFAULT_CLASS_CAST_EXCEPTION = new ClassCastException("Input is not a Bag");
 
 	/**
-	 * Bag datatype ID, for internal identification purposes. This is an invalid
-	 * URI on purpose, to avoid conflict with any custom XACML datatype URI
-	 * (datatype extension).
+	 * Bag datatype ID prefix, for internal identification purposes. This is an invalid URI on purpose, to avoid conflict with any custom XACML datatype URI (datatype extension).
 	 */
-	private static final String ID = "bag";
+	private static final String ID_PREFIX = "bag";
 
-	private final Datatype<AV> elementType;
+	private final Optional<Datatype<?>> genericTypeParam;
+	private final Datatype<AV> elementDatatype;
 
-	// cached method results
-	private final String toString;
-	private final int hashCode;
-
-	private static <V extends AttributeValue> Class<Bag<V>> getBagClass(final Datatype<V> elementDatatype)
-			throws IllegalArgumentException
+	/**
+	 * Default constructor
+	 * 
+	 * @throws NullPointerException
+	 *             if {@code genericBagType == null || elementDatatype == null}.
+	 */
+	BagDatatype(final TypeToken<Bag<AV>> genericBagType, final Datatype<AV> elementDatatype) throws NullPointerException
 	{
-		if (elementDatatype == null)
+		super(genericBagType, Optional.of(Objects.requireNonNull(elementDatatype)), ID_PREFIX + "<" + elementDatatype + ">", elementDatatype.getFunctionIdPrefix() + "-" + ID_PREFIX);
+		this.elementDatatype = Objects.requireNonNull(elementDatatype, "Undefined typeParam");
+		this.genericTypeParam = Optional.of(this.elementDatatype);
+	}
+
+	@Override
+	public boolean isInstance(final Value val)
+	{
+		return val instanceof Bag && elementDatatype.equals(((Bag<?>) val).getElementDatatype());
+	}
+
+	@Override
+	public Bag<AV> cast(final Value val) throws ClassCastException
+	{
+		if (val instanceof Bag)
 		{
-			throw NULL_ARG_EXCEPTION;
+			return (Bag<AV>) val;
 		}
 
-		/*
-		 * We need to create the instance of bag superclass with V as type
-		 * parameter, so that we can use it to cast any bag instance in
-		 * cast(Value) method. (Therefore, we cannot use a subclass to do it,
-		 * such as a so-called EmptyBag, only the Bag superclass.)
-		 */
-		final Bag<V> bag = new Bag<>(elementDatatype, ImmutableMultiset.<V> of());
-		return (Class<Bag<V>>) bag.getClass();
+		throw DEFAULT_CLASS_CAST_EXCEPTION;
 	}
 
-	BagDatatype(final Datatype<AV> elementDatatype) throws IllegalArgumentException
+	@Override
+	public Optional<Datatype<?>> getTypeParameter()
 	{
-		super(getBagClass(elementDatatype), ID, URI.create(elementDatatype.getFuncIdPrefix() + "-bag"));
+		return this.genericTypeParam;
+	}
 
-		this.elementType = elementDatatype;
-		toString = ID + "<" + this.elementType + ">";
-		hashCode = this.elementType.hashCode();
+	@Override
+	public Bag<AV>[] newArray(final int length)
+	{
+		return (Bag<AV>[]) Array.newInstance(Bag.class, length);
 	}
 
 	/**
-	 * Returns the bag element datatype (datatype of every element in a bag of
-	 * this datatype). Same as {@link #getTypeParameter()}.
+	 * Returns the bag element datatype (datatype of every element in a bag of this datatype). Same as {@link #getTypeParameter()}.
 	 * 
 	 * @return bag element datatype
 	 */
 	public Datatype<AV> getElementType()
 	{
-		return this.elementType;
-	}
-
-	@Override
-	public Datatype<?> getTypeParameter()
-	{
-		return this.elementType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return toString;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		return hashCode;
-	}
-
-	@Override
-	public boolean equals(final Object obj)
-	{
-		// Effective Java - Item 8
-		if (this == obj)
-		{
-			return true;
-		}
-
-		if (!(obj instanceof BagDatatype))
-		{
-			return false;
-		}
-
-		final BagDatatype<?> other = (BagDatatype<?>) obj;
-		// there should be a one-to-one mapping between valueClass and id, so
-		// checking
-		// only one of these two is necessary
-		return this.elementType.equals(other.elementType);
-
+		return this.elementDatatype;
 	}
 
 }

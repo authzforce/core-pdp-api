@@ -19,6 +19,7 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
@@ -38,7 +39,7 @@ public final class AttributeGUID
 	private static final IllegalArgumentException NULL_ID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeId");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute category");
 	private final String category;
-	private final String issuer;
+	private final Optional<String> issuer;
 	private final String id;
 
 	// cached method results
@@ -64,7 +65,7 @@ public final class AttributeGUID
 	/**
 	 * @return the issuer
 	 */
-	public String getIssuer()
+	public Optional<String> getIssuer()
 	{
 		return issuer;
 	}
@@ -74,10 +75,12 @@ public final class AttributeGUID
 	 * 
 	 * @param attrDes
 	 *            attribute designator
+	 * @throws IllegalArgumentException
+	 *             if {@code attrDes.getCategory() == null || attrDes.getAttributeId() == null}
 	 */
 	public AttributeGUID(final AttributeDesignatorType attrDes)
 	{
-		this(attrDes.getCategory(), attrDes.getIssuer(), attrDes.getAttributeId());
+		this(attrDes.getCategory(), Optional.ofNullable(attrDes.getIssuer()), attrDes.getAttributeId());
 	}
 
 	/**
@@ -89,8 +92,10 @@ public final class AttributeGUID
 	 *            attribute issuer (may be null)
 	 * @param attrId
 	 *            (non-null)
+	 * @throws IllegalArgumentException
+	 *             if {@code attrCat == null || attrId == null}
 	 */
-	public AttributeGUID(final String attrCat, final String attrIssuer, final String attrId)
+	public AttributeGUID(final String attrCat, final Optional<String> attrIssuer, final String attrId)
 	{
 		if (attrCat == null)
 		{
@@ -150,7 +155,7 @@ public final class AttributeGUID
 		 * an AttributeGUID with the same Issuer. So here we compare everything, including the Issuer, but in order to handle the first case (Issuer-less AttributeDesignator), we'll make sure that
 		 * there is an Issuer-less version in the request context for each Issuer-full Attribute
 		 */
-		return category.equals(other.category) && id.equals(other.id) && Objects.equals(issuer, other.issuer);
+		return category.equals(other.category) && id.equals(other.id) && issuer.equals(other.issuer);
 	}
 
 	/*
@@ -163,7 +168,7 @@ public final class AttributeGUID
 	{
 		if (toString == null)
 		{
-			toString = "[category='" + category + "', issuer=" + (issuer == null ? null : "'" + issuer + "'") + ", id='" + id + "']";
+			toString = "[category='" + category + "', issuer=" + (issuer.isPresent() ? "'" + issuer + "'" : null) + ", id='" + id + "']";
 		}
 
 		return toString;

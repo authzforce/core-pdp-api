@@ -19,12 +19,12 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
@@ -92,7 +92,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected Factory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
+		protected Factory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
@@ -178,7 +178,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
+		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
@@ -215,18 +215,21 @@ public abstract class SimpleValue<V> extends AttributeValue
 	private transient volatile List<Serializable> xmlString = null;
 
 	/**
-	 * Constructor from Java type of value. A Serializable JAXB-compatible form of the value must be provided to be used directly as first value in {@link #getContent()}
+	 * Constructor from Java type of value. A Serializable JAXB-compatible form of the value must be provided to be used directly as first value in {@link #getContent()} The super field 'content' is
+	 * set to an empty list but it does not matter, since {@link #getContent()} is overridden here to return a singleton list with {@code rawVal} as single value.
 	 *
 	 * @param datatypeId
 	 *            attribute datatype ID. MUST NOT be null.
 	 * @param rawVal
 	 *            internal Java native value. MUST NOT be null.
 	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code datatypeId == null || rawVal == null}
+	 *             if {@code rawVal == null}
+	 * @throws NullPointerException
+	 *             if {@code datatypeId == null}
 	 */
-	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException
+	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException, NullPointerException
 	{
-		super(datatypeId, null, null);
+		super(datatypeId, Collections.emptyList(), Optional.empty());
 		if (rawVal == null)
 		{
 			throw UNDEF_ATTR_CONTENT_EXCEPTION;

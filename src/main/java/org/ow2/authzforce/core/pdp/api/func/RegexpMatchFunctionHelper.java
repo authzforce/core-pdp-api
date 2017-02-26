@@ -67,7 +67,6 @@ public final class RegexpMatchFunctionHelper
 		private final RegularExpression compiledRegex;
 		private final List<Expression<?>> argExpressionsAfterRegex;
 		private final Datatype<? extends SimpleValue<String>> matchedValType;
-		private final Class<? extends SimpleValue<String>> matchedValClass;
 		private final String invalidRemainingArg1TypeMsg;
 		private final String funcId;
 
@@ -82,7 +81,6 @@ public final class RegexpMatchFunctionHelper
 			 */
 			this.argExpressionsAfterRegex = argExpressions.subList(1, argExpressions.size());
 			this.matchedValType = matchedValueType;
-			this.matchedValClass = matchedValueType.getValueClass();
 			this.invalidRemainingArg1TypeMsg = invalidRemainingArg1TypeMsg;
 		}
 
@@ -95,7 +93,7 @@ public final class RegexpMatchFunctionHelper
 				// no more arg in argExpressions, so next arg is in remainingArgs
 				try
 				{
-					arg1 = matchedValClass.cast(remainingArgs[0]);
+					arg1 = matchedValType.cast(remainingArgs[0]);
 				}
 				catch (final ClassCastException e)
 				{

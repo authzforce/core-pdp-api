@@ -186,7 +186,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	 */
 	public ComparisonFunction(final Datatype<AV> paramType, final PostCondition postCondition)
 	{
-		super(paramType.getFuncIdPrefix() + postCondition.functionSuffix, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
+		super(paramType.getFunctionIdPrefix() + postCondition.functionSuffix, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, postCondition);
 	}
 

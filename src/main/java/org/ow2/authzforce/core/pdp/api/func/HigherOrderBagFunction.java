@@ -128,7 +128,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 			/*
 			 * sub-function's return type can be any primitive datatype; check at least it is primitive
 			 */
-			if (inputFuncReturnType.getTypeParameter() != null)
+			if (inputFuncReturnType.getTypeParameter().isPresent())
 			{
 				throw new IllegalArgumentException(this + ": Invalid return type of function in first argument: " + inputFuncReturnType + " (bag type). Required: any primitive type");
 			}

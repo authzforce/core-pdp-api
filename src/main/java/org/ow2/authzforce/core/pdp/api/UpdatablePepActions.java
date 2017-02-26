@@ -24,6 +24,7 @@ package org.ow2.authzforce.core.pdp.api;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
@@ -51,10 +52,10 @@ public final class UpdatablePepActions implements PepActions
 	 * @param advices
 	 *            advice list; null if no advice
 	 */
-	public UpdatablePepActions(final List<Obligation> obligations, final List<Advice> advices)
+	public UpdatablePepActions(final Optional<List<Obligation>> obligations, final Optional<List<Advice>> advices)
 	{
-		this.obligationList = obligations == null ? new ArrayList<>() : obligations;
-		this.adviceList = advices == null ? new ArrayList<>() : advices;
+		this.obligationList = obligations.orElse(new ArrayList<>());
+		this.adviceList = advices.orElse(new ArrayList<>());
 	}
 
 	/**
@@ -62,7 +63,7 @@ public final class UpdatablePepActions implements PepActions
 	 */
 	public UpdatablePepActions()
 	{
-		this(null, null);
+		this(Optional.empty(), Optional.empty());
 	}
 
 	/**

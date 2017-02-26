@@ -46,8 +46,12 @@ public abstract class NumericValue<N extends Number, NAV extends NumericValue<N,
 	 *            a {@link java.lang.String} object.
 	 * @param val
 	 *            a N object.
+	 * @throws java.lang.IllegalArgumentException
+	 *             if {@code rawVal == null}
+	 * @throws NullPointerException
+	 *             if {@code datatypeId == null}
 	 */
-	protected NumericValue(final String datatypeId, final N val)
+	protected NumericValue(final String datatypeId, final N val) throws IllegalArgumentException, NullPointerException
 	{
 		super(datatypeId, val);
 	}

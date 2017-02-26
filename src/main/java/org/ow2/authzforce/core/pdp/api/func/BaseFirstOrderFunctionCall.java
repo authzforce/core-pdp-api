@@ -18,7 +18,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -188,7 +187,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType)
 			throws IndeterminateEvaluationException
 	{
-		final Bag<AV>[] results = (Bag<AV>[]) Array.newInstance(argReturnType.getValueClass(), args.size());
+		final Bag<AV>[] results = argReturnType.newArray(args.size());
 		return evalBagArgs(args, context, argReturnType, results);
 	}
 
@@ -202,7 +201,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 
 	private static final void checkArgType(final AttributeValue arg, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
 	{
-		if (!arg.getClass().equals(expectedType.getValueClass()))
+		if (expectedType.isInstance(arg))
 		{
 			throw new IllegalArgumentException("Function " + funcId + ": type of arg #" + argIndex + " does not match required type: " + expectedType + ".");
 		}
@@ -337,7 +336,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 
 		for (final Datatype<?> remainingArgType : remainingArgTypes)
 		{
-			if (remainingArgType.getTypeParameter() != null)
+			if (remainingArgType.getTypeParameter().isPresent())
 			{
 				throw new IllegalArgumentException("Invalid type (" + remainingArgType + ") of request-time arg for parameter #" + paramIndex + " of function: " + funcId
 						+ ". Only primitive type are allowed for request-time args.");
@@ -444,7 +443,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			Datatype<?> commonPrimitiveType = null;
 			for (final Datatype<?> paramType : paramTypes)
 			{
-				if (paramType.getTypeParameter() == null)
+				if (!paramType.getTypeParameter().isPresent())
 				{
 					// primitive type
 					if (primParamCount == 0)
@@ -610,7 +609,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	public static abstract class EagerSinglePrimitiveTypeEval<RETURN_T extends Value, PARAM_T extends AttributeValue> extends EagerEval<RETURN_T>
 	{
 		private final Datatype<PARAM_T> parameterType;
-		private final Class<PARAM_T> parameterClass;
 
 		/**
 		 * Instantiates Function call
@@ -632,7 +630,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			super(functionSig, args, remainingArgTypes);
 
 			this.parameterType = functionSig.getParameterType();
-			this.parameterClass = parameterType.getValueClass();
 		}
 
 		/**
@@ -676,7 +673,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				{
 					try
 					{
-						finalArgs.add(parameterClass.cast(remainingArg));
+						finalArgs.add(parameterType.cast(remainingArg));
 					}
 					catch (final ClassCastException e)
 					{

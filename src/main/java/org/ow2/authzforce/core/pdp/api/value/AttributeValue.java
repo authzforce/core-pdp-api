@@ -22,6 +22,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -31,8 +33,6 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.w3c.dom.Element;
-
-import com.google.common.base.Preconditions;
 
 /**
  * The base type for all atomic/non-bag values used in a policy or request/response, this abstract class represents a value for a given attribute type. All the standard primitive datatypes defined in
@@ -89,21 +89,20 @@ public abstract class AttributeValue extends AttributeValueType implements Atomi
 	 * Default constructor
 	 * 
 	 * @param datatypeId
-	 *            datatype ID. Note: Do not use the Datatype class here, because if we do, we break the acyclic dependency principle
+	 *            datatype ID (non-null). Note for developers: Do not use the Datatype class here, because if we do, we break the acyclic dependency principle
 	 * @param content
-	 *            list of JAXB content elements of the following types: {@link String}, {@link Element}. Made immutable by this constructor.
+	 *            (non-null) list of JAXB content elements of the following types: {@link String}, {@link Element}. Made immutable by this constructor.
 	 * @param otherAttributes
 	 *            other attributes, made immutable by this constructor.
-	 * @throws IllegalArgumentException
-	 *             if {@code datatype == null}
+	 * @throw NullPointerException if {@code datatypeId == null || content == null}
 	 */
-	protected AttributeValue(final String datatypeId, final List<Serializable> content, final Map<QName, String> otherAttributes) throws IllegalArgumentException
+	protected AttributeValue(final String datatypeId, final List<Serializable> content, final Optional<Map<QName, String>> otherAttributes) throws IllegalArgumentException
 	{
-		// assert datatype != null;
-		// assert content != null;
-		// make fields immutable (datatype made immutable through overriding setDatatype())
-		super(content == null ? null : Collections.unmodifiableList(content), Preconditions.checkNotNull(datatypeId, "Undefined attribute datatype"), otherAttributes == null ? null : HashCollections
-				.newImmutableMap(otherAttributes));
+		/*
+		 * Make fields immutable (datatype made immutable through overriding setDatatype())
+		 */
+		super(Collections.unmodifiableList(Objects.requireNonNull(content, "Undefined content")), Objects.requireNonNull(datatypeId, "Undefined datatype ID"),
+				otherAttributes.isPresent() ? HashCollections.newImmutableMap(otherAttributes.get()) : null);
 	}
 
 }

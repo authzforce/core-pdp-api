@@ -76,9 +76,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public SingletonBagToPrimitive(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public SingletonBagToPrimitive(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
 			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
 					StatusHelper.STATUS_PROCESSING_ERROR);
 		}
@@ -127,9 +127,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public BagSize(final Datatype<Bag<AV>> paramBagType)
+		public BagSize(final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER_FACTORY.getDatatype(), false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER_FACTORY.getDatatype(), false, Arrays.asList(paramBagType));
 		}
 
 		@Override
@@ -183,7 +183,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public BagContains(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType, final Class<AV[]> paramArrayClass)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramBagType));
 			this.arrayClass = paramArrayClass;
 			this.bagType = paramBagType;
 		}
@@ -241,9 +241,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public PrimitiveToBag(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public PrimitiveToBag(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Arrays.asList(paramType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Arrays.asList(paramType));
 			this.paramType = paramType;
 		}
 
@@ -276,7 +276,7 @@ public final class FirstOrderBagFunctions
 
 		private static final IllegalArgumentException UNDEF_PARAM_TYPES_ARG_EXCEPTION = new IllegalArgumentException("Undefined function parameter types");
 
-		private static List<? extends Datatype<?>> validate(final List<? extends Datatype<?>> parameterTypes)
+		private static <T> List<T> validate(final List<T> parameterTypes)
 		{
 			if (parameterTypes == null || parameterTypes.isEmpty())
 			{
@@ -298,9 +298,9 @@ public final class FirstOrderBagFunctions
 		 * @param parameterTypes
 		 *            parameter types
 		 */
-		public SetFunction(final String functionIdSuffix, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends Datatype<Bag<AV>>> parameterTypes)
+		public SetFunction(final String functionIdSuffix, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends BagDatatype<AV>> parameterTypes)
 		{
-			super(validate(parameterTypes).get(0).getTypeParameter().getFuncIdPrefix() + functionIdSuffix, returnType, varArgs, parameterTypes);
+			super(validate(parameterTypes).get(0).getElementType().getFunctionIdPrefix() + functionIdSuffix, returnType, varArgs, parameterTypes);
 		}
 
 		@Override
@@ -343,7 +343,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Intersection(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public Intersection(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_INTERSECTION, paramBagType, false, Arrays.asList(paramBagType, paramBagType));
 			this.paramType = paramType;
@@ -381,7 +381,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public AtLeastOneMemberOf(final Datatype<Bag<AV>> paramBagType)
+		public AtLeastOneMemberOf(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_AT_LEAST_ONE_MEMBER_OF, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
@@ -430,7 +430,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Union(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public Union(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
 			/*
 			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same bag type
@@ -474,7 +474,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Subset(final Datatype<Bag<AV>> paramBagType)
+		public Subset(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_SUBSET, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
@@ -511,7 +511,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public SetEquals(final Datatype<Bag<AV>> paramBagType)
+		public SetEquals(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
