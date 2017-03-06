@@ -1,24 +1,27 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.net.URI;
+import java.lang.reflect.Array;
+import java.util.Objects;
+import java.util.Optional;
+
+import com.google.common.reflect.TypeToken;
 
 /**
  * Primitive datatype
@@ -26,63 +29,51 @@ import java.net.URI;
  * @param <AV>
  *            value type
  */
-final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV>
+public final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV>
 {
-	private final transient int hashCode;
 
-	PrimitiveDatatype(final Class<AV> valueClass, final String id, final URI functionIdPrefix) throws IllegalArgumentException
-	{
-		super(valueClass, id, functionIdPrefix);
-		// there should be one-to-one mapping between valueClass and id, so hashing
-		// only one of these two is necessary
-		hashCode = getValueClass().hashCode();
-	}
+	private static final ClassCastException DEFAULT_CLASS_CAST_EXCEPTION = new ClassCastException("Input is not a primitive value");
+	private final Class<AV> valueClass;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Default constructor
 	 * 
-	 * @see java.lang.Object#toString()
+	 * @throws NullPointerException
+	 *             if {@code valueClass == null || id == null || functionIdPrefix == null}.
 	 */
-	@Override
-	public String toString()
+	PrimitiveDatatype(final Class<AV> valueClass, final String id, final String functionIdPrefix) throws NullPointerException
 	{
-		return this.getId();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		return hashCode;
+		super(TypeToken.of(Objects.requireNonNull(valueClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix);
+		this.valueClass = valueClass;
 	}
 
 	@Override
-	public boolean equals(final Object obj)
+	public boolean isInstance(final Value val)
 	{
-		// Effective Java - Item 8
-		if (this == obj)
+		return this.valueClass.isInstance(val);
+	}
+
+	@Override
+	public AV cast(final Value val) throws ClassCastException
+	{
+		if (val instanceof AtomicValue)
 		{
-			return true;
+			return this.valueClass.cast(val);
 		}
 
-		if (!(obj instanceof PrimitiveDatatype))
-		{
-			return false;
-		}
-
-		final PrimitiveDatatype<?> other = (PrimitiveDatatype<?>) obj;
-		// there should be a one-to-one mapping between valueClass and id, so checking
-		// only one of these two is necessary
-		return this.getValueClass() == other.getValueClass();
+		throw DEFAULT_CLASS_CAST_EXCEPTION;
 	}
 
 	@Override
-	public Datatype<?> getTypeParameter()
+	public AV[] newArray(final int length)
 	{
-		return null;
+		return (AV[]) Array.newInstance(this.valueClass, length);
 	}
+
+	@Override
+	public Optional<Datatype<?>> getTypeParameter()
+	{
+		return Optional.empty();
+	}
+
 }

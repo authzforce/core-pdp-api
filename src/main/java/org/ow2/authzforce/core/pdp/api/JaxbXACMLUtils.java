@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api;
 
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -58,8 +58,8 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
-import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XACMLAttributeCategory;
+import org.ow2.authzforce.xacml.identifiers.XACMLAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XACMLResourceScope;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -222,7 +222,7 @@ public final class JaxbXACMLUtils
 	 */
 	private static final class JaxbXACMLAttributeParsingHelper
 	{
-		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), null,
+		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), Optional.empty(),
 				XACMLAttributeId.XACML_2_0_RESOURCE_SCOPE.value());
 
 		private static final IllegalArgumentException UNSUPPORTED_MULTIPLE_SCOPE_EXCEPTION = new IllegalArgumentException("Unsupported resource scope. Expected scope: none or "
@@ -539,7 +539,7 @@ public final class JaxbXACMLUtils
 				{
 					final MutableBag<?> newIssuerLessAttrVals;
 					// attribute has an Issuer -> prepare to update the matching Issuer-less attribute values
-					final AttributeGUID issuerLessId = new AttributeGUID(attributeGUID.getCategory(), null, attributeGUID.getId());
+					final AttributeGUID issuerLessId = new AttributeGUID(attributeGUID.getCategory(), Optional.empty(), attributeGUID.getId());
 					final MutableBag<?> oldIssuerLessAttrVals = attributeMap.get(issuerLessId);
 					if (oldIssuerLessAttrVals == null)
 					{
@@ -598,7 +598,7 @@ public final class JaxbXACMLUtils
 		@Override
 		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeGUID attributeGUID)
 		{
-			return attributeGUID.getIssuer() != null;
+			return attributeGUID.getIssuer().isPresent();
 		}
 
 	}
@@ -738,7 +738,7 @@ public final class JaxbXACMLUtils
 			while (categoryAttrsIterator.hasNext())
 			{
 				final Attribute jaxbAttr = categoryAttrsIterator.next();
-				final AttributeGUID attrGUID = new AttributeGUID(categoryName, jaxbAttr.getIssuer(), jaxbAttr.getAttributeId());
+				final AttributeGUID attrGUID = new AttributeGUID(categoryName, Optional.ofNullable(jaxbAttr.getIssuer()), jaxbAttr.getAttributeId());
 
 				// The XACML schema specifies there should be at least one AttributeValue
 				final List<AttributeValueType> jaxbAttrValues = jaxbAttr.getAttributeValues();

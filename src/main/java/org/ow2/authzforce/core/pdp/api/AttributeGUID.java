@@ -1,24 +1,24 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
@@ -38,7 +38,7 @@ public final class AttributeGUID
 	private static final IllegalArgumentException NULL_ID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeId");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute category");
 	private final String category;
-	private final String issuer;
+	private final Optional<String> issuer;
 	private final String id;
 
 	// cached method results
@@ -64,7 +64,7 @@ public final class AttributeGUID
 	/**
 	 * @return the issuer
 	 */
-	public String getIssuer()
+	public Optional<String> getIssuer()
 	{
 		return issuer;
 	}
@@ -74,10 +74,12 @@ public final class AttributeGUID
 	 * 
 	 * @param attrDes
 	 *            attribute designator
+	 * @throws IllegalArgumentException
+	 *             if {@code attrDes.getCategory() == null || attrDes.getAttributeId() == null}
 	 */
 	public AttributeGUID(final AttributeDesignatorType attrDes)
 	{
-		this(attrDes.getCategory(), attrDes.getIssuer(), attrDes.getAttributeId());
+		this(attrDes.getCategory(), Optional.ofNullable(attrDes.getIssuer()), attrDes.getAttributeId());
 	}
 
 	/**
@@ -89,8 +91,10 @@ public final class AttributeGUID
 	 *            attribute issuer (may be null)
 	 * @param attrId
 	 *            (non-null)
+	 * @throws IllegalArgumentException
+	 *             if {@code attrCat == null || attrId == null}
 	 */
-	public AttributeGUID(final String attrCat, final String attrIssuer, final String attrId)
+	public AttributeGUID(final String attrCat, final Optional<String> attrIssuer, final String attrId)
 	{
 		if (attrCat == null)
 		{
@@ -150,7 +154,7 @@ public final class AttributeGUID
 		 * an AttributeGUID with the same Issuer. So here we compare everything, including the Issuer, but in order to handle the first case (Issuer-less AttributeDesignator), we'll make sure that
 		 * there is an Issuer-less version in the request context for each Issuer-full Attribute
 		 */
-		return category.equals(other.category) && id.equals(other.id) && Objects.equals(issuer, other.issuer);
+		return category.equals(other.category) && id.equals(other.id) && issuer.equals(other.issuer);
 	}
 
 	/*
@@ -163,7 +167,7 @@ public final class AttributeGUID
 	{
 		if (toString == null)
 		{
-			toString = "[category='" + category + "', issuer=" + (issuer == null ? null : "'" + issuer + "'") + ", id='" + id + "']";
+			toString = "[category='" + category + "', issuer=" + (issuer.isPresent() ? "'" + issuer + "'" : null) + ", id='" + id + "']";
 		}
 
 		return toString;

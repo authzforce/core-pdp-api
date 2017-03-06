@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
@@ -76,9 +75,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public SingletonBagToPrimitive(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public SingletonBagToPrimitive(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
 			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
 					StatusHelper.STATUS_PROCESSING_ERROR);
 		}
@@ -127,9 +126,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public BagSize(final Datatype<Bag<AV>> paramBagType)
+		public BagSize(final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER_FACTORY.getDatatype(), false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER_FACTORY.getDatatype(), false, Arrays.asList(paramBagType));
 		}
 
 		@Override
@@ -183,7 +182,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public BagContains(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType, final Class<AV[]> paramArrayClass)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramBagType));
 			this.arrayClass = paramArrayClass;
 			this.bagType = paramBagType;
 		}
@@ -241,9 +240,9 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public PrimitiveToBag(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public PrimitiveToBag(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getTypeParameter().getFuncIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Arrays.asList(paramType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Arrays.asList(paramType));
 			this.paramType = paramType;
 		}
 
@@ -276,7 +275,7 @@ public final class FirstOrderBagFunctions
 
 		private static final IllegalArgumentException UNDEF_PARAM_TYPES_ARG_EXCEPTION = new IllegalArgumentException("Undefined function parameter types");
 
-		private static List<? extends Datatype<?>> validate(final List<? extends Datatype<?>> parameterTypes)
+		private static <T> List<T> validate(final List<T> parameterTypes)
 		{
 			if (parameterTypes == null || parameterTypes.isEmpty())
 			{
@@ -298,9 +297,9 @@ public final class FirstOrderBagFunctions
 		 * @param parameterTypes
 		 *            parameter types
 		 */
-		public SetFunction(final String functionIdSuffix, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends Datatype<Bag<AV>>> parameterTypes)
+		public SetFunction(final String functionIdSuffix, final Datatype<RETURN> returnType, final boolean varArgs, final List<? extends BagDatatype<AV>> parameterTypes)
 		{
-			super(validate(parameterTypes).get(0).getTypeParameter().getFuncIdPrefix() + functionIdSuffix, returnType, varArgs, parameterTypes);
+			super(validate(parameterTypes).get(0).getElementType().getFunctionIdPrefix() + functionIdSuffix, returnType, varArgs, parameterTypes);
 		}
 
 		@Override
@@ -343,7 +342,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Intersection(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public Intersection(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_INTERSECTION, paramBagType, false, Arrays.asList(paramBagType, paramBagType));
 			this.paramType = paramType;
@@ -381,7 +380,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public AtLeastOneMemberOf(final Datatype<Bag<AV>> paramBagType)
+		public AtLeastOneMemberOf(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_AT_LEAST_ONE_MEMBER_OF, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
@@ -430,7 +429,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Union(final Datatype<AV> paramType, final Datatype<Bag<AV>> paramBagType)
+		public Union(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
 			/*
 			 * Union function takes two or more parameters, i.e. two parameters of a specific bag type and a variable-length (zero-to-any) parameter of the same bag type
@@ -474,7 +473,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public Subset(final Datatype<Bag<AV>> paramBagType)
+		public Subset(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_SUBSET, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}
@@ -511,7 +510,7 @@ public final class FirstOrderBagFunctions
 		 * @param paramBagType
 		 *            bag datatype
 		 */
-		public SetEquals(final Datatype<Bag<AV>> paramBagType)
+		public SetEquals(final BagDatatype<AV> paramBagType)
 		{
 			super(NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
 		}

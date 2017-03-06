@@ -2,6 +2,16 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 9.1.0
+### Changed
+- Changed parent version: v5.1.0:
+	- License: GPL v3.0 replaced with Apache License v2.0
+	- Project URL: 'https://tuleap.ow2.org/projects/authzforce' replaced with 'https://authzforce.ow2.org'
+	- GIT repository URL base: 'https://tuleap.ow2.org/plugins/git/authzforce' replaced with 'https://gitlab.ow2.org/authzforce'
+- Return type of `Datatype#getTypeParameter()`: `Datatype<?>` replaced with `Optional<Datatype<?>>`
+- Return type of `AttributeGUID#getIssuer()`: `String<?>` replaced with `Optional<String<?>>`
+
+
 ## 9.0.0
 ### Changed
 - Changed parent version: 4.1.1 -> 5.0.0

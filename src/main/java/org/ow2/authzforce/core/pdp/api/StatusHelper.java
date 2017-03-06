@@ -1,26 +1,26 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
@@ -59,49 +59,20 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	/**
 	 * STATUS OK (as specified by XACML standard)
 	 */
-	public static final StatusHelper OK = new StatusHelper(STATUS_OK, null);
+	public static final StatusHelper OK = new StatusHelper(STATUS_OK, Optional.empty());
 
 	/**
-	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that
-	 * allows chaining status codes endlessly unless the implementation enforces a maximum depth as done here.
+	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that allows chaining status codes endlessly unless the implementation enforces a maximum
+	 * depth as done here.
 	 */
 	public static final int MAX_STATUS_CODE_DEPTH = 10;
 
 	/**
-	 * Constructor that takes only the status code.
-	 * 
-	 * @param code
-	 *            status code, must be a valid xs:anyURI
-	 * @param message
-	 *            status message
-	 */
-	public StatusHelper(final String code, final String message)
-	{
-		this(Collections.singletonList(code), message, null);
-	}
-
-	/**
-	 * Constructor that takes both the status code and a message to include with the status.
+	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note that the specification explicitly says that a status code of OK, SyntaxError or
+	 * ProcessingError may not appear with status detail, so an exception is thrown if one of these status codes is used and detail is included.
 	 * 
 	 * @param codes
-	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any
-	 *            number of minor codes after the first item in the list, which is the major code
-	 * @param message
-	 *            a message to include with the code
-	 */
-	public StatusHelper(final List<String> codes, final String message)
-	{
-		this(codes, message, null);
-	}
-
-	/**
-	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note
-	 * that the specification explicitly says that a status code of OK, SyntaxError or ProcessingError may not appear
-	 * with status detail, so an exception is thrown if one of these status codes is used and detail is included.
-	 * 
-	 * @param codes
-	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any
-	 *            number of minor codes after the first item in the list, which is the major code
+	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
 	 *            a message to include with the code, or null if there should be no message
 	 * @param detail
@@ -110,22 +81,22 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	 * @throws IllegalArgumentException
 	 *             if detail is included for a status code that doesn't allow detail
 	 */
-	public StatusHelper(final List<String> codes, final String message, final StatusDetail detail)
-			throws IllegalArgumentException
+	public StatusHelper(final List<String> codes, final Optional<String> message, final Optional<StatusDetail> detail) throws IllegalArgumentException
 	{
 		if (codes == null)
 		{
 			throw new IllegalArgumentException("status code value undefined");
 		}
 
-		// if the code is ok, syntax error or processing error, there
-		// must not be any detail included
-		if (detail != null)
+		/*
+		 * According to XACML 3.0 spec, section 5.57, if the code is ok, syntax error or processing error, there must not be any StatusDetail included
+		 */
+		if (detail.isPresent())
 		{
 			final String c = codes.iterator().next();
 			if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR) || c.equals(STATUS_PROCESSING_ERROR))
 			{
-				throw new IllegalArgumentException("status detail cannot be included with " + c);
+				throw new IllegalArgumentException("status detail not allowed with status code: " + c);
 			}
 		}
 
@@ -136,8 +107,34 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 		}
 
 		this.statusCode = statusCodeFromStrings;
-		this.statusMessage = message;
-		this.statusDetail = detail;
+		this.statusMessage = message.orElse(null);
+		this.statusDetail = detail.orElse(null);
+	}
+
+	/**
+	 * Constructor that takes both the status code and a message to include with the status.
+	 * 
+	 * @param codes
+	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
+	 * @param message
+	 *            a message to include with the code
+	 */
+	public StatusHelper(final List<String> codes, final Optional<String> message)
+	{
+		this(codes, message, null);
+	}
+
+	/**
+	 * Constructor that takes only the status code.
+	 * 
+	 * @param code
+	 *            status code, must be a valid xs:anyURI
+	 * @param message
+	 *            status message
+	 */
+	public StatusHelper(final String code, final Optional<String> message)
+	{
+		this(Collections.singletonList(code), message, Optional.empty());
 	}
 
 	/**

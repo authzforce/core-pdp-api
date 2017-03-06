@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
@@ -44,8 +43,7 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
  * 
  * @version $Id: $
  */
-public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue>
-		extends MultiParameterTypedFirstOrderFunction<BooleanValue>
+public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends AttributeValue> extends MultiParameterTypedFirstOrderFunction<BooleanValue>
 {
 	/**
 	 * Generic match method interface for values of different types
@@ -85,32 +83,28 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	{
 		private final String invalidArgTypesErrorMsg;
 		private final String invalidRegexErrorMsg;
-		private final Class<T0> paramClass0;
-		private final Class<T1> paramClass1;
+		private final Datatype<T0> paramType0;
+		private final Datatype<T1> paramType1;
 		private final Matcher<T0, T1> matcher;
 		private final FirstOrderFunctionSignature<BooleanValue> funcSig;
 
-		private CallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSig, final Datatype<T0> paramType0,
-				final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
+		private CallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSig, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 		{
 
-			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types: expected: "
-					+ paramType0 + "," + paramType1 + "; actual: ";
+			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types: expected: " + paramType0 + "," + paramType1 + "; actual: ";
 			this.invalidRegexErrorMsg = "Function " + functionSig.getName() + ": Invalid regular expression in arg#0";
-			this.paramClass0 = paramType0.getValueClass();
-			this.paramClass1 = paramType1.getValueClass();
+			this.paramType0 = paramType0;
+			this.paramType1 = paramType1;
 			this.matcher = matcher;
 			this.funcSig = functionSig;
 		}
 
-		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions,
-				final Datatype<?>[] remainingArgTypes)
+		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
 			return new EagerMultiPrimitiveTypeEval<BooleanValue>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
-				protected final BooleanValue evaluate(final Deque<AttributeValue> args)
-						throws IndeterminateEvaluationException
+				protected final BooleanValue evaluate(final Deque<AttributeValue> args) throws IndeterminateEvaluationException
 				{
 					final AttributeValue rawArg0 = args.poll();
 					final AttributeValue rawArg1 = args.poll();
@@ -119,14 +113,12 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					final T1 arg1;
 					try
 					{
-						arg0 = paramClass0.cast(rawArg0);
-						arg1 = paramClass1.cast(rawArg1);
+						arg0 = paramType0.cast(rawArg0);
+						arg1 = paramType1.cast(rawArg1);
 					}
 					catch (final ClassCastException e)
 					{
-						throw new IndeterminateEvaluationException(
-								invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(),
-								StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(), StatusHelper.STATUS_PROCESSING_ERROR, e);
 					}
 
 					final boolean isMatched;
@@ -136,8 +128,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					}
 					catch (final PatternSyntaxException e)
 					{
-						throw new IndeterminateEvaluationException(invalidRegexErrorMsg,
-								StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
 					}
 
 					return BooleanValue.valueOf(isMatched);
@@ -169,8 +160,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		 *            match function's second parameter type
 		 * @return match function call factory
 		 */
-		CallFactory<T0, T1> build(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<T0> paramType0,
-				Datatype<T1> paramType1);
+		CallFactory<T0, T1> build(FirstOrderFunctionSignature<BooleanValue> functionSignature, Datatype<T0> paramType0, Datatype<T1> paramType1);
 	}
 
 	private final CallFactory<T0, T1> funcCallFactory;
@@ -188,11 +178,9 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 *            matching algorithm
 	 * 
 	 */
-	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0,
-			final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
+	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 	{
-		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false,
-				Arrays.asList(paramType0, paramType1));
+		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = new CallFactory<>(this.functionSignature, paramType0, paramType1, matcher);
 	}
 
@@ -209,22 +197,18 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 *            match function call factory builder
 	 * 
 	 */
-	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0,
-			final Datatype<T1> paramType1, final CallFactoryBuilder<T0, T1> callFactoryBuilder)
+	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final CallFactoryBuilder<T0, T1> callFactoryBuilder)
 	{
-		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false,
-				Arrays.asList(paramType0, paramType1));
+		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = callFactoryBuilder.build(functionSignature, paramType0, paramType1);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions,
-			final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
+	public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 	{
 		/*
-		 * Actual argument types are expected to be different, therefore we use the supertype AttributeValue as generic
-		 * parameter type for all when creating the function call
+		 * Actual argument types are expected to be different, therefore we use the supertype AttributeValue as generic parameter type for all when creating the function call
 		 */
 		return funcCallFactory.getInstance(argExpressions, remainingArgTypes);
 	}
@@ -235,8 +219,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 * @param <AV>
 	 *            second parameter type
 	 */
-	public static class RegexpMatchCallFactoryBuilder<AV extends SimpleValue<String>>
-			implements CallFactoryBuilder<StringValue, AV>
+	public static class RegexpMatchCallFactoryBuilder<AV extends SimpleValue<String>> implements CallFactoryBuilder<StringValue, AV>
 	{
 
 		private final Matcher<StringValue, AV> regexMatcher = new Matcher<StringValue, AV>()
@@ -252,32 +235,26 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		{
 			private final RegexpMatchFunctionHelper regexFuncHelper;
 
-			private RegexpMatchCallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSignature,
-					final Datatype<AV> secondParamType)
+			private RegexpMatchCallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSignature, final Datatype<AV> secondParamType)
 			{
 				super(functionSignature, StandardDatatypes.STRING_FACTORY.getDatatype(), secondParamType, regexMatcher);
 				regexFuncHelper = new RegexpMatchFunctionHelper(functionSignature, secondParamType);
 			}
 
 			@Override
-			protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions,
-					final Datatype<?>[] remainingArgTypes)
+			protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 			{
-				final FirstOrderFunctionCall<BooleanValue> compiledRegexFuncCall = regexFuncHelper
-						.getCompiledRegexMatchCall(argExpressions, remainingArgTypes);
+				final FirstOrderFunctionCall<BooleanValue> compiledRegexFuncCall = regexFuncHelper.getCompiledRegexMatchCall(argExpressions, remainingArgTypes);
 				/*
-				 * compiledRegexFuncCall == null means no optimization using a pre-compiled regex could be done; in this
-				 * case, use super.newCall() as usual, which will call match() down below, compiling the regex
-				 * on-the-fly for each evaluation.
+				 * compiledRegexFuncCall == null means no optimization using a pre-compiled regex could be done; in this case, use super.newCall() as usual, which will call match() down below,
+				 * compiling the regex on-the-fly for each evaluation.
 				 */
-				return compiledRegexFuncCall == null ? super.getInstance(argExpressions, remainingArgTypes)
-						: compiledRegexFuncCall;
+				return compiledRegexFuncCall == null ? super.getInstance(argExpressions, remainingArgTypes) : compiledRegexFuncCall;
 			}
 		}
 
 		@Override
-		public CallFactory<StringValue, AV> build(final FirstOrderFunctionSignature<BooleanValue> functionSignature,
-				final Datatype<StringValue> paramType0, final Datatype<AV> paramType1)
+		public CallFactory<StringValue, AV> build(final FirstOrderFunctionSignature<BooleanValue> functionSignature, final Datatype<StringValue> paramType0, final Datatype<AV> paramType1)
 		{
 			return new RegexpMatchCallFactory(functionSignature, paramType1);
 		}

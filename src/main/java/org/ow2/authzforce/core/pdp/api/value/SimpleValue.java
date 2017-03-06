@@ -1,30 +1,29 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
@@ -92,7 +91,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected Factory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
+		protected Factory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
@@ -178,7 +177,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 * @param functionIdPrefix
 		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final URI functionIdPrefix)
+		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
 		{
 			super(instanceClass, datatypeId, functionIdPrefix);
 		}
@@ -215,18 +214,21 @@ public abstract class SimpleValue<V> extends AttributeValue
 	private transient volatile List<Serializable> xmlString = null;
 
 	/**
-	 * Constructor from Java type of value. A Serializable JAXB-compatible form of the value must be provided to be used directly as first value in {@link #getContent()}
+	 * Constructor from Java type of value. A Serializable JAXB-compatible form of the value must be provided to be used directly as first value in {@link #getContent()} The super field 'content' is
+	 * set to an empty list but it does not matter, since {@link #getContent()} is overridden here to return a singleton list with {@code rawVal} as single value.
 	 *
 	 * @param datatypeId
 	 *            attribute datatype ID. MUST NOT be null.
 	 * @param rawVal
 	 *            internal Java native value. MUST NOT be null.
 	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code datatypeId == null || rawVal == null}
+	 *             if {@code rawVal == null}
+	 * @throws NullPointerException
+	 *             if {@code datatypeId == null}
 	 */
-	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException
+	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException, NullPointerException
 	{
-		super(datatypeId, null, null);
+		super(datatypeId, Collections.emptyList(), Optional.empty());
 		if (rawVal == null)
 		{
 			throw UNDEF_ATTR_CONTENT_EXCEPTION;

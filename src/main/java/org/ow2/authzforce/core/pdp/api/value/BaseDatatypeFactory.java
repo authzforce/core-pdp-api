@@ -1,25 +1,25 @@
 /**
- * Copyright (C) 2012-2016 Thales Services SAS.
+ * Copyright 2012-2017 Thales Services SAS.
  *
- * This file is part of AuthZForce CE.
+ * This file is part of AuthzForce CE.
  *
- * AuthZForce CE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * AuthZForce CE is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with AuthZForce CE.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
 import java.lang.reflect.Array;
-import java.net.URI;
+
+import com.google.common.reflect.TypeToken;
 
 /**
  * Base class for datatype-specific Attribute Value Factory.
@@ -29,40 +29,39 @@ import java.net.URI;
  */
 public abstract class BaseDatatypeFactory<INSTANCE_AV extends AttributeValue> implements DatatypeFactory<INSTANCE_AV>
 {
-	private static final IllegalArgumentException NULL_DATATYPE_CLASS_EXCEPTION = new IllegalArgumentException(
-			"Undefined instanceClass argument");
-	private static final IllegalArgumentException NULL_DATATYPE_ID_EXCEPTION = new IllegalArgumentException(
-			"Undefined datatypeId argument");
-
 	protected final Datatype<INSTANCE_AV> instanceDatatype;
 	private final Bag<INSTANCE_AV> emptyBag;
 	private final BagDatatype<INSTANCE_AV> bagDatatype;
 	private final Class<INSTANCE_AV[]> arrayClass;
 
-	// cached method result
+	// cached method results
 	private final transient int hashCode;
 	private final transient String toString;
 
-	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId,
-			final URI functionIdPrefix)
+	/**
+	 * Base datatype factory constructor
+	 * 
+	 * @param instanceClass
+	 *            (non-null) Java class used as implementation for the expression datatype
+	 * @param datatypeId
+	 *            (non-null) datatype ID
+	 * @param functionIdPrefix
+	 *            (non-null) prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 * @throws NullPointerException
+	 *             if {@code instanceClass == null || datatypeId == null || functionIdPrefix == null}.
+	 */
+	protected BaseDatatypeFactory(final Class<INSTANCE_AV> instanceClass, final String datatypeId, final String functionIdPrefix) throws NullPointerException
 	{
-		if (instanceClass == null)
-		{
-			throw NULL_DATATYPE_CLASS_EXCEPTION;
-		}
-
-		if (datatypeId == null)
-		{
-			throw NULL_DATATYPE_ID_EXCEPTION;
-		}
-
 		this.instanceDatatype = new PrimitiveDatatype<>(instanceClass, datatypeId, functionIdPrefix);
 		this.emptyBag = Bags.empty(instanceDatatype, null);
-		this.bagDatatype = new BagDatatype<>(instanceDatatype);
+		this.bagDatatype = new BagDatatype<>(new TypeToken<Bag<INSTANCE_AV>>()
+		{
+			private static final long serialVersionUID = 1L;
+		}, instanceDatatype);
 		this.arrayClass = (Class<INSTANCE_AV[]>) Array.newInstance(instanceClass, 0).getClass();
 
 		this.toString = getClass().getName() + "[datatype=" + instanceDatatype + "]";
-		this.hashCode = instanceDatatype.getValueClass().hashCode();
+		this.hashCode = instanceDatatype.hashCode();
 	}
 
 	@Override
