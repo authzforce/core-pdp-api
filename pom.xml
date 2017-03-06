@@ -6,7 +6,7 @@
       <version>5.1.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>9.1.0</version>
+   <version>9.1.1-SNAPSHOT</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthzForce CE - Core PDP API</description>
    <url>${project.url}</url>
