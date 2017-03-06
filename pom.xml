@@ -8,7 +8,7 @@
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
    <version>9.0.1-SNAPSHOT</version>
    <name>${project.groupId}:${project.artifactId}</name>
-   <description>AuthZForce CE - Core PDP API</description>
+   <description>AuthzForce CE - Core PDP API</description>
    <url>${project.url}</url>
    <scm>
       <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
@@ -107,8 +107,8 @@
             <groupId>com.mycila</groupId>
             <artifactId>license-maven-plugin</artifactId>
             <configuration>
-               <header>license/thales-gpl.header.txt</header>
-               <skipExistingHeaders>true</skipExistingHeaders>
+               <header>license/alv2-header.txt</header>
+<!--                <skipExistingHeaders>true</skipExistingHeaders> -->
                <includes>
                   <include>src/**</include>
                </includes>
