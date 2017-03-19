@@ -32,8 +32,9 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
  * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
  * </p>
  * 
+ * 
  */
-public final class AttributeGUID
+public final class AttributeGUID implements Comparable<AttributeGUID>
 {
 	private static final IllegalArgumentException NULL_ID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeId");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute category");
@@ -171,5 +172,54 @@ public final class AttributeGUID
 		}
 
 		return toString;
+	}
+
+	/**
+	 * Compares using lexicographical ordering on Category, then Issuer, then finally the ID (see {@link #compareTo(AttributeGUID)}.
+	 */
+	@Override
+	public int compareTo(final AttributeGUID other)
+	{
+		final int thisCatComparedToOtherCat = this.category.compareTo(other.category);
+		if (thisCatComparedToOtherCat != 0)
+		{
+			return thisCatComparedToOtherCat;
+		}
+
+		if (this.issuer.isPresent())
+		{
+			if (!other.issuer.isPresent())
+			{
+
+				/*
+				 * this.issuer is present but other.issuer is not present -> this.issuer > other.issuer
+				 */
+				return 1;
+			}
+
+			// both issuers are present
+			final int thisIssuerComparedToOtherIssuer = this.issuer.get().compareTo(other.issuer.get());
+			if (thisIssuerComparedToOtherIssuer != 0)
+			{
+				return thisIssuerComparedToOtherIssuer;
+			}
+
+			// both issuers are equal -> result depends on next field
+		}
+		else
+		{
+			// this.issuer is not present
+			if (other.issuer.isPresent())
+			{
+				/*
+				 * this.issuer is not present but other.issuer is -> this.issuer < other.issuer
+				 */
+				return -1;
+			}
+
+			// neither issuer is present -> both issuers are equals -> result depends on next field
+		}
+
+		return this.id.compareTo(other.id);
 	}
 }
