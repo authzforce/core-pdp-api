@@ -29,7 +29,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
  * @param <INDIVIDUAL_DECISION_REQ_T>
  *            PDP implementation-specific type of individual decision request
  */
-public interface PDPEngine<INDIVIDUAL_DECISION_REQ_T extends IndividualPdpDecisionRequest>
+public interface PDPEngine<INDIVIDUAL_DECISION_REQ_T extends PdpDecisionRequest>
 {
 	/**
 	 * Gets the PDP-engine-specific individual decision request builder.

@@ -29,7 +29,7 @@ import java.io.Closeable;
  *            PDP implementation-specific type of Individual Decision Request
  * 
  */
-public interface CloseablePDP<INDIVIDUAL_DECISION_REQ_T extends IndividualPdpDecisionRequest> extends PDPEngine<INDIVIDUAL_DECISION_REQ_T>, Closeable
+public interface CloseablePDP<INDIVIDUAL_DECISION_REQ_T extends PdpDecisionRequest> extends PDPEngine<INDIVIDUAL_DECISION_REQ_T>, Closeable
 {
 	// marker interface
 }
