@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
-## Unreleased
+## 10.0.0
 ### Added
 - Class AttributeSource and AttributeSources: source of attribute values, e.g. the Request, the PDP, an AttributeProvider module, etc.
 - Class AttributeBag: new kind of Bag that represents an attribute bag (values) with metadata such as value source (AttributeSource) 
