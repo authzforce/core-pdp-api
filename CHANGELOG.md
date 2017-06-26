@@ -2,6 +2,30 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## Unreleased
+### Added
+- Class AttributeSource and AttributeSources: source of attribute values, e.g. the Request, the PDP, an AttributeProvider module, etc.
+- Class AttributeBag: new kind of Bag that represents an attribute bag (values) with metadata such as value source (AttributeSource) 
+- Interface EvaluationContext: new methods to attach one or more context listeners, and get back the attached listener(s)
+- New Expression interface implementations: AttributeDesignatorExpression (XACML AttributeDesignator evaluator) and AttributeSelectorExpression (XACML Attribute Selector evaluator)
+
+### Changed
+- Changed POM parent version: 6.0.0.
+- Changed DecisionResultFilter interface methods
+- Changed RequestFilter interface methods
+- Changed DecisionCache interface methods by adding EvaluationContext parameter for context-dependent caches
+- Changed RefPolicyProvider interface methods
+- Changed PDPEngine interface methods
+- Changed EvaluationContext interface methods
+- Changed Expression interface methods
+- Changed VersionPatterns class methods to return new PolicyVersionPattern class that helps manipulate XACML VersionMatchTypes
+- Refactoring:
+  - Renamed class IndividualDecisionRequest to IndividualXACMLRequest (XACML-specific model of Individual Decision Request)
+  - Renamed class IndividualPdpDecisionRequest to PdpDecisionRequest (individual request in XACML-agnostic AuthzForce model)
+  - Renamed class AttributeGUID(s) to AttributeFQN(s) (Fully Qualified Name is more appropriate than GUID)
+  - Renamed class MutableBag to MutableAttributeBag
+
+
 ## 9.1.0
 ### Changed
 - Changed parent version: v5.1.0:
