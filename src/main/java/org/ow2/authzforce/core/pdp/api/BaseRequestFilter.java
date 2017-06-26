@@ -34,7 +34,7 @@ import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.JaxbXACMLAttributesParser;
 import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.JaxbXACMLAttributesParserFactory;
 import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser;
 import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser;
-import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
 
 /**
@@ -95,7 +95,7 @@ public abstract class BaseRequestFilter implements RequestFilter
 
 		if (allowAttributeDuplicates)
 		{
-			final JaxbXACMLAttributeParser<MutableBag<?>> xacmlAttributeParser = strictAttributeIssuerMatch ? new NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser(datatypeFactoryRegistry)
+			final JaxbXACMLAttributeParser<MutableAttributeBag<?>> xacmlAttributeParser = strictAttributeIssuerMatch ? new NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser(datatypeFactoryRegistry)
 					: new IssuedToNonIssuedCopyingLaxJaxbXACMLAttributeParser(datatypeFactoryRegistry);
 			this.xacmlAttrsParserFactory = requireContentForXPath ? new FullJaxbXACMLAttributesParserFactory<>(xacmlAttributeParser,
 					SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor) : new ContentSkippingJaxbXACMLAttributesParserFactory<>(xacmlAttributeParser,
@@ -104,7 +104,7 @@ public abstract class BaseRequestFilter implements RequestFilter
 		else // allowAttributeDuplicates == false
 		if (strictAttributeIssuerMatch)
 		{
-			final JaxbXACMLAttributeParser<Bag<?>> xacmlAttributeParser = new NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser(datatypeFactoryRegistry);
+			final JaxbXACMLAttributeParser<AttributeBag<?>> xacmlAttributeParser = new NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser(datatypeFactoryRegistry);
 			this.xacmlAttrsParserFactory = requireContentForXPath ? new FullJaxbXACMLAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER,
 					xmlProcessor) : new ContentSkippingJaxbXACMLAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER);
 		}

@@ -26,24 +26,37 @@ import java.util.Objects;
 
 import net.sf.saxon.s9api.XdmNode;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
+
+import com.google.common.collect.ImmutableSortedMap;
 
 /**
- * Immutable implementation of {@link PdpDecisionRequest} to be used as input to a {@link PDPEngine}. Typically used as output request instances by PDP {@link RequestFilter} extensions, based on
- * JAXB/XACML input requests
+ * Immutable implementation of {@link PdpDecisionRequest} to be used as input to {@link PDPEngine#evaluate(PdpDecisionRequest)}. Typically used as output request instances by PDP {@link RequestFilter}
+ * extensions, based on JAXB/XACML input requests
  */
 public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 {
 
 	// initialized not null by constructors
-	private final Map<AttributeGUID, Bag<?>> namedAttributes;
-	private final Map<String, XdmNode> contentNodesByCategory;
+	private final Map<AttributeFQN, AttributeBag<?>> namedAttributes;
+	private final Map<String, XdmNode> extraContentByCategory;
 	private final boolean isApplicablePolicyListReturned;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile String toString = null;
+
+	private ImmutablePdpDecisionRequest(final Map<AttributeFQN, AttributeBag<?>> immutableNamedAttributes, final Map<String, XdmNode> immutableContentNodesByCategory,
+			final boolean returnApplicablePolicies)
+	{
+		assert immutableNamedAttributes != null && immutableContentNodesByCategory != null;
+
+		this.namedAttributes = immutableNamedAttributes;
+		this.extraContentByCategory = immutableContentNodesByCategory;
+		this.isApplicablePolicyListReturned = returnApplicablePolicies;
+	}
 
 	/**
-	 * Create new instance
+	 * Create new instance returning unsorted map of named attributes and content nodes by attribute category
 	 * 
 	 * @param namedAttributes
 	 *            named Attributes (no extra Content element)
@@ -51,13 +64,32 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 *            extra XML Content elements by attribute Category
 	 * @param returnApplicablePolicies
 	 *            return list of applicable policy identifiers; equivalent of XACML Request's ReturnPolicyIdList flag
+	 * @return new instance
 	 */
-	public ImmutablePdpDecisionRequest(final Map<AttributeGUID, Bag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory, final boolean returnApplicablePolicies)
+	public static ImmutablePdpDecisionRequest getInstance(final Map<AttributeFQN, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
+			final boolean returnApplicablePolicies)
 	{
-		// these maps/lists may be updated later by put(...) method defined in this class
-		this.namedAttributes = namedAttributes == null ? Collections.emptyMap() : HashCollections.newImmutableMap(namedAttributes);
-		this.contentNodesByCategory = contentNodesByCategory == null ? Collections.emptyMap() : HashCollections.newImmutableMap(contentNodesByCategory);
-		this.isApplicablePolicyListReturned = returnApplicablePolicies;
+		return new ImmutablePdpDecisionRequest(namedAttributes == null ? Collections.emptyMap() : HashCollections.newImmutableMap(namedAttributes),
+				contentNodesByCategory == null ? Collections.emptyMap() : HashCollections.newImmutableMap(contentNodesByCategory), returnApplicablePolicies);
+	}
+
+	/**
+	 * Create new instance returning named attributes sorted by attribute name ( {@link #getNamedAttributes()}), and content nodes sorted by attribute category name (
+	 * {@link #getExtraContentsByCategory()})
+	 * 
+	 * @param namedAttributes
+	 *            named Attributes (no extra Content element)
+	 * @param contentNodesByCategory
+	 *            extra XML Content elements by attribute Category
+	 * @param returnApplicablePolicies
+	 *            return list of applicable policy identifiers; equivalent of XACML Request's ReturnPolicyIdList flag
+	 * @return new instance
+	 */
+	public static ImmutablePdpDecisionRequest getSortedInstance(final Map<AttributeFQN, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
+			final boolean returnApplicablePolicies)
+	{
+		return new ImmutablePdpDecisionRequest(namedAttributes == null ? ImmutableSortedMap.of() : ImmutableSortedMap.copyOf(namedAttributes), contentNodesByCategory == null ? ImmutableSortedMap.of()
+				: ImmutableSortedMap.copyOf(contentNodesByCategory), returnApplicablePolicies);
 	}
 
 	/*
@@ -66,7 +98,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 * @see org.ow2.authzforce.core.IndividualDecisionRequest#getNamedAttributes()
 	 */
 	@Override
-	public Map<AttributeGUID, Bag<?>> getNamedAttributes()
+	public Map<AttributeFQN, AttributeBag<?>> getNamedAttributes()
 	{
 		return this.namedAttributes;
 	}
@@ -77,9 +109,9 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 * @see org.ow2.authzforce.core.IndividualDecisionRequest#getExtraContentsByCategory()
 	 */
 	@Override
-	public Map<String, XdmNode> getContentNodesByCategory()
+	public Map<String, XdmNode> getExtraContentsByCategory()
 	{
-		return this.contentNodesByCategory;
+		return this.extraContentByCategory;
 	}
 
 	/**
@@ -99,7 +131,12 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	@Override
 	public String toString()
 	{
-		return "[namedAttributes=" + namedAttributes + ", contentNodesByCategory=" + contentNodesByCategory + ", isApplicablePolicyListReturned=" + isApplicablePolicyListReturned + "]";
+		if (toString == null)
+		{
+			toString = "[namedAttributes=" + namedAttributes + ", contentNodesByCategory=" + extraContentByCategory + ", isApplicablePolicyListReturned=" + isApplicablePolicyListReturned + "]";
+		}
+
+		return toString;
 	}
 
 	/*
@@ -112,7 +149,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	{
 		if (hashCode == 0)
 		{
-			hashCode = Objects.hash(this.namedAttributes, this.contentNodesByCategory, this.isApplicablePolicyListReturned);
+			hashCode = Objects.hash(this.namedAttributes, this.extraContentByCategory, this.isApplicablePolicyListReturned);
 		}
 
 		return hashCode;
@@ -138,7 +175,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 
 		final ImmutablePdpDecisionRequest other = (ImmutablePdpDecisionRequest) obj;
 		return this.isApplicablePolicyListReturned == other.isApplicablePolicyListReturned && this.namedAttributes.equals(other.namedAttributes)
-				&& this.contentNodesByCategory.equals(other.contentNodesByCategory);
+				&& this.extraContentByCategory.equals(other.extraContentByCategory);
 	}
 
 }

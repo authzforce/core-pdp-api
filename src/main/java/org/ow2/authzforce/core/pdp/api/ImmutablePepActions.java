@@ -19,10 +19,10 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableList;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Static immutable {@link PepActions}, e.g. empty actions, or static methods returning immutable {@link PepActions} or
@@ -48,20 +48,19 @@ public final class ImmutablePepActions implements PepActions
 	}
 
 	/**
-	 * Instantiates PEP action set from obligations/advice. Not used if there is neither any obligation and nor any
-	 * advice, in which case the {@link ImmutablePepActions#EMPTY} must be used.
+	 * Instantiates PEP action set from obligations/advice. Not used if there is neither any obligation and nor any advice, in which case the {@link ImmutablePepActions#EMPTY} must be used.
 	 *
 	 * @param obligationList
 	 *            obligation list; null if no obligation
 	 * @param adviceList
 	 *            advice list; null if no advice
 	 */
-	private ImmutablePepActions(ImmutableList<Obligation> obligationList, ImmutableList<Advice> adviceList)
+	public ImmutablePepActions(final ImmutableList<Obligation> obligationList, final ImmutableList<Advice> adviceList)
 	{
 		assert obligationList != null && !obligationList.isEmpty() || adviceList != null && !adviceList.isEmpty();
 
-		this.obligationList = obligationList == null ? ImmutableList.<Obligation>of() : obligationList;
-		this.adviceList = adviceList == null ? ImmutableList.<Advice>of() : adviceList;
+		this.obligationList = obligationList == null ? ImmutableList.<Obligation> of() : obligationList;
+		this.adviceList = adviceList == null ? ImmutableList.<Advice> of() : adviceList;
 		this.hashCode = 0;
 		this.toString = null;
 	}
@@ -102,7 +101,7 @@ public final class ImmutablePepActions implements PepActions
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{
@@ -137,11 +136,9 @@ public final class ImmutablePepActions implements PepActions
 	 *            obligations; null if no obligation
 	 * @param adviceList
 	 *            advice elements; null if no advice
-	 * @return immutable instance; {@link ImmutablePepActions#EMPTY} is returned if
-	 *         {@code obligationList == null || obligationList.isEmpty()) && (adviceList == null || adviceList.isEmpty()}
+	 * @return immutable instance; {@link ImmutablePepActions#EMPTY} is returned if {@code obligationList == null || obligationList.isEmpty()) && (adviceList == null || adviceList.isEmpty()}
 	 */
-	public static ImmutablePepActions getInstance(ImmutableList<Obligation> obligationList,
-			ImmutableList<Advice> adviceList)
+	public static ImmutablePepActions getInstance(final ImmutableList<Obligation> obligationList, final ImmutableList<Advice> adviceList)
 	{
 		if ((obligationList == null || obligationList.isEmpty()) && (adviceList == null || adviceList.isEmpty()))
 		{
@@ -157,11 +154,10 @@ public final class ImmutablePepActions implements PepActions
 	 * @param pepActions
 	 *            obligations; null if no obligation
 	 *
-	 * @return immutable instance; {@link ImmutablePepActions#EMPTY} is returned if
-	 *         {@code pepActions == null || (obligationList == null || obligationList.isEmpty()) && (adviceList == null ||
+	 * @return immutable instance; {@link ImmutablePepActions#EMPTY} is returned if {@code pepActions == null || (obligationList == null || obligationList.isEmpty()) && (adviceList == null ||
 	 adviceList.isEmpty())}
 	 */
-	public static ImmutablePepActions getInstance(PepActions pepActions)
+	public static ImmutablePepActions getInstance(final PepActions pepActions)
 	{
 		if (pepActions == null)
 		{

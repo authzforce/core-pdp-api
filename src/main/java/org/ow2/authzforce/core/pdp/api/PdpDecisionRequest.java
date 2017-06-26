@@ -21,7 +21,7 @@ import java.util.Map;
 
 import net.sf.saxon.s9api.XdmNode;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 
 /**
  * Individual (in the sense of Multiple Decision Profile of XACML) authorization decision request used as input to PDP engine in AuthzForce-native model, for evaluating the policy decision. In
@@ -42,16 +42,16 @@ public interface PdpDecisionRequest
 	/**
 	 * Get named attributes by name
 	 * 
-	 * @return map of attribute name-value pairs, maybe empty - but NEVER NULL - if none (but {@link #getContentNodesByCategory()} result may not be empty)
+	 * @return map of attribute name-value pairs, maybe empty - but NEVER NULL - if none (but {@link #getExtraContentsByCategory()} result may not be empty)
 	 */
-	Map<AttributeGUID, Bag<?>> getNamedAttributes();
+	Map<AttributeFQN, AttributeBag<?>> getNamedAttributes();
 
 	/**
 	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation) by attribute category
 	 * 
 	 * @return XML Content nodes by category, maybe empty - but NEVER NULL - if none (but {@link #getNamedAttributes()} result may not be empty)
 	 */
-	Map<String, XdmNode> getContentNodesByCategory();
+	Map<String, XdmNode> getExtraContentsByCategory();
 
 	/**
 	 * Get ReturnPolicyIdList flag

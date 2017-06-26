@@ -24,8 +24,8 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.CombinerParameter;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 
-import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
+import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 
 /**
@@ -86,7 +86,7 @@ public final class CombinerParameterEvaluator extends CombinerParameter
 		// getAttributeValue() to return an instance of AttributeValue instead
 		super(null, param.getParameterName());
 		final ConstantExpression<? extends AttributeValue> valExpr = expFactory.getInstance(param.getAttributeValue(), xPathCompiler);
-		this.attrValue = valExpr.getValue();
+		this.attrValue = valExpr.getValue().get();
 		this.hashCode = Objects.hash(this.parameterName, this.attrValue);
 	}
 

@@ -15,34 +15,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ow2.authzforce.core.pdp.api.expression;
+/**
+ * 
+ */
+package org.ow2.authzforce.core.pdp.api;
 
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
+ * Attribute source identifier (request? PDP? custom attribute provider module?)
  *
- * Expression wrapper for primitive constant AttributeValues to be used as Expressions, e.g. as function arguments
- *
- * @param <V>
- *            concrete value type
- * 
- * @version $Id: $
  */
-public final class ConstantPrimitiveAttributeValueExpression<V extends AttributeValue> extends ConstantExpression<V>
+public interface AttributeSource
 {
-
 	/**
-	 * Creates instance
+	 * Type of attribute source
 	 *
-	 * @param type
-	 *            value datatype
-	 * @param v
-	 *            static value
 	 */
-	public ConstantPrimitiveAttributeValueExpression(final Datatype<V> type, final V v)
+	enum Type
 	{
-		super(type, v);
+		REQUEST, PDP, OTHER;
 	}
 
+	/**
+	 * Get the type of this attribute source
+	 * 
+	 * @return type of this attribute source
+	 */
+	Type getType();
+
+	/**
+	 * Get identifier
+	 * 
+	 * @return unique string identifier
+	 */
+	@Override
+	String toString();
 }

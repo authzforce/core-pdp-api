@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeSelectorType;
 
@@ -32,13 +33,13 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeSelectorType;
  * </p>
  * 
  */
-public final class AttributeSelectorId
+public final class AttributeSelectorId implements Comparable<AttributeSelectorId>
 {
 	private static final IllegalArgumentException NULL_PATH_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeSelector Path");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeSelector Category");
 	private final String category;
 	private final String path;
-	private final String contextSelectorId;
+	private final Optional<String> contextSelectorId;
 
 	// cached method results
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
@@ -65,7 +66,7 @@ public final class AttributeSelectorId
 			throw NULL_PATH_ARGUMENT_EXCEPTION;
 		}
 
-		contextSelectorId = attrSelector.getContextSelectorId();
+		contextSelectorId = Optional.ofNullable(attrSelector.getContextSelectorId());
 	}
 
 	/**
@@ -87,7 +88,7 @@ public final class AttributeSelectorId
 	/**
 	 * @return AttributeSelector ContextSelectorId
 	 */
-	public String getContextSelectorId()
+	public Optional<String> getContextSelectorId()
 	{
 		return contextSelectorId;
 	}
@@ -145,5 +146,32 @@ public final class AttributeSelectorId
 		}
 
 		return toString;
+	}
+
+	/**
+	 * Compares using lexicographical ordering on Category, then Path, then finally the ContextSelectorId.
+	 */
+	@Override
+	public int compareTo(final AttributeSelectorId other)
+	{
+		final int thisCatComparedToOtherCat = this.category.compareTo(other.category);
+		if (thisCatComparedToOtherCat != 0)
+		{
+			return thisCatComparedToOtherCat;
+		}
+
+		final int thisPathComparedToOtherPath = this.path.compareTo(other.path);
+		if (thisPathComparedToOtherPath != 0)
+		{
+			return thisPathComparedToOtherPath;
+		}
+
+		if (this.contextSelectorId.isPresent())
+		{
+			return other.contextSelectorId.isPresent() ? this.contextSelectorId.get().compareTo(other.contextSelectorId.get()) : 1;
+		}
+
+		// this.contextSelectorId is not present
+		return other.contextSelectorId.isPresent() ? -1 : 0;
 	}
 }

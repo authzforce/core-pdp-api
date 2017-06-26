@@ -96,11 +96,11 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 		final Function<?> inputFunc;
 		if (input0 instanceof FunctionExpression)
 		{
-			inputFunc = ((FunctionExpression) input0).getValue();
+			inputFunc = ((FunctionExpression) input0).getValue().get();
 		}
 		else if (input0 instanceof VariableReference)
 		{
-			final Value varValue = ((VariableReference<?>) input0).getValue();
+			final Value varValue = ((VariableReference<?>) input0).getValue().get();
 			if (!(varValue instanceof Function))
 			{
 				throw new IllegalArgumentException(this + ": Invalid type of first argument: " + varValue.getClass().getSimpleName() + ". Required: Function");

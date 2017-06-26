@@ -22,6 +22,7 @@ package org.ow2.authzforce.core.pdp.api;
 
 import net.sf.saxon.s9api.XdmNode;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
@@ -35,13 +36,13 @@ public interface PdpDecisionRequestBuilder<T extends PdpDecisionRequest>
 	/**
 	 * Puts a named attribute into the request if the attribute is not already present in the request
 	 * 
-	 * @param attributeGUID
+	 * @param attributeFQN
 	 *            attribute GUID (category, ID, issuer)
 	 * @param attributeValues
 	 *            attribute values
 	 * @return previous values for this attribute in the request, else null if there was no such attribute in the request
 	 */
-	Bag<?> putNamedAttributeIfAbsent(AttributeGUID attributeGUID, Bag<?> attributeValues);
+	Bag<?> putNamedAttributeIfAbsent(AttributeFQN attributeFQN, AttributeBag<?> attributeValues);
 
 	/**
 	 * Puts extra Content (node) into a specific attribute category of the request, if the attribute category does not already have such Content in the request

@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -130,7 +131,7 @@ public interface RefPolicyProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, VersionPatterns policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
-			throws IllegalArgumentException, IndeterminateEvaluationException;
+	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<VersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
+			EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
 
 }

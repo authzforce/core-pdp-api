@@ -1,4 +1,21 @@
 /**
+ * Copyright 2012-2017 Thales Services SAS.
+ *
+ * This file is part of AuthzForce CE.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
  * 
  */
 package org.ow2.authzforce.core.pdp.api;
@@ -10,7 +27,7 @@ import java.util.Map;
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 
 import com.google.common.collect.ImmutableList;
 
@@ -42,15 +59,15 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 	}
 
 	@Override
-	public Map<AttributeGUID, Bag<?>> getNamedAttributes()
+	public Map<AttributeFQN, AttributeBag<?>> getNamedAttributes()
 	{
 		return baseRequest.getNamedAttributes();
 	}
 
 	@Override
-	public Map<String, XdmNode> getContentNodesByCategory()
+	public Map<String, XdmNode> getExtraContentsByCategory()
 	{
-		return baseRequest.getContentNodesByCategory();
+		return baseRequest.getExtraContentsByCategory();
 	}
 
 	@Override
@@ -91,10 +108,20 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 	@Override
 	public boolean equals(final Object obj)
 	{
+		if (this == obj)
+		{
+			return true;
+		}
+
+		if (!(obj instanceof IndividualXACMLRequest))
+		{
+			return false;
+		}
+
 		/*
 		 * attributesToBeReturned ignored for the PdpDecisionRequest fields to be only ones used for matching keys in DecisionCaches
 		 */
-		return super.equals(obj);
+		return baseRequest.equals(((IndividualXACMLRequest) obj).baseRequest);
 	}
 
 }

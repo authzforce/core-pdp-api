@@ -73,7 +73,8 @@ public interface RequestFilter
 	 * @param req
 	 *            input Request
 	 * @param namespaceURIsByPrefix
-	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation
+	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation; may be null if such
+	 *            mapping defined
 	 * 
 	 * @return individual decision requests, as defined in Multiple Decision Profile, e.g. a singleton list if no multiple decision requested or supported by the filter
 	 *         <p>

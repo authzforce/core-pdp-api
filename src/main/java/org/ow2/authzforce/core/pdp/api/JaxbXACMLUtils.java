@@ -53,6 +53,7 @@ import org.ow2.authzforce.core.pdp.api.SingleCategoryAttributes.NamedAttributeIt
 import org.ow2.authzforce.core.pdp.api.XMLUtils.NamespaceFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XMLUtils.NoNamespaceFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XMLUtils.SAXBasedNamespaceFilteringParser;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
@@ -161,7 +162,7 @@ public final class JaxbXACMLUtils
 			"Cannot instantiate XACML attribute parser: input datatypeFactoryRegistry undefined");
 	private static final IllegalArgumentException NO_JAXB_ATTRIBUTE_VALUE_LIST_ARGUMENT_EXCEPTION = new IllegalArgumentException(
 			"Input XACML attribute values null/empty (nonEmptyJaxbAttributeValues)");
-	private static final IllegalArgumentException NULL_ATTRIBUTE_GUID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined input ID of attribute to be parsed (null attributeGUID)");
+	private static final IllegalArgumentException NULL_ATTRIBUTE_GUID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined input ID of attribute to be parsed (null attributeFQN)");
 	private static final IllegalArgumentException NULL_OUT_ATTRIBUTE_MAP_ARGUMENT_EXCEPTION = new IllegalArgumentException("Null input attributeMap (required) for attributes resulting from parsing");
 
 	/**
@@ -222,7 +223,7 @@ public final class JaxbXACMLUtils
 	 */
 	private static final class JaxbXACMLAttributeParsingHelper
 	{
-		private static final AttributeGUID RESOURCE_SCOPE_ATTRIBUTE_GUID = new AttributeGUID(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), Optional.empty(),
+		private static final AttributeFQN RESOURCE_SCOPE_ATTRIBUTE_GUID = AttributeFQNs.newInstance(XACMLAttributeCategory.XACML_3_0_RESOURCE.value(), Optional.empty(),
 				XACMLAttributeId.XACML_2_0_RESOURCE_SCOPE.value());
 
 		private static final IllegalArgumentException UNSUPPORTED_MULTIPLE_SCOPE_EXCEPTION = new IllegalArgumentException("Unsupported resource scope. Expected scope: none or "
@@ -250,15 +251,15 @@ public final class JaxbXACMLUtils
 			return datatypeFactory;
 		}
 
-		private static void validateResourceScope(final AttributeGUID attributeGUID, final AttributeValueType jaxbAttrVal0) throws IllegalArgumentException
+		private static void validateResourceScope(final AttributeFQN attributeFQN, final AttributeValueType jaxbAttrVal0) throws IllegalArgumentException
 		{
-			assert attributeGUID != null && jaxbAttrVal0 != null;
+			assert attributeFQN != null && jaxbAttrVal0 != null;
 			/*
 			 * Check whether this is not an unsupported resource-scope attribute. XACML Multiple Decision Profile, § 2.3.3: "... If such a <Attributes> element contains a 'scope' attribute having any
 			 * value other than 'Immediate', then the Individual Request SHALL be further processed according to the processing model specified in Section 4." We do not support 'scope' other than
 			 * 'Immediate' so throw an error if different.
 			 */
-			if (attributeGUID.equals(RESOURCE_SCOPE_ATTRIBUTE_GUID))
+			if (attributeFQN.equals(RESOURCE_SCOPE_ATTRIBUTE_GUID))
 			{
 				final List<Serializable> jaxbContent = jaxbAttrVal0.getContent();
 				if (!jaxbContent.isEmpty() && !jaxbContent.get(0).equals(XACMLResourceScope.IMMEDIATE.value()))
@@ -282,7 +283,7 @@ public final class JaxbXACMLUtils
 		 * 
 		 * @param attributeMap
 		 *            request attribute map to be updated by the result of parsing {@code nonEmptyJaxbAttributeValues}
-		 * @param attributeGUID
+		 * @param attributeFQN
 		 *            attribute unique identifier
 		 * @param nonEmptyJaxbAttributeValues
 		 *            (non-empty list of JAXB/XACML AttributeValues)
@@ -290,9 +291,9 @@ public final class JaxbXACMLUtils
 		 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions
 		 * @throws IllegalArgumentException
 		 *             if parsing of the {@code nonEmptyJaxbAttributeValues} because of invalid datatype or mixing of different datatypes; or if there are already existing values for
-		 *             {@code attributeGUID} in {@code attributeMap}
+		 *             {@code attributeFQN} in {@code attributeMap}
 		 */
-		void parseAttribute(Map<AttributeGUID, BAG> attributeMap, AttributeGUID attributeGUID, List<AttributeValueType> nonEmptyJaxbAttributeValues, XPathCompiler xPathCompiler)
+		void parseAttribute(Map<AttributeFQN, BAG> attributeMap, AttributeFQN attributeFQN, List<AttributeValueType> nonEmptyJaxbAttributeValues, XPathCompiler xPathCompiler)
 				throws IllegalArgumentException;
 	}
 
@@ -314,7 +315,7 @@ public final class JaxbXACMLUtils
 	 * parser instead of the "lax" version.
 	 *
 	 */
-	public static final class NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser implements JaxbXACMLAttributeParser<Bag<?>>
+	public static final class NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser implements JaxbXACMLAttributeParser<AttributeBag<?>>
 	{
 		private final JaxbXACMLAttributeParsingHelper helper;
 
@@ -336,7 +337,7 @@ public final class JaxbXACMLUtils
 			this.helper = new JaxbXACMLAttributeParsingHelper(datatypeFactoryRegistry);
 		}
 
-		private static <AV extends AttributeValue> Bag<AV> parseValues(final List<AttributeValueType> nonEmptyJaxbAttributeValues, final DatatypeFactory<AV> datatypeFactory,
+		private static <AV extends AttributeValue> AttributeBag<AV> parseValues(final List<AttributeValueType> nonEmptyJaxbAttributeValues, final DatatypeFactory<AV> datatypeFactory,
 				final XPathCompiler xPathCompiler)
 		{
 			assert nonEmptyJaxbAttributeValues != null && datatypeFactory != null;
@@ -348,11 +349,11 @@ public final class JaxbXACMLUtils
 				vals.add(resultValue);
 			}
 
-			return Bags.getInstance(datatypeFactory.getDatatype(), vals);
+			return Bags.newAttributeBag(datatypeFactory.getDatatype(), vals, AttributeSources.REQUEST);
 		}
 
 		@Override
-		public void parseAttribute(final Map<AttributeGUID, Bag<?>> attributeMap, final AttributeGUID attributeGUID, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
+		public void parseAttribute(final Map<AttributeFQN, AttributeBag<?>> attributeMap, final AttributeFQN attributeFQN, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
 				final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			if (attributeMap == null)
@@ -360,7 +361,7 @@ public final class JaxbXACMLUtils
 				throw NULL_OUT_ATTRIBUTE_MAP_ARGUMENT_EXCEPTION;
 			}
 
-			if (attributeGUID == null)
+			if (attributeFQN == null)
 			{
 				throw NULL_ATTRIBUTE_GUID_ARGUMENT_EXCEPTION;
 			}
@@ -374,7 +375,7 @@ public final class JaxbXACMLUtils
 			 * Check if it is a resource-scope.
 			 */
 			final AttributeValueType jaxbAttrVal0 = nonEmptyJaxbAttributeValues.get(0);
-			JaxbXACMLAttributeParsingHelper.validateResourceScope(attributeGUID, jaxbAttrVal0);
+			JaxbXACMLAttributeParsingHelper.validateResourceScope(attributeFQN, jaxbAttrVal0);
 
 			/**
 			 * Determine the attribute datatype to make sure it is supported and all values are of the same datatype. Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a
@@ -389,27 +390,27 @@ public final class JaxbXACMLUtils
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeGUID, e);
+				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeFQN, e);
 			}
 
-			final Bag<?> newAttrVals;
+			final AttributeBag<?> newAttrVals;
 			try
 			{
 				newAttrVals = parseValues(nonEmptyJaxbAttributeValues, datatypeFactory, xPathCompiler);
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new IllegalArgumentException("Invalid AttributeValue(s) in Attribute" + attributeGUID, e);
+				throw new IllegalArgumentException("Invalid AttributeValue(s) in Attribute" + attributeFQN, e);
 			}
 
 			/*
 			 * If there is any existing values for the same attrGUID (<Attribute> with same meta-data) in the map, it will be rejected. This behavior is not fully compliant with XACML (see the Javadoc
 			 * of this class), however it is faster than the compliant alternative.
 			 */
-			final Bag<?> duplicate = attributeMap.putIfAbsent(attributeGUID, newAttrVals);
+			final Bag<?> duplicate = attributeMap.putIfAbsent(attributeFQN, newAttrVals);
 			if (duplicate != null)
 			{
-				throw new IllegalArgumentException("Unsupported syntax: duplicate <Attribute> with metadata: " + attributeGUID);
+				throw new IllegalArgumentException("Unsupported syntax: duplicate <Attribute> with metadata: " + attributeFQN);
 			}
 
 			/*
@@ -434,7 +435,7 @@ public final class JaxbXACMLUtils
 	 * using the "strict" parser ({@link NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser} instead of the "lax" variant.
 	 *
 	 */
-	private static abstract class LaxJaxbXACMLAttributeParser implements JaxbXACMLAttributeParser<MutableBag<?>>
+	private static abstract class LaxJaxbXACMLAttributeParser implements JaxbXACMLAttributeParser<MutableAttributeBag<?>>
 	{
 		private final JaxbXACMLAttributeParsingHelper helper;
 
@@ -461,10 +462,10 @@ public final class JaxbXACMLUtils
 		 * 
 		 * @return true iff the caller is required to make the copy
 		 */
-		protected abstract boolean copyIssuedAttributeValuesToNonIssued(AttributeGUID attributeGUID);
+		protected abstract boolean copyIssuedAttributeValuesToNonIssued(AttributeFQN attributeFQN);
 
 		@Override
-		public void parseAttribute(final Map<AttributeGUID, MutableBag<?>> attributeMap, final AttributeGUID attributeGUID, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
+		public void parseAttribute(final Map<AttributeFQN, MutableAttributeBag<?>> attributeMap, final AttributeFQN attributeFQN, final List<AttributeValueType> nonEmptyJaxbAttributeValues,
 				final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			if (attributeMap == null)
@@ -472,7 +473,7 @@ public final class JaxbXACMLUtils
 				throw NULL_OUT_ATTRIBUTE_MAP_ARGUMENT_EXCEPTION;
 			}
 
-			if (attributeGUID == null)
+			if (attributeFQN == null)
 			{
 				throw NULL_ATTRIBUTE_GUID_ARGUMENT_EXCEPTION;
 			}
@@ -496,7 +497,7 @@ public final class JaxbXACMLUtils
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeGUID, e);
+				throw new IllegalArgumentException("Invalid AttributeValue DataType in Attribute" + attributeFQN, e);
 			}
 
 			/*
@@ -508,16 +509,16 @@ public final class JaxbXACMLUtils
 			 * Therefore, we choose to merge the attribute values here if this is a new occurrence of the same Attribute, i.e. attrMap.get(attrGUID) != null. In this case, we can reuse the list
 			 * already created for the previous occurrence to store the new values resulting from parsing.
 			 */
-			final MutableBag<?> previousAttrVals = attributeMap.get(attributeGUID);
-			final MutableBag<?> newAttrVals;
+			final MutableAttributeBag<?> previousAttrVals = attributeMap.get(attributeFQN);
+			final MutableAttributeBag<?> newAttrVals;
 			if (previousAttrVals == null)
 			{
 				/*
 				 * First occurrence of this attribute ID (attrGUID). Check whether this is not an unsupported resource-scope attribute.
 				 */
-				JaxbXACMLAttributeParsingHelper.validateResourceScope(attributeGUID, jaxbAttrVal0);
-				newAttrVals = new MutableBag<>(datatypeFactory, xPathCompiler);
-				attributeMap.put(attributeGUID, newAttrVals);
+				JaxbXACMLAttributeParsingHelper.validateResourceScope(attributeFQN, jaxbAttrVal0);
+				newAttrVals = new MutableAttributeBag<>(datatypeFactory, xPathCompiler, AttributeSources.REQUEST);
+				attributeMap.put(attributeFQN, newAttrVals);
 			}
 			else
 			{
@@ -535,15 +536,15 @@ public final class JaxbXACMLUtils
 			int jaxbValIndex = 0;
 			try
 			{
-				if (copyIssuedAttributeValuesToNonIssued(attributeGUID))
+				if (copyIssuedAttributeValuesToNonIssued(attributeFQN))
 				{
-					final MutableBag<?> newIssuerLessAttrVals;
+					final MutableAttributeBag<?> newIssuerLessAttrVals;
 					// attribute has an Issuer -> prepare to update the matching Issuer-less attribute values
-					final AttributeGUID issuerLessId = new AttributeGUID(attributeGUID.getCategory(), Optional.empty(), attributeGUID.getId());
-					final MutableBag<?> oldIssuerLessAttrVals = attributeMap.get(issuerLessId);
+					final AttributeFQN issuerLessId = AttributeFQNs.newInstance(attributeFQN.getCategory(), Optional.empty(), attributeFQN.getId());
+					final MutableAttributeBag<?> oldIssuerLessAttrVals = attributeMap.get(issuerLessId);
 					if (oldIssuerLessAttrVals == null)
 					{
-						newIssuerLessAttrVals = new MutableBag<>(datatypeFactory, xPathCompiler);
+						newIssuerLessAttrVals = new MutableAttributeBag<>(datatypeFactory, xPathCompiler, AttributeSources.REQUEST);
 						attributeMap.put(issuerLessId, newIssuerLessAttrVals);
 					}
 					else
@@ -568,7 +569,7 @@ public final class JaxbXACMLUtils
 			}
 			catch (final IllegalArgumentException e)
 			{
-				throw new IllegalArgumentException("Invalid AttributeValue #" + jaxbValIndex + " for Attribute" + attributeGUID, e);
+				throw new IllegalArgumentException("Invalid AttributeValue #" + jaxbValIndex + " for Attribute" + attributeFQN, e);
 			}
 		}
 	}
@@ -596,9 +597,9 @@ public final class JaxbXACMLUtils
 		}
 
 		@Override
-		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeGUID attributeGUID)
+		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeFQN attributeFQN)
 		{
-			return attributeGUID.getIssuer().isPresent();
+			return attributeFQN.getIssuer().isPresent();
 		}
 
 	}
@@ -627,7 +628,7 @@ public final class JaxbXACMLUtils
 		}
 
 		@Override
-		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeGUID attributeGUID)
+		protected boolean copyIssuedAttributeValuesToNonIssued(final AttributeFQN attributeFQN)
 		{
 			return false;
 		}
@@ -727,7 +728,7 @@ public final class JaxbXACMLUtils
 			 * Let's iterate over the attributes to convert the list to a map indexed by the attribute category/id/issuer for quicker access during request evaluation. There might be multiple
 			 * occurrences of <Attribute> with same meta-data (id, etc.), so the map value type need to be expandable/appendable to merge new values when new occurrences are found, e.g. Collection.
 			 */
-			final Map<AttributeGUID, BAG> attrMap = HashCollections.newUpdatableMap();
+			final Map<AttributeFQN, BAG> attrMap = HashCollections.newUpdatableMap();
 
 			/*
 			 * categoryAttrs is immutable (JAXB-annotated classes have been generated as such using -immutable arg) so we cannot modify it directly to create the list of Attributes included in Result
@@ -738,7 +739,7 @@ public final class JaxbXACMLUtils
 			while (categoryAttrsIterator.hasNext())
 			{
 				final Attribute jaxbAttr = categoryAttrsIterator.next();
-				final AttributeGUID attrGUID = new AttributeGUID(categoryName, Optional.ofNullable(jaxbAttr.getIssuer()), jaxbAttr.getAttributeId());
+				final AttributeFQN attrGUID = AttributeFQNs.newInstance(categoryName, Optional.ofNullable(jaxbAttr.getIssuer()), jaxbAttr.getAttributeId());
 
 				// The XACML schema specifies there should be at least one AttributeValue
 				final List<AttributeValueType> jaxbAttrValues = jaxbAttr.getAttributeValues();

@@ -255,7 +255,7 @@ public final class FirstOrderBagFunctions
 				@Override
 				protected Bag<AV> evaluate(final Deque<AV> args) throws IndeterminateEvaluationException
 				{
-					return Bags.getInstance(paramType, args);
+					return Bags.newBag(paramType, args);
 				}
 			};
 		}
@@ -351,7 +351,7 @@ public final class FirstOrderBagFunctions
 		@Override
 		protected Bag<AV> eval(final Bag<AV>[] bagArgs)
 		{
-			return Bags.getInstance(this.paramType, eval(bagArgs[0], bagArgs[1]));
+			return Bags.newBag(this.paramType, eval(bagArgs[0], bagArgs[1]));
 		}
 
 		private static <V extends AttributeValue> Set<V> eval(final Bag<V> bag0, final Bag<V> bag1)
@@ -450,7 +450,7 @@ public final class FirstOrderBagFunctions
 				}
 			}
 
-			return Bags.getInstance(this.paramType, result);
+			return Bags.newBag(this.paramType, result);
 		}
 	}
 
