@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Deque;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.EnvironmentProperties;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
@@ -109,7 +110,7 @@ public final class BaseStaticRefPolicyProvider implements CloseableStaticRefPoli
 	 * @see org.ow2.authzforce.core.policy.RefPolicyProvider#findPolicy(java. lang. String, com.sun.xacml.VersionConstraints, java.lang.Class, java.util.Deque)
 	 */
 	@Override
-	public TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final VersionPatterns constraints, final Deque<String> policySetRefChain,
+	public TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final Optional<VersionPatterns> constraints, final Deque<String> policySetRefChain,
 			final EvaluationContext evaluationCtx) throws IndeterminateEvaluationException
 	{
 		/*
@@ -120,8 +121,8 @@ public final class BaseStaticRefPolicyProvider implements CloseableStaticRefPoli
 	}
 
 	@Override
-	public StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final VersionPatterns constraints, final Deque<String> policySetRefChain)
-			throws IndeterminateEvaluationException
+	public StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final Optional<VersionPatterns> constraints,
+			final Deque<String> policySetRefChain) throws IndeterminateEvaluationException
 	{
 		/*
 		 * It is the responsability of the refPolicyProviderMod to update policySetRefChain and check against maxPolicySetRefDepth - using RefPolicyProvider.Utils class - whenever a

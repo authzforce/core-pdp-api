@@ -26,6 +26,7 @@ import java.util.Set;
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 
@@ -37,7 +38,7 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
  *            type of bag of attribute values
  * 
  */
-public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>> implements Iterable<Entry<AttributeGUID, Bag<?>>>
+public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>> implements Iterable<Entry<AttributeFQN, AttributeBag<?>>>
 {
 
 	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
@@ -45,16 +46,16 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 
 	interface NamedAttributeIteratorConverter<V_BAG extends Iterable<? extends AttributeValue>>
 	{
-		Iterator<Entry<AttributeGUID, Bag<?>>> convert(Iterator<Entry<AttributeGUID, V_BAG>> namedAttributeIterator);
+		Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(Iterator<Entry<AttributeFQN, V_BAG>> namedAttributeIterator);
 	}
 
-	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeGUID, Bag<?>>>
+	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeFQN, AttributeBag<?>>>
 	{
 
 		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException("Cannot remove element via Immutable iterator");
-		private final Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator;
+		private final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> mutableIterator;
 
-		private MutableBagBasedImmutableIterator(final Iterator<Entry<AttributeGUID, MutableBag<?>>> mutableIterator)
+		private MutableBagBasedImmutableIterator(final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> mutableIterator)
 		{
 			this.mutableIterator = mutableIterator;
 		}
@@ -66,9 +67,9 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		}
 
 		@Override
-		public Entry<AttributeGUID, Bag<?>> next()
+		public Entry<AttributeFQN, AttributeBag<?>> next()
 		{
-			final Entry<AttributeGUID, MutableBag<?>> entry = this.mutableIterator.next();
+			final Entry<AttributeFQN, MutableAttributeBag<?>> entry = this.mutableIterator.next();
 			return new SimpleEntry<>(entry.getKey(), entry.getValue().toImmutable());
 		}
 
@@ -81,13 +82,13 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	/**
-	 * Attribute Iterator Converter for {@link MutableBag}
+	 * Attribute Iterator Converter for {@link MutableAttributeBag}
 	 */
-	public static final NamedAttributeIteratorConverter<MutableBag<?>> MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<MutableBag<?>>()
+	public static final NamedAttributeIteratorConverter<MutableAttributeBag<?>> MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<MutableAttributeBag<?>>()
 	{
 
 		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> convert(final Iterator<Entry<AttributeGUID, MutableBag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> namedAttributeIterator)
 		{
 			return new MutableBagBasedImmutableIterator(namedAttributeIterator);
 		}
@@ -97,11 +98,11 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	/**
 	 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity function/transformation)
 	 */
-	public static final NamedAttributeIteratorConverter<Bag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<Bag<?>>()
+	public static final NamedAttributeIteratorConverter<AttributeBag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<AttributeBag<?>>()
 	{
 
 		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> convert(final Iterator<Entry<AttributeGUID, Bag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFQN, AttributeBag<?>>> namedAttributeIterator)
 		{
 			return namedAttributeIterator;
 		}
@@ -110,16 +111,16 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 
 	private interface IteratorProvider<AV_BAG extends Iterable<? extends AttributeValue>>
 	{
-		Iterator<Entry<AttributeGUID, Bag<?>>> get(Set<Entry<AttributeGUID, AV_BAG>> namedAttributes);
+		Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(Set<Entry<AttributeFQN, AV_BAG>> namedAttributes);
 	}
 
 	private static final IteratorProvider<Bag<?>> EMPTY_ITERATOR_PROVIDER = new IteratorProvider<Bag<?>>()
 	{
 
 		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> get(final Set<Entry<AttributeGUID, Bag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(final Set<Entry<AttributeFQN, Bag<?>>> namedAttributeIterator)
 		{
-			return Collections.<Entry<AttributeGUID, Bag<?>>> emptyIterator();
+			return Collections.<Entry<AttributeFQN, AttributeBag<?>>> emptyIterator();
 		}
 
 	};
@@ -135,14 +136,14 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		}
 
 		@Override
-		public Iterator<Entry<AttributeGUID, Bag<?>>> get(final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes)
+		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes)
 		{
 			assert namedAttributes != null;
 			return namedAttributeIteratorConverter.convert(namedAttributes.iterator());
 		}
 	}
 
-	private final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes;
+	private final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes;
 	private final IteratorProvider<AV_BAG> iteratorProvider;
 	private final Attributes attrsToIncludeInResult;
 
@@ -169,7 +170,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 *             iff {@code namedAttributes != null && !namedAttributes.isEmpty() && namedAttributeIteratorConverter == null} (namedAttributeIteratorConverter required if namedAttributes not
 	 *             null/empty)
 	 */
-	public SingleCategoryAttributes(final Set<Entry<AttributeGUID, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
+	public SingleCategoryAttributes(final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
 			final Attributes attributesToIncludeInResult, final XdmNode extraContent) throws IllegalArgumentException
 	{
 		// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
@@ -214,7 +215,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	@Override
-	public Iterator<Entry<AttributeGUID, Bag<?>>> iterator()
+	public Iterator<Entry<AttributeFQN, AttributeBag<?>>> iterator()
 	{
 		if (iteratorCalled)
 		{

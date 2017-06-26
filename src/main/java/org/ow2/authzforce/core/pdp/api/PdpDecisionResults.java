@@ -21,7 +21,6 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
@@ -150,18 +149,6 @@ public final class PdpDecisionResults
 		public String toString()
 		{
 			return toString;
-		}
-
-		@Override
-		public Set<AttributeGUID> getUsedNamedAttributes()
-		{
-			return null;
-		}
-
-		@Override
-		public Set<AttributeSelectorId> getUsedExtraAttributeContents()
-		{
-			return null;
 		}
 
 		@Override

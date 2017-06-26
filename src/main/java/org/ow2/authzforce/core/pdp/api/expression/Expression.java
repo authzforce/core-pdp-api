@@ -20,9 +20,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import javax.xml.bind.JAXBElement;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -60,7 +58,7 @@ public interface Expression<V extends Value>
 	 * 
 	 * @return the result of evaluation that may be a single value T (e.g. function result, AttributeValue, Condition, Match...) or bag of values (e.g. AttributeDesignator, AttributeSelector)
 	 * @throws IndeterminateEvaluationException
-	 *             if evaluation "Indeterminate" (see XACML core specification)
+	 *             if evaluation is "Indeterminate" (see XACML core specification)
 	 */
 	V evaluate(EvaluationContext context) throws IndeterminateEvaluationException;
 
@@ -69,20 +67,8 @@ public interface Expression<V extends Value>
 	 * equivalent to call {@link #evaluate(EvaluationContext)} with {@code context == null}. This enables expression consumers to do optimizations, e.g. functions may pre-compile/pre-evaluate parts of
 	 * their inputs knowing some are constant values.
 	 * 
-	 * @return the constant value iff the expression has a static/fixed/constant value; else null (if the expression is not constant). NB: Null is not considered/possible as a constant value for
-	 *         expressions.
+	 * @return the constant value iff the expression has a static/fixed/constant value, else no present value. NB: Null is not considered/possible as a constant value for expressions.
 	 */
-	V getValue();
-
-	/**
-	 * Gets the instance of the Java representation of the XACML-schema-derived JAXB-annotated Expression bound/equivalent to this expression
-	 * 
-	 * This may be removed in the future as it is no longer considered useful. Do not rely on it. It is the responsibility of the caller that instantiates this Expression to keep a reference to the
-	 * original XACML/JAXB class from which it is instantiated, if the caller ever needs it.
-	 * 
-	 * @return JAXB element equivalent
-	 */
-	@Deprecated
-	JAXBElement<? extends ExpressionType> getJAXBElement();
+	Optional<V> getValue();
 
 }

@@ -17,32 +17,32 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
+import org.ow2.authzforce.core.pdp.api.AttributeFQN;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
+import org.ow2.authzforce.core.pdp.api.value.Bag;
 
 /**
+ * AttributeDesignator evaluator
  *
- * Expression wrapper for primitive constant AttributeValues to be used as Expressions, e.g. as function arguments
- *
- * @param <V>
- *            concrete value type
+ * @param <AV>
+ *            AttributeDesignator evaluation result value's primitive datatype
  * 
  * @version $Id: $
  */
-public final class ConstantPrimitiveAttributeValueExpression<V extends AttributeValue> extends ConstantExpression<V>
+public interface AttributeDesignatorExpression<AV extends AttributeValue> extends Expression<Bag<AV>>
 {
+	/**
+	 * Get Attribute Category/Issuer/Id
+	 * 
+	 * @return attribute GUID (category, issuer, ID)
+	 */
+	AttributeFQN getAttributeFQN();
 
 	/**
-	 * Creates instance
-	 *
-	 * @param type
-	 *            value datatype
-	 * @param v
-	 *            static value
+	 * Indicates whether the attribute's presence is required, i.e. it must have at least one value in this context (non-empty bag). Equivalent of XACML MustBePresent flag.
+	 * 
+	 * @return true iff the resulting bag must be non-empty, i.e. there must be at least one value for this attribute in the context
 	 */
-	public ConstantPrimitiveAttributeValueExpression(final Datatype<V> type, final V v)
-	{
-		super(type, v);
-	}
+	boolean isNonEmptyBagRequired();
 
 }

@@ -17,6 +17,8 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
+import java.util.Optional;
+
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
@@ -36,7 +38,7 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 	private static final IllegalArgumentException UNDEF_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined expression return type");
 	private static final IllegalArgumentException UNDEF_VALUE_EXCEPTION = new IllegalArgumentException("Undefined value");
 	private final Datatype<V> datatype;
-	protected final V value;
+	protected final Optional<V> alwaysPresentValue;
 
 	/**
 	 * Creates instance of constant value expression
@@ -62,7 +64,7 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 		}
 
 		this.datatype = datatype;
-		this.value = v;
+		this.alwaysPresentValue = Optional.of(v);
 	}
 
 	@Override
@@ -77,19 +79,22 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 	@Override
 	public final V evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
 	{
-		return this.value;
+		return this.alwaysPresentValue.get();
 	}
 
+	/**
+	 * Returns the constant underlying value (always present)
+	 */
 	@Override
-	public final V getValue()
+	public final Optional<V> getValue()
 	{
-		return this.value;
+		return this.alwaysPresentValue;
 	}
 
 	@Override
 	public String toString()
 	{
-		return value.toString();
+		return alwaysPresentValue.toString();
 	}
 
 }

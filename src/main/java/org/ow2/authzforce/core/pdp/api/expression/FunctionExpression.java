@@ -17,11 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import javax.xml.bind.JAXBElement;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.FunctionType;
-
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils;
 import org.ow2.authzforce.core.pdp.api.func.Function;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 
@@ -48,12 +43,4 @@ public final class FunctionExpression extends ConstantExpression<Function>
 		super(StandardDatatypes.FUNCTION_DATATYPE, f);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	@Deprecated
-	public JAXBElement<FunctionType> getJAXBElement()
-	{
-		// create new JAXB AttributeValue as defensive copy (JAXB AttributeValue is not immutable)
-		return JaxbXACMLUtils.XACML_3_0_OBJECT_FACTORY.createFunction(new FunctionType(this.value.getId()));
-	}
 }

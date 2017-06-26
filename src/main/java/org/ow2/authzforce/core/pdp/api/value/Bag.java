@@ -67,7 +67,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 		 * @param bag
 		 *            input bag
 		 * @throws IndeterminateEvaluationException
-		 *             if validation fails
+		 *             if bag validation fails
 		 */
 		void validate(Bag<?> bag) throws IndeterminateEvaluationException;
 
@@ -90,13 +90,13 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	 * Constructor
 	 * 
 	 * @param elementDatatype
-	 *            bag element datatype
+	 *            bag element datatype (non-null)
 	 * @param elements
-	 *            bag elements.
+	 *            bag elements (non-null)
 	 */
 	protected Bag(final Datatype<AV> elementDatatype, final ImmutableMultiset<AV> elements)
 	{
-		assert elementDatatype != null;
+		assert elementDatatype != null && elements != null;
 		this.elementDatatype = elementDatatype;
 		this.elements = elements;
 	}

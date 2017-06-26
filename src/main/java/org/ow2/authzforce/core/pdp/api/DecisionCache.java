@@ -54,13 +54,26 @@ public interface DecisionCache extends Closeable
 	}
 
 	/**
+	 * Tells the PDP to always pass a valid/non-null {@link EvaluationContext} argument - representing the PDP's evaluation context - to other methods of this API with {@link EvaluationContext} arg.
+	 * Else the PDP may pass a null value to save time and memory.
+	 * 
+	 * @return true iff a non-null {@link EvaluationContext} argument - referring to the PDP's evaluation context - is required for all methods of this API with {@link EvaluationContext} arg of this
+	 *         {@link DecisionCache}.
+	 */
+	boolean isEvaluationContextRequired();
+
+	/**
 	 * Get the decision result from the cache for the given decision request.
 	 * 
 	 * @param request
 	 *            individual decision request
+	 * @param evalCtx
+	 *            evaluation context that can be used to save context about any partial/preliminary evaluation done by this decision cache when there is no cached result for {code request} yet. In
+	 *            this case, the PDP will call back {@link DecisionCache#put(PdpDecisionRequest, PdpDecisionResult, EvaluationContext)} with this same {@code evalCtx} after the PDP has computed the
+	 *            new result. Therefore, this allows the decision cache to reuse some context during an evaluation, and also to do some evaluation itself.
 	 * @return the corresponding decision result from cache; null if there is no such result in cache.
 	 */
-	PdpDecisionResult get(PdpDecisionRequest request);
+	PdpDecisionResult get(PdpDecisionRequest request, EvaluationContext evalCtx);
 
 	/**
 	 * Gets the decision result(s) from the cache for the given decision request(s). The ability to get multiple cached results at once allows the Cache implementation to optimize the retrieval by
@@ -81,8 +94,11 @@ public interface DecisionCache extends Closeable
 	 *            individual decision request
 	 * @param result
 	 *            the corresponding decision result
+	 * @param evalCtx
+	 *            evaluation context that can be used to retrieve context about any partial/preliminary evaluation done by this decision cache when {@link #get(PdpDecisionRequest, EvaluationContext)}
+	 *            was called in the same request context.
 	 */
-	void put(PdpDecisionRequest request, PdpDecisionResult result);
+	void put(PdpDecisionRequest request, PdpDecisionResult result, EvaluationContext evalCtx);
 
 	/**
 	 * Puts decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing them all in

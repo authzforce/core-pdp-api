@@ -15,12 +15,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * 
+ */
 package org.ow2.authzforce.core.pdp.api;
 
+
 /**
- * Individual decision request to be used as input to {@link PDPEngine} for individual decision evaluation
+ * Attribute source identifier (request? PDP? custom attribute provider module?)
+ *
  */
-public interface IndividualPdpDecisionRequest extends PdpDecisionRequest
+public interface AttributeSource
 {
-	// marker interface
+	/**
+	 * Type of attribute source
+	 *
+	 */
+	enum Type
+	{
+		REQUEST, PDP, OTHER;
+	}
+
+	/**
+	 * Get the type of this attribute source
+	 * 
+	 * @return type of this attribute source
+	 */
+	Type getType();
+
+	/**
+	 * Get identifier
+	 * 
+	 * @return unique string identifier
+	 */
+	@Override
+	String toString();
 }

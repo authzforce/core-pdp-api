@@ -39,8 +39,7 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	 */
 	private static final String ID_PREFIX = "bag";
 
-	private final Optional<Datatype<?>> genericTypeParam;
-	private final Datatype<AV> elementDatatype;
+	private final Optional<Datatype<AV>> alwaysPresentElementDatatype;
 
 	/**
 	 * Default constructor
@@ -51,14 +50,13 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	BagDatatype(final TypeToken<Bag<AV>> genericBagType, final Datatype<AV> elementDatatype) throws NullPointerException
 	{
 		super(genericBagType, Optional.of(Objects.requireNonNull(elementDatatype)), ID_PREFIX + "<" + elementDatatype + ">", elementDatatype.getFunctionIdPrefix() + "-" + ID_PREFIX);
-		this.elementDatatype = Objects.requireNonNull(elementDatatype, "Undefined typeParam");
-		this.genericTypeParam = Optional.of(this.elementDatatype);
+		this.alwaysPresentElementDatatype = Optional.of(Objects.requireNonNull(elementDatatype, "Undefined typeParam"));
 	}
 
 	@Override
 	public boolean isInstance(final Value val)
 	{
-		return val instanceof Bag && elementDatatype.equals(((Bag<?>) val).getElementDatatype());
+		return val instanceof Bag && alwaysPresentElementDatatype.get().equals(((Bag<?>) val).getElementDatatype());
 	}
 
 	@Override
@@ -72,10 +70,15 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 		throw DEFAULT_CLASS_CAST_EXCEPTION;
 	}
 
-	@Override
-	public Optional<Datatype<?>> getTypeParameter()
+	public AttributeBag<AV> castAttributeBag(final AttributeBag<?> bag) throws ClassCastException
 	{
-		return this.genericTypeParam;
+		return (AttributeBag<AV>) bag;
+	}
+
+	@Override
+	public Optional<? extends Datatype<?>> getTypeParameter()
+	{
+		return this.alwaysPresentElementDatatype;
 	}
 
 	@Override
@@ -91,7 +94,7 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 	 */
 	public Datatype<AV> getElementType()
 	{
-		return this.elementDatatype;
+		return this.alwaysPresentElementDatatype.get();
 	}
 
 }

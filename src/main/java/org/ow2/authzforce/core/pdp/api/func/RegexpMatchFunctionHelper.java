@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.func;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -189,16 +190,18 @@ public final class RegexpMatchFunctionHelper
 			/*
 			 * if first arg is constant, pre-compile the regex
 			 */
-			final Value constant = input0.getValue();
-			if (constant != null)
+			final Optional<? extends Value> constant = input0.getValue();
+			if (constant.isPresent())
 			{
-				if (!(constant instanceof StringValue))
+				// actual constant
+				final Value constantValue = constant.get();
+				if (!(constantValue instanceof StringValue))
 				{
 					throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING_FACTORY.getDatatype()
 							+ ")");
 				}
 
-				final String regex = ((StringValue) constant).getUnderlyingValue();
+				final String regex = ((StringValue) constantValue).getUnderlyingValue();
 				try
 				{
 					/*

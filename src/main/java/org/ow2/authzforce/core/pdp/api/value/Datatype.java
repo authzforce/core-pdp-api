@@ -132,7 +132,7 @@ public abstract class Datatype<V extends Value>
 	 * 
 	 * @return datatype parameter, null for primitive datatypes
 	 */
-	public abstract Optional<Datatype<?>> getTypeParameter();
+	public abstract Optional<? extends Datatype<?>> getTypeParameter();
 
 	/**
 	 * This method returns true if the specified value argument is an instance of the represented datatype; it returns false otherwise

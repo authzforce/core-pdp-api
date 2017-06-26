@@ -21,14 +21,19 @@ import java.util.Map;
 
 import net.sf.saxon.s9api.XdmNode;
 
-import org.ow2.authzforce.core.pdp.api.value.Bag;
+import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 
 /**
- * Authorization decision request used as input to PDP engine in AuthzForce-specific model, in other terms the part of the XACML Request that is actually used by the PDP engine for evaluating the policy decision. In particular,
- * this does NOT include the IncludeInResult parameter because the policy evaluation does not depend on it. The attributes with IncludeInResult=true are returned in the Result, no matter what the
- * decision is.
+ * Individual (in the sense of Multiple Decision Profile of XACML) authorization decision request used as input to PDP engine in AuthzForce-native model, for evaluating the policy decision. In
+ * particular, this does NOT include the IncludeInResult parameter because the policy evaluation does not depend on it. The attributes with IncludeInResult=true are returned in the Result, no matter
+ * what the decision is.
  * <p>
  * One interesting use case for this class is decision caching that would consist to map a {@link PdpDecisionRequest} to a {@link PdpDecisionResult}.
+ * </p>
+ * <p>
+ * All derived classes are required to implement {@link Object#equals(Object)} and {@link Object#hashCode()} to allow optimal decision caching (where instances of this class are used as keys) in PDP
+ * DecicionCache extensions
+ * </p>
  * 
  */
 public interface PdpDecisionRequest
@@ -37,14 +42,14 @@ public interface PdpDecisionRequest
 	/**
 	 * Get named attributes by name
 	 * 
-	 * @return map of attribute name-value pairs, null if none (but {@link #getExtraContentsByCategory()} result may not be empty)
+	 * @return map of attribute name-value pairs, maybe empty - but NEVER NULL - if none (but {@link #getExtraContentsByCategory()} result may not be empty)
 	 */
-	Map<AttributeGUID, Bag<?>> getNamedAttributes();
+	Map<AttributeFQN, AttributeBag<?>> getNamedAttributes();
 
 	/**
 	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation) by attribute category
 	 * 
-	 * @return extra XML Contents by category; null if none
+	 * @return XML Content nodes by category, maybe empty - but NEVER NULL - if none (but {@link #getNamedAttributes()} result may not be empty)
 	 */
 	Map<String, XdmNode> getExtraContentsByCategory();
 
