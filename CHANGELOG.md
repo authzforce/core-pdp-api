@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
-## Unreleased
+## 11.0.0 
 ### Changed 
 - StaticRefPolicyProviderModule interface to abstract class
 - Renamed RefPolicyProvider.Utils class (utility methods for Policy Provider implementations) to RefPolicyProvider.Helper
