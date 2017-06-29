@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.EnvironmentProperties;
@@ -102,6 +103,12 @@ public final class BaseStaticRefPolicyProvider implements CloseableStaticRefPoli
 		}
 
 		return (StaticRefPolicyProviderModule) refPolicyProviderModule;
+	}
+
+	@Override
+	public Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2)
+	{
+		return this.refPolicyProviderMod.checkJoinedPolicyRefChain(policyRefChain1, policyRefChain2);
 	}
 
 	/*

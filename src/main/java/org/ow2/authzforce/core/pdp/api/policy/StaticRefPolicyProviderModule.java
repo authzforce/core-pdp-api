@@ -20,51 +20,26 @@ package org.ow2.authzforce.core.pdp.api.policy;
 import java.util.Deque;
 import java.util.Optional;
 
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
  * Static RefPolicyProviderModule, "Static" meaning that given a policy reference (type, ID, version constraints), the returned policy is always the same (no dependency on the evaluation context)
  * 
  */
-public interface StaticRefPolicyProviderModule extends RefPolicyProviderModule, StaticRefPolicyProvider
+public abstract class StaticRefPolicyProviderModule implements RefPolicyProviderModule, StaticRefPolicyProvider
 {
 
-	/**
-	 * Finds a policy based on an id reference. This may involve using the reference as indexing data to lookup a policy.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param policyId
-	 *            the identifier used to resolve the policy by its Policy(Set)Id
-	 *            <p>
-	 *            WARNING: java.net.URI cannot be used here, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
-	 *            </p>
-	 *            <p>
-	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
-	 *            </p>
-	 *            <p>
-	 *            See also:
-	 *            </p>
-	 *            <p>
-	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
-	 *            </p>
-	 *            <p>
-	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
-	 * @param policyType
-	 *            type of policy element requested (policy or policySet)
-	 * @param policyVersionConstraints
-	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
-	 * @param policySetRefChain
-	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef}. Therefore this argument does not include idRef. This chain is used to control all
-	 *            PolicySetIdReferences found within the result policy, i.e. detect loops (circular references) and validate reference depth.
-	 *            <p>
-	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
-	 *            </p>
-	 * 
-	 * @return the policy matching the policy reference; or null if no match
-	 * @throws IndeterminateEvaluationException
-	 *             if error determining a matching policy of type {@code policyType}
+	 * @see org.ow2.authzforce.core.pdp.api.policy.RefPolicyProvider#get(org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType, java.lang.String, java.util.Optional, java.util.Deque,
+	 * org.ow2.authzforce.core.pdp.api.EvaluationContext)
 	 */
 	@Override
-	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<VersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain)
-			throws IndeterminateEvaluationException;
-
+	public final TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<VersionPatterns> policyVersionConstraints,
+			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	{
+		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
+	}
 }
