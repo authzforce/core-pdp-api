@@ -54,8 +54,8 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 * @param constraints
 	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
 	 * @param policySetRefChain
-	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef}. Therefore this argument does not include idRef. This chain is used to control all
-	 *            PolicySetIdReferences found within the result policy, i.e. detect loops (circular references) and validate reference depth.
+	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef} (included). This chain is used to control all PolicySetIdReferences found within the
+	 *            result policy, i.e. detect loops (circular references) and validate reference depth.
 	 *            <p>
 	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
 	 *            </p>

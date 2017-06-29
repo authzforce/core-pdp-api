@@ -34,25 +34,26 @@ public interface RefPolicyProvider
 	 * Utilities for RefPolicyProvider sub-modules
 	 *
 	 */
-	class Utils
+	class Helper
 	{
 		public static final int UNLIMITED_POLICY_REF_DEPTH = -1;
 
 		/**
-		 * Appends a valid chain of policy references to another one. The check consists to look for circular references or excessive length resulting from appending the one to the other.
+		 * Checks whether a joined chain of policy references does not result in a circular reference (loop) or excessive length.
 		 * 
 		 * @param policyRefChain1
-		 *            base chain to be appended
+		 *            first part of the joined chain
 		 * @param policyRefChain2
-		 *            non-null chain to append to {@code policyRefChain2} (typically a result of PolicySetEvaluator#getLongest(), therefore a List of Strings)
+		 *            non-null chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getExtraPolicyMetadata(EvaluationContext)}
+		 *            (#getLongestPolicyRefChain) to create the joined chain
+		 * @return non-null joined chain that is {@code policyRefChain2} if {@code policyRefChain1 != null}, else {@code policyRefChain2} appended to {@code policyRefChain1}
 		 * @param maxPolicyRefDepth
-		 *            max PolicySetIdReference depth, i.e. length of chain of PolicySetIdReferences
-		 * @return non-null chain of references that is {@code policyRefChain1} if {@code policyRefChain1 != null}, else a new policy-ref-chain
+		 *            max policy reference (e.g. XACML PolicySetIdReference) depth, i.e. max length of the chain of policy references
 		 * @throws IllegalArgumentException
-		 *             {@code policyRefChain2 == null}, or circular reference (same ID in both chains) detected or max length (sum of the lengths of the two chains) is greater than
+		 *             {@code policyRefChain2 == null}, or circular reference (same ID in both chains) detected or resulting length (sum of the lengths of the two chains) is greater than
 		 *             {@code maxPolicyRefDepth}
 		 */
-		public static Deque<String> appendAndCheckPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2, final int maxPolicyRefDepth) throws IllegalArgumentException
+		public static Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2, final int maxPolicyRefDepth) throws IllegalArgumentException
 		{
 			if (policyRefChain2 == null)
 			{
@@ -90,6 +91,21 @@ public interface RefPolicyProvider
 	}
 
 	/**
+	 * Checks whether a joined chain of policy references does not result in a circular reference (loop) or excessive length.
+	 * 
+	 * @param policyRefChain1
+	 *            first part of the joined chain
+	 * @param policyRefChain2
+	 *            non-null chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getExtraPolicyMetadata(EvaluationContext)}
+	 *            (#getLongestPolicyRefChain) to create the joined chain
+	 * @return non-null joined chain that is {@code policyRefChain2} if {@code policyRefChain1 != null}, else {@code policyRefChain2} appended to {@code policyRefChain1}
+	 * @throws IllegalArgumentException
+	 *             {@code policyRefChain2 == null}, or circular reference (same ID in both chains) detected or resulting length (sum of the lengths of the two chains) is greater than
+	 *             {@code maxPolicyRefDepth}
+	 */
+	Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2);
+
+	/**
 	 * Finds a policy based on an id reference. This may involve using the reference as indexing data to lookup a policy.
 	 * 
 	 * @param policyId
@@ -113,8 +129,9 @@ public interface RefPolicyProvider
 	 * @param policyVersionConstraints
 	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
 	 * @param policySetRefChain
-	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef}. Therefore this argument does not include idRef. This chain is used to control all
-	 *            PolicySetIdReferences found within the result policy, i.e. detect loops (circular references) and validate reference depth.
+	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef} (included). This chain is used to control all PolicySetIdReferences found within the
+	 *            result policy, i.e. detect loops (circular references) and validate reference depth. May be null if there is no such chain (e.g.
+	 *            {@code policyType == TopLevelPolicyElementType.POLICY} since a Policy has no such reference)
 	 *            <p>
 	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
 	 *            </p>
