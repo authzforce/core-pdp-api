@@ -2,6 +2,15 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## Unreleased
+### Changed 
+- StaticRefPolicyProviderModule interface to abstract class
+- Renamed RefPolicyProvider.Utils class (utility methods for Policy Provider implementations) to RefPolicyProvider.Helper
+
+### Added 
+- BaseStaticRefPolicyProviderModule class as convenient base class for static Policy Provider (StaticRefPolicyProviderModule ) implementations
+
+
 ## 10.0.0
 ### Added
 - Class AttributeSource and AttributeSources: source of attribute values, e.g. the Request, the PDP, an AttributeProvider module, etc.
