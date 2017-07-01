@@ -42,7 +42,7 @@ public abstract class BaseStaticRefPolicyProviderModule extends StaticRefPolicyP
 	}
 
 	@Override
-	public Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2)
+	public final Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2)
 	{
 		return Helper.checkJoinedPolicyRefChain(policyRefChain1, policyRefChain2, maxPolicySetRefDepth);
 	}
