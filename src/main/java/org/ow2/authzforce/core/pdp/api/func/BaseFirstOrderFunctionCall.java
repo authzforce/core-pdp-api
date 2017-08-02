@@ -307,7 +307,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		{
 			if (totalActualArgCount != arity)
 			{
-				throw new IllegalArgumentException("Invalid number (" + totalActualArgCount + ") to function: " + funcId + ". Required: " + arity);
+				throw new IllegalArgumentException("Invalid number of args (" + totalActualArgCount + ") to function: " + funcId + ". Required: " + arity);
 			}
 
 			// We will validate remainingArgs only, so we skip all the initial arguments, and therefore check the list
