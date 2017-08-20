@@ -17,7 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import org.ow2.authzforce.core.pdp.api.AttributeFQN;
+import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 
@@ -36,7 +36,7 @@ public interface AttributeDesignatorExpression<AV extends AttributeValue> extend
 	 * 
 	 * @return attribute GUID (category, issuer, ID)
 	 */
-	AttributeFQN getAttributeFQN();
+	AttributeFqn getAttributeFQN();
 
 	/**
 	 * Indicates whether the attribute's presence is required, i.e. it must have at least one value in this context (non-empty bag). Equivalent of XACML MustBePresent flag.

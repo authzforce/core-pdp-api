@@ -26,14 +26,14 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
 
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.ContentSkippingJaxbXACMLAttributesParserFactory;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.FullJaxbXACMLAttributesParserFactory;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.IssuedToNonIssuedCopyingLaxJaxbXACMLAttributeParser;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.JaxbXACMLAttributeParser;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.JaxbXACMLAttributesParser;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.JaxbXACMLAttributesParserFactory;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.ContentSkippingJaxbXACMLAttributesParserFactory;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.FullJaxbXACMLAttributesParserFactory;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.IssuedToNonIssuedCopyingLaxJaxbXACMLAttributeParser;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.JaxbXACMLAttributeParser;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.JaxbXACMLAttributesParser;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.JaxbXACMLAttributesParserFactory;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.NonIssuedLikeIssuedLaxJaxbXACMLAttributeParser;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.NonIssuedLikeIssuedStrictJaxbXACMLAttributeParser;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.DatatypeFactoryRegistry;
 
@@ -122,7 +122,7 @@ public abstract class BaseRequestFilter implements RequestFilter
 	}
 
 	@Override
-	public final List<? extends IndividualXACMLRequest> filter(final Request jaxbRequest, final Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException
+	public final List<? extends IndividualXacmlRequest> filter(final Request jaxbRequest, final Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException
 	{
 		/*
 		 * No support for MultiRequests (§2.4 of Multiple Decision Profile).
@@ -136,7 +136,7 @@ public abstract class BaseRequestFilter implements RequestFilter
 		}
 
 		final RequestDefaults jaxbReqDefaults = jaxbRequest.getRequestDefaults();
-		final XPathCompiler xPathCompiler = jaxbReqDefaults == null ? null : XMLUtils.newXPathCompiler(jaxbReqDefaults.getXPathVersion(), namespaceURIsByPrefix);
+		final XPathCompiler xPathCompiler = jaxbReqDefaults == null ? null : XmlUtils.newXPathCompiler(jaxbReqDefaults.getXPathVersion(), namespaceURIsByPrefix);
 		final JaxbXACMLAttributesParser xacmlAttrsParser = xacmlAttrsParserFactory.getInstance();
 		return filter(jaxbRequest.getAttributes(), xacmlAttrsParser, jaxbRequest.isReturnPolicyIdList(), jaxbRequest.isCombinedDecision(), xPathCompiler, namespaceURIsByPrefix);
 	}
@@ -166,7 +166,7 @@ public abstract class BaseRequestFilter implements RequestFilter
 	 * @throws IndeterminateEvaluationException
 	 *             if some feature requested in the Request is not supported by this filter
 	 */
-	public abstract List<? extends IndividualXACMLRequest> filter(List<Attributes> attributesList, JaxbXACMLAttributesParser xacmlAttrsParser, boolean isApplicablePolicyIdListReturned,
+	public abstract List<? extends IndividualXacmlRequest> filter(List<Attributes> attributesList, JaxbXACMLAttributesParser xacmlAttrsParser, boolean isApplicablePolicyIdListReturned,
 			boolean combinedDecision, XPathCompiler xPathCompiler, Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException;
 
 }

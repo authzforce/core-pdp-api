@@ -45,11 +45,11 @@ public interface DecisionResultFilter extends PdpExtension
 		 *            of the evaluation of {@code request} by the PDP
 		 * @return results to be returned as final results iff not null, in which case subsequent results must be ignored; else (if null), continue calling this method with the subsequent results.
 		 */
-		List<Result> addResult(IndividualXACMLRequest request, PdpDecisionResult result);
+		List<Result> addResult(IndividualXacmlRequest request, PdpDecisionResult result);
 
 		/**
-		 * Get the final results after filtering all input results added so far with {@link #addResult(IndividualXACMLRequest, PdpDecisionResult)}. To be called when there is no more result to be
-		 * filtered and {@link #addResult(IndividualXACMLRequest, PdpDecisionResult)} did not return anything non-null
+		 * Get the final results after filtering all input results added so far with {@link #addResult(IndividualXacmlRequest, PdpDecisionResult)}. To be called when there is no more result to be
+		 * filtered and {@link #addResult(IndividualXacmlRequest, PdpDecisionResult)} did not return anything non-null
 		 * 
 		 * @return filtered results
 		 */
@@ -60,7 +60,7 @@ public interface DecisionResultFilter extends PdpExtension
 	 * Create a decision result collector for filtering multiple decision results together (e.g. in order to combine into a single result like in XACML Multiple Decision Profile)
 	 * 
 	 * @param numberOfInputResults
-	 *            maximum number of results to be filtered in the new context, i.e. max number of call to {@link FilteringResultCollector#addResult(IndividualXACMLRequest, PdpDecisionResult)} before
+	 *            maximum number of results to be filtered in the new context, i.e. max number of call to {@link FilteringResultCollector#addResult(IndividualXacmlRequest, PdpDecisionResult)} before
 	 *            calling final {@link FilteringResultCollector#getFilteredResults()}
 	 * 
 	 * @return filtering context

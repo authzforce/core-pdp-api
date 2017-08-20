@@ -32,7 +32,7 @@ import java.util.Optional;
  * </p>
  * 
  */
-public interface AttributeFQN extends Comparable<AttributeFQN>
+public interface AttributeFqn extends Comparable<AttributeFqn>
 {
 
 	/**

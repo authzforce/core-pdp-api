@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * 
  * @version $Id: $
  */
-public final class DNSNameWithPortRangeValue extends SimpleValue<String>
+public final class DnsNameWithPortRangeValue extends SimpleValue<String>
 {
 	/**
 	 * 
@@ -137,7 +137,7 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if format of {@code val} does not comply with the dnsName datatype definition
 	 */
-	public DNSNameWithPortRangeValue(final String val) throws IllegalArgumentException
+	public DnsNameWithPortRangeValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
 		final Entry<String, NetworkPortRange> hostAndPortRange = parseDnsName(this.value);
@@ -207,12 +207,12 @@ public final class DNSNameWithPortRangeValue extends SimpleValue<String>
 			return true;
 		}
 
-		if (!(obj instanceof DNSNameWithPortRangeValue))
+		if (!(obj instanceof DnsNameWithPortRangeValue))
 		{
 			return false;
 		}
 
-		final DNSNameWithPortRangeValue other = (DNSNameWithPortRangeValue) obj;
+		final DnsNameWithPortRangeValue other = (DnsNameWithPortRangeValue) obj;
 
 		// hostname and portRange are not null
 		/*

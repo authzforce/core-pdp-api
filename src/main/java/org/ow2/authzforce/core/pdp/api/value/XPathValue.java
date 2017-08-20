@@ -34,8 +34,8 @@ import net.sf.saxon.s9api.XdmValue;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
-import org.ow2.authzforce.core.pdp.api.XMLUtils;
-import org.ow2.authzforce.core.pdp.api.XMLUtils.XPathEvaluator;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
+import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
 import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
 
 /**
@@ -159,7 +159,7 @@ public final class XPathValue extends SimpleValue<String>
 		 */
 		final Field f = XPathValue.class.getDeclaredField("xpathEvaluator");
 		f.setAccessible(true);
-		f.set(this, new XPathEvaluator(this.value, XMLUtils.newXPathCompiler(XPATHVersion.V2_0.getURI(), null)));
+		f.set(this, new XPathEvaluator(this.value, XmlUtils.newXPathCompiler(XPATHVersion.V2_0.getURI(), null)));
 	}
 
 	/**

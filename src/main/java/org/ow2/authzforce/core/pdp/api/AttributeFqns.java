@@ -26,24 +26,24 @@ import java.util.Optional;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
 /**
- * Static utility methods pertaining to {@link AttributeFQN} instances.
+ * Static utility methods pertaining to {@link AttributeFqn} instances.
  *
  */
-public final class AttributeFQNs
+public final class AttributeFqns
 {
 	private static final IllegalArgumentException NULL_ID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeId");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute category");
 	private static final IllegalArgumentException NULL_ISSUER_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute Issuer argument (as Optional)");
 
-	private AttributeFQNs()
+	private AttributeFqns()
 	{
 		// disable constructor
 	}
 
 	/**
-	 * Extensible {@link AttributeFQN}, that may be extended to add issuer field in particular
+	 * Extensible {@link AttributeFqn}, that may be extended to add issuer field in particular
 	 */
-	private static abstract class ExtensibleAttributeFQN implements AttributeFQN
+	private static abstract class ExtensibleAttributeFQN implements AttributeFqn
 	{
 		private final String category;
 		private final String id;
@@ -139,7 +139,7 @@ public final class AttributeFQNs
 		 * Compares using lexicographical ordering on Category, then Issuer, then finally the ID.
 		 */
 		@Override
-		public int compareTo(final AttributeFQN other)
+		public int compareTo(final AttributeFqn other)
 		{
 			final int thisCatComparedToOtherCat = this.category.compareTo(other.getCategory());
 			if (thisCatComparedToOtherCat != 0)
@@ -238,11 +238,11 @@ public final class AttributeFQNs
 	 *            attribute issuer (optional)
 	 * @param attributeId
 	 *            (non-null)
-	 * @return new instance of {@link AttributeFQN}
+	 * @return new instance of {@link AttributeFqn}
 	 * @throws IllegalArgumentException
 	 *             if {@code attributeCategory == null || attributeId == null}
 	 */
-	public static AttributeFQN newInstance(final String attributeCategory, final Optional<String> attributeIssuer, final String attributeId) throws IllegalArgumentException
+	public static AttributeFqn newInstance(final String attributeCategory, final Optional<String> attributeIssuer, final String attributeId) throws IllegalArgumentException
 	{
 		if (attributeCategory == null)
 		{
@@ -263,7 +263,7 @@ public final class AttributeFQNs
 	}
 
 	/**
-	 * Creates {@link AttributeFQN} from XACML AttributeDesignator
+	 * Creates {@link AttributeFqn} from XACML AttributeDesignator
 	 * 
 	 * @param attributeDesignator
 	 *            attribute designator
@@ -271,7 +271,7 @@ public final class AttributeFQNs
 	 * @throws IllegalArgumentException
 	 *             if {@code attrDes.getCategory() == null || attrDes.getAttributeId() == null}
 	 */
-	public static AttributeFQN newInstance(final AttributeDesignatorType attributeDesignator) throws IllegalArgumentException
+	public static AttributeFqn newInstance(final AttributeDesignatorType attributeDesignator) throws IllegalArgumentException
 	{
 		final String issuer = attributeDesignator.getIssuer();
 		return newInstance(attributeDesignator.getCategory(), issuer == null ? Optional.empty() : Optional.of(issuer), attributeDesignator.getAttributeId());

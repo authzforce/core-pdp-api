@@ -53,7 +53,7 @@ import net.sf.saxon.lib.StandardURIChecker;
  * 
  * @version $Id: $
  */
-public final class AnyURIValue extends SimpleValue<String>
+public final class AnyUriValue extends SimpleValue<String>
 {
 
 	/**
@@ -77,7 +77,7 @@ public final class AnyURIValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for xs:anyURI
 	 */
-	public AnyURIValue(final String value) throws IllegalArgumentException
+	public AnyUriValue(final String value) throws IllegalArgumentException
 	{
 		super(TYPE_URI, value);
 	}

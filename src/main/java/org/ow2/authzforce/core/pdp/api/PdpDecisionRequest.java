@@ -44,7 +44,7 @@ public interface PdpDecisionRequest
 	 * 
 	 * @return map of attribute name-value pairs, maybe empty - but NEVER NULL - if none (but {@link #getExtraContentsByCategory()} result may not be empty)
 	 */
-	Map<AttributeFQN, AttributeBag<?>> getNamedAttributes();
+	Map<AttributeFqn, AttributeBag<?>> getNamedAttributes();
 
 	/**
 	 * Get Attributes/Contents (parsed into XDM data model for XPath evaluation) by attribute category

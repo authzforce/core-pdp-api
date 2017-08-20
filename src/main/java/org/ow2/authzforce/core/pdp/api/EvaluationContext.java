@@ -49,7 +49,7 @@ public interface EvaluationContext
 	{
 
 		/**
-		 * To be called when {@link EvaluationContext#putNamedAttributeValueIfAbsent(AttributeFQN, AttributeBag)} is called iff the value was not available in the context yet (i.e. first time it is
+		 * To be called when {@link EvaluationContext#putNamedAttributeValueIfAbsent(AttributeFqn, AttributeBag)} is called iff the value was not available in the context yet (i.e. first time it is
 		 * produced in the request context)
 		 * 
 		 * @param attributeFQN
@@ -57,17 +57,17 @@ public interface EvaluationContext
 		 * @param value
 		 *            attribute value bag
 		 */
-		<AV extends AttributeValue> void namedAttributeValueProduced(AttributeFQN attributeFQN, AttributeBag<AV> value);
+		<AV extends AttributeValue> void namedAttributeValueProduced(AttributeFqn attributeFQN, AttributeBag<AV> value);
 
 		/**
-		 * To be called when {@link EvaluationContext#getNamedAttributeValue(AttributeFQN, BagDatatype)} is called
+		 * To be called when {@link EvaluationContext#getNamedAttributeValue(AttributeFqn, BagDatatype)} is called
 		 * 
 		 * @param attributeFQN
 		 *            attribute GUID (global ID = Category,Issuer,AttributeId)
 		 * @param value
 		 *            attribute value bag; null if the request named attribute was undefined in this context
 		 */
-		<AV extends AttributeValue> void namedAttributeValueConsumed(AttributeFQN attributeFQN, AttributeBag<AV> value);
+		<AV extends AttributeValue> void namedAttributeValueConsumed(AttributeFqn attributeFQN, AttributeBag<AV> value);
 
 		/**
 		 * To be called when {@link EvaluationContext#putAttributeSelectorResultIfAbsent(AttributeSelectorExpression, Bag)} is called iff the result was not available in the context yet (i.e. first
@@ -108,20 +108,20 @@ public interface EvaluationContext
 	 *             if error occurred trying to determine the attribute value(s) in context. This is different from finding without error that the attribute is not in the context (and/or no value),
 	 *             e.g. if there is a result but type is different from {@code attributeDatatype}.
 	 */
-	<AV extends AttributeValue> AttributeBag<AV> getNamedAttributeValue(AttributeFQN attributeFQN, BagDatatype<AV> returnDatatype) throws IndeterminateEvaluationException;
+	<AV extends AttributeValue> AttributeBag<AV> getNamedAttributeValue(AttributeFqn attributeFQN, BagDatatype<AV> returnDatatype) throws IndeterminateEvaluationException;
 
 	/**
 	 * Get immutable iterator over the context attributes. DO NOT ever use this method to retrieve one or more specific attributes, in which case you must use
-	 * {@link #getNamedAttributeValue(AttributeFQN, BagDatatype)} instead. This is only for iterating over all the attributes, e.g. for debugging/auditing.
+	 * {@link #getNamedAttributeValue(AttributeFqn, BagDatatype)} instead. This is only for iterating over all the attributes, e.g. for debugging/auditing.
 	 * 
 	 * @return context attributes iterator (implementations must guarantee that the iterator is immutable, i.e. does not allow changing the internal context)
 	 */
-	Iterator<Entry<AttributeFQN, AttributeBag<?>>> getNamedAttributes();
+	Iterator<Entry<AttributeFqn, AttributeBag<?>>> getNamedAttributes();
 
 	/**
 	 * Put Attribute values in the context, only if the attribute is not already known to this context. Indeed, an attribute value cannot be overridden once it is set in the context to comply with
 	 * 7.3.5 Attribute retrieval: "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as if each bag of attribute values is fully populated
-	 * in the context before it is first tested, and is thereafter immutable during evaluation." Therefore, {@link #getNamedAttributeValue(AttributeFQN, BagDatatype)} should be called always before
+	 * in the context before it is first tested, and is thereafter immutable during evaluation." Therefore, {@link #getNamedAttributeValue(AttributeFqn, BagDatatype)} should be called always before
 	 * calling this, for the same {@code attributeFQN}
 	 * 
 	 * @param attributeFQN
@@ -130,7 +130,7 @@ public interface EvaluationContext
 	 *            attribute values
 	 * @return false iff there is already a matching value in this context (this operation did NOT succeed)
 	 */
-	boolean putNamedAttributeValueIfAbsent(AttributeFQN attributeFQN, AttributeBag<?> result);
+	boolean putNamedAttributeValueIfAbsent(AttributeFqn attributeFQN, AttributeBag<?> result);
 
 	/**
 	 * Returns available context evaluation result for a given AttributeSelector. This feature is optional. Any implementation that does not implement this method may throw

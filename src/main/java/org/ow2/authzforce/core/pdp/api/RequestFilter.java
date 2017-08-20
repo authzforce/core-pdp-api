@@ -83,5 +83,5 @@ public interface RequestFilter
 	 * @throws IndeterminateEvaluationException
 	 *             if some feature requested in the Request is not supported by this
 	 */
-	List<? extends IndividualXACMLRequest> filter(Request req, Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException;
+	List<? extends IndividualXacmlRequest> filter(Request req, Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException;
 }

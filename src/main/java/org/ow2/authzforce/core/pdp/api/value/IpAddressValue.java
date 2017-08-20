@@ -30,7 +30,7 @@ import com.google.common.net.InetAddresses;
  * 
  * @version $Id: $
  */
-public final class IPAddressValue extends SimpleValue<String>
+public final class IpAddressValue extends SimpleValue<String>
 {
 
 	/**
@@ -202,7 +202,7 @@ public final class IPAddressValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid XACML IPAddress string
 	 */
-	public IPAddressValue(final String val) throws IllegalArgumentException
+	public IpAddressValue(final String val) throws IllegalArgumentException
 	{
 		super(TYPE_URI, val);
 		final Holder<InetAddress> addressHolder = new Holder<>();
@@ -271,12 +271,12 @@ public final class IPAddressValue extends SimpleValue<String>
 			return true;
 		}
 
-		if (!(obj instanceof IPAddressValue))
+		if (!(obj instanceof IpAddressValue))
 		{
 			return false;
 		}
 
-		final IPAddressValue other = (IPAddressValue) obj;
+		final IpAddressValue other = (IpAddressValue) obj;
 		// address and range non-null
 		return this.address.equals(other.address) && this.portRange.equals(other.portRange) && Objects.equals(this.mask, other.mask);
 	}

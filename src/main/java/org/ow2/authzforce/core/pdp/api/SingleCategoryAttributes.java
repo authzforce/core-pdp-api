@@ -38,7 +38,7 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
  *            type of bag of attribute values
  * 
  */
-public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>> implements Iterable<Entry<AttributeFQN, AttributeBag<?>>>
+public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>> implements Iterable<Entry<AttributeFqn, AttributeBag<?>>>
 {
 
 	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
@@ -46,16 +46,16 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 
 	interface NamedAttributeIteratorConverter<V_BAG extends Iterable<? extends AttributeValue>>
 	{
-		Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(Iterator<Entry<AttributeFQN, V_BAG>> namedAttributeIterator);
+		Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(Iterator<Entry<AttributeFqn, V_BAG>> namedAttributeIterator);
 	}
 
-	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeFQN, AttributeBag<?>>>
+	private static final class MutableBagBasedImmutableIterator implements Iterator<Entry<AttributeFqn, AttributeBag<?>>>
 	{
 
 		private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_REMOVE_OPERATION_EXCEPTION = new UnsupportedOperationException("Cannot remove element via Immutable iterator");
-		private final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> mutableIterator;
+		private final Iterator<Entry<AttributeFqn, MutableAttributeBag<?>>> mutableIterator;
 
-		private MutableBagBasedImmutableIterator(final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> mutableIterator)
+		private MutableBagBasedImmutableIterator(final Iterator<Entry<AttributeFqn, MutableAttributeBag<?>>> mutableIterator)
 		{
 			this.mutableIterator = mutableIterator;
 		}
@@ -67,9 +67,9 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		}
 
 		@Override
-		public Entry<AttributeFQN, AttributeBag<?>> next()
+		public Entry<AttributeFqn, AttributeBag<?>> next()
 		{
-			final Entry<AttributeFQN, MutableAttributeBag<?>> entry = this.mutableIterator.next();
+			final Entry<AttributeFqn, MutableAttributeBag<?>> entry = this.mutableIterator.next();
 			return new SimpleEntry<>(entry.getKey(), entry.getValue().toImmutable());
 		}
 
@@ -88,7 +88,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	{
 
 		@Override
-		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFQN, MutableAttributeBag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFqn, MutableAttributeBag<?>>> namedAttributeIterator)
 		{
 			return new MutableBagBasedImmutableIterator(namedAttributeIterator);
 		}
@@ -102,7 +102,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	{
 
 		@Override
-		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFQN, AttributeBag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFqn, AttributeBag<?>>> namedAttributeIterator)
 		{
 			return namedAttributeIterator;
 		}
@@ -111,16 +111,16 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 
 	private interface IteratorProvider<AV_BAG extends Iterable<? extends AttributeValue>>
 	{
-		Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(Set<Entry<AttributeFQN, AV_BAG>> namedAttributes);
+		Iterator<Entry<AttributeFqn, AttributeBag<?>>> get(Set<Entry<AttributeFqn, AV_BAG>> namedAttributes);
 	}
 
 	private static final IteratorProvider<Bag<?>> EMPTY_ITERATOR_PROVIDER = new IteratorProvider<Bag<?>>()
 	{
 
 		@Override
-		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(final Set<Entry<AttributeFQN, Bag<?>>> namedAttributeIterator)
+		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> get(final Set<Entry<AttributeFqn, Bag<?>>> namedAttributeIterator)
 		{
-			return Collections.<Entry<AttributeFQN, AttributeBag<?>>> emptyIterator();
+			return Collections.<Entry<AttributeFqn, AttributeBag<?>>> emptyIterator();
 		}
 
 	};
@@ -136,14 +136,14 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		}
 
 		@Override
-		public Iterator<Entry<AttributeFQN, AttributeBag<?>>> get(final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes)
+		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> get(final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes)
 		{
 			assert namedAttributes != null;
 			return namedAttributeIteratorConverter.convert(namedAttributes.iterator());
 		}
 	}
 
-	private final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes;
+	private final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes;
 	private final IteratorProvider<AV_BAG> iteratorProvider;
 	private final Attributes attrsToIncludeInResult;
 
@@ -170,7 +170,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 *             iff {@code namedAttributes != null && !namedAttributes.isEmpty() && namedAttributeIteratorConverter == null} (namedAttributeIteratorConverter required if namedAttributes not
 	 *             null/empty)
 	 */
-	public SingleCategoryAttributes(final Set<Entry<AttributeFQN, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
+	public SingleCategoryAttributes(final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
 			final Attributes attributesToIncludeInResult, final XdmNode extraContent) throws IllegalArgumentException
 	{
 		// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
@@ -215,7 +215,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	@Override
-	public Iterator<Entry<AttributeFQN, AttributeBag<?>>> iterator()
+	public Iterator<Entry<AttributeFqn, AttributeBag<?>>> iterator()
 	{
 		if (iteratorCalled)
 		{

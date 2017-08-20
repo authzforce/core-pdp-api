@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableList;
  * elements in the request, i.e. the individual requests.
  *
  */
-public final class IndividualXACMLRequest implements PdpDecisionRequest
+public final class IndividualXacmlRequest implements PdpDecisionRequest
 {
 	private final ImmutablePdpDecisionRequest baseRequest;
 	private final List<Attributes> attributesToBeReturned;
@@ -50,7 +50,7 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 	 * @param attributesToBeReturned
 	 *            attributes to be included in corresponding XACML Result
 	 */
-	public IndividualXACMLRequest(final ImmutablePdpDecisionRequest baseRequest, final ImmutableList<Attributes> attributesToBeReturned)
+	public IndividualXacmlRequest(final ImmutablePdpDecisionRequest baseRequest, final ImmutableList<Attributes> attributesToBeReturned)
 	{
 		assert baseRequest != null;
 
@@ -59,7 +59,7 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 	}
 
 	@Override
-	public Map<AttributeFQN, AttributeBag<?>> getNamedAttributes()
+	public Map<AttributeFqn, AttributeBag<?>> getNamedAttributes()
 	{
 		return baseRequest.getNamedAttributes();
 	}
@@ -113,7 +113,7 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 			return true;
 		}
 
-		if (!(obj instanceof IndividualXACMLRequest))
+		if (!(obj instanceof IndividualXacmlRequest))
 		{
 			return false;
 		}
@@ -121,7 +121,7 @@ public final class IndividualXACMLRequest implements PdpDecisionRequest
 		/*
 		 * attributesToBeReturned ignored for the PdpDecisionRequest fields to be only ones used for matching keys in DecisionCaches
 		 */
-		return baseRequest.equals(((IndividualXACMLRequest) obj).baseRequest);
+		return baseRequest.equals(((IndividualXacmlRequest) obj).baseRequest);
 	}
 
 }

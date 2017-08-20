@@ -122,7 +122,7 @@ public class IndeterminateEvaluationException extends Exception
 		final Marshaller marshaller;
 		try
 		{
-			marshaller = JaxbXACMLUtils.createXacml3Marshaller();
+			marshaller = JaxbXacmlUtils.createXacml3Marshaller();
 		}
 		catch (final JAXBException e)
 		{
@@ -155,7 +155,7 @@ public class IndeterminateEvaluationException extends Exception
 
 		// create JAXBElement: StatusMessage(cause.getMessage) and convert it to DOM Element
 		final DOMResult domResult = new DOMResult();
-		xacml3Marshaller.marshal(JaxbXACMLUtils.XACML_3_0_OBJECT_FACTORY.createStatusMessage(cause.getMessage()), domResult);
+		xacml3Marshaller.marshal(JaxbXacmlUtils.XACML_3_0_OBJECT_FACTORY.createStatusMessage(cause.getMessage()), domResult);
 		statusDetailElements.add(((Document) domResult.getNode()).getDocumentElement());
 
 		if (currentCauseDepth == maxIncludedCauseDepth)

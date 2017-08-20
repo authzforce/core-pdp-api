@@ -48,7 +48,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * Utilities for XML-to-JAXB binding
  * 
  */
-public final class XMLUtils
+public final class XmlUtils
 {
 
 	/**
@@ -62,7 +62,7 @@ public final class XMLUtils
 	public static final Processor SAXON_PROCESSOR;
 	static
 	{
-		final ClassLoader classLoader = JaxbXACMLUtils.class.getClassLoader();
+		final ClassLoader classLoader = JaxbXacmlUtils.class.getClassLoader();
 		final URL saxonConfURL = classLoader.getResource(SAXON_CONFIGURATION_CLASSPATH_LOCATION);
 		if (saxonConfURL == null)
 		{
@@ -403,7 +403,7 @@ public final class XMLUtils
 		}
 	}
 
-	private XMLUtils()
+	private XmlUtils()
 	{
 	}
 

@@ -23,7 +23,7 @@ import org.ow2.authzforce.core.pdp.api.EnvironmentProperties;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.JaxbBoundPdpExtension;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.XACMLParserFactory;
+import org.ow2.authzforce.core.pdp.api.JaxbXacmlUtils.XACMLParserFactory;
 import org.ow2.authzforce.core.pdp.api.combining.CombiningAlgRegistry;
 import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;

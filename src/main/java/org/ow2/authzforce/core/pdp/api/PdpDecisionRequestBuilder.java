@@ -42,7 +42,7 @@ public interface PdpDecisionRequestBuilder<T extends PdpDecisionRequest>
 	 *            attribute values
 	 * @return previous values for this attribute in the request, else null if there was no such attribute in the request
 	 */
-	Bag<?> putNamedAttributeIfAbsent(AttributeFQN attributeFQN, AttributeBag<?> attributeValues);
+	Bag<?> putNamedAttributeIfAbsent(AttributeFqn attributeFQN, AttributeBag<?> attributeValues);
 
 	/**
 	 * Puts extra Content (node) into a specific attribute category of the request, if the attribute category does not already have such Content in the request

@@ -47,6 +47,6 @@ public interface PdpDecisionRequestFactory<R extends PdpDecisionRequest>
 	 * 
 	 * @return new instance
 	 */
-	R getInstance(final Map<AttributeFQN, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory, final boolean returnApplicablePolicies);
+	R getInstance(final Map<AttributeFqn, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory, final boolean returnApplicablePolicies);
 
 }

@@ -31,21 +31,21 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import com.google.common.collect.ImmutableSortedMap;
 
 /**
- * Immutable implementation of {@link PdpDecisionRequest} to be used as input to {@link PDPEngine#evaluate(PdpDecisionRequest)}. Typically used as output request instances by PDP {@link RequestFilter}
+ * Immutable implementation of {@link PdpDecisionRequest} to be used as input to {@link PdpEngine#evaluate(PdpDecisionRequest)}. Typically used as output request instances by PDP {@link RequestFilter}
  * extensions, based on JAXB/XACML input requests
  */
 public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 {
 
 	// initialized not null by constructors
-	private final Map<AttributeFQN, AttributeBag<?>> namedAttributes;
+	private final Map<AttributeFqn, AttributeBag<?>> namedAttributes;
 	private final Map<String, XdmNode> extraContentByCategory;
 	private final boolean isApplicablePolicyListReturned;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 	private transient volatile String toString = null;
 
-	private ImmutablePdpDecisionRequest(final Map<AttributeFQN, AttributeBag<?>> immutableNamedAttributes, final Map<String, XdmNode> immutableContentNodesByCategory,
+	private ImmutablePdpDecisionRequest(final Map<AttributeFqn, AttributeBag<?>> immutableNamedAttributes, final Map<String, XdmNode> immutableContentNodesByCategory,
 			final boolean returnApplicablePolicies)
 	{
 		assert immutableNamedAttributes != null && immutableContentNodesByCategory != null;
@@ -66,7 +66,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 *            return list of applicable policy identifiers; equivalent of XACML Request's ReturnPolicyIdList flag
 	 * @return new instance
 	 */
-	public static ImmutablePdpDecisionRequest getInstance(final Map<AttributeFQN, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
+	public static ImmutablePdpDecisionRequest getInstance(final Map<AttributeFqn, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
 			final boolean returnApplicablePolicies)
 	{
 		return new ImmutablePdpDecisionRequest(namedAttributes == null ? Collections.emptyMap() : HashCollections.newImmutableMap(namedAttributes),
@@ -85,7 +85,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 *            return list of applicable policy identifiers; equivalent of XACML Request's ReturnPolicyIdList flag
 	 * @return new instance
 	 */
-	public static ImmutablePdpDecisionRequest getSortedInstance(final Map<AttributeFQN, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
+	public static ImmutablePdpDecisionRequest getSortedInstance(final Map<AttributeFqn, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
 			final boolean returnApplicablePolicies)
 	{
 		return new ImmutablePdpDecisionRequest(namedAttributes == null ? ImmutableSortedMap.of() : ImmutableSortedMap.copyOf(namedAttributes), contentNodesByCategory == null ? ImmutableSortedMap.of()
@@ -98,7 +98,7 @@ public final class ImmutablePdpDecisionRequest implements PdpDecisionRequest
 	 * @see org.ow2.authzforce.core.IndividualDecisionRequest#getNamedAttributes()
 	 */
 	@Override
-	public Map<AttributeFQN, AttributeBag<?>> getNamedAttributes()
+	public Map<AttributeFqn, AttributeBag<?>> getNamedAttributes()
 	{
 		return this.namedAttributes;
 	}

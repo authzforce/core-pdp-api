@@ -22,7 +22,7 @@ import java.util.Optional;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
 
-import org.ow2.authzforce.core.pdp.api.AttributeFQN;
+import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.AttributeSelectorId;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -52,7 +52,7 @@ public interface AttributeSelectorExpression<AV extends AttributeValue> extends 
 	 * 
 	 * @return context selector identifier
 	 */
-	Optional<AttributeFQN> getContextSelectorFQN();
+	Optional<AttributeFqn> getContextSelectorFQN();
 
 	/**
 	 * Indicates whether the expression must evaluate to a non-empty bag. Equivalent of XACML MustBePresent flag.

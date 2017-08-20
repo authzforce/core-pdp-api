@@ -36,7 +36,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Immutable implementation of {@link PdpDecisionResult} to be used as result from {@link PDPEngine#evaluate(PdpDecisionRequest)} evaluation.
+ * Immutable implementation of {@link PdpDecisionResult} to be used as result from {@link PdpEngine#evaluate(PdpDecisionRequest)} evaluation.
  *
  */
 public final class ImmutablePdpDecisionResult implements PdpDecisionResult

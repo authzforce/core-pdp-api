@@ -149,14 +149,14 @@ public final class StandardDatatypes
 	/**
 	 * anyURI
 	 */
-	public static final SimpleValue.StringContentOnlyFactory<AnyURIValue> ANYURI_FACTORY = new SimpleValue.StringContentOnlyFactory<AnyURIValue>(AnyURIValue.class, AnyURIValue.TYPE_URI,
+	public static final SimpleValue.StringContentOnlyFactory<AnyUriValue> ANYURI_FACTORY = new SimpleValue.StringContentOnlyFactory<AnyUriValue>(AnyUriValue.class, AnyUriValue.TYPE_URI,
 			Function.XACML_NS_1_0 + "anyURI")
 	{
 
 		@Override
-		public AnyURIValue getInstance(final String val)
+		public AnyUriValue getInstance(final String val)
 		{
-			return new AnyURIValue(val);
+			return new AnyUriValue(val);
 		}
 
 	};
@@ -208,27 +208,27 @@ public final class StandardDatatypes
 	/**
 	 * rfc822Name
 	 */
-	public static final SimpleValue.StringContentOnlyFactory<RFC822NameValue> RFC822NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<RFC822NameValue>(RFC822NameValue.class,
-			RFC822NameValue.TYPE_URI, Function.XACML_NS_1_0 + "rfc822Name")
+	public static final SimpleValue.StringContentOnlyFactory<Rfc822NameValue> RFC822NAME_FACTORY = new SimpleValue.StringContentOnlyFactory<Rfc822NameValue>(Rfc822NameValue.class,
+			Rfc822NameValue.TYPE_URI, Function.XACML_NS_1_0 + "rfc822Name")
 	{
 
 		@Override
-		public RFC822NameValue getInstance(final String val)
+		public Rfc822NameValue getInstance(final String val)
 		{
-			return new RFC822NameValue(val);
+			return new Rfc822NameValue(val);
 		}
 	};
 
 	/**
 	 * ipAddress
 	 */
-	public static final SimpleValue.StringContentOnlyFactory<IPAddressValue> IPADDRESS_FACTORY = new SimpleValue.StringContentOnlyFactory<IPAddressValue>(IPAddressValue.class,
-			IPAddressValue.TYPE_URI, Function.XACML_NS_2_0 + "ipAddress")
+	public static final SimpleValue.StringContentOnlyFactory<IpAddressValue> IPADDRESS_FACTORY = new SimpleValue.StringContentOnlyFactory<IpAddressValue>(IpAddressValue.class,
+			IpAddressValue.TYPE_URI, Function.XACML_NS_2_0 + "ipAddress")
 	{
 		@Override
-		public IPAddressValue getInstance(final String value)
+		public IpAddressValue getInstance(final String value)
 		{
-			return new IPAddressValue(value);
+			return new IpAddressValue(value);
 		}
 
 	};
@@ -236,14 +236,14 @@ public final class StandardDatatypes
 	/**
 	 * dnsName
 	 */
-	public static final SimpleValue.StringContentOnlyFactory<DNSNameWithPortRangeValue> DNSNAME_FACTORY = new SimpleValue.StringContentOnlyFactory<DNSNameWithPortRangeValue>(
-			DNSNameWithPortRangeValue.class, DNSNameWithPortRangeValue.TYPE_URI, Function.XACML_NS_2_0 + "dnsName")
+	public static final SimpleValue.StringContentOnlyFactory<DnsNameWithPortRangeValue> DNSNAME_FACTORY = new SimpleValue.StringContentOnlyFactory<DnsNameWithPortRangeValue>(
+			DnsNameWithPortRangeValue.class, DnsNameWithPortRangeValue.TYPE_URI, Function.XACML_NS_2_0 + "dnsName")
 	{
 
 		@Override
-		public DNSNameWithPortRangeValue getInstance(final String value)
+		public DnsNameWithPortRangeValue getInstance(final String value)
 		{
-			return new DNSNameWithPortRangeValue(value);
+			return new DnsNameWithPortRangeValue(value);
 		}
 
 	};

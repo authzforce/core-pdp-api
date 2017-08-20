@@ -32,7 +32,7 @@ import javax.mail.internet.InternetAddress;
  * 
  * @version $Id: $
  */
-public final class RFC822NameValue extends SimpleValue<String>
+public final class Rfc822NameValue extends SimpleValue<String>
 {
 
 	/**
@@ -59,7 +59,7 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 * @param address
 	 *            Java equivalent of RFC822Name
 	 */
-	public RFC822NameValue(final InternetAddress address)
+	public Rfc822NameValue(final InternetAddress address)
 	{
 		this(address.toString());
 	}
@@ -90,7 +90,7 @@ public final class RFC822NameValue extends SimpleValue<String>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation of XACML rfc822Name
 	 */
-	public RFC822NameValue(final String value) throws IllegalArgumentException
+	public Rfc822NameValue(final String value) throws IllegalArgumentException
 	{
 		super(TYPE_URI, validate(value));
 		/*
@@ -155,12 +155,12 @@ public final class RFC822NameValue extends SimpleValue<String>
 			return true;
 		}
 
-		if (!(obj instanceof RFC822NameValue))
+		if (!(obj instanceof Rfc822NameValue))
 		{
 			return false;
 		}
 
-		final RFC822NameValue other = (RFC822NameValue) obj;
+		final Rfc822NameValue other = (Rfc822NameValue) obj;
 		/*
 		 * if (domainPartLowerCase == null) { if (other.domainPartLowerCase != null) { return false; } } else
 		 */

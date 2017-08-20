@@ -41,6 +41,6 @@ public interface AttributeProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if any error finding the attribute value(s)
 	 */
-	<AV extends AttributeValue> AttributeBag<AV> get(AttributeFQN attributeFQN, BagDatatype<AV> returnDatatype, EvaluationContext context) throws IndeterminateEvaluationException;
+	<AV extends AttributeValue> AttributeBag<AV> get(AttributeFqn attributeFQN, BagDatatype<AV> returnDatatype, EvaluationContext context) throws IndeterminateEvaluationException;
 
 }
