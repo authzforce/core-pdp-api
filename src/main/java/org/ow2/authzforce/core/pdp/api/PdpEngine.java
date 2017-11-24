@@ -17,19 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
+import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 
 /**
- * This is the interface for the XACML PDP engines, providing the starting point for request evaluation.
+ * This is the interface for the Authorization PDP engines, providing the starting point for decision request evaluation, independent of data representation/serialization formats.
  * 
- * @param <INDIVIDUAL_DECISION_REQ_T>
- *            PDP implementation-specific type of individual decision request
  */
-public interface PdpEngine<INDIVIDUAL_DECISION_REQ_T extends PdpDecisionRequest>
+public interface PdpEngine
 {
 	/**
 	 * Gets the PDP-engine-specific individual decision request builder.
@@ -41,60 +39,49 @@ public interface PdpEngine<INDIVIDUAL_DECISION_REQ_T extends PdpDecisionRequest>
 	 * 
 	 * @return implementation-specific request builder. May not be thread-safe.
 	 */
-	PdpDecisionRequestBuilder<INDIVIDUAL_DECISION_REQ_T> newRequestBuilder(int expectedNumOfAttributeCategories, int expectedTotalNumOfAttributes);
+	DecisionRequestBuilder<?> newRequestBuilder(int expectedNumOfAttributeCategories, int expectedTotalNumOfAttributes);
 
 	/**
-	 * Generic API (serialization-format-agnostic) for evaluating an individual decision request according to XACML specification. To be used instead of {@link #evaluate(Request)} or
-	 * {@link #evaluate(Request, Map)} when calling the PDP Java API directly (native Java call, e.g. embedded PDP), or when the original request format is NOT XML.
+	 * Generic API (serialization-format-agnostic) for evaluating an individual decision request (see Multiple Decision Profile of XACML for the concept of "Individual Decision Request").
 	 * <p>
-	 * This method DOES NOT use any {@link org.ow2.authzforce.core.pdp.api.RequestFilter} or any {@link org.ow2.authzforce.core.pdp.api.DecisionResultFilter}. (Only based on core PDP engine.)
+	 * This method DOES NOT use any {@link org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor} or any {@link org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor}. (Only based on core
+	 * PDP engine.)
+	 * <p>
+	 * This method does not throw any exception but may still return an Indeterminate result if an error occurred. Therefore, clients should check whether {@link DecisionResult#getDecision() ==
+	 * DecisionType#INDETERMINATE}, in which case they can get more error info from {@link DecisionResult#getCauseForIndeterminate()}).
 	 * 
 	 * @param request
 	 *            Individual Decision Request, as defined in the XACML Multiple Decision Profile (also mentioned in the Hierarchical Resource Profile)
-	 * @return decision result
+	 * @return decision result.
 	 */
-	PdpDecisionResult evaluate(INDIVIDUAL_DECISION_REQ_T request);
+	DecisionResult evaluate(DecisionRequest request);
 
 	/**
-	 * Generic API (serialization-format-agnostic) for evaluating multiple individual decision requests in the same way as defined in XACML Multiple Decision Profile, i.e. as part of the same context.
-	 * As a result, if any attribute is set by the PDP itself, e.g. the XACML standard environment attributes (current-date/current-time/current-date-time), it MUST have the same values for all input
-	 * requests.
+	 * Generic API (serialization-format-agnostic) for evaluating multiple individual decision requests (see Multiple Decision Profile of XACML for the concept of "Individual Decision Request"), i.e.
+	 * as part of the same context. As a result, if any attribute is set by the PDP itself, e.g. the XACML standard environment attributes (current-date/current-time/current-date-time), it MUST have
+	 * the same values for all input requests.
 	 * <p>
-	 * To be used instead of {@link #evaluate(Request)} or {@link #evaluate(Request, Map)} when calling the PDP Java API directly (native Java call, e.g. embedded PDP), or when the original request
-	 * format is NOT XML.
+	 * This method DOES NOT use any {@link org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor} or any {@link org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor}. (Only based on core
+	 * PDP engine.)
 	 * <p>
-	 * This method DOES NOT use any {@link org.ow2.authzforce.core.pdp.api.RequestFilter} or any {@link org.ow2.authzforce.core.pdp.api.DecisionResultFilter}. (Only based on core PDP engine.)
-	 * <p>
-	 * If the PDP uses any remote cache service, it should send all decision requests in the same service request and get all existing cache results in the service response, for performance reasons.
+	 * If the PDP uses any remote cache/database service, it should send all decision requests in the same service request and get all existing cache results in the service response, for performance
+	 * reasons.
 	 * 
 	 * @param requests
-	 *            Individual Decision Requests, as defined in the XACML Multiple Decision Profile (also mentioned in the Hierarchical Resource Profile)
+	 *            Individual Decision Requests (see Multiple Decision Profile of XACML for the concept of "Individual Decision Request")
 	 * @return decision request-result pairs
 	 * @throws IndeterminateEvaluationException
-	 *             error occurred preventing any request evaluation (not request-specific)
+	 *             error occurred preventing any request evaluation. (This error is not specific to a particular decision request. Such request-specific error results in a Indeterminate decision
+	 *             result with error cause available via {@link DecisionResult#getCauseForIndeterminate()})
 	 */
-	Map<INDIVIDUAL_DECISION_REQ_T, ? extends PdpDecisionResult> evaluate(List<INDIVIDUAL_DECISION_REQ_T> requests) throws IndeterminateEvaluationException;
+	<INDIVIDUAL_DECISION_REQ_T extends DecisionRequest> Collection<Entry<INDIVIDUAL_DECISION_REQ_T, ? extends DecisionResult>> evaluate(List<INDIVIDUAL_DECISION_REQ_T> requests)
+			throws IndeterminateEvaluationException;
 
 	/**
-	 * Evaluates a XML/JAXB-based XACML decision request
-	 * <p>
-	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc), then the result will be a decision of INDETERMINATE.
-	 * 
-	 * @param request
-	 *            the request to evaluate
-	 * @param namespaceURIsByPrefix
-	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation
-	 * @return the response to the request
+	 * Get the PDP engine's root policy and policies referenced - directly or indirectly - from the root policy, independent from the evaluation context, i.e. assuming all are statically resolved
+	 *
+	 * @return the root - always in first position - and referenced policies; null if any of these policies is not statically resolved (once and for all)
 	 */
-	Response evaluate(Request request, Map<String, String> namespaceURIsByPrefix);
-
-	/**
-	 * Equivalent to {@link #evaluate(Request, Map)} with second parameter set to null.
-	 * 
-	 * @param request
-	 *            the request to evaluate
-	 * @return the response to the request
-	 */
-	Response evaluate(Request request);
+	Iterable<PrimaryPolicyMetadata> getApplicablePolicies();
 
 }

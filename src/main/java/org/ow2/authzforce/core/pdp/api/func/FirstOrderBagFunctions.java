@@ -24,21 +24,21 @@ import java.util.Set;
 
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerBagEval;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerPartlyBagEval;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
+import org.ow2.authzforce.core.pdp.api.value.AttributeDatatype;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.BooleanValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
-import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 import org.ow2.authzforce.core.pdp.api.value.IntegerValue;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import com.google.common.collect.Sets;
 
@@ -79,7 +79,7 @@ public final class FirstOrderBagFunctions
 		{
 			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
 			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
-					StatusHelper.STATUS_PROCESSING_ERROR);
+					XacmlStatusCode.PROCESSING_ERROR.value());
 		}
 
 		@Override
@@ -128,7 +128,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public BagSize(final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER_FACTORY.getDatatype(), false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER, false, Arrays.asList(paramBagType));
 		}
 
 		@Override
@@ -148,9 +148,8 @@ public final class FirstOrderBagFunctions
 
 		private static IntegerValue eval(final Bag<?> bag)
 		{
-			return new IntegerValue(bag.size());
+			return IntegerValue.valueOf(bag.size());
 		}
-
 	}
 
 	/**
@@ -182,7 +181,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public BagContains(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType, final Class<AV[]> paramArrayClass)
 		{
-			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_IS_IN, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramType, paramBagType));
 			this.arrayClass = paramArrayClass;
 			this.bagType = paramBagType;
 		}
@@ -382,7 +381,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public AtLeastOneMemberOf(final BagDatatype<AV> paramBagType)
 		{
-			super(NAME_SUFFIX_AT_LEAST_ONE_MEMBER_OF, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
+			super(NAME_SUFFIX_AT_LEAST_ONE_MEMBER_OF, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramBagType, paramBagType));
 		}
 
 		@Override
@@ -475,7 +474,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public Subset(final BagDatatype<AV> paramBagType)
 		{
-			super(NAME_SUFFIX_SUBSET, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
+			super(NAME_SUFFIX_SUBSET, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramBagType, paramBagType));
 		}
 
 		@Override
@@ -512,7 +511,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public SetEquals(final BagDatatype<AV> paramBagType)
 		{
-			super(NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramBagType, paramBagType));
+			super(NAME_SUFFIX_SET_EQUALS, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramBagType, paramBagType));
 		}
 
 		@Override
@@ -544,15 +543,14 @@ public final class FirstOrderBagFunctions
 	 * <li>{@code -set-equals}: tests whether bags are equal regardless of order</li>
 	 * </ul>
 	 * 
-	 * @param paramTypeFactory
-	 *            parameter datatype factory
+	 * @param paramType
+	 *            parameter datatype
 	 * @return first-order bag functions taking the given primitive datatype as bag's primitive type
 	 */
-	public static <AV extends AttributeValue> Set<Function<?>> getFunctions(final DatatypeFactory<AV> paramTypeFactory)
+	public static <AV extends AttributeValue> Set<Function<?>> getFunctions(final AttributeDatatype<AV> paramType)
 	{
-		final Datatype<AV> paramType = paramTypeFactory.getDatatype();
-		final BagDatatype<AV> paramBagType = paramTypeFactory.getBagDatatype();
-		final Class<AV[]> paramArrayClass = paramTypeFactory.getArrayClass();
+		final BagDatatype<AV> paramBagType = paramType.getBagDatatype();
+		final Class<AV[]> paramArrayClass = paramType.getArrayClass();
 		return HashCollections.<Function<?>> newImmutableSet(new Function[] {
 		/**
 		 * 

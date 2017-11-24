@@ -26,14 +26,14 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.VariableDefinition;
 
-import org.ow2.authzforce.core.pdp.api.AttributeProviderModule;
+import org.ow2.authzforce.core.pdp.api.DesignatedAttributeProvider;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
- * Expression factory for parsing XACML {@link ExpressionType}s: AttributeDesignator, AttributeSelector, Apply, etc.
+ * Expression factory for parsing XACML {@link ExpressionType}s in policies: AttributeDesignator, AttributeSelector, Apply, etc.
  * <p>
- * Extends {@link Closeable} because it may use {@link AttributeProviderModule}s (implement {@link Closeable}) to resolve AttributeDesignators for attributes not provided in the request.
+ * Extends {@link Closeable} because it may use {@link DesignatedAttributeProvider}s (implement {@link Closeable}) to resolve AttributeDesignators for attributes not provided in the request.
  */
 public interface ExpressionFactory extends Closeable
 {
@@ -112,12 +112,13 @@ public interface ExpressionFactory extends Closeable
 	 *            function ID (XACML URI)
 	 * @param subFunctionReturnType
 	 *            optional sub-function's return type required only if a generic higher-order function is expected as the result, of which the sub-function is expected to be the first parameter;
-	 *            otherwise null (for first-order function). A generic higher-order function is a function whose return type depends on the sub-function ('s return type).
+	 *            otherwise null (for first-order function). A generic higher-order function is a function whose return type depends on the sub-function ('s return type). Note: we only support
+	 *            sub-functions with primitive return type here, for simplicity (see {@link org.ow2.authzforce.core.pdp.api.func.HigherOrderBagFunction} for more info).
 	 * @return function instance; or null if no such function with ID {@code functionId}, or if non-null {@code subFunctionReturnTypeId} specified and no higher-order function compatible with
 	 *         sub-function's return type {@code subFunctionReturnTypeId}
 	 * @throws IllegalArgumentException
 	 *             if datatype {@code subFunctionReturnType} is not supported
 	 * 
 	 */
-	FunctionExpression getFunction(String functionId, Datatype<?> subFunctionReturnType) throws IllegalArgumentException;
+	FunctionExpression getFunction(String functionId, Datatype<? extends AttributeValue> subFunctionReturnType) throws IllegalArgumentException;
 }

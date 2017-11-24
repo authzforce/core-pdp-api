@@ -22,12 +22,12 @@ import java.util.Deque;
 import java.util.List;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * A superclass of primitive datatype conversion functions such as double-to-integer, integer-to-double, *-from-string, *-to-string, etc. May be used for non-standard datatype conversion functions as
@@ -82,7 +82,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 		public FirstOrderFunctionCall<RETURN> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
 			return new EagerSinglePrimitiveTypeEval<RETURN, PARAM>(funcSig, argExpressions, remainingArgTypes)
-					{
+			{
 				@Override
 				protected RETURN evaluate(final Deque<PARAM> args) throws IndeterminateEvaluationException
 				{
@@ -90,13 +90,14 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 					try
 					{
 						return converter.convert(arg0);
-					} catch (final IllegalArgumentException e)
+					}
+					catch (final IllegalArgumentException e)
 					{
-						throw new IndeterminateEvaluationException(invalidArgMsgPrefix + arg0, StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(invalidArgMsgPrefix + arg0, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
 				}
 
-					};
+			};
 		}
 	}
 

@@ -21,7 +21,7 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.Duration;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Superclass of duration attribute values, i.e. XML schema dayTime/yearMonthDuration values. The choice of the Java type Duration is based on JAXB schema-to-Java mapping spec:
@@ -69,7 +69,7 @@ public abstract class DurationValue<DAV extends DurationValue<DAV>> extends Simp
 		final int result = this.value.compare(o.value);
 		if (result == DatatypeConstants.INDETERMINATE)
 		{
-			throw new IndeterminateEvaluationException(StatusHelper.STATUS_PROCESSING_ERROR, "Comparison of XML schema duration '" + this.value + "' to '" + o.value + "' is indeterminate");
+			throw new IndeterminateEvaluationException(XacmlStatusCode.PROCESSING_ERROR.value(), "Comparison of XML schema duration '" + this.value + "' to '" + o.value + "' is indeterminate");
 		}
 
 		return result;

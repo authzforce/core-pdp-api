@@ -22,6 +22,8 @@ import java.util.Objects;
 
 import javax.xml.ws.Holder;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 import com.google.common.net.InetAddresses;
 
 /**
@@ -37,10 +39,6 @@ public final class IpAddressValue extends SimpleValue<String>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:2.0:data-type:ipAddress";
 
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
@@ -204,7 +202,7 @@ public final class IpAddressValue extends SimpleValue<String>
 	 */
 	public IpAddressValue(final String val) throws IllegalArgumentException
 	{
-		super(TYPE_URI, val);
+		super(XacmlDatatypeId.IP_ADDRESS.value(), val);
 		final Holder<InetAddress> addressHolder = new Holder<>();
 		final Holder<InetAddress> maskHolder = new Holder<>();
 		final Holder<NetworkPortRange> rangeHolder = new Holder<>();

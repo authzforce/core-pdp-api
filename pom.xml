@@ -3,12 +3,12 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>6.0.0</version>
+      <version>7.0.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
    <version>11.0.1-SNAPSHOT</version>
    <name>${project.groupId}:${project.artifactId}</name>
-   <description>AuthzForce CE - Core PDP API</description>
+   <description>AuthzForce - Core PDP API</description>
    <url>${project.url}</url>
    <scm>
       <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
@@ -56,22 +56,6 @@
    <build>
       <plugins>
          <plugin>
-            <!-- Consider combining with Red Hat Victims and OSS Index. More info on Victims vs. Dependency-check: https://bugzilla.redhat.com/show_bug.cgi?id=1388712 -->
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <configuration>
-               <!-- The plugin has numerous issues with version matching, which triggers false positives so we need a "suppresion" file for those. More info: https://github.com/jeremylong/DependencyCheck/issues -->
-               <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
-            </configuration>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>check</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
             <configuration>
@@ -103,12 +87,30 @@
             </executions>
          </plugin>
          <plugin>
+            <!-- Consider combining with Red Hat Victims and OSS Index. More info on Victims vs. Dependency-check: https://bugzilla.redhat.com/show_bug.cgi?id=1388712 -->
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <configuration>
+              <cveValidForHours>24</cveValidForHours>
+               <!-- The plugin has numerous issues with version matching, which triggers false positives so we need a "suppresion" file for those. More info: https://github.com/jeremylong/DependencyCheck/issues -->
+               <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
+               <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+            </configuration>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>check</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
             <!-- Override license-maven-plugin configuration to exclude Sunxacml files from adding GPL license headers (different license) -->
             <groupId>com.mycila</groupId>
             <artifactId>license-maven-plugin</artifactId>
             <configuration>
                <header>license/alv2-header.txt</header>
-<!--                <skipExistingHeaders>true</skipExistingHeaders> -->
+               <!-- <skipExistingHeaders>true</skipExistingHeaders> -->
                <includes>
                   <include>src/**</include>
                </includes>

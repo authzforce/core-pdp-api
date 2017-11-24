@@ -19,7 +19,7 @@ package org.ow2.authzforce.core.pdp.api.func;
 
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
+import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
  * Interface for generic higher-order function factories, such as the one used for the standard map function in Authzforce PDP engine. A generic function is a function class with a type parameter
@@ -34,17 +34,15 @@ public abstract class GenericHigherOrderFunctionFactory implements PdpExtension
 	/**
 	 * Returns instance of the Higher-order function
 	 *
-	 * @param subFunctionReturnTypeFactory
-	 *            sub-function's return datatype factory
+	 * @param subFunctionReturnType
+	 *            sub-function's return datatype
 	 * @return higher-order function instance (non-null, throw exceptions below if cannot return instance)
 	 * @throws IllegalArgumentException
-	 *             iff {@code subFunctionReturnTypeFactory == null}
-	 * @throws UnsupportedOperationException
-	 *             iff {@code subFunctionReturnTypeFactory} is not supported by this factory
+	 *             iff {@code subFunctionReturnType == null} or {@code subFunctionReturnType} is not compatible with this factory (i.e. map function only accepts primitive datatype as subfunction's
+	 *             return type
 	 * 
 	 */
-	public abstract <SUB_RETURN_T extends AttributeValue> HigherOrderBagFunction<?, SUB_RETURN_T> getInstance(DatatypeFactory<SUB_RETURN_T> subFunctionReturnTypeFactory)
-			throws IllegalArgumentException, UnsupportedOperationException;
+	public abstract <SUB_RETURN_T extends AttributeValue> HigherOrderBagFunction<?, SUB_RETURN_T> getInstance(Datatype<SUB_RETURN_T> subFunctionReturnType) throws IllegalArgumentException;
 
 	/** {@inheritDoc} */
 	@Override

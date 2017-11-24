@@ -20,6 +20,8 @@
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
+import java.util.Optional;
+
 import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
@@ -33,11 +35,9 @@ public interface PolicyEvaluator extends Decidable
 {
 
 	/**
-	 * "isApplicable()" as defined by Only-one-applicable algorithm (section C.9), i.e. applicable by virtue of its
-	 * target, i.e. the target matches the context. {@link #evaluate(EvaluationContext)} already checks first if the
-	 * policy Target matches, therefore you may call isApplicable() only if you only want to check if the policy is
-	 * applicable by virtue of its Target. If you want to evaluate the policy, call {@link #evaluate(EvaluationContext)}
-	 * right away. To be used by Only-one-applicable algorithm in particular.
+	 * "isApplicable()" as defined by Only-one-applicable algorithm (section C.9), i.e. applicable by virtue of its target, i.e. the target matches the context. {@link #evaluate(EvaluationContext)}
+	 * already checks first if the policy Target matches, therefore you may call isApplicable() only if you only want to check if the policy is applicable by virtue of its Target. If you want to
+	 * evaluate the policy, call {@link #evaluate(EvaluationContext)} right away. To be used by Only-one-applicable algorithm in particular.
 	 * 
 	 * @param context
 	 *            evaluation context to match
@@ -48,15 +48,13 @@ public interface PolicyEvaluator extends Decidable
 	boolean isApplicableByTarget(EvaluationContext context) throws IndeterminateEvaluationException;
 
 	/**
-	 * Same as {@link #evaluate(EvaluationContext)} except Target evaluation may be skipped. To be used by
-	 * Only-one-applicable algorithm with <code>skipTarget</code>=true, after calling
+	 * Same as {@link #evaluate(EvaluationContext)} except Target evaluation may be skipped. To be used by Only-one-applicable algorithm with <code>skipTarget</code>=true, after calling
 	 * {@link #isApplicableByTarget(EvaluationContext)} in particular.
 	 * 
 	 * @param context
 	 *            evaluation context
 	 * @param skipTarget
-	 *            whether to evaluate the Target. If false, this must be equivalent to
-	 *            {@link #evaluate(EvaluationContext)}
+	 *            whether to evaluate the Target. If false, this must be equivalent to {@link #evaluate(EvaluationContext)}
 	 * @return decision result
 	 */
 	DecisionResult evaluate(EvaluationContext context, boolean skipTarget);
@@ -76,24 +74,37 @@ public interface PolicyEvaluator extends Decidable
 	String getPolicyId();
 
 	/**
-	 * Get extra metadata of the evaluated policy, which metadata may vary according to the request context; e.g. for
-	 * elements such as Policy references, the actual version ID depends on the request context if the reference uses
-	 * version patterns and the policy provider resolves the matching candidate policy version for each evaluation
-	 * request.
+	 * Get policy version, e.g. for auditing. This may depend on the evaluation context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link RefPolicyProvider}
+	 * that resolve policy references at evaluation time based on the context, especially if the policy reference does not specify the version or use non-literal version match rules (with wildcards).
 	 * <p>
-	 * Implementations must still guarantee that the result - once computed in a given request context - remains
-	 * constant over the lifetime of this request context. This is required for consistent evaluation. The result may
-	 * only change from one request to the other. For that purpose, implementations may use
-	 * {@link EvaluationContext#putOther(String, Object)} to cache the result in the request context and
-	 * {@link EvaluationContext#getOther(String)} to retrieve it later.
+	 * Implementations must still guarantee that the result - once computed in a given request context - remains constant over the lifetime of this request context. This is required for consistent
+	 * evaluation. The result may only change from one request to the other. For that purpose, implementations may use {@link EvaluationContext#putOther(String, Object)} to cache the result in the
+	 * request context and {@link EvaluationContext#getOther(String)} to retrieve it later.
+	 * 
+	 * @param evaluationCtx
+	 *            request evaluation context
+	 * @return extra metadata of the evaluated policy
+	 * @throws IndeterminateEvaluationException
+	 *             if the policy version could not be determined in {@code evaluationCtx}
+	 */
+	PolicyVersion getPolicyVersion(EvaluationContext evaluationCtx) throws IndeterminateEvaluationException;
+
+	/**
+	 * Get metadata about the child policy references of the evaluated policy, present iff there is any (e.g. no the case for a XACML Policy element). These metadata may depend on the evaluation
+	 * context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link RefPolicyProvider} that resolve policy references at evaluation time based on the context,
+	 * especially if the policy reference does not specify the version or use non-literal version match rules (with wildcards).
+	 * <p>
+	 * Implementations must still guarantee that the result - once computed in a given request context - remains constant over the lifetime of this request context. This is required for consistent
+	 * evaluation. The result may only change from one request to the other. For that purpose, implementations may use {@link EvaluationContext#putOther(String, Object)} to cache the result in the
+	 * request context and {@link EvaluationContext#getOther(String)} to retrieve it later.
 	 * 
 	 * @param evaluationCtx
 	 *            request evaluation context
 	 * 
-	 * @return extra metadata of the evaluated policy
+	 * @return child policy references metadata of the evaluated policy
 	 * @throws IndeterminateEvaluationException
-	 *             if the extra policy metadata could not be determined in {@code evaluationCtx}
+	 *             if the metadata could not be determined in {@code evaluationCtx}
 	 */
-	ExtraPolicyMetadata getExtraPolicyMetadata(EvaluationContext evaluationCtx) throws IndeterminateEvaluationException;
+	Optional<PolicyRefsMetadata> getPolicyRefsMetadata(EvaluationContext evaluationCtx) throws IndeterminateEvaluationException;
 
 }

@@ -24,8 +24,8 @@ import java.util.Optional;
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.Bag.Validator;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import com.google.common.collect.ImmutableMultiset;
 
@@ -486,12 +486,12 @@ public final class Bags
 		{
 			if (bag == null || bag.isEmpty())
 			{
-				throw new IndeterminateEvaluationException(messageIfEmpty, StatusHelper.STATUS_MISSING_ATTRIBUTE);
+				throw new IndeterminateEvaluationException(messageIfEmpty, XacmlStatusCode.MISSING_ATTRIBUTE.value());
 			}
 
 			if (bag.isEmpty())
 			{
-				throw new IndeterminateEvaluationException(messageIfEmpty, StatusHelper.STATUS_MISSING_ATTRIBUTE, bag.getReasonWhyEmpty());
+				throw new IndeterminateEvaluationException(messageIfEmpty, XacmlStatusCode.MISSING_ATTRIBUTE.value(), bag.getReasonWhyEmpty());
 			}
 
 		}

@@ -25,13 +25,13 @@ import java.util.Deque;
 import java.util.List;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.BooleanValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * A superclass of all the standard comparison functions (return a boolean). May be used for non-standard comparison functions as well.
@@ -137,7 +137,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 		private FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
 			return new EagerSinglePrimitiveTypeEval<BooleanValue, V>(funcSig, argExpressions, remainingArgTypes)
-					{
+			{
 
 				@Override
 				protected BooleanValue evaluate(final Deque<V> args) throws IndeterminateEvaluationException
@@ -149,15 +149,16 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 					try
 					{
 						comparResult = arg0.compareTo(arg1);
-					} catch (final IllegalArgumentException e)
+					}
+					catch (final IllegalArgumentException e)
 					{
 						// See BaseTimeValue#compareTo() for example of comparison throwing such exception
-						throw new IndeterminateEvaluationException(illegalComparisonMsgPrefix + arg0.getContent() + ", " + arg1.getContent(), StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(illegalComparisonMsgPrefix + arg0.getContent() + ", " + arg1.getContent(), XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
 					// Return the result as a BooleanAttributeValue.
 					return BooleanValue.valueOf(postCondition.isTrue(comparResult));
 				}
-					};
+			};
 		}
 
 	}
@@ -185,7 +186,7 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	 */
 	public ComparisonFunction(final Datatype<AV> paramType, final PostCondition postCondition)
 	{
-		super(paramType.getFunctionIdPrefix() + postCondition.functionSuffix, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType, paramType));
+		super(paramType.getFunctionIdPrefix() + postCondition.functionSuffix, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramType, paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, postCondition);
 	}
 

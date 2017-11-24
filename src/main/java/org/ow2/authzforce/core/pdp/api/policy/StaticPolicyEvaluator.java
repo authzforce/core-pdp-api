@@ -20,19 +20,27 @@
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
+import java.util.Optional;
+
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+
 /**
- * Statically-defined policy evaluator interface, "Policy" referring to any XACML Policy* element:
- * Policy(Set), Policy(Set)IdReference. "Static" means here that the whole policy definition is fixed once and for all, i.e. it does not depend on the evaluation context.
+ * Statically-defined policy evaluator interface, "policy" referring to any XACML Policy* element: Policy(Set), Policy(Set)IdReference. "Static" means here that the whole policy definition is fixed
+ * once and for all at initialization time, i.e. it does not depend on the evaluation context.
  * 
  */
-public interface StaticPolicyEvaluator extends PolicyEvaluator
+public interface StaticPolicyEvaluator extends VersionFixedPolicyEvaluator
 {
-
 	/**
-	 * Get (static/context-independent) extra metadata of the evaluated policy. Always return the same result.
+	 * Get (static/context-independent) metadata about policy references within the evaluated policy. Always return the same result.
 	 * 
-	 * @return extra metadata of the evaluated policy.
+	 * @return metadata about policy references within the evaluated policy. Not present if there is no such reference, e.g. the evaluated policy is a XACML Policy element.
 	 */
-	ExtraPolicyMetadata getExtraPolicyMetadata();
+	Optional<PolicyRefsMetadata> getPolicyRefsMetadata();
 
+	@Override
+	default Optional<PolicyRefsMetadata> getPolicyRefsMetadata(final EvaluationContext context)
+	{
+		return getPolicyRefsMetadata();
+	}
 }

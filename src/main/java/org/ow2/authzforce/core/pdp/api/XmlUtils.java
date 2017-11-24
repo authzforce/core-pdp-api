@@ -38,7 +38,8 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 
-import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
+import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils;
+import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -62,7 +63,7 @@ public final class XmlUtils
 	public static final Processor SAXON_PROCESSOR;
 	static
 	{
-		final ClassLoader classLoader = JaxbXacmlUtils.class.getClassLoader();
+		final ClassLoader classLoader = XacmlJaxbParsingUtils.class.getClassLoader();
 		final URL saxonConfURL = classLoader.getResource(SAXON_CONFIGURATION_CLASSPATH_LOCATION);
 		if (saxonConfURL == null)
 		{
@@ -98,7 +99,7 @@ public final class XmlUtils
 	private static final IllegalArgumentException NULL_NAMESPACE_PREFIX_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace prefix in namespace prefix-URI mappings");
 	private static final IllegalArgumentException NULL_NAMESPACE_URI_EXCEPTION = new IllegalArgumentException("Invalid XPath compiler input: null namespace URI in namespace prefix-URI mappings");
 
-	private static XPathCompiler newXPathCompiler(final XPATHVersion xpathVersion) throws IllegalArgumentException
+	private static XPathCompiler newXPathCompiler(final XPathVersion xpathVersion) throws IllegalArgumentException
 	{
 		final XPathCompiler xpathCompiler = SAXON_PROCESSOR.newXPathCompiler();
 		xpathCompiler.setLanguageVersion(xpathVersion.getVersionNumber());
@@ -113,9 +114,9 @@ public final class XmlUtils
 	// Default XPath compilers by XPathVersion outside any namespace context
 	private static final Map<String, XPathCompiler> XPATH_COMPILERS_BY_VERSION = HashCollections.newImmutableMap(
 	// XPATH 1.0 compiler
-			XPATHVersion.V1_0.getURI(), newXPathCompiler(XPATHVersion.V1_0),
+			XPathVersion.V1_0.getURI(), newXPathCompiler(XPathVersion.V1_0),
 			// XPATH 2.0 compiler
-			XPATHVersion.V2_0.getURI(), newXPathCompiler(XPATHVersion.V2_0));
+			XPathVersion.V2_0.getURI(), newXPathCompiler(XPathVersion.V2_0));
 
 	/**
 	 * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
@@ -142,7 +143,7 @@ public final class XmlUtils
 			return xpathCompiler;
 		}
 
-		final XPATHVersion xpathVersion = XPATHVersion.fromURI(xpathVersionURI);
+		final XPathVersion xpathVersion = XPathVersion.fromURI(xpathVersionURI);
 		final XPathCompiler xpathCompiler = newXPathCompiler(xpathVersion);
 		for (final Entry<String, String> nsPrefixToURI : namespaceURIsByPrefix.entrySet())
 		{
@@ -217,7 +218,7 @@ public final class XmlUtils
 	 * (Namespace-filtering) XML-to-JAXB parser
 	 *
 	 */
-	public interface NamespaceFilteringParser
+	public interface XmlnsFilteringParser
 	{
 
 		/**
@@ -260,7 +261,7 @@ public final class XmlUtils
 	 * SAX-based namespace-filtering XML-to-JAXB parser.
 	 *
 	 */
-	public static final class SAXBasedNamespaceFilteringParser implements NamespaceFilteringParser
+	public static final class SAXBasedXmlnsFilteringParser implements XmlnsFilteringParser
 	{
 		private static final IllegalArgumentException NULL_ARG_EXCEPTION = new IllegalArgumentException("Undefined input XML");
 
@@ -280,7 +281,7 @@ public final class XmlUtils
 		 * @param unmarshaller
 		 *            JAXB unmarshaller
 		 */
-		public SAXBasedNamespaceFilteringParser(final Unmarshaller unmarshaller)
+		public SAXBasedXmlnsFilteringParser(final Unmarshaller unmarshaller)
 		{
 			final XMLReader xmlReader;
 			try
@@ -355,11 +356,11 @@ public final class XmlUtils
 
 	/**
 	 * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix mappings is returned). Therefore it can be
-	 * used as a convenient replacement for {@link SAXBasedNamespaceFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link NamespaceFilteringParser}
+	 * used as a convenient replacement for {@link SAXBasedXmlnsFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link XmlnsFilteringParser}
 	 * for polymorphism purposes.
 	 *
 	 */
-	public static final class NoNamespaceFilteringParser implements NamespaceFilteringParser
+	public static final class NoXmlnsFilteringParser implements XmlnsFilteringParser
 	{
 		private final Unmarshaller unmarshaller;
 
@@ -369,7 +370,7 @@ public final class XmlUtils
 		 * @param unmarshaller
 		 *            JAXB unmarshaller
 		 */
-		public NoNamespaceFilteringParser(final Unmarshaller unmarshaller)
+		public NoXmlnsFilteringParser(final Unmarshaller unmarshaller)
 		{
 			this.unmarshaller = unmarshaller;
 		}
@@ -401,6 +402,22 @@ public final class XmlUtils
 		{
 			return Collections.emptyMap();
 		}
+	}
+	
+	/**
+	 * (Namespace-filtering) XACML-to-JAXB parser factory
+	 *
+	 */
+	public interface XmlnsFilteringParserFactory
+	{
+		/**
+		 * Get factory instance
+		 * 
+		 * @return instance
+		 * @throws JAXBException
+		 *             if any error instantiating XACML-to-JAXB parser
+		 */
+		XmlnsFilteringParser getInstance() throws JAXBException;
 	}
 
 	private XmlUtils()

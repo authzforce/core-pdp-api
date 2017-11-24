@@ -28,7 +28,6 @@ import net.sf.saxon.trans.XPathException;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.expression.Expressions;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
@@ -38,6 +37,7 @@ import org.ow2.authzforce.core.pdp.api.value.SimpleValue;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.StringValue;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * *-regexp-match function helper
@@ -97,7 +97,7 @@ public final class RegexpMatchFunctionHelper
 				}
 				catch (final ClassCastException e)
 				{
-					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
+					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 				}
 			}
 			else
@@ -108,7 +108,7 @@ public final class RegexpMatchFunctionHelper
 				}
 				catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException("Function " + this.funcId + ": Indeterminate arg #1", StatusHelper.STATUS_PROCESSING_ERROR, e);
+					throw new IndeterminateEvaluationException("Function " + this.funcId + ": Indeterminate arg #1", XacmlStatusCode.PROCESSING_ERROR.value(), e);
 				}
 			}
 
@@ -197,8 +197,7 @@ public final class RegexpMatchFunctionHelper
 				final Value constantValue = constant.get();
 				if (!(constantValue instanceof StringValue))
 				{
-					throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING_FACTORY.getDatatype()
-							+ ")");
+					throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING + ")");
 				}
 
 				final String regex = ((StringValue) constantValue).getUnderlyingValue();

@@ -17,13 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
-import java.io.Closeable;
-
 /**
- * Closeable StaticRefPolicyProvider
+ * Closeable {@link StaticRefPolicyProvider}
  * 
  */
-public interface CloseableStaticRefPolicyProvider extends StaticRefPolicyProvider, Closeable
+public interface CloseableStaticRefPolicyProvider extends StaticRefPolicyProvider, CloseableRefPolicyProvider
 {
 	// combine StaticRefPolicyProvider and Closeable interface
 }

@@ -29,34 +29,42 @@ import com.google.common.reflect.TypeToken;
  * @param <AV>
  *            value type
  */
-public final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV>
+public class PrimitiveDatatype<AV extends PrimitiveValue> extends Datatype<AV>
 {
 
 	private static final ClassCastException DEFAULT_CLASS_CAST_EXCEPTION = new ClassCastException("Input is not a primitive value");
 	private final Class<AV> valueClass;
+	private final Class<AV[]> arrayClass;
 
 	/**
-	 * Default constructor
+	 * Datatype constructor
 	 * 
+	 * @param instanceClass
+	 *            (non-null) Java class used as implementation for this datatype, i.e. all values of this datatype are instances of {@code valueClass}.
+	 * @param id
+	 *            (non-null) datatype ID
+	 * @param functionIdPrefix
+	 *            (non-null) prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 	 * @throws NullPointerException
-	 *             if {@code valueClass == null || id == null || functionIdPrefix == null}.
+	 *             if {@code instanceClass == null || id == null || functionIdPrefix == null}.
 	 */
-	PrimitiveDatatype(final Class<AV> valueClass, final String id, final String functionIdPrefix) throws NullPointerException
+	public PrimitiveDatatype(final Class<AV> instanceClass, final String id, final String functionIdPrefix) throws NullPointerException
 	{
-		super(TypeToken.of(Objects.requireNonNull(valueClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix);
-		this.valueClass = valueClass;
+		super(TypeToken.of(Objects.requireNonNull(instanceClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix);
+		this.valueClass = instanceClass;
+		this.arrayClass = (Class<AV[]>) Array.newInstance(this.valueClass, 0).getClass();
 	}
 
 	@Override
-	public boolean isInstance(final Value val)
+	public final boolean isInstance(final Value val)
 	{
 		return this.valueClass.isInstance(val);
 	}
 
 	@Override
-	public AV cast(final Value val) throws ClassCastException
+	public final AV cast(final Value val) throws ClassCastException
 	{
-		if (val instanceof AtomicValue)
+		if (val instanceof PrimitiveValue)
 		{
 			return this.valueClass.cast(val);
 		}
@@ -65,15 +73,25 @@ public final class PrimitiveDatatype<AV extends AtomicValue> extends Datatype<AV
 	}
 
 	@Override
-	public AV[] newArray(final int length)
+	public final AV[] newArray(final int length)
 	{
 		return (AV[]) Array.newInstance(this.valueClass, length);
 	}
 
 	@Override
-	public Optional<Datatype<?>> getTypeParameter()
+	public final Optional<Datatype<?>> getTypeParameter()
 	{
 		return Optional.empty();
+	}
+
+	/**
+	 * Get class of array of instances of this datatype
+	 * 
+	 * @return class of array where the component type is this datatype
+	 */
+	public final Class<AV[]> getArrayClass()
+	{
+		return this.arrayClass;
 	}
 
 }

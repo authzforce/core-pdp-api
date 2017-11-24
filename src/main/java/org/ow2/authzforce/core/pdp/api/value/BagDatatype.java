@@ -29,7 +29,7 @@ import com.google.common.reflect.TypeToken;
  * @param <AV>
  *            Java type implementing this datatype (instance type)
  */
-public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
+public class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 {
 
 	private static final ClassCastException DEFAULT_CLASS_CAST_EXCEPTION = new ClassCastException("Input is not a Bag");
@@ -68,11 +68,6 @@ public final class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<A
 		}
 
 		throw DEFAULT_CLASS_CAST_EXCEPTION;
-	}
-
-	public AttributeBag<AV> castAttributeBag(final AttributeBag<?> bag) throws ClassCastException
-	{
-		return (AttributeBag<AV>) bag;
 	}
 
 	@Override

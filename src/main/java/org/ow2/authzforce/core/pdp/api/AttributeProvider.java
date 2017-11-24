@@ -22,7 +22,7 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 
 /**
- * Attribute provider used to resolve {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType}s.
+ * Attribute provider used to resolve {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType}s in a specific way (e.g. from a specific attribute source)
  * 
  */
 public interface AttributeProvider
@@ -36,7 +36,7 @@ public interface AttributeProvider
 	 * @param context
 	 *            the representation of the request data
 	 * @param returnDatatype
-	 *            attribute value bag datatype (expected datatype of every element in the result bag} )
+	 *            attribute value bag datatype
 	 * @return the result of retrieving the attribute, which will be a bag of values of type defined by {@code attributeDatatype}; empty bag iff no value found and no error occurred.
 	 * @throws IndeterminateEvaluationException
 	 *             if any error finding the attribute value(s)

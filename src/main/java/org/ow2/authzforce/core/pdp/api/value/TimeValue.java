@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Representation of an xs:time value. This class supports parsing xs:time values. All objects of this class are immutable and thread-safe.
  *
@@ -32,10 +34,6 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * XACML URI of this datatype
-	 */
-	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#time";
 
 	/**
 	 * Creates a new <code>TimeAttributeValue</code> from a string representation of time
@@ -60,7 +58,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 */
 	private TimeValue(final XMLGregorianCalendar time) throws IllegalArgumentException
 	{
-		super(TYPE_URI, time, DatatypeConstants.TIME);
+		super(XacmlDatatypeId.TIME.value(), time, DatatypeConstants.TIME);
 	}
 
 	/**

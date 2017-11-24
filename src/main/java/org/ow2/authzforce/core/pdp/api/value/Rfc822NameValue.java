@@ -23,6 +23,8 @@ import java.util.Objects;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Representation of an RFC 822 email address. The valid syntax for such a name is described in IETF RFC 2821, Section 4.1.2, 4019 Command Argument Syntax, under the term "Mailbox". Mailbox =
  * Local-part "@" Domain
@@ -41,11 +43,6 @@ public final class Rfc822NameValue extends SimpleValue<String>
 	private static final long serialVersionUID = 1L;
 
 	private static final IllegalArgumentException INVALID_RFC822NAME_MATCH_ARG0_EXCEPTION = new IllegalArgumentException("Invalid first arg to function 'rfc822Name-match': empty string");
-
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name";
 
 	private final String localPart;
 
@@ -92,7 +89,7 @@ public final class Rfc822NameValue extends SimpleValue<String>
 	 */
 	public Rfc822NameValue(final String value) throws IllegalArgumentException
 	{
-		super(TYPE_URI, validate(value));
+		super(XacmlDatatypeId.RFC822_NAME.value(), validate(value));
 		/*
 		 * The validation with InternetAddress class in parse() method is not enough because InternetAddress is much less restrictive than this XACML type, since it takes names without '@' such as
 		 * "sun" or "sun.com" as valid.

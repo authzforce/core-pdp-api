@@ -17,16 +17,13 @@
  */
 package org.ow2.authzforce.core.pdp.api.combining;
 
-import javax.xml.bind.JAXBElement;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-
 import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ExtendedDecision;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
 import org.ow2.authzforce.core.pdp.api.UpdatableList;
 import org.ow2.authzforce.core.pdp.api.UpdatablePepActions;
+import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 
 /**
  * Combining algorithm. In combining policies, obligations and advice must be handled correctly. Specifically, no obligation/advice may be included in the <code>Result</code> that doesn't match the
@@ -59,7 +56,7 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 		 * 
 		 * @return combined result
 		 */
-		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions, UpdatableList<JAXBElement<IdReferenceType>> updatableApplicablePolicyIdList);
+		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions, UpdatableList<PrimaryPolicyMetadata> updatableApplicablePolicyIdList);
 	}
 
 	/**

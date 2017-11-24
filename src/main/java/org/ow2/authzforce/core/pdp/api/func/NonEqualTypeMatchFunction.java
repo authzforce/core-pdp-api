@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerMultiPrimitiveTypeEval;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
@@ -32,6 +31,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.SimpleValue;
 import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
 import org.ow2.authzforce.core.pdp.api.value.StringValue;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Generic match functions taking two parameters of possibly different types, e.g. a string and a URI.
@@ -118,7 +118,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					}
 					catch (final ClassCastException e)
 					{
-						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(), StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(), XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
 
 					final boolean isMatched;
@@ -128,7 +128,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					}
 					catch (final PatternSyntaxException e)
 					{
-						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, StatusHelper.STATUS_PROCESSING_ERROR, e);
+						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
 
 					return BooleanValue.valueOf(isMatched);
@@ -180,7 +180,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 */
 	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 	{
-		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
+		super(functionName, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = new CallFactory<>(this.functionSignature, paramType0, paramType1, matcher);
 	}
 
@@ -199,7 +199,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 */
 	public NonEqualTypeMatchFunction(final String functionName, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final CallFactoryBuilder<T0, T1> callFactoryBuilder)
 	{
-		super(functionName, StandardDatatypes.BOOLEAN_FACTORY.getDatatype(), false, Arrays.asList(paramType0, paramType1));
+		super(functionName, StandardDatatypes.BOOLEAN, false, Arrays.asList(paramType0, paramType1));
 		this.funcCallFactory = callFactoryBuilder.build(functionSignature, paramType0, paramType1);
 	}
 
@@ -237,7 +237,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 
 			private RegexpMatchCallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSignature, final Datatype<AV> secondParamType)
 			{
-				super(functionSignature, StandardDatatypes.STRING_FACTORY.getDatatype(), secondParamType, regexMatcher);
+				super(functionSignature, StandardDatatypes.STRING, secondParamType, regexMatcher);
 				regexFuncHelper = new RegexpMatchFunctionHelper(functionSignature, secondParamType);
 			}
 

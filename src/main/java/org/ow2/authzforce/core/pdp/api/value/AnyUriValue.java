@@ -19,6 +19,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import net.sf.saxon.lib.StandardURIChecker;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Represent the URI value that this class represents
  * <p>
@@ -60,10 +62,6 @@ public final class AnyUriValue extends SimpleValue<String>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#anyURI";
 
 	/**
 	 * Creates a new <code>AnyURIAttributeValue</code> that represents the URI value supplied.
@@ -79,7 +77,7 @@ public final class AnyUriValue extends SimpleValue<String>
 	 */
 	public AnyUriValue(final String value) throws IllegalArgumentException
 	{
-		super(TYPE_URI, value);
+		super(XacmlDatatypeId.ANY_URI.value(), value);
 	}
 
 	/** {@inheritDoc} */

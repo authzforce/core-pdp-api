@@ -95,7 +95,7 @@ public interface EvaluationContext
 
 	/**
 	 * Returns the value of a named attribute available in the request context. Used to evaluate {@link AttributeDesignatorExpression}, ContextSelectorId of {@link AttributeSelectorExpression}, or to
-	 * get values of attributes on which {@link AttributeProviderModule}s depends to resolve their own attributes (e.g. some module may need attribute X, such as a subject ID, as input to resolve
+	 * get values of attributes on which {@link DesignatedAttributeProvider}s depends to resolve their own attributes (e.g. some module may need attribute X, such as a subject ID, as input to resolve
 	 * attribute Y from an external source, such as subject role from a user database).
 	 * 
 	 * @param attributeFQN

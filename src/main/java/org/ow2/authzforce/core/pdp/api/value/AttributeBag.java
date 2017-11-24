@@ -27,8 +27,8 @@ import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import com.google.common.collect.ImmutableMultiset;
 
 /**
- * Attribute bag (section 7.3.2 of XACML specification), i.e. {@link Bag} with extra metadata such as the identifier of the attribute value provider (where does the value come from, e.g. Request, or PDP,
- * or custom attribute provider module...)
+ * Attribute bag (section 7.3.2 of XACML specification), i.e. {@link Bag} with extra metadata such as the identifier of the attribute value provider (where does the value come from, e.g. Request, or
+ * PDP, or custom attribute provider module...)
  * 
  * @param <AV>
  *            type of every element in the bag

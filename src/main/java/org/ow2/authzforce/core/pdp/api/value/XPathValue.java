@@ -33,10 +33,11 @@ import net.sf.saxon.s9api.XdmValue;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
-import org.ow2.authzforce.xacml.identifiers.XPATHVersion;
+import org.ow2.authzforce.xacml.identifiers.XPathVersion;
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -65,11 +66,6 @@ public final class XPathValue extends SimpleValue<String>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression";
 
 	/**
 	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
@@ -120,11 +116,13 @@ public final class XPathValue extends SimpleValue<String>
 	 * @param xPathCompiler
 	 *            XPath compiler for compiling/evaluating {@code xpath}
 	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code value} is not a valid string representation for this value datatype
+	 *             if {@code value} is not a valid string representation for this value datatype or {code otherXmlAttributes == null} or {code otherXmlAttributes} does not contain any
+	 *             {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} attribute
 	 */
 	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
-		super(TYPE_URI, xpath);
+		super(XacmlDatatypeId.XPATH_EXPRESSION.value(), xpath);
+		Objects.requireNonNull(otherXmlAttributes, "Undefined XML attributes (expected: " + XPATH_CATEGORY_ATTRIBUTE_QNAME + ")");
 		this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
 		if (xpathCategory == null)
 		{
@@ -146,9 +144,9 @@ public final class XPathValue extends SimpleValue<String>
 		}
 
 		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory,
-				StatusHelper.STATUS_SYNTAX_ERROR);
+				XacmlStatusCode.SYNTAX_ERROR.value());
 		this.xpathEvalExceptionMessage = this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'";
-		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", StatusHelper.STATUS_PROCESSING_ERROR);
+		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", XacmlStatusCode.PROCESSING_ERROR.value());
 	}
 
 	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
@@ -159,7 +157,7 @@ public final class XPathValue extends SimpleValue<String>
 		 */
 		final Field f = XPathValue.class.getDeclaredField("xpathEvaluator");
 		f.setAccessible(true);
-		f.set(this, new XPathEvaluator(this.value, XmlUtils.newXPathCompiler(XPATHVersion.V2_0.getURI(), null)));
+		f.set(this, new XPathEvaluator(this.value, XmlUtils.newXPathCompiler(XPathVersion.V2_0.getURI(), null)));
 	}
 
 	/**
@@ -198,7 +196,7 @@ public final class XPathValue extends SimpleValue<String>
 		}
 		catch (final SaxonApiException e)
 		{
-			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, StatusHelper.STATUS_SYNTAX_ERROR, e);
+			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, XacmlStatusCode.SYNTAX_ERROR.value(), e);
 		}
 	}
 

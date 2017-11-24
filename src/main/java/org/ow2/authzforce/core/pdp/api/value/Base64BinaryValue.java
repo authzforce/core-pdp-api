@@ -21,6 +21,8 @@ import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Representation of an xs:base64Binary value. This class supports parsing xs:base64Binary values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of
  * the Java type byte[] is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
@@ -35,11 +37,6 @@ public final class Base64BinaryValue extends SimpleValue<byte[]>
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#base64Binary";
-
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
@@ -52,7 +49,7 @@ public final class Base64BinaryValue extends SimpleValue<byte[]>
 	 */
 	public Base64BinaryValue(final String val) throws IllegalArgumentException
 	{
-		super(TYPE_URI, DatatypeConverter.parseBase64Binary(val));
+		super(XacmlDatatypeId.BASE64_BINARY.value(), DatatypeConverter.parseBase64Binary(val));
 	}
 
 	/** {@inheritDoc} */

@@ -40,7 +40,7 @@ public final class FunctionExpression extends ConstantExpression<Function>
 	 */
 	public FunctionExpression(final Function<?> f)
 	{
-		super(StandardDatatypes.FUNCTION_DATATYPE, f);
+		super(StandardDatatypes.FUNCTION, f);
 	}
 
 }
