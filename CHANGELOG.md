@@ -2,7 +2,7 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
-## Unreleased
+## 12.0.0
 ### Changed
 - Parent project: 6.0.0 -> 7.0.0
 - Renamed PDP extension interfaces and base implementations:
