@@ -32,12 +32,12 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  *
  * @param <RETURN_T>
  *            return type
- * @param <SUB_RETURN_PRIMITIVE_T>
+ * @param <SUB_RETURN_T>
  *            sub-function's return (primitive) type. Only functions returning primitive type of result are compatible with higher-order functions here.
  * 
  * @version $Id: $
  */
-public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_PRIMITIVE_T extends AttributeValue> extends BaseFunction<RETURN_T>
+public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_T extends AttributeValue> extends BaseFunction<RETURN_T>
 {
 
 	private final Datatype<RETURN_T> returnType;
@@ -81,7 +81,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 	 *            sub-function arguments
 	 * @return function call
 	 */
-	protected abstract FunctionCall<RETURN_T> createFunctionCallFromSubFunction(FirstOrderFunction<SUB_RETURN_PRIMITIVE_T> subFunc, List<Expression<?>> inputsAfterSubFunc);
+	protected abstract FunctionCall<RETURN_T> createFunctionCallFromSubFunction(FirstOrderFunction<SUB_RETURN_T> subFunc, List<Expression<?>> inputsAfterSubFunc);
 
 	/** {@inheritDoc} */
 	@Override
@@ -142,7 +142,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 
 		// so now we know we have a boolean FirstOrderFunction
 		@SuppressWarnings("unchecked")
-		final FirstOrderFunction<SUB_RETURN_PRIMITIVE_T> subFunc = (FirstOrderFunction<SUB_RETURN_PRIMITIVE_T>) inputFunc;
+		final FirstOrderFunction<SUB_RETURN_T> subFunc = (FirstOrderFunction<SUB_RETURN_T>) inputFunc;
 
 		return createFunctionCallFromSubFunction(subFunc, inputs.subList(1, numInputs));
 	}

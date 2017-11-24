@@ -71,87 +71,126 @@ public abstract class SimpleValue<V> extends AttributeValue
 	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
 
 	/**
-	 * Datatype-specific Attribute Value Factory that supports values based on string content with extra XML attributes.
+	 * Datatype-specific Attribute Value Factory that supports values based on single {@link Serializable} element (i.e. no mixed XML content) with extra XML attributes.
 	 * 
 	 * @param <AV>
 	 *            type of attribute values created by this factory
 	 */
-	public static abstract class Factory<AV extends AttributeValue> extends BaseDatatypeFactory<AV>
+	public static abstract class BaseFactory<AV extends AttributeValue> extends BaseAttributeValueFactory<AV>
 	{
 		private static final IllegalArgumentException MORE_THAN_ONE_ELEMENT_IN_XACML_ATTRIBUTE_VALUE_CONTENT_EXCEPTION = new IllegalArgumentException(
 				"Invalid primitive AttributeValueType: content has more than one element. Expected: empty or single String element ");
 
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
-		 * 
-		 * @param instanceClass
-		 *            Java implementation class representing the attribute datatype
-		 * @param datatypeId
-		 *            datatype identifier
-		 * @param functionIdPrefix
-		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected Factory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
+		protected BaseFactory(final AttributeDatatype<AV> datatype)
 		{
-			super(instanceClass, datatypeId, functionIdPrefix);
+			super(datatype);
 		}
 
 		/**
-		 * Creates attribute value from string representation and possibly extra XML attributes
+		 * Creates attribute value from a singleton value and possibly extra XML attributes
 		 * 
-		 * @param val
-		 *            string representation
+		 * @param value
+		 *            attribute value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
 		 * @param otherXmlAttributes
-		 *            other XML attributes (optional, i.e. null if none; if always null, use {@link SimpleValue.StringContentOnlyFactory} instead)
+		 *            other XML attributes (mandatory); if always empty, use {@link SimpleValue.StringContentOnlyFactory} instead)
 		 * @param xPathCompiler
 		 *            (optional) XPath compiler for compiling any XPath expression in the value, e.g. xpathExpression datatype
 		 * @return instance of {@code F_AV}
 		 */
-		public abstract AV getInstance(String val, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler);
+		public abstract AV getInstance(Serializable value, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler);
 
 		/**
-		 * Creates an instance of {@code F_AV} from a XACML AttributeValueType-originating content ( {@code jaxbAttrVal.getContent()}) of which must contain a single value that is a valid String
-		 * representation for datatype {@code datatype} and possibly other XML attributes; or no value at all, in which case it is considered as the empty string. An example of the latter case is:
-		 * 
-		 * <pre>
-		 * {@literal <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"/>}
-		 * </pre>
+		 * Creates an instance of {@code F_AV} from a XACML AttributeValue-originating content (e.g. {@code jaxbAttrVal.getContent()}) expected to be a singleton value (valid for this factory's
+		 * supported {@code datatype}) and possibly other XML attributes (if original input is XML); or no value at all.
 		 * 
 		 * @param content
-		 *            XACML AttributeValue content, i.e. list of JAXB content elements of the following types: {@link String}, {@link Element}
+		 *            XACML AttributeValue content, e.g. if original input is XML/JAXB, a singleton list with an element of one of the following types: {@link String}, {@link Element}; or if input is
+		 *            JSON, an single JSONObject, Number, Boolean, or String.
 		 * @throws IllegalArgumentException
-		 *             i if {@code datatype == null || content == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string
-		 *             representation for this datatype
+		 *             if {@code datatype == null || content == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation
+		 *             for this datatype
 		 */
 		@Override
-		public AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public final AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
-			final String inputStrVal;
+			if (content == null)
+			{
+				throw UNDEF_ATTR_CONTENT_EXCEPTION;
+			}
 
-			/*
-			 * If content is empty, e.g. <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"/>, assume value is empty string.
-			 */
+			final Serializable content0;
 			final Iterator<Serializable> contentIterator = content.iterator();
 			if (!contentIterator.hasNext())
 			{
-				inputStrVal = "";
+				content0 = null;
 			}
 			else
 			{
-				final Serializable content0 = contentIterator.next();
-				if (!(content0 instanceof String))
-				{
-					throw new IllegalArgumentException("Invalid primitive AttributeValueType: content contains instance of " + content0.getClass().getName() + ". Expected: " + String.class);
-				}
-
-				inputStrVal = (String) content0;
+				content0 = contentIterator.next();
 				if (contentIterator.hasNext())
 				{
 					throw MORE_THAN_ONE_ELEMENT_IN_XACML_ATTRIBUTE_VALUE_CONTENT_EXCEPTION;
 				}
 			}
 
-			return getInstance(inputStrVal, otherXmlAttributes, xPathCompiler);
+			return getInstance(content0, otherXmlAttributes, xPathCompiler);
+		}
+
+	}
+
+	/**
+	 * Datatype-specific Attribute Value Factory that supports values based on string and possibly other type of {@link Serializable} content without any extra XML attributes.
+	 * 
+	 * @param <AV>
+	 *            type of attribute values created by this factory
+	 */
+	public static abstract class StringParseableValueFactory<AV extends AttributeValue> extends BaseFactory<AV>
+	{
+		private static final IllegalArgumentException NON_NULL_OTHER_XML_ATTRIBUTES_ARG_EXCEPTION = new IllegalArgumentException(
+				"Invalid value content: extra XML attributes are not supported by this primitive datatype, only string content.");
+
+		/**
+		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
+		 */
+		protected StringParseableValueFactory(final AttributeDatatype<AV> datatype)
+		{
+			super(datatype);
+		}
+
+		/**
+		 * Creates attribute value from string representation
+		 * 
+		 * @param val
+		 *            string representation
+		 * @return instance of {@code SCOF_AV}
+		 * @throws IllegalArgumentException
+		 *             val not valid for this factory
+		 */
+		public abstract AV parse(String val) throws IllegalArgumentException;
+
+		/**
+		 * Creates attribute value from a singleton value and possibly extra XML attributes
+		 * 
+		 * @param value
+		 *            attribute value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
+		 * @return instance of {@code F_AV}
+		 * @throws IllegalArgumentException
+		 *             if value is not valid/parseable for this factory
+		 */
+		public abstract AV getInstance(Serializable value) throws IllegalArgumentException;
+
+		@Override
+		public AV getInstance(final Serializable content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		{
+			if (otherXmlAttributes != null && !otherXmlAttributes.isEmpty())
+			{
+				throw NON_NULL_OTHER_XML_ATTRIBUTES_ARG_EXCEPTION;
+			}
+
+			return getInstance(content);
 		}
 
 	}
@@ -162,45 +201,39 @@ public abstract class SimpleValue<V> extends AttributeValue
 	 * @param <AV>
 	 *            type of attribute values created by this factory
 	 */
-	public static abstract class StringContentOnlyFactory<AV extends AttributeValue> extends Factory<AV>
+	public static abstract class StringContentOnlyFactory<AV extends AttributeValue> extends StringParseableValueFactory<AV>
 	{
-		private static final IllegalArgumentException NON_NULL_OTHER_XML_ATTRIBUTES_ARG_EXCEPTION = new IllegalArgumentException(
-				"Invalid value content: extra XML attributes are not supported by this primitive datatype, only string content.");
-
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
-		 * 
-		 * @param instanceClass
-		 *            Java implementation class representing the attribute datatype
-		 * @param datatypeId
-		 *            datatype identifier
-		 * @param functionIdPrefix
-		 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
 		 */
-		protected StringContentOnlyFactory(final Class<AV> instanceClass, final String datatypeId, final String functionIdPrefix)
+		protected StringContentOnlyFactory(final AttributeDatatype<AV> datatype)
 		{
-			super(instanceClass, datatypeId, functionIdPrefix);
+			super(datatype);
 		}
 
 		@Override
-		public AV getInstance(final String val, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler)
+		public AV getInstance(final Serializable value)
 		{
-			if (otherXmlAttributes != null && !otherXmlAttributes.isEmpty())
+			final String inputStrVal;
+			if (value == null)
 			{
-				throw NON_NULL_OTHER_XML_ATTRIBUTES_ARG_EXCEPTION;
+				/*
+				 * Original content is empty, e.g. empty JAXB content list if <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"/>, value is considered empty string.
+				 */
+				inputStrVal = "";
+			}
+			else
+			{
+				if (!(value instanceof String))
+				{
+					throw new IllegalArgumentException("Invalid primitive AttributeValue: parsed value is instance of '" + value.getClass().getName() + "'. Expected: " + String.class);
+				}
+
+				inputStrVal = (String) value;
 			}
 
-			return getInstance(val);
+			return parse(inputStrVal);
 		}
-
-		/**
-		 * Creates attribute value from string representation
-		 * 
-		 * @param val
-		 *            string representation
-		 * @return instance of {@code SCOF_AV}
-		 */
-		public abstract AV getInstance(String val);
 	}
 
 	/*
@@ -229,11 +262,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 	protected SimpleValue(final String datatypeId, final V rawVal) throws IllegalArgumentException, NullPointerException
 	{
 		super(datatypeId, Collections.emptyList(), Optional.empty());
-		if (rawVal == null)
-		{
-			throw UNDEF_ATTR_CONTENT_EXCEPTION;
-		}
-
+		assert rawVal != null;
 		value = rawVal;
 	}
 

@@ -27,7 +27,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
  */
 public abstract class AbstractDecisionResult implements DecisionResult
 {
-	protected final Status status;
+	private final Status status;
 
 	private transient volatile int hashCode = 0;
 

@@ -22,14 +22,17 @@ import java.util.Deque;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Representation of an xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe. The actual type of the
- * underlying value is BigInteger. See https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html
+ * Representation of an xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.
  *
  * 
  * @version $Id: $
  */
-public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> implements Comparable<IntegerValue>
+public final class IntegerValue extends NumericValue<GenericInteger, IntegerValue> implements Comparable<IntegerValue>
 {
 	/**
 	 * 
@@ -40,105 +43,136 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 			"BigInteger argument outside the range which can be represented by a double");
 
 	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#integer";
-
-	/**
-	 * Value zero
-	 */
-	public static final IntegerValue ZERO = new IntegerValue(BigInteger.ZERO);
-
-	/**
 	 * Creates instance from integer argument
 	 *
 	 * @param val
-	 *            Java equivalent of xsd:integer
+	 *            Java representation of xsd:integer
 	 */
-	public IntegerValue(final BigInteger val)
+	public IntegerValue(final GenericInteger val)
 	{
-		super(TYPE_URI, val);
+		super(XacmlDatatypeId.INTEGER.value(), val);
+	}
+
+	private static final IntBasedValueFactory.CachingHelper<IntegerValue> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<IntegerValue>()
+	{
+
+		@Override
+		public Class<IntegerValue> getInstanceClass()
+		{
+			return IntegerValue.class;
+		}
+
+		@Override
+		public IntegerValue newInstance(final int i)
+		{
+			return new IntegerValue(MediumInteger.valueOf(i));
+		}
+
+		@Override
+		public IntegerValue newInstance(final long l) throws ArithmeticException
+		{
+			return new IntegerValue(LongInteger.valueOf(l));
+		}
+
+	});
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(IntegerValue.class);
+
+	/**
+	 * Returns an {@link IntegerValue} instance representing the specified int value
+	 * 
+	 * @param i
+	 *            integer
+	 * @return instance representing {@code i}
+	 */
+	public static IntegerValue valueOf(final int i)
+	{
+		return INSTANCE_FACTORY.getValue(i);
 	}
 
 	/**
-	 * Creates instance from long argument, mostly for easy writing of tests
-	 * <p>
-	 * Be aware that type long is not equivalent to xsd:integer type, BigInteger is. See https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html
-	 * </p>
-	 *
-	 * @param val
-	 *            integer value as Java long
+	 * Returns an {@link IntegerValue} instance representing the specified long value
+	 * 
+	 * @param l
+	 *            long integer
+	 * @return instance representing {@code l}
 	 */
-	public IntegerValue(final long val)
+	public static IntegerValue valueOf(final long l)
 	{
-		this(BigInteger.valueOf(val));
+		return INSTANCE_FACTORY.getValue(l);
 	}
 
-	/**
-	 * Creates instance from lexical representation of xsd:integer
-	 *
-	 * @param val
-	 *            String representation of xsd:integer
-	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code val} is not a valid string representation of xs:integer
-	 */
-	public IntegerValue(final String val) throws IllegalArgumentException
+	private static IntegerValue valueOf(final GenericInteger i)
 	{
-		this(DatatypeConverter.parseInteger(val));
+		try
+		{
+			final int intVal = i.intValueExact();
+			return IntegerValue.valueOf(intVal);
+		}
+		catch (final ArithmeticException e)
+		{
+			LOGGER.debug("Input integer value is too big to fit in an int: {}", i);
+		}
+
+		return new IntegerValue(i);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final IntegerValue o)
 	{
-		return this.value.compareTo(o.value);
+		return value.compareTo(o.value);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public IntegerValue abs()
 	{
-		return new IntegerValue(this.value.abs());
+		// TODO: caching
+		final GenericInteger result = value.abs();
+		return result == value ? this : IntegerValue.valueOf(result);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public IntegerValue add(final Deque<IntegerValue> others)
+	public IntegerValue add(final Deque<? extends IntegerValue> others) throws ArithmeticException
 	{
-		BigInteger sum = value;
+		GenericInteger result = value;
 		while (!others.isEmpty())
 		{
-			sum = sum.add(others.poll().value);
+			result = result.add(others.poll().value);
 		}
 
-		return new IntegerValue(sum);
+		return result == value ? this : IntegerValue.valueOf(result);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public IntegerValue multiply(final Deque<IntegerValue> others)
+	public IntegerValue multiply(final Deque<? extends IntegerValue> others) throws ArithmeticException
 	{
-		BigInteger product = value;
+		GenericInteger result = value;
 		while (!others.isEmpty())
 		{
-			product = product.multiply(others.poll().value);
+			result = result.multiply(others.poll().value);
 		}
 
-		return new IntegerValue(product);
+		return result == value ? this : IntegerValue.valueOf(result);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public IntegerValue divide(final IntegerValue divisor) throws ArithmeticException
 	{
-		return new IntegerValue(value.divide(divisor.value));
+		final GenericInteger result = value.divide(divisor.value);
+		return result == value ? this : IntegerValue.valueOf(result);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public IntegerValue subtract(final IntegerValue subtractedVal)
+	public IntegerValue subtract(final IntegerValue subtractedVal) throws ArithmeticException
 	{
-		return new IntegerValue(value.subtract(subtractedVal.value));
+		final GenericInteger result = value.subtract(subtractedVal.value);
+		return result == value ? this : IntegerValue.valueOf(result);
+	}
+
+	@Override
+	public String printXML()
+	{
+		return DatatypeConverter.printInteger(this.value.bigIntegerValue());
 	}
 
 	/**
@@ -152,7 +186,8 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 */
 	public IntegerValue remainder(final IntegerValue divisor) throws ArithmeticException
 	{
-		return new IntegerValue(value.remainder(divisor.value));
+		final GenericInteger result = this.value.remainder(divisor.value);
+		return result == value ? this : IntegerValue.valueOf(result);
 	}
 
 	/**
@@ -164,14 +199,15 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 */
 	public double doubleValue() throws IllegalArgumentException
 	{
-		final double doubleVal = value.doubleValue();
-		if (Double.isInfinite(doubleVal) || Double.isNaN(doubleVal))
+		// TODO: caching
+		final double doubleValue = this.value.doubleValue();
+		if (Double.isInfinite(doubleValue) || Double.isNaN(doubleValue))
 		{
 			// this BigInteger has too great a magnitude to represent as a double
 			throw TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION;
 		}
 
-		return doubleVal;
+		return doubleValue;
 	}
 
 	/**
@@ -186,14 +222,6 @@ public final class IntegerValue extends NumericValue<BigInteger, IntegerValue> i
 	 */
 	public int intValueExact() throws ArithmeticException
 	{
-		return value.intValueExact();
+		return this.value.intValueExact();
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String printXML()
-	{
-		return DatatypeConverter.printInteger(this.value);
-	}
-
 }

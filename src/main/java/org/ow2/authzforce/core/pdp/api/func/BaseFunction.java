@@ -18,8 +18,8 @@
 package org.ow2.authzforce.core.pdp.api.func;
 
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Base class for XACML functions.
@@ -102,7 +102,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	 */
 	public final IndeterminateEvaluationException getIndeterminateArgException(final int argIndex)
 	{
-		return new IndeterminateEvaluationException(getIndeterminateArgMessage(argIndex), StatusHelper.STATUS_PROCESSING_ERROR);
+		return new IndeterminateEvaluationException(getIndeterminateArgMessage(argIndex), XacmlStatusCode.PROCESSING_ERROR.value());
 	}
 
 }

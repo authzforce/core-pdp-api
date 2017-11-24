@@ -17,130 +17,107 @@
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import org.ow2.authzforce.core.pdp.api.EnvironmentProperties;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.JaxbXACMLUtils.XACMLParserFactory;
-import org.ow2.authzforce.core.pdp.api.combining.CombiningAlgRegistry;
-import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
-import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;
 
 /**
- * This class is used by the PDP to find policies referenced by Policy(Set)IdReference.
- * <p>
- * Implements {@link Closeable} because it has a reference to a {@link RefPolicyProviderModule} which is {@link Closeable}.
- * <p>
- * Currently it has only one module ({@link RefPolicyProviderModule}) but may have multiple ones in the future. Therefore, this class should not be merged with {@link RefPolicyProviderModule} since it
- * may be a one-to-many relationship later, and not a one-to-one as currently.
+ * Convenient base class for {@link CloseableStaticRefPolicyProvider} implementations
+ * 
  */
-public final class BaseStaticRefPolicyProvider implements CloseableStaticRefPolicyProvider
+public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefPolicyProvider
 {
-	private static final IllegalArgumentException NULL_REF_POLICY_PROVIDER_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined RefPolicyProvider module");
-
-	private final StaticRefPolicyProviderModule refPolicyProviderMod;
+	private final int maxPolicySetRefDepth;
 
 	/**
 	 * Creates RefPolicyProvider instance
 	 * 
-	 * @param refPolicyProviderMod
-	 *            referenced Policy Provider module (supports Policy(Set)IdReferences)
-	 * @throws IllegalArgumentException
-	 *             if {@code refPolicyProviderMod} is null
-	 */
-	public BaseStaticRefPolicyProvider(final StaticRefPolicyProviderModule refPolicyProviderMod) throws IllegalArgumentException
-	{
-		if (refPolicyProviderMod == null)
-		{
-			throw NULL_REF_POLICY_PROVIDER_ARGUMENT_EXCEPTION;
-		}
-
-		this.refPolicyProviderMod = refPolicyProviderMod;
-	}
-
-	/**
-	 * Creates RefPolicyProvider instance
-	 * 
-	 * @param refPolicyProviderModFactory
-	 *            refPolicyProvider module factory creating instance of {@link StaticRefPolicyProviderModule} from configuration defined by {@code jaxbRefPolicyProvider}
-	 * @param jaxbRefPolicyProvider
-	 *            XML/JAXB configuration of RefPolicyProvider module
 	 * @param maxPolicySetRefDepth
-	 *            maximum depth of PolicySet reference chaining via PolicySetIdReference: PolicySet1 -> PolicySet2 -> ...; a strictly negative value means no limit
-	 * @param expressionFactory
-	 *            Expression factory for parsing XACML Expressions in the policies
-	 * @param combiningAlgRegistry
-	 *            Combining algorithm registry for getting implementations of algorithms used in the policies
-	 * @param xacmlParserFactory
-	 *            XACML parser factory
-	 * @param environmentProperties
-	 *            PDP configuration environment properties
-	 * @throws IllegalArgumentException
-	 *             if {@code refPolicyProviderModFactory != null} and
-	 *             {@code refPolicyProviderModFactory.getInstance(jaxbRefPolicyProvider, xacmlParserFactory, maxPolicySetRefDepth, expressionFactory, combiningAlgRegistry, environmentProperties)} does
-	 *             not implement {@link StaticRefPolicyProviderModule}
+	 *            max policy reference (e.g. XACML PolicySetIdReference) depth, i.e. max length of the chain of policy references
 	 */
-	public <CONF extends AbstractPolicyProvider> BaseStaticRefPolicyProvider(final CONF jaxbRefPolicyProvider, final RefPolicyProviderModule.Factory<CONF> refPolicyProviderModFactory,
-			final XACMLParserFactory xacmlParserFactory, final ExpressionFactory expressionFactory, final CombiningAlgRegistry combiningAlgRegistry, final int maxPolicySetRefDepth,
-			final EnvironmentProperties environmentProperties) throws IllegalArgumentException
+	public BaseStaticRefPolicyProvider(final int maxPolicySetRefDepth)
 	{
-		this(refPolicyProviderModFactory == null ? null : validate(refPolicyProviderModFactory.getInstance(jaxbRefPolicyProvider, xacmlParserFactory, maxPolicySetRefDepth, expressionFactory,
-				combiningAlgRegistry, environmentProperties)));
-	}
-
-	private static StaticRefPolicyProviderModule validate(final RefPolicyProviderModule refPolicyProviderModule) throws IllegalArgumentException
-	{
-		if (!(refPolicyProviderModule instanceof StaticRefPolicyProviderModule))
-		{
-			throw new IllegalArgumentException("RefPolicyProviderModule arg '" + refPolicyProviderModule + "'  is not compatible with " + BaseStaticRefPolicyProvider.class
-					+ ". Expected: instance of " + StaticRefPolicyProviderModule.class + ". Make sure the PDP extension of type " + RefPolicyProviderModule.Factory.class
-					+ " corresponding to the refPolicyProvider in PDP configuration can create such instances.");
-		}
-
-		return (StaticRefPolicyProviderModule) refPolicyProviderModule;
+		this.maxPolicySetRefDepth = maxPolicySetRefDepth < 0 ? UNLIMITED_POLICY_REF_DEPTH : maxPolicySetRefDepth;
 	}
 
 	@Override
-	public Deque<String> checkJoinedPolicyRefChain(final Deque<String> policyRefChain1, final List<String> policyRefChain2)
+	public final Deque<String> joinPolicyRefChains(final Deque<String> policyRefChain1, final List<String> policyRefChain2) throws IllegalArgumentException
 	{
-		return this.refPolicyProviderMod.checkJoinedPolicyRefChain(policyRefChain1, policyRefChain2);
+		return RefPolicyProvider.joinPolicyRefChains(policyRefChain1, policyRefChain2, maxPolicySetRefDepth);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Resolve reference to Policy, e.g. PolicyIdReference
 	 * 
-	 * @see org.ow2.authzforce.core.policy.RefPolicyProvider#findPolicy(java. lang. String, com.sun.xacml.VersionConstraints, java.lang.Class, java.util.Deque)
+	 * @param policyIdRef
+	 *            target PolicyId
+	 * @param constraints
+	 *            policy version match rules
+	 * @return policy evaluator the policy matching the policy reference; or null if no match
+	 * @throws IndeterminateEvaluationException
+	 *             error resolving policy
 	 */
-	@Override
-	public TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final Optional<VersionPatterns> constraints, final Deque<String> policySetRefChain,
-			final EvaluationContext evaluationCtx) throws IndeterminateEvaluationException
-	{
-		/*
-		 * It is the responsability of the refPolicyProviderMod to update policySetRefChain and check against maxPolicySetRefDepth - using RefPolicyProvider.Utils class - whenever a
-		 * PolicySetIdReference is found in resolved PolicySets
-		 */
-		return refPolicyProviderMod.get(refPolicyType, idRef, constraints, policySetRefChain, evaluationCtx);
-	}
+	protected abstract StaticTopLevelPolicyElementEvaluator getPolicy(String policyIdRef, Optional<VersionPatterns> constraints) throws IndeterminateEvaluationException;
+
+	/**
+	 * Finds a policySet based on an reference. This may involve using the reference as indexing data to lookup a policy.
+	 * 
+	 * @param policyIdRef
+	 *            the target PolicySetId
+	 *            <p>
+	 *            WARNING: java.net.URI cannot be used here, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
+	 *            </p>
+	 *            <p>
+	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+	 *            </p>
+	 *            <p>
+	 *            See also:
+	 *            </p>
+	 *            <p>
+	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
+	 *            </p>
+	 *            <p>
+	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
+	 * @param constraints
+	 *            any optional constraints on the version of the target policy, matched against its Version attribute
+	 * @param policySetRefChainWithPolicyIdRef
+	 *            null iff this is not called to resolve a PolicySetIdReference; else this is the chain of PolicySets linked via PolicySetIdReference(s), from the root PolicySet up to (and including)
+	 *            {@code policyIdRef}. Each item in the chain is a PolicySetId of a PolicySet that is referenced by the previous item (except the first item which is the root policy) and references
+	 *            the next one. This chain is used to control PolicySetIdReferences found within the result policy, in order to detect loops (circular references) and prevent exceeding reference
+	 *            depth.
+	 *            <p>
+	 *            Beware that we only keep the IDs in the chain, and not the version, because we consider that a reference loop on the same policy ID is not allowed, no matter what the version is.
+	 *            <p>
+	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
+	 *            </p>
+	 * 
+	 * @return the policySet matching the policySet reference; or null if no match
+	 * @throws IndeterminateEvaluationException
+	 *             if error determining a matching policy of type {@code policyType}
+	 */
+	protected abstract StaticTopLevelPolicyElementEvaluator getPolicySet(String policyIdRef, Optional<VersionPatterns> constraints, Deque<String> policySetRefChainWithPolicyIdRef)
+			throws IndeterminateEvaluationException;
 
 	@Override
-	public StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String idRef, final Optional<VersionPatterns> constraints,
+	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String policyIdRef, final Optional<VersionPatterns> constraints,
 			final Deque<String> policySetRefChain) throws IndeterminateEvaluationException
 	{
-		/*
-		 * It is the responsability of the refPolicyProviderMod to update policySetRefChain and check against maxPolicySetRefDepth - using RefPolicyProvider.Utils class - whenever a
-		 * PolicySetIdReference is found in resolved PolicySets
-		 */
-		return refPolicyProviderMod.get(refPolicyType, idRef, constraints, policySetRefChain);
+		if (refPolicyType == TopLevelPolicyElementType.POLICY)
+		{
+			return getPolicy(policyIdRef, constraints);
+		}
+
+		return getPolicySet(policyIdRef, constraints, policySetRefChain);
 	}
 
 	@Override
-	public void close() throws IOException
+	public final TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<VersionPatterns> policyVersionConstraints,
+			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
-		this.refPolicyProviderMod.close();
+		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
 	}
+
 }

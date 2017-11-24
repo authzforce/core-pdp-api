@@ -69,11 +69,11 @@ public interface DecisionCache extends Closeable
 	 *            individual decision request
 	 * @param evalCtx
 	 *            evaluation context that can be used to save context about any partial/preliminary evaluation done by this decision cache when there is no cached result for {code request} yet. In
-	 *            this case, the PDP will call back {@link DecisionCache#put(PdpDecisionRequest, PdpDecisionResult, EvaluationContext)} with this same {@code evalCtx} after the PDP has computed the
-	 *            new result. Therefore, this allows the decision cache to reuse some context during an evaluation, and also to do some evaluation itself.
+	 *            this case, the PDP will call back {@link DecisionCache#put(DecisionRequest, DecisionResult, EvaluationContext)} with this same {@code evalCtx} after the PDP has computed the new
+	 *            result. Therefore, this allows the decision cache to reuse some context during an evaluation, and also to do some evaluation itself.
 	 * @return the corresponding decision result from cache; null if there is no such result in cache.
 	 */
-	PdpDecisionResult get(PdpDecisionRequest request, EvaluationContext evalCtx);
+	DecisionResult get(DecisionRequest request, EvaluationContext evalCtx);
 
 	/**
 	 * Gets the decision result(s) from the cache for the given decision request(s). The ability to get multiple cached results at once allows the Cache implementation to optimize the retrieval by
@@ -85,7 +85,7 @@ public interface DecisionCache extends Closeable
 	 *         present in the map. In other words, each request in {@code requests} must be a key in the Map returned, except if there is no corresponding result in cache. Therefore, there must not be
 	 *         any null key/value in the map.
 	 */
-	<DECISION_REQ_T extends PdpDecisionRequest> Map<DECISION_REQ_T, PdpDecisionResult> getAll(List<DECISION_REQ_T> requests);
+	<DECISION_REQ_T extends DecisionRequest> Map<DECISION_REQ_T, DecisionResult> getAll(List<DECISION_REQ_T> requests);
 
 	/**
 	 * Puts a decision request and corresponding result in cache.
@@ -95,10 +95,10 @@ public interface DecisionCache extends Closeable
 	 * @param result
 	 *            the corresponding decision result
 	 * @param evalCtx
-	 *            evaluation context that can be used to retrieve context about any partial/preliminary evaluation done by this decision cache when {@link #get(PdpDecisionRequest, EvaluationContext)}
-	 *            was called in the same request context.
+	 *            evaluation context that can be used to retrieve context about any partial/preliminary evaluation done by this decision cache when {@link #get(DecisionRequest, EvaluationContext)} was
+	 *            called in the same request context.
 	 */
-	void put(PdpDecisionRequest request, PdpDecisionResult result, EvaluationContext evalCtx);
+	void put(DecisionRequest request, DecisionResult result, EvaluationContext evalCtx);
 
 	/**
 	 * Puts decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing them all in
@@ -107,6 +107,6 @@ public interface DecisionCache extends Closeable
 	 * @param resultsByRequest
 	 *            (request, result) pairs as key-value pairs to be cached
 	 */
-	<DECISION_REQ_T extends PdpDecisionRequest> void putAll(Map<DECISION_REQ_T, PdpDecisionResult> resultsByRequest);
+	<DECISION_REQ_T extends DecisionRequest> void putAll(Map<DECISION_REQ_T, DecisionResult> resultsByRequest);
 
 }

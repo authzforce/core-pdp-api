@@ -25,6 +25,8 @@ import java.util.Optional;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+
 /**
  * Simplifies XACML Status handling.
  */
@@ -37,29 +39,9 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Standard identifier for the OK status
-	 */
-	public static final String STATUS_OK = "urn:oasis:names:tc:xacml:1.0:status:ok";
-
-	/**
-	 * Standard identifier for the MissingAttribute status
-	 */
-	public static final String STATUS_MISSING_ATTRIBUTE = "urn:oasis:names:tc:xacml:1.0:status:missing-attribute";
-
-	/**
-	 * Standard identifier for the SyntaxError status
-	 */
-	public static final String STATUS_SYNTAX_ERROR = "urn:oasis:names:tc:xacml:1.0:status:syntax-error";
-
-	/**
-	 * Standard identifier for the ProcessingError status
-	 */
-	public static final String STATUS_PROCESSING_ERROR = "urn:oasis:names:tc:xacml:1.0:status:processing-error";
-
-	/**
 	 * STATUS OK (as specified by XACML standard)
 	 */
-	public static final StatusHelper OK = new StatusHelper(STATUS_OK, Optional.empty());
+	public static final StatusHelper OK = new StatusHelper(XacmlStatusCode.OK.value(), Optional.empty());
 
 	/**
 	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that allows chaining status codes endlessly unless the implementation enforces a maximum
@@ -94,7 +76,7 @@ public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.St
 		if (detail.isPresent())
 		{
 			final String c = codes.iterator().next();
-			if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR) || c.equals(STATUS_PROCESSING_ERROR))
+			if (c.equals(XacmlStatusCode.OK.value()) || c.equals(XacmlStatusCode.SYNTAX_ERROR.value()) || c.equals(XacmlStatusCode.PROCESSING_ERROR.value()))
 			{
 				throw new IllegalArgumentException("status detail not allowed with status code: " + c);
 			}

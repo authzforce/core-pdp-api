@@ -22,14 +22,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
-
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
-import org.ow2.authzforce.core.pdp.api.value.DatatypeFactory;
 
 /**
  * Growable/udpatable attribute bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the total number of values for a given attribute - typically in
@@ -50,16 +46,12 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 {
 	private static final IllegalArgumentException NULL_ATTRIBUTE_SOURCE_EXCEPTION = new IllegalArgumentException("Undefined attribute source");
 
-	private static final IllegalArgumentException NULL_DATATYPE_FACTORY_EXCEPTION = new IllegalArgumentException("Undefined attribute datatype factory");
+	private static final IllegalArgumentException NULL_DATATYPE_FACTORY_EXCEPTION = new IllegalArgumentException("Undefined attribute datatype");
 
 	private static final UnsupportedOperationException UNSUPPORTED_ADD_OPERATION_EXCEPTION = new UnsupportedOperationException(
 			"Operation forbidden: immutable bag (toImmutable() method already called)");
 
-	private static final IllegalArgumentException ILLEGAL_JAXB_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined XACML AttributeValue");
-
 	private static final IllegalArgumentException ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
-
-	private final DatatypeFactory<AV> elementDatatypeFactory;
 
 	private final List<AV> vals = new ArrayList<>();
 
@@ -67,23 +59,19 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 
 	private volatile AttributeBag<AV> immutableCopy = null;
 
-	private final XPathCompiler xPathCompiler;
-
 	private final AttributeSource attributeSource;
 
 	/**
-	 * @param elementDatatypeFactory
+	 * @param elementDatatype
 	 *            primitive datatype factory to create every element/value in the bag
-	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions
 	 * @param attributeSource
 	 *            attribute bag source
 	 * @throws IllegalArgumentException
 	 *             iff {@code elementDatatypeFactory == null || attributeSource == null}
 	 */
-	public MutableAttributeBag(final DatatypeFactory<AV> elementDatatypeFactory, final XPathCompiler xPathCompiler, final AttributeSource attributeSource) throws IllegalArgumentException
+	public MutableAttributeBag(final Datatype<AV> elementDatatype, final AttributeSource attributeSource) throws IllegalArgumentException
 	{
-		if (elementDatatypeFactory == null)
+		if (elementDatatype == null)
 		{
 			throw NULL_DATATYPE_FACTORY_EXCEPTION;
 		}
@@ -93,37 +81,36 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 			throw NULL_ATTRIBUTE_SOURCE_EXCEPTION;
 		}
 
-		this.elementDatatypeFactory = elementDatatypeFactory;
-		this.elementType = elementDatatypeFactory.getDatatype();
-		this.xPathCompiler = xPathCompiler;
+		this.elementType = elementDatatype;
 		this.attributeSource = attributeSource;
 	}
 
 	/**
-	 * Parses XACML/JAXB AttributeValue and adds result to bag
+	 * Returns bag element datatype
 	 * 
-	 * @param jaxbAttributeValue
-	 *            XACML/JAXB AttributeValue from a XACML Attribute element
-	 * @return the new parsed value
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if {@code jaxbAttributeValue == null} or if the datatype of {@code jaxbAttributeValue} is different from other(s) in the attribute bag
+	 * @return the elementType
 	 */
-	public AV addFromJAXB(final AttributeValueType jaxbAttributeValue) throws IllegalArgumentException
+	public Datatype<AV> getElementType()
 	{
-		if (immutableCopy != null)
+		return elementType;
+	}
+
+	/**
+	 * Adds value to bag
+	 * 
+	 * @param value
+	 *            attribute value
+	 * @throws IllegalArgumentException
+	 *             if {@code value == null}
+	 */
+	public void add(final AV value)
+	{
+		if (value == null)
 		{
-			throw UNSUPPORTED_ADD_OPERATION_EXCEPTION;
+			throw ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION;
 		}
 
-		if (jaxbAttributeValue == null)
-		{
-			throw ILLEGAL_JAXB_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION;
-		}
-
-		final AV resultValue = this.elementDatatypeFactory.getInstance(jaxbAttributeValue.getContent(), jaxbAttributeValue.getOtherAttributes(), xPathCompiler);
-		vals.add(resultValue);
-		return resultValue;
+		vals.add(value);
 	}
 
 	/**
@@ -131,10 +118,11 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 	 * 
 	 * @param value
 	 *            AttributeValue from a XACML Attribute element
+	 * @return value as AV
 	 * @throws IllegalArgumentException
 	 *             if {@code value == null} or if the datatype of {@code value} is different from other(s) in the attribute bag
 	 */
-	public void add(final AttributeValue value) throws IllegalArgumentException
+	public AV addRaw(final AttributeValue value) throws IllegalArgumentException
 	{
 		if (immutableCopy != null)
 		{
@@ -146,15 +134,19 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 			throw ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION;
 		}
 
+		final AV av;
 		try
 		{
-			vals.add(this.elementType.cast(value));
+			av = this.elementType.cast(value);
 		}
 		catch (final ClassCastException e)
 		{
 			throw new IllegalArgumentException("Invalid datatype of AttributeValue in Attribute element: " + value.getDataType() + ". Expected: " + elementType
 					+ " (datatype of other value(s) already found in the same attribute bag)");
 		}
+
+		vals.add(av);
+		return av;
 	}
 
 	/**

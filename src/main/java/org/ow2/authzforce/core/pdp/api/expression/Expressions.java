@@ -19,10 +19,10 @@ package org.ow2.authzforce.core.pdp.api.expression;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +35,9 @@ public final class Expressions
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Expressions.class);
 	private static final IndeterminateEvaluationException NULL_ARG_EVAL_RESULT_INDETERMINATE_EXCEPTION = new IndeterminateEvaluationException(
-			"No value returned by arg evaluation in the current context", StatusHelper.STATUS_PROCESSING_ERROR);
+			"No value returned by arg evaluation in the current context", XacmlStatusCode.PROCESSING_ERROR.value());
 	private static final IndeterminateEvaluationException NULL_EXPECTED_RETURN_TYPE_INDETERMINATE_EXCEPTION = new IndeterminateEvaluationException("Undefined expected attribute datatype",
-			StatusHelper.STATUS_SYNTAX_ERROR);
+			XacmlStatusCode.SYNTAX_ERROR.value());
 
 	/**
 	 * Evaluate single-valued (primitive) argument expression
@@ -76,7 +76,7 @@ public final class Expressions
 		}
 		catch (final ClassCastException e)
 		{
-			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType, StatusHelper.STATUS_PROCESSING_ERROR, e);
+			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: " + returnType, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 		}
 	}
 
@@ -113,7 +113,8 @@ public final class Expressions
 		}
 		catch (final ClassCastException e)
 		{
-			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type", StatusHelper.STATUS_PROCESSING_ERROR, e);
+			throw new IndeterminateEvaluationException("Invalid expression evaluation result type: " + arg.getReturnType() + ". Expected: any primitive type",
+					XacmlStatusCode.PROCESSING_ERROR.value(), e);
 		}
 	}
 

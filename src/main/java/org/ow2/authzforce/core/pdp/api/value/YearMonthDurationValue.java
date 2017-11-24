@@ -17,6 +17,8 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Representation of an xs:yearMonthDuration value. This class supports parsing xs:yearMonthDuration values. All objects of this class are immutable and thread-safe. The choice of the Java type
  * Duration is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html and documentation of javax.xml.datatype package.
@@ -30,10 +32,6 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Official name of this type
-	 */
-	public static final String TYPE_URI = "http://www.w3.org/2001/XMLSchema#yearMonthDuration";
 
 	/**
 	 * Instantiates duration attribute value from string representation
@@ -54,7 +52,7 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 	 */
 	public YearMonthDurationValue(final String value) throws IllegalArgumentException
 	{
-		super(TYPE_URI, XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
+		super(XacmlDatatypeId.YEARMONTH_DURATION.value(), XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
 	}
 
 }

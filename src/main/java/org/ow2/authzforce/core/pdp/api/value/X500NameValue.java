@@ -19,6 +19,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
+
 /**
  * Representation of an X.500 Directory Name.
  *
@@ -31,11 +33,6 @@ public final class X500NameValue extends SimpleValue<String>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * XACML datatype URI
-	 */
-	public static final String TYPE_URI = "urn:oasis:names:tc:xacml:1.0:data-type:x500Name";
 
 	private final X500Principal x500Name;
 
@@ -51,14 +48,14 @@ public final class X500NameValue extends SimpleValue<String>
 	 */
 	public X500NameValue(final String value) throws IllegalArgumentException
 	{
-		super(TYPE_URI, value);
+		super(XacmlDatatypeId.X500_NAME.value(), value);
 		try
 		{
 			this.x500Name = new X500Principal(value);
 		}
 		catch (final IllegalArgumentException e)
 		{
-			throw new IllegalArgumentException("Invalid value (X.500 Distinguished Name) for datatype: " + TYPE_URI, e);
+			throw new IllegalArgumentException("Invalid value (X.500 Distinguished Name) for datatype: " + XacmlDatatypeId.X500_NAME.value(), e);
 		}
 	}
 

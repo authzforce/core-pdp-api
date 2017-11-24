@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
  * </ul>
  * 
  */
-public abstract class AttributeValue extends AttributeValueType implements AtomicValue
+public abstract class AttributeValue extends AttributeValueType implements PrimitiveValue
 {
 
 	/**

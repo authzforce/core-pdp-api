@@ -20,20 +20,11 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.dom.DOMResult;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import com.google.common.base.Preconditions;
 
 /**
  * Exception wrapper for XACML Indeterminate/error caused by evaluation
@@ -51,8 +42,10 @@ public class IndeterminateEvaluationException extends Exception
 	private static final long serialVersionUID = 1L;
 	private final String xacmlStatusCode;
 
+	private transient volatile Status topLevelStatus = null;
+
 	/**
-	 * Creates exception with message and XACML StatusCode (e.g. {@link StatusHelper#STATUS_PROCESSING_ERROR})
+	 * Creates exception with message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR})
 	 * 
 	 * @param message
 	 *            exception message
@@ -61,12 +54,11 @@ public class IndeterminateEvaluationException extends Exception
 	 */
 	public IndeterminateEvaluationException(final String message, final String statusCode)
 	{
-		super(message);
-		this.xacmlStatusCode = statusCode;
+		this(message, statusCode, null);
 	}
 
 	/**
-	 * Instantiates with error message and XACML StatusCode (e.g. {@link StatusHelper#STATUS_PROCESSING_ERROR}), and internal cause for error
+	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR}), and internal cause for error
 	 * 
 	 * @param message
 	 *            exception message
@@ -78,6 +70,7 @@ public class IndeterminateEvaluationException extends Exception
 	public IndeterminateEvaluationException(final String message, final String statusCode, final Throwable cause)
 	{
 		super(message, cause);
+		Preconditions.checkNotNull(statusCode, "Undefined status code (statusCode arg)");
 		this.xacmlStatusCode = statusCode;
 	}
 
@@ -92,78 +85,18 @@ public class IndeterminateEvaluationException extends Exception
 	}
 
 	/**
-	 * Get Status
+	 * Get status corresponding to the top-level exception (last occurred) in the stacktrace
 	 * 
 	 * @return status
 	 */
-	public Status getStatus()
+	public Status getTopLevelStatus()
 	{
-		return new StatusHelper(xacmlStatusCode, Optional.ofNullable(this.getMessage()));
-	}
-
-	/**
-	 * Get Status with detailed cause description. The resulting status contains a StatusDetail element with a list of StatusMessage elements. The nth StatusMessage contains the message of the nth
-	 * cause in the exception stacktrace (calling {@link Throwable#getMessage()}) The list stops when {@code maxIncludedCauseDepth} is reached or there isn't any more cause left in the stacktrace.
-	 *
-	 * @param maxIncludedCauseDepth
-	 *            max depth of the cause to be included in the result Status, i.e. any deeper cause is not included. If {@code maxIncludedCauseDepth < 1}, the result is the same as
-	 *            {@link #getStatus()}.
-	 *
-	 * @return status
-	 */
-	public Status getStatus(final int maxIncludedCauseDepth)
-	{
-		if (maxIncludedCauseDepth < 1)
+		if (topLevelStatus == null)
 		{
-			return getStatus();
+			topLevelStatus = new StatusHelper(xacmlStatusCode, Optional.ofNullable(this.getMessage()));
 		}
 
-		final List<Element> statusDetailElements = new ArrayList<>(maxIncludedCauseDepth);
-		final Marshaller marshaller;
-		try
-		{
-			marshaller = JaxbXACMLUtils.createXacml3Marshaller();
-		}
-		catch (final JAXBException e)
-		{
-			// Should not happen
-			throw new RuntimeException("Failed to create XACML/JAXB marshaller to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
-		}
-
-		try
-		{
-			addStatusMessageForEachCause(this.getCause(), 1, maxIncludedCauseDepth, statusDetailElements, marshaller);
-		}
-		catch (final JAXBException e)
-		{
-			// Should not happen
-			throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
-		}
-
-		return new StatusHelper(Collections.singletonList(xacmlStatusCode), Optional.ofNullable(this.getMessage()), Optional.of(new StatusDetail(statusDetailElements)));
-	}
-
-	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
-			final Marshaller xacml3Marshaller) throws JAXBException
-	{
-		if (cause == null)
-		{
-			return;
-		}
-
-		assert statusDetailElements != null;
-
-		// create JAXBElement: StatusMessage(cause.getMessage) and convert it to DOM Element
-		final DOMResult domResult = new DOMResult();
-		xacml3Marshaller.marshal(JaxbXACMLUtils.XACML_3_0_OBJECT_FACTORY.createStatusMessage(cause.getMessage()), domResult);
-		statusDetailElements.add(((Document) domResult.getNode()).getDocumentElement());
-
-		if (currentCauseDepth == maxIncludedCauseDepth)
-		{
-			return;
-		}
-
-		addStatusMessageForEachCause(cause.getCause(), currentCauseDepth + 1, maxIncludedCauseDepth, statusDetailElements, xacml3Marshaller);
+		return topLevelStatus;
 	}
 
 }

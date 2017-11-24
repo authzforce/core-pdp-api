@@ -21,17 +21,17 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 /**
- * Top-level policy element evaluator interface, where top-level policy element
- * refers to a XACML Policy or PolicySet.
+ * Marker interface for evaluators of top-level policy elements: XACML Policy or PolicySet.
+ * <p>
+ * This is the type returned by {@link RootPolicyProvider} and {@link RefPolicyProvider}.
  * 
  */
-public interface TopLevelPolicyElementEvaluator extends PolicyEvaluator
+public interface TopLevelPolicyElementEvaluator extends VersionFixedPolicyEvaluator
 {
 	/**
-	 * Get policy version, e.g. for auditing
+	 * Gets the evaluated policy's primary metadata (type, ID, version...)
 	 * 
-	 * @return evaluated policy(Set) Version
+	 * @return the policy's primary metadata
 	 */
-	PolicyVersion getPolicyVersion();
-	
+	PrimaryPolicyMetadata getPrimaryPolicyMetadata();
 }

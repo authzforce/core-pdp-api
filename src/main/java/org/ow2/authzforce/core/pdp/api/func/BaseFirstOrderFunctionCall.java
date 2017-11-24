@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.expression.Expressions;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
@@ -32,6 +31,7 @@ import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * This class provides a skeletal implementation of the {@link FirstOrderFunctionCall} interface, to minimize the effort required to implement this interface. It requires a function definition and
@@ -91,7 +91,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 			catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), StatusHelper.STATUS_PROCESSING_ERROR, e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
 			}
 
 			results.add(argVal);
@@ -134,7 +134,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 			catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), StatusHelper.STATUS_PROCESSING_ERROR, e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
 			}
 
 			results.add(argVal);
@@ -173,7 +173,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 			catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, StatusHelper.STATUS_PROCESSING_ERROR, e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, e.getStatusCode(), e);
 			}
 
 			results[resultIndex] = argResult;
@@ -239,7 +239,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			if (requestTimeArgCount < minRequestTimeArgCount)
 			{
 				throw new IndeterminateEvaluationException("Invalid number of request-time args (" + requestTimeArgCount + ") passed to function" + funcDesc + ". Required: >= "
-						+ minRequestTimeArgCount, StatusHelper.STATUS_SYNTAX_ERROR);
+						+ minRequestTimeArgCount, XacmlStatusCode.PROCESSING_ERROR.value());
 			}
 		}
 	}
@@ -307,7 +307,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		{
 			if (totalActualArgCount != arity)
 			{
-				throw new IllegalArgumentException("Invalid number (" + totalActualArgCount + ") to function: " + funcId + ". Required: " + arity);
+				throw new IllegalArgumentException("Invalid number of args (" + totalActualArgCount + ") to function: " + funcId + ". Required: " + arity);
 			}
 
 			// We will validate remainingArgs only, so we skip all the initial arguments, and therefore check the list
@@ -574,7 +574,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				}
 				catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
+					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
 				}
 			}
 
@@ -659,7 +659,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				}
 				catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
+					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
 				}
 			}
 
@@ -677,7 +677,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 					catch (final ClassCastException e)
 					{
 						throw new IndeterminateEvaluationException("Function " + this.functionId + ": Type of arg #" + finalArgs.size() + " not valid: " + remainingArg.getDataType() + ". Required: "
-								+ parameterType + ".", StatusHelper.STATUS_PROCESSING_ERROR);
+								+ parameterType + ".", XacmlStatusCode.PROCESSING_ERROR.value());
 					}
 				}
 			}
@@ -760,7 +760,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 			catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
+				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
 			}
 
 			return evaluate(bagArgs);
@@ -828,7 +828,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 			catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, StatusHelper.STATUS_PROCESSING_ERROR, e);
+				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
 			}
 
 			final PRIMITIVE_PARAM_T[] castRemainingArgs;
@@ -845,7 +845,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				catch (final ClassCastException e)
 				{
 					throw new IndeterminateEvaluationException("Function " + functionId + ": Type of request-time args (# >= " + argExpressions.size() + ") not valid: "
-							+ remainingArgs.getClass().getComponentType() + ". Required: " + primitiveParamType + ".", StatusHelper.STATUS_PROCESSING_ERROR);
+							+ remainingArgs.getClass().getComponentType() + ". Required: " + primitiveParamType + ".", XacmlStatusCode.PROCESSING_ERROR.value());
 				}
 			}
 

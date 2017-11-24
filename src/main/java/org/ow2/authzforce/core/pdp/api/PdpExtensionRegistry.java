@@ -33,7 +33,7 @@ public interface PdpExtensionRegistry<T extends PdpExtension>
 	 * Get an extension by ID.
 	 * 
 	 * @param identity
-	 *            ID of extension to loop up
+	 *            ID of extension to look up
 	 * 
 	 * @return extension, null if none with such ID in the registry
 	 */
@@ -61,7 +61,7 @@ public interface PdpExtensionRegistry<T extends PdpExtension>
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public int compare(E e1, E e2)
+		public int compare(final E e1, final E e2)
 		{
 			return e1.getId().compareTo(e2.getId());
 		}

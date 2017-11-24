@@ -18,9 +18,12 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+
+import com.google.common.base.Preconditions;
 
 /**
  * (Immutable) ExtendedDecision factory
@@ -97,6 +100,12 @@ public final class ExtendedDecisions
 		{
 			return toString;
 		}
+
+		@Override
+		public Optional<IndeterminateEvaluationException> getCauseForIndeterminate()
+		{
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -132,7 +141,7 @@ public final class ExtendedDecisions
 		 */
 		private final DecisionType extIndeterminate;
 
-		private final Status status;
+		private final Optional<IndeterminateEvaluationException> cause;
 
 		private transient volatile int hashCode = 0;
 
@@ -141,15 +150,16 @@ public final class ExtendedDecisions
 		/*
 		 * For indeterminate result
 		 */
-		private IndeterminateExtendedDecision(final DecisionType extendedIndeterminate, final Status status)
+		private IndeterminateExtendedDecision(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause)
 		{
 			/*
-			 * There must be a reason for indeterminate indicated in the status, therefore status != null
+			 * There must be a reason for indeterminate, therefore cause != null
 			 */
-			assert extendedIndeterminate != null && status != null;
+			assert extendedIndeterminate != null && cause != null;
 
 			this.extIndeterminate = extendedIndeterminate;
-			this.status = status;
+			// Create Optional to #getCauseForIndeterminate()
+			this.cause = Optional.of(cause);
 		}
 
 		/** {@inheritDoc} */
@@ -158,7 +168,7 @@ public final class ExtendedDecisions
 		{
 			if (hashCode == 0)
 			{
-				hashCode = Objects.hash(this.extIndeterminate, this.status);
+				hashCode = Objects.hash(this.extIndeterminate, this.cause.get());
 			}
 
 			return hashCode;
@@ -179,9 +189,13 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
+			final Optional<IndeterminateEvaluationException> otherCause = other.getCauseForIndeterminate();
+			if (!otherCause.isPresent())
+			{
+				return false;
+			}
 
-			// Status is optional in XACML
-			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && status.equals(other.getStatus());
+			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.get().equals(otherCause.get());
 		}
 
 		/** {@inheritDoc} */
@@ -190,7 +204,7 @@ public final class ExtendedDecisions
 		{
 			if (toString == null)
 			{
-				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + status + " )";
+				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + cause.get().getTopLevelStatus() + " )";
 			}
 			return toString;
 		}
@@ -204,13 +218,19 @@ public final class ExtendedDecisions
 		@Override
 		public Status getStatus()
 		{
-			return this.status;
+			return this.cause.get().getTopLevelStatus();
 		}
 
 		@Override
 		public DecisionType getExtendedIndeterminate()
 		{
 			return this.extIndeterminate;
+		}
+
+		@Override
+		public Optional<IndeterminateEvaluationException> getCauseForIndeterminate()
+		{
+			return cause;
 		}
 	}
 
@@ -297,9 +317,13 @@ public final class ExtendedDecisions
 			}
 			return toString;
 		}
-	}
 
-	private static final RuntimeException NULL_INDETERMINATE_CAUSE_RUNTIME_EXCEPTION = new RuntimeException("No cause provided for Indeterminate result");
+		@Override
+		public Optional<IndeterminateEvaluationException> getCauseForIndeterminate()
+		{
+			return Optional.empty();
+		}
+	}
 
 	private ExtendedDecisions()
 	{
@@ -364,7 +388,7 @@ public final class ExtendedDecisions
 	}
 
 	/**
-	 * Instantiates a Indeterminate Decision result with a given error info (status)
+	 * Instantiates a Indeterminate Decision result with a given summary error info (status) and optional stacktrace (cause
 	 *
 	 * @param extendedIndeterminate
 	 *            (required) Extended Indeterminate value (XACML 3.0 Core, section 7.10). We use the following convention:
@@ -375,16 +399,14 @@ public final class ExtendedDecisions
 	 *            <li>{@link DecisionType#NOT_APPLICABLE} is the default value and means the decision is not Indeterminate, and therefore any extended Indeterminate value should be ignored</li>
 	 *            </ul>
 	 * @param cause
-	 *            (required) reason/code for Indeterminate
+	 *            cause of the Indeterminate result
 	 * @return Indeterminate result
+	 * @throws IllegalArgumentException
+	 *             if {@code cause ==null}
 	 */
-	public static ExtendedDecision newIndeterminate(final DecisionType extendedIndeterminate, final Status cause)
+	public static ExtendedDecision newIndeterminate(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause) throws IllegalArgumentException
 	{
-		if (cause == null)
-		{
-			throw NULL_INDETERMINATE_CAUSE_RUNTIME_EXCEPTION;
-		}
-
+		Preconditions.checkNotNull(cause, "No cause provided for Indeterminate result");
 		return new IndeterminateExtendedDecision(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
 	}
 

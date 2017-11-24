@@ -2,6 +2,41 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 12.0.0
+### Changed
+- Parent project: 6.0.0 -> 7.0.0
+- Renamed PDP extension interfaces and base implementations:
+	* (Base|Closeable)AttributeProviderModule >
+(Base|Closeable)DesignatedAttributeProvider
+	* (Base)RequestFilter -> (Base)DecisionRequestPreprocessor
+	* DecisionResultFilter -> DecisionResultPostprocessor
+	* CloseablePdp -> CloseablePdpEngine
+	* (Immutable)PdpDecisionRequest -> (Immutable)DecisionRequest
+	* PdpDecisionResult -> DecisionResult
+	* PdpDecisionRequest(Factory|Builder) -> DecisionRequest(Factory|Builder)
+	* (Base|Closeable)(Static)RefPolicyProviderModule -> (Base|Closeable)(Static)RefPolicyProvider
+	* RootPolicyProviderModule -> RootPolicyProvider
+	* (Base)DatatypeFactory(Registry) -> (Base)AttributeValueFactory(Registry) (using new class AttributeDatatype subclass of Datatype)
+- Uses of IdReferenceType (for Policy(Set)IdReference) replaced by new interface PrimaryPolicyMetadata (identifies Policy uniquely) in all APIs where necessary
+- Moved JaxbXacmlUtils utility class out to authzforce-ce-xacml-model project (renamed to Xacml3JaxbHelper)
+- New extensible framework for PDP engine adapters, e.g. for specific types of input/output (SerDes), PDP engine itself made agnostic of request/response serialization formats 
+	* New package org.ow2.authzforce.core.pdp.api.io for classes related to input/output (SerDes) adapter, e.g. from/to XACML-XML
+	* New interface PdpEngineInoutAdapter (default implementation is XACML/XML using JAXB API, XACML/JSON one moved to separate project)
+- More optimal implementation of XACML integer values: 3 possible
+GenericInteger interface implementations depending on maximum (size)
+(ArbitrarilyBigInteger for java BigIntegers, MediumInteger for java Integers, and LongInteger for java Longs), with value caching (like Java
+Integer/Long). This optimizes memory usage / CPU computation when dealing with XACML integers small enough to fit in Java Integers/Longs.
+- Class naming conventions regarding acronyms (only first letter should be uppercase, see also
+https://google.github.io/styleguide/javaguide.html#s5.3-camel-case), for example:
+	* AnyURIValue -> AnyUriValue
+	* AttributeFQN -> AttributeFqn
+	* AttributeFQNs -> AttributeFqns
+	* CloseablePDP -> CloseablePdp
+	* JaxbXACMLUtils -> JaxbXacmlUtils
+	* PDPEngine -> PdpEngine
+	* XMLUtils -> XmlUtils...
+
+
 ## 11.0.0 
 ### Changed 
 - StaticRefPolicyProviderModule interface to abstract class

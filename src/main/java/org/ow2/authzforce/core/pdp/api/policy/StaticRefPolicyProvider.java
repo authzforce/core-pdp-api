@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 import java.util.Deque;
 import java.util.Optional;
 
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
@@ -54,8 +55,12 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 * @param constraints
 	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
 	 * @param policySetRefChain
-	 *            chain of ancestor PolicySetIdReferences leading to the policy using reference {@code idRef} (included). This chain is used to control all PolicySetIdReferences found within the
-	 *            result policy, i.e. detect loops (circular references) and validate reference depth.
+	 *            null iff this is not called to resolve a PolicySetIdReference; else ({@code policyType == TopLevelPolicyElementType#POLICY_SET}) this is the chain of PolicySets linked via
+	 *            PolicySetIdReference(s), from the root PolicySet up to (and including) {@code policyId}. Each item in the chain is a PolicySetId of a PolicySet that is referenced by the previous
+	 *            item (except the first item which is the root policy) and references the next one. This chain is used to control PolicySetIdReferences found within the result policy, in order to
+	 *            detect loops (circular references) and prevent exceeding reference depth.
+	 *            <p>
+	 *            Beware that we only keep the IDs in the chain, and not the version, because we consider that a reference loop on the same policy ID is not allowed, no matter what the version is.
 	 *            <p>
 	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
 	 *            </p>
@@ -66,5 +71,12 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 */
 	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String policyIdRef, Optional<VersionPatterns> constraints, Deque<String> policySetRefChain)
 			throws IndeterminateEvaluationException;
+
+	@Override
+	default TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<VersionPatterns> policyVersionConstraints,
+			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	{
+		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
+	}
 
 }
