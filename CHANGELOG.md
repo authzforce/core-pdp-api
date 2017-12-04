@@ -2,6 +2,12 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 12.1.0
+### Changed
+- Parent project: 7.0.0 -> 7.1.0
+	- Managed dependency version: guava: 21.0 -> 22.0
+
+
 ## 12.0.0
 ### Changed
 - Parent project: 6.0.0 -> 7.0.0
