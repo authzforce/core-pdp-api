@@ -17,14 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Bag.Validator;
+import org.ow2.authzforce.core.pdp.api.value.SimpleValue.StringParseableValueFactory;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import com.google.common.collect.ImmutableMultiset;
@@ -407,7 +410,7 @@ public final class Bags
 	 *            bag element datatype
 	 * @param attributeBagSource
 	 *            source of the attribute values
-	 * @return bag attribute bag
+	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
@@ -453,13 +456,45 @@ public final class Bags
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
 	 * @param elementDatatype
 	 *            bag element datatype
-	 * @return bag attribute bag
+	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
 	public static <AV extends AttributeValue> AttributeBag<AV> newAttributeBag(final Datatype<AV> elementDatatype, final Collection<AV> values) throws IllegalArgumentException
 	{
 		return newAttributeBag(elementDatatype, values, AttributeSources.REQUEST);
+	}
+
+	/**
+	 * Creates instance of immutable attribute bag from raw values, with {@link AttributeSources#REQUEST} as attribute source.
+	 * 
+	 * @param attributeValueFactory
+	 *            factory in charge of create attribute values in the bag
+	 * 
+	 * @param rawValues
+	 *            raw values to be parsed by {@code attributeValueFactory} to create {@link AttributeValue}s
+	 * 
+	 * @return attribute bag
+	 * @throws IllegalArgumentException
+	 *             if {@code attributeValueFactory == null } or {@code rawValues} has at least one element which is null:
+	 *             {@code rawValues != null && !rawValues.isEmpty() && rawValues.iterator().next() == null}
+	 */
+	public static <AV extends AttributeValue> AttributeBag<AV> newAttributeBag(final StringParseableValueFactory<AV> attributeValueFactory, final Collection<Serializable> rawValues)
+			throws IllegalArgumentException
+	{
+		if (attributeValueFactory == null)
+		{
+			throw NULL_DATATYPE_EXCEPTION;
+		}
+
+		final Datatype<AV> elementDatatype = attributeValueFactory.getDatatype();
+
+		if (rawValues == null || rawValues.isEmpty())
+		{
+			return new EmptyAttributeBag<>(elementDatatype, null);
+		}
+
+		return newAttributeBag(elementDatatype, rawValues.stream().map(attributeValueFactory::getInstance).collect(Collectors.toList()));
 	}
 
 	/**

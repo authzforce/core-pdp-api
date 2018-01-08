@@ -183,7 +183,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		public abstract AV getInstance(Serializable value) throws IllegalArgumentException;
 
 		@Override
-		public AV getInstance(final Serializable content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public final AV getInstance(final Serializable content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			if (otherXmlAttributes != null && !otherXmlAttributes.isEmpty())
 			{
@@ -212,7 +212,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 		}
 
 		@Override
-		public AV getInstance(final Serializable value)
+		public final AV getInstance(final Serializable value)
 		{
 			final String inputStrVal;
 			if (value == null)
