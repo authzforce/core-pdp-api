@@ -2,6 +2,24 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 13.0.0
+### Changed
+- Updated authzforce-ce-parent version: 7.1.0 -> 7.2.0:
+  - Changes dependency version: slf4j: 1.7.22 --> 1.7.25
+  - Changes build plugin versions:
+    - OWASP dependency-check plugin: 3.0.1 -> 3.0.2 (fix blocking bug #978 on their github) 
+- Copyright end year (2018) in license headers
+- API interface/abstract class:
+  - `SimpleValue.BaseFactory` abstract class: new `getSupportedInputTypes()`
+for simple attribute value factories to specify the input Java types
+they support, i.e. that they can parse to AttributeValue, in order to help implement new
+`AttributeValueFactoryRegistry#newAttributeValue/AttributeBag(...)` methods
+  - `AttributeValueFactoryRegistry` interface: new `newAttributeValue(Serializable)` and
+`newAttributeBag(Collection<? extends Serializable>)` methods for creating `AttributeValue`/`AttributeBag` from raw Java
+types without specifying a XACML datatype argument explicitly, but based on the input types supported by the simple AttributeValueFactories (of subtype `SimpleValue.BaseFactory`) in the registry, which info is provided by the `getSupportedInputTypes()` mentioned previously. This change contributes to the implementation of [authzforce-ce-core issue #10 on github](https://github.com/authzforce/core/issues/10).
+- `X500NameValue` class: added constructor from X500Principal
+
+
 ## 12.1.0
 ### Changed
 - Parent project: 7.0.0 -> 7.1.0
