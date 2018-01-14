@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Thales Services SAS.
+ * Copyright 2012-2018 Thales Services SAS.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -52,7 +53,7 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 	 */
 	public YearMonthDurationValue(final String value) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.YEARMONTH_DURATION.value(), XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
+		super(XacmlDatatypeId.YEARMONTH_DURATION.value(), XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
 	}
 
 }

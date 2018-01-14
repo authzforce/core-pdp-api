@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Thales Services SAS.
+ * Copyright 2012-2018 Thales Services SAS.
  *
  * This file is part of AuthzForce CE.
  *
@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
@@ -51,6 +53,23 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public final class XmlUtils
 {
+	/**
+	 * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report
+	 * indicates it should be and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance matters for performance: https://www.java.net/node/666491 The
+	 * alternative would be to use ThreadLocal to limit thread-safety issues in the future.
+	 */
+	public static final DatatypeFactory XML_TEMPORAL_DATATYPE_FACTORY;
+	static
+	{
+		try
+		{
+			XML_TEMPORAL_DATATYPE_FACTORY = DatatypeFactory.newInstance();
+		}
+		catch (final DatatypeConfigurationException e)
+		{
+			throw new RuntimeException("Error instantiating XML datatype factory for parsing strings corresponding to XML schema date/time/duration values into Java types", e);
+		}
+	}
 
 	/**
 	 * Saxon configuration file for Attributes/Content XML parsing (into XDM data model) and AttributeSelector's XPath evaluation
@@ -356,8 +375,8 @@ public final class XmlUtils
 
 	/**
 	 * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix mappings is returned). Therefore it can be
-	 * used as a convenient replacement for {@link SAXBasedXmlnsFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link XmlnsFilteringParser}
-	 * for polymorphism purposes.
+	 * used as a convenient replacement for {@link SAXBasedXmlnsFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link XmlnsFilteringParser} for
+	 * polymorphism purposes.
 	 *
 	 */
 	public static final class NoXmlnsFilteringParser implements XmlnsFilteringParser
@@ -403,7 +422,7 @@ public final class XmlUtils
 			return Collections.emptyMap();
 		}
 	}
-	
+
 	/**
 	 * (Namespace-filtering) XACML-to-JAXB parser factory
 	 *

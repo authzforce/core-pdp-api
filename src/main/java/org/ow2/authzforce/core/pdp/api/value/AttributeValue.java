@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Thales Services SAS.
+ * Copyright 2012-2018 Thales Services SAS.
  *
  * This file is part of AuthzForce CE.
  *
@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
@@ -51,24 +50,6 @@ public abstract class AttributeValue extends AttributeValueType implements Primi
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report
-	 * indicates it should be and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance matters for performance: https://www.java.net/node/666491 The
-	 * alternative would be to use ThreadLocal to limit thread-safety issues in the future.
-	 */
-	protected static final DatatypeFactory XML_TEMPORAL_DATATYPE_FACTORY;
-	static
-	{
-		try
-		{
-			XML_TEMPORAL_DATATYPE_FACTORY = DatatypeFactory.newInstance();
-		}
-		catch (final DatatypeConfigurationException e)
-		{
-			throw new RuntimeException("Error instantiating XML datatype factory for parsing strings corresponding to XML schema date/time/duration values into Java types", e);
-		}
-	}
 
 	private static final UnsupportedOperationException UNSUPPORTED_SET_DATATYPE_OPERATION_EXCEPTION = new UnsupportedOperationException("AttributeValue.setDataType() not allowed");
 

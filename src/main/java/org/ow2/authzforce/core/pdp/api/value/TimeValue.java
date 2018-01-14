@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Thales Services SAS.
+ * Copyright 2012-2018 Thales Services SAS.
  *
  * This file is part of AuthzForce CE.
  *
@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.value;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -45,7 +46,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 */
 	public TimeValue(final String time) throws IllegalArgumentException
 	{
-		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(time));
+		this(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(time));
 	}
 
 	/**

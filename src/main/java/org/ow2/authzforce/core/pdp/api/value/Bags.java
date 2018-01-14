@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2017 Thales Services SAS.
+ * Copyright 2012-2018 Thales Services SAS.
  *
  * This file is part of AuthzForce CE.
  *
@@ -407,7 +407,7 @@ public final class Bags
 	 *            bag element datatype
 	 * @param attributeBagSource
 	 *            source of the attribute values
-	 * @return bag attribute bag
+	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
@@ -453,7 +453,7 @@ public final class Bags
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
 	 * @param elementDatatype
 	 *            bag element datatype
-	 * @return bag attribute bag
+	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
