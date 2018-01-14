@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -47,7 +48,7 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	 */
 	public DateTimeValue(final String dateTime) throws IllegalArgumentException
 	{
-		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
+		this(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
 	}
 
 	/**
@@ -73,7 +74,7 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	 */
 	public DateTimeValue(final GregorianCalendar dateTime)
 	{
-		this(XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
+		this(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
 	}
 
 	/** {@inheritDoc} */

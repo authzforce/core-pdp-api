@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -42,6 +43,6 @@ public final class DayTimeDurationValue extends DurationValue<DayTimeDurationVal
 	 */
 	public DayTimeDurationValue(final String val) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.DAYTIME_DURATION.value(), XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
+		super(XacmlDatatypeId.DAYTIME_DURATION.value(), XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
 	}
 }

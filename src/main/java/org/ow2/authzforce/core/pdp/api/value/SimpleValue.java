@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
@@ -31,6 +32,7 @@ import javax.xml.namespace.QName;
 import net.sf.saxon.s9api.XPathCompiler;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 
+import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.w3c.dom.Element;
 
 /**
@@ -90,17 +92,36 @@ public abstract class SimpleValue<V> extends AttributeValue
 		}
 
 		/**
-		 * Creates attribute value from a singleton value and possibly extra XML attributes
+		 * Get the list of input types supported by this factory, i.e. all types of values from which this factory can create AttributeValues
+		 * 
+		 * @return supported input types
+		 */
+		public abstract Set<Class<? extends Serializable>> getSupportedInputTypes();
+
+		/**
+		 * Creates IllegalArgumentException saying the type of input {@code value} is not valid for this factory
 		 * 
 		 * @param value
-		 *            attribute value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
+		 *            input value with invalid type
+		 * @return IllegalArgumentException the created exception
+		 */
+		protected final IllegalArgumentException newInvalidInputTypeException(final Serializable value)
+		{
+			throw new IllegalArgumentException(this + ": invalid input type: " + value.getClass() + ". Expected one of: " + getSupportedInputTypes());
+		}
+
+		/**
+		 * Creates attribute value from a singleton value and possibly extra XML attributes
+		 * 
+		 * @param input
+		 *            input raw value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
 		 * @param otherXmlAttributes
 		 *            other XML attributes (mandatory); if always empty, use {@link SimpleValue.StringContentOnlyFactory} instead)
 		 * @param xPathCompiler
 		 *            (optional) XPath compiler for compiling any XPath expression in the value, e.g. xpathExpression datatype
 		 * @return instance of {@code F_AV}
 		 */
-		public abstract AV getInstance(Serializable value, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler);
+		public abstract AV getInstance(Serializable input, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler);
 
 		/**
 		 * Creates an instance of {@code F_AV} from a XACML AttributeValue-originating content (e.g. {@code jaxbAttrVal.getContent()}) expected to be a singleton value (valid for this factory's
@@ -203,12 +224,20 @@ public abstract class SimpleValue<V> extends AttributeValue
 	 */
 	public static abstract class StringContentOnlyFactory<AV extends AttributeValue> extends StringParseableValueFactory<AV>
 	{
+		private static final Set<Class<? extends Serializable>> SUPPORTED_STRING_FACTORY_INPUT_TYPES = HashCollections.newImmutableSet(String.class);
+
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
 		 */
 		protected StringContentOnlyFactory(final AttributeDatatype<AV> datatype)
 		{
 			super(datatype);
+		}
+
+		@Override
+		public final Set<Class<? extends Serializable>> getSupportedInputTypes()
+		{
+			return SUPPORTED_STRING_FACTORY_INPUT_TYPES;
 		}
 
 		@Override
@@ -226,7 +255,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 			{
 				if (!(value instanceof String))
 				{
-					throw new IllegalArgumentException("Invalid primitive AttributeValue: parsed value is instance of '" + value.getClass().getName() + "'. Expected: " + String.class);
+					throw newInvalidInputTypeException(value);
 				}
 
 				inputStrVal = (String) value;

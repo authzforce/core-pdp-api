@@ -39,10 +39,24 @@ public final class X500NameValue extends SimpleValue<String>
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
-	 * Returns a new <code>X500NameAttributeValue</code> that represents the X500 Name value indicated by the string provided.
+	 * Creates a new <code>X500NameValue</code> from an {@link X500Principal}.
 	 *
 	 * @param value
-	 *            a string representing the desired value
+	 *            a string representing the X500 name
+	 * @throws java.lang.IllegalArgumentException
+	 *             if value is not a valid XACML X500Name
+	 */
+	public X500NameValue(final X500Principal value) throws IllegalArgumentException
+	{
+		super(XacmlDatatypeId.X500_NAME.value(), value.getName());
+		this.x500Name = value;
+	}
+
+	/**
+	 * Creates a new <code>X500NameValue</code> from string form
+	 *
+	 * @param value
+	 *            a string representing the X500 name
 	 * @throws java.lang.IllegalArgumentException
 	 *             if value is not a valid XACML X500Name
 	 */
