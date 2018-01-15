@@ -34,7 +34,7 @@ public interface AttributeProvider
 	 * @param attributeFQN
 	 *            the global identifier (Category,Issuer,AttributeId) of the attribute to find
 	 * @param context
-	 *            the representation of the request data
+	 *            the representation of the request context
 	 * @param returnDatatype
 	 *            attribute value bag datatype
 	 * @return the result of retrieving the attribute, which will be a bag of values of type defined by {@code attributeDatatype}; empty bag iff no value found and no error occurred.
