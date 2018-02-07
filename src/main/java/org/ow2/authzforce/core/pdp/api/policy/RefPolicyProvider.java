@@ -175,7 +175,7 @@ public interface RefPolicyProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<VersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
+	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
 			EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
 
 }
