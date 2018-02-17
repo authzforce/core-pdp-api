@@ -55,7 +55,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	private static final IllegalArgumentException EVAL_ARGS_NULL_INPUT_STACK_EXCEPTION = new IllegalArgumentException("Input stack to store evaluation results is NULL");
 
 	/**
-	 * Evaluates primitive argument expressions in the given context, and stores all result values in a given array of a specific datatype.
+	 * Evaluates primitive argument expressions in the given context, and stores all result values in a given linear collection of a specific datatype.
 	 * 
 	 * @param args
 	 *            (mandatory) function arguments
@@ -101,7 +101,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	}
 
 	/**
-	 * Evaluates primitive argument expressions in the given context, and stores all result values in a given array.
+	 * Evaluates primitive argument expressions in the given context, and stores all result values in a given linear collection.
 	 * 
 	 * @param args
 	 *            (mandatory) function arguments
