@@ -36,26 +36,23 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	@Override
-	public final String getId()
-	{
+	public final String getId() {
 		return this.functionId;
 	}
 
 	protected BaseFunction(final String functionId)
 	{
 		this.functionId = functionId;
-		this.indeterminateArgMessagePrefix = "Function " + functionId + ": Indeterminate arg #";
+		this.indeterminateArgMessagePrefix = "Function '" + functionId + "': Indeterminate arg #";
 	}
 
 	@Override
-	public final String toString()
-	{
+	public final String toString() {
 		return this.functionId;
 	}
 
 	@Override
-	public final int hashCode()
-	{
+	public final int hashCode() {
 		if (hashCode == 0)
 		{
 			hashCode = this.functionId.hashCode();
@@ -64,8 +61,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	}
 
 	@Override
-	public final boolean equals(final Object obj)
-	{
+	public final boolean equals(final Object obj) {
 		if (this == obj)
 		{
 			return true;
@@ -88,8 +84,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	 *            function argument index (#x) that could not be determined
 	 * @return "Indeterminate arg#x" exception
 	 */
-	public final String getIndeterminateArgMessage(final int argIndex)
-	{
+	public final String getIndeterminateArgMessage(final int argIndex) {
 		return indeterminateArgMessagePrefix + argIndex;
 	}
 
@@ -100,8 +95,7 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 	 *            function argument index (#x) that could not be determined
 	 * @return "Indeterminate arg#x" exception
 	 */
-	public final IndeterminateEvaluationException getIndeterminateArgException(final int argIndex)
-	{
+	public final IndeterminateEvaluationException getIndeterminateArgException(final int argIndex) {
 		return new IndeterminateEvaluationException(getIndeterminateArgMessage(argIndex), XacmlStatusCode.PROCESSING_ERROR.value());
 	}
 
