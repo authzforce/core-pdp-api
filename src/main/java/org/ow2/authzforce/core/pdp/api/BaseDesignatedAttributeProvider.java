@@ -23,10 +23,6 @@ package org.ow2.authzforce.core.pdp.api;
 public abstract class BaseDesignatedAttributeProvider implements CloseableDesignatedAttributeProvider
 {
 
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_CATEGORY_EXCEPTION = new UnsupportedOperationException("Unsupported attribute category");
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_ISSUER_EXCEPTION = new UnsupportedOperationException("Unsupported attribute issuer");
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_ID_EXCEPTION = new UnsupportedOperationException("Unsupported attribute ID");
-	protected static final UnsupportedOperationException UNSUPPORTED_ATTRIBUTE_DATATYPE_EXCEPTION = new UnsupportedOperationException("Unsupported attribute datetype");
 	private static final IllegalArgumentException UNDEF_INSTANCE_ID = new IllegalArgumentException("Undefined Attribute Provider's instance ID");
 
 	private final String instanceID;

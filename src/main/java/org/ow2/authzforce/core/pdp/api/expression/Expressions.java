@@ -62,7 +62,7 @@ public final class Expressions
 		final Value val = arg.evaluate(context);
 		if (LOGGER.isDebugEnabled())
 		{
-			LOGGER.debug("eval( arg = <{}>, <context>, expectedType = <{}> ) -> <{}>", arg, returnType, val);
+			LOGGER.debug("eval( arg = ({}), context, expectedType = ({}) ) -> ({})", arg, returnType, val);
 		}
 
 		if (val == null)
@@ -99,7 +99,7 @@ public final class Expressions
 			/*
 			 * Findsecbugs: prevent CRLF log injection
 			 */
-			LOGGER.debug("evalPrimitive( arg = <{}>, <context>) -> <{}>", arg, val);
+			LOGGER.debug("evalPrimitive( arg = ({}), context ) -> ({})", arg, val);
 		}
 
 		if (val == null)

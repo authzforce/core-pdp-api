@@ -36,10 +36,11 @@ public interface AttributeProvider
 	 * @param context
 	 *            the request context
 	 * @param returnDatatype
-	 *            attribute value bag datatype
-	 * @return the result of retrieving the attribute, which will be a bag of values of type defined by {@code attributeDatatype}; empty bag iff no value found and no error occurred.
+	 *            attribute bag datatype
+	 * @return the result of retrieving the attribute, which will be a bag of values of type defined by {@code returnDatatype}; empty bag iff no value found and no error occurred.
+	 * @throws UnsupportedOperationException {@code attributeFQN} or {@code returnDatatype} are not supported (the PDP engine should try another attribute provider if any)
 	 * @throws IndeterminateEvaluationException
-	 *             if any error finding the attribute value(s)
+	 *             {@code attributeFQN} or {@code returnDatatype} are supported but some error occurred while trying to resolve the attribute value(s)
 	 */
 	<AV extends AttributeValue> AttributeBag<AV> get(AttributeFqn attributeFQN, BagDatatype<AV> returnDatatype, EvaluationContext context) throws IndeterminateEvaluationException;
 
