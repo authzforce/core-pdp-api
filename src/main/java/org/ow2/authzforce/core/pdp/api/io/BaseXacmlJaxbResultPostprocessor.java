@@ -30,18 +30,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.dom.DOMResult;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
-
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
 import org.ow2.authzforce.core.pdp.api.ImmutablePepActions;
@@ -55,6 +43,18 @@ import org.w3c.dom.Element;
 
 import com.google.common.collect.ImmutableList;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
+
 /**
  * Convenient base class for {@link DecisionResultPostprocessor} implementations supporting core XACML-schema-defined XML output handled by JAXB framework
  * 
@@ -64,8 +64,15 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	private static final IllegalArgumentException ILLEGAL_RESULTS_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined resultsByRequest arg");
 	private static final IllegalArgumentException ILLEGAL_ERROR_ARG_EXCEPTION = new IllegalArgumentException("Undefined input error arg");
 
-	protected static Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
-	{
+	/**
+	 * Convert AuthzForce-specific {@link DecisionResult} to XACML {@link Result}
+	 * 
+	 * @param request
+	 *            request corresponding to result; iff null, some content from it, esp. the list of {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes}, is included in {@code result}
+	 * @param result
+	 * @return XACML Result
+	 */
+	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result) {
 		final ImmutablePepActions pepActions = result.getPepActions();
 		final List<Obligation> obligationList;
 		final List<Advice> adviceList;
@@ -73,8 +80,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		{
 			obligationList = Collections.emptyList();
 			adviceList = Collections.emptyList();
-		}
-		else
+		} else
 		{
 			obligationList = pepActions.getObligatory();
 			adviceList = pepActions.getAdvisory();
@@ -85,15 +91,15 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (applicablePolicies == null || applicablePolicies.isEmpty())
 		{
 			jaxbPolicyIdentifiers = null;
-		}
-		else
+		} else
 		{
 			final List<JAXBElement<IdReferenceType>> jaxbPolicyIdRefs = new ArrayList<>();
 			for (final PrimaryPolicyMetadata applicablePolicy : applicablePolicies)
 			{
 				final IdReferenceType jaxbIdRef = new IdReferenceType(applicablePolicy.getId(), applicablePolicy.getVersion().toString(), null, null);
-				final JAXBElement<IdReferenceType> jaxbPolicyIdRef = applicablePolicy.getType() == TopLevelPolicyElementType.POLICY ? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY
-						.createPolicyIdReference(jaxbIdRef) : Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
+				final JAXBElement<IdReferenceType> jaxbPolicyIdRef = applicablePolicy.getType() == TopLevelPolicyElementType.POLICY
+						? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicyIdReference(jaxbIdRef)
+						: Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
 				jaxbPolicyIdRefs.add(jaxbPolicyIdRef);
 			}
 
@@ -101,12 +107,11 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		return new Result(result.getDecision(), result.getStatus(), obligationList.isEmpty() ? null : new Obligations(obligationList), adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList),
-				request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
+				request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
-			final Marshaller xacml3Marshaller) throws JAXBException
-	{
+			final Marshaller xacml3Marshaller) throws JAXBException {
 		if (cause == null)
 		{
 			return;
@@ -150,20 +155,17 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public final Class<IndividualXacmlJaxbRequest> getRequestType()
-	{
+	public final Class<IndividualXacmlJaxbRequest> getRequestType() {
 		return IndividualXacmlJaxbRequest.class;
 	}
 
 	@Override
-	public final Class<Response> getResponseType()
-	{
+	public final Class<Response> getResponseType() {
 		return Response.class;
 	}
 
 	@Override
-	public Response process(final Collection<Entry<IndividualXacmlJaxbRequest, ? extends DecisionResult>> resultsByRequest)
-	{
+	public Response process(final Collection<Entry<IndividualXacmlJaxbRequest, ? extends DecisionResult>> resultsByRequest) {
 		if (resultsByRequest == null)
 		{
 			throw ILLEGAL_RESULTS_ARGUMENT_EXCEPTION;
@@ -174,8 +176,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public Response processClientError(final IndeterminateEvaluationException error)
-	{
+	public Response processClientError(final IndeterminateEvaluationException error) {
 		if (error == null)
 		{
 			throw ILLEGAL_ERROR_ARG_EXCEPTION;
@@ -185,8 +186,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (maxDepthOfErrorCauseIncludedInResult == 0)
 		{
 			finalStatus = error.getTopLevelStatus();
-		}
-		else
+		} else
 		{
 			/*
 			 * Get Status with detailed cause description. The resulting status contains a StatusDetail element with a list of StatusMessage elements. The nth StatusMessage contains the message of the
@@ -201,8 +201,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
-			}
-			catch (final JAXBException e)
+			} catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to create XACML/JAXB marshaller to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -211,8 +210,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult, statusDetailElements, marshaller);
-			}
-			catch (final JAXBException e)
+			} catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -226,8 +224,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public Response processInternalError(final IndeterminateEvaluationException error)
-	{
+	public Response processInternalError(final IndeterminateEvaluationException error) {
 		if (error == null)
 		{
 			throw ILLEGAL_ERROR_ARG_EXCEPTION;
@@ -253,20 +250,17 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		@Override
-		public final String getId()
-		{
+		public final String getId() {
 			return id;
 		}
 
 		@Override
-		public final Class<IndividualXacmlJaxbRequest> getRequestType()
-		{
+		public final Class<IndividualXacmlJaxbRequest> getRequestType() {
 			return IndividualXacmlJaxbRequest.class;
 		}
 
 		@Override
-		public final Class<Response> getResponseType()
-		{
+		public final Class<Response> getResponseType() {
 			return Response.class;
 		}
 
