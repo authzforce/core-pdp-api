@@ -48,9 +48,10 @@ public interface DecisionCache extends Closeable
 		 * 
 		 * @param conf
 		 *            extension parameters
+		 * @param envProps environment properties
 		 * @return instance of extension
 		 */
-		public abstract DecisionCache getInstance(CONF_T conf);
+		public abstract DecisionCache getInstance(CONF_T conf, EnvironmentProperties envProps);
 	}
 
 	/**

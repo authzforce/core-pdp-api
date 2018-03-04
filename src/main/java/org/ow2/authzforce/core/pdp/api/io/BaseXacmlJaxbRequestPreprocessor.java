@@ -21,13 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
-
 import org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor;
 import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -39,6 +32,13 @@ import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.NamedXacmlJaxbAt
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XPathCompiler;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
 
 /**
  * Convenient base class for {@link DecisionRequestPreprocessor} implementations supporting core XACML-schema-defined XML input handled by JAXB framework
@@ -109,18 +109,20 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 		final NamedXacmlAttributeParser<Attribute> namedXacmlAttParser = new NamedXacmlJaxbAttributeParser(attributeValueFactoryRegistry);
 		if (allowAttributeDuplicates)
 		{
-			final XacmlRequestAttributeParser<Attribute, MutableAttributeBag<?>> xacmlAttributeParser = strictAttributeIssuerMatch ? new NonIssuedLikeIssuedLaxXacmlAttributeParser<>(
-					namedXacmlAttParser) : new IssuedToNonIssuedCopyingLaxXacmlAttributeParser<>(namedXacmlAttParser);
-			this.xacmlAttrsParserFactory = requireContentForXPath ? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser,
-					SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor) : new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser,
-					SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER);
+			final XacmlRequestAttributeParser<Attribute, MutableAttributeBag<?>> xacmlAttributeParser = strictAttributeIssuerMatch
+					? new NonIssuedLikeIssuedLaxXacmlAttributeParser<>(namedXacmlAttParser)
+					: new IssuedToNonIssuedCopyingLaxXacmlAttributeParser<>(namedXacmlAttParser);
+			this.xacmlAttrsParserFactory = requireContentForXPath
+					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor)
+					: new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER);
 		}
 		else // allowAttributeDuplicates == false
 		if (strictAttributeIssuerMatch)
 		{
 			final XacmlRequestAttributeParser<Attribute, AttributeBag<?>> xacmlAttributeParser = new NonIssuedLikeIssuedStrictXacmlAttributeParser<>(namedXacmlAttParser);
-			this.xacmlAttrsParserFactory = requireContentForXPath ? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER,
-					xmlProcessor) : new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER);
+			this.xacmlAttrsParserFactory = requireContentForXPath
+					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor)
+					: new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER);
 		}
 		else
 		{

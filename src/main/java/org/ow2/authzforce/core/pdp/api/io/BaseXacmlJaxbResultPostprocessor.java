@@ -72,7 +72,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	 * @param result
 	 * @return XACML Result
 	 */
-	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result) {
+	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
+	{
 		final ImmutablePepActions pepActions = result.getPepActions();
 		final List<Obligation> obligationList;
 		final List<Advice> adviceList;
@@ -80,7 +81,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		{
 			obligationList = Collections.emptyList();
 			adviceList = Collections.emptyList();
-		} else
+		}
+		else
 		{
 			obligationList = pepActions.getObligatory();
 			adviceList = pepActions.getAdvisory();
@@ -91,7 +93,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (applicablePolicies == null || applicablePolicies.isEmpty())
 		{
 			jaxbPolicyIdentifiers = null;
-		} else
+		}
+		else
 		{
 			final List<JAXBElement<IdReferenceType>> jaxbPolicyIdRefs = new ArrayList<>();
 			for (final PrimaryPolicyMetadata applicablePolicy : applicablePolicies)
@@ -111,7 +114,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
-			final Marshaller xacml3Marshaller) throws JAXBException {
+			final Marshaller xacml3Marshaller) throws JAXBException
+	{
 		if (cause == null)
 		{
 			return;
@@ -155,17 +159,20 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public final Class<IndividualXacmlJaxbRequest> getRequestType() {
+	public final Class<IndividualXacmlJaxbRequest> getRequestType()
+	{
 		return IndividualXacmlJaxbRequest.class;
 	}
 
 	@Override
-	public final Class<Response> getResponseType() {
+	public final Class<Response> getResponseType()
+	{
 		return Response.class;
 	}
 
 	@Override
-	public Response process(final Collection<Entry<IndividualXacmlJaxbRequest, ? extends DecisionResult>> resultsByRequest) {
+	public Response process(final Collection<Entry<IndividualXacmlJaxbRequest, ? extends DecisionResult>> resultsByRequest)
+	{
 		if (resultsByRequest == null)
 		{
 			throw ILLEGAL_RESULTS_ARGUMENT_EXCEPTION;
@@ -176,7 +183,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public Response processClientError(final IndeterminateEvaluationException error) {
+	public Response processClientError(final IndeterminateEvaluationException error)
+	{
 		if (error == null)
 		{
 			throw ILLEGAL_ERROR_ARG_EXCEPTION;
@@ -186,7 +194,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (maxDepthOfErrorCauseIncludedInResult == 0)
 		{
 			finalStatus = error.getTopLevelStatus();
-		} else
+		}
+		else
 		{
 			/*
 			 * Get Status with detailed cause description. The resulting status contains a StatusDetail element with a list of StatusMessage elements. The nth StatusMessage contains the message of the
@@ -201,7 +210,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
-			} catch (final JAXBException e)
+			}
+			catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to create XACML/JAXB marshaller to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -210,7 +220,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult, statusDetailElements, marshaller);
-			} catch (final JAXBException e)
+			}
+			catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -224,7 +235,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	@Override
-	public Response processInternalError(final IndeterminateEvaluationException error) {
+	public Response processInternalError(final IndeterminateEvaluationException error)
+	{
 		if (error == null)
 		{
 			throw ILLEGAL_ERROR_ARG_EXCEPTION;
@@ -235,10 +247,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	/**
-	 *
-	 * Factory for this type of result postprocessor that allows duplicate &lt;Attribute&gt; with same meta-data in the same &lt;Attributes&gt; element of a Request (complying with XACML 3.0 core
-	 * spec, §7.3.3).
-	 *
+	 * Convenient base class for {@link org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor.Factory} implementations supporting core XACML-schema-defined XML output handled by JAXB framework
+	 * 
 	 */
 	public static abstract class Factory implements DecisionResultPostprocessor.Factory<IndividualXacmlJaxbRequest, Response>
 	{
@@ -250,17 +260,20 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		@Override
-		public final String getId() {
+		public final String getId()
+		{
 			return id;
 		}
 
 		@Override
-		public final Class<IndividualXacmlJaxbRequest> getRequestType() {
+		public final Class<IndividualXacmlJaxbRequest> getRequestType()
+		{
 			return IndividualXacmlJaxbRequest.class;
 		}
 
 		@Override
-		public final Class<Response> getResponseType() {
+		public final Class<Response> getResponseType()
+		{
 			return Response.class;
 		}
 
