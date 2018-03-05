@@ -2,6 +2,14 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 14.0.0
+### Changed
+- Interface method DecisionCache.Factory#getInstance(...): added EnvironmentProperties parameter to allow passing environment properties to DecisionCache implementations
+- Interface method AttributeProvider#get(...): replaced parameter type BagDatatype with Datatype to simplify AttributeProviders' code
+- Interface method EvaluationContext#getNamedAttributeValue(...): replaced parameter type BagDatatype with Datatype to simplify AttributeProviders' code
+- Class VersionPatterns renamed to PolicyVersionPatterns because depends on PolicyVersionPattern (with no 's') class
+
+
 ## 13.0.0
 ### Changed
 - Updated authzforce-ce-parent version: 7.1.0 -> 7.2.0:

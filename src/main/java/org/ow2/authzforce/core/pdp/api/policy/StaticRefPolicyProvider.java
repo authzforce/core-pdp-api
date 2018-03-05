@@ -69,11 +69,11 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String policyIdRef, Optional<VersionPatterns> constraints, Deque<String> policySetRefChain)
+	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String policyIdRef, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChain)
 			throws IndeterminateEvaluationException;
 
 	@Override
-	default TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<VersionPatterns> policyVersionConstraints,
+	default TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
 			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);

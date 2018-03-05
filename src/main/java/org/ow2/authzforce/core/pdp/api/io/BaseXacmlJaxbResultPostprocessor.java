@@ -30,18 +30,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.dom.DOMResult;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
-
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
 import org.ow2.authzforce.core.pdp.api.ImmutablePepActions;
@@ -55,6 +43,18 @@ import org.w3c.dom.Element;
 
 import com.google.common.collect.ImmutableList;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
+
 /**
  * Convenient base class for {@link DecisionResultPostprocessor} implementations supporting core XACML-schema-defined XML output handled by JAXB framework
  * 
@@ -64,7 +64,15 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	private static final IllegalArgumentException ILLEGAL_RESULTS_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined resultsByRequest arg");
 	private static final IllegalArgumentException ILLEGAL_ERROR_ARG_EXCEPTION = new IllegalArgumentException("Undefined input error arg");
 
-	protected static Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
+	/**
+	 * Convert AuthzForce-specific {@link DecisionResult} to XACML {@link Result}
+	 * 
+	 * @param request
+	 *            request corresponding to result; iff null, some content from it, esp. the list of {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes}, is included in {@code result}
+	 * @param result
+	 * @return XACML Result
+	 */
+	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
 	{
 		final ImmutablePepActions pepActions = result.getPepActions();
 		final List<Obligation> obligationList;
@@ -92,8 +100,9 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			for (final PrimaryPolicyMetadata applicablePolicy : applicablePolicies)
 			{
 				final IdReferenceType jaxbIdRef = new IdReferenceType(applicablePolicy.getId(), applicablePolicy.getVersion().toString(), null, null);
-				final JAXBElement<IdReferenceType> jaxbPolicyIdRef = applicablePolicy.getType() == TopLevelPolicyElementType.POLICY ? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY
-						.createPolicyIdReference(jaxbIdRef) : Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
+				final JAXBElement<IdReferenceType> jaxbPolicyIdRef = applicablePolicy.getType() == TopLevelPolicyElementType.POLICY
+						? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicyIdReference(jaxbIdRef)
+						: Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
 				jaxbPolicyIdRefs.add(jaxbPolicyIdRef);
 			}
 
@@ -101,7 +110,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		return new Result(result.getDecision(), result.getStatus(), obligationList.isEmpty() ? null : new Obligations(obligationList), adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList),
-				request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
+				request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
@@ -238,10 +247,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	}
 
 	/**
-	 *
-	 * Factory for this type of result postprocessor that allows duplicate &lt;Attribute&gt; with same meta-data in the same &lt;Attributes&gt; element of a Request (complying with XACML 3.0 core
-	 * spec, §7.3.3).
-	 *
+	 * Convenient base class for {@link org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor.Factory} implementations supporting core XACML-schema-defined XML output handled by JAXB framework
+	 * 
 	 */
 	public static abstract class Factory implements DecisionResultPostprocessor.Factory<IndividualXacmlJaxbRequest, Response>
 	{

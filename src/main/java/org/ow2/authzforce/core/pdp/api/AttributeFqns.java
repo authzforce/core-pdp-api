@@ -127,7 +127,9 @@ public final class AttributeFqns
 		{
 			if (toString == null)
 			{
-				toString = "[category='" + category + "', issuer=" + getIssuer() + ", id='" + id + "']";
+
+				final Optional<String> optIssuer = getIssuer();
+				toString = "[category='" + category + "', issuer=" + (optIssuer.isPresent() ? "'" + optIssuer.get() + "'" : null) + ", id='" + id + "']";
 			}
 
 			return toString;

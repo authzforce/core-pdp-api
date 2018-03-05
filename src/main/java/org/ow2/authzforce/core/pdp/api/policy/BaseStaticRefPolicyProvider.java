@@ -60,7 +60,7 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	 * @throws IndeterminateEvaluationException
 	 *             error resolving policy
 	 */
-	protected abstract StaticTopLevelPolicyElementEvaluator getPolicy(String policyIdRef, Optional<VersionPatterns> constraints) throws IndeterminateEvaluationException;
+	protected abstract StaticTopLevelPolicyElementEvaluator getPolicy(String policyIdRef, Optional<PolicyVersionPatterns> constraints) throws IndeterminateEvaluationException;
 
 	/**
 	 * Finds a policySet based on an reference. This may involve using the reference as indexing data to lookup a policy.
@@ -98,11 +98,11 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	protected abstract StaticTopLevelPolicyElementEvaluator getPolicySet(String policyIdRef, Optional<VersionPatterns> constraints, Deque<String> policySetRefChainWithPolicyIdRef)
+	protected abstract StaticTopLevelPolicyElementEvaluator getPolicySet(String policyIdRef, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChainWithPolicyIdRef)
 			throws IndeterminateEvaluationException;
 
 	@Override
-	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String policyIdRef, final Optional<VersionPatterns> constraints,
+	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String policyIdRef, final Optional<PolicyVersionPatterns> constraints,
 			final Deque<String> policySetRefChain) throws IndeterminateEvaluationException
 	{
 		if (refPolicyType == TopLevelPolicyElementType.POLICY)
@@ -114,7 +114,7 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	}
 
 	@Override
-	public final TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<VersionPatterns> policyVersionConstraints,
+	public final TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
 			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);

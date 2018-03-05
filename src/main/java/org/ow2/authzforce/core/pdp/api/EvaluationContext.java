@@ -21,17 +21,16 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import net.sf.saxon.s9api.XdmNode;
-
 import org.ow2.authzforce.core.pdp.api.expression.AttributeDesignatorExpression;
 import org.ow2.authzforce.core.pdp.api.expression.AttributeSelectorExpression;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
-import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 import org.ow2.authzforce.core.pdp.api.value.XPathValue;
+
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Manages context for the policy evaluation of a given authorization decision request. Typically, an instance of this is instantiated whenever the PDP gets a request and needs to perform an
@@ -60,7 +59,7 @@ public interface EvaluationContext
 		<AV extends AttributeValue> void namedAttributeValueProduced(AttributeFqn attributeFQN, AttributeBag<AV> value);
 
 		/**
-		 * To be called when {@link EvaluationContext#getNamedAttributeValue(AttributeFqn, BagDatatype)} is called
+		 * To be called when {@link EvaluationContext#getNamedAttributeValue(AttributeFqn, Datatype)} is called
 		 * 
 		 * @param attributeFQN
 		 *            attribute GUID (global ID = Category,Issuer,AttributeId)
@@ -100,19 +99,19 @@ public interface EvaluationContext
 	 * 
 	 * @param attributeFQN
 	 *            attribute GUID (global ID = Category,Issuer,AttributeId)
-	 * @param returnDatatype
-	 *            attribute value bag datatype
+	 * @param datatype
+	 *            attribute value datatype
 	 * 
 	 * @return attribute value(s), null iff attribute unknown (not set) in this context, empty if attribute known in this context but no value
 	 * @throws IndeterminateEvaluationException
 	 *             if error occurred trying to determine the attribute value(s) in context. This is different from finding without error that the attribute is not in the context (and/or no value),
 	 *             e.g. if there is a result but type is different from {@code attributeDatatype}.
 	 */
-	<AV extends AttributeValue> AttributeBag<AV> getNamedAttributeValue(AttributeFqn attributeFQN, BagDatatype<AV> returnDatatype) throws IndeterminateEvaluationException;
+	<AV extends AttributeValue> AttributeBag<AV> getNamedAttributeValue(AttributeFqn attributeFQN, Datatype<AV> datatype) throws IndeterminateEvaluationException;
 
 	/**
 	 * Get immutable iterator over the context attributes. DO NOT ever use this method to retrieve one or more specific attributes, in which case you must use
-	 * {@link #getNamedAttributeValue(AttributeFqn, BagDatatype)} instead. This is only for iterating over all the attributes, e.g. for debugging/auditing.
+	 * {@link #getNamedAttributeValue(AttributeFqn, Datatype)} instead. This is only for iterating over all the attributes, e.g. for debugging/auditing.
 	 * 
 	 * @return context attributes iterator (implementations must guarantee that the iterator is immutable, i.e. does not allow changing the internal context)
 	 */
@@ -121,7 +120,7 @@ public interface EvaluationContext
 	/**
 	 * Put Attribute values in the context, only if the attribute is not already known to this context. Indeed, an attribute value cannot be overridden once it is set in the context to comply with
 	 * 7.3.5 Attribute retrieval: "Regardless of any dynamic modifications of the request context during policy evaluation, the PDP SHALL behave as if each bag of attribute values is fully populated
-	 * in the context before it is first tested, and is thereafter immutable during evaluation." Therefore, {@link #getNamedAttributeValue(AttributeFqn, BagDatatype)} should be called always before
+	 * in the context before it is first tested, and is thereafter immutable during evaluation." Therefore, {@link #getNamedAttributeValue(AttributeFqn, Datatype)} should be called always before
 	 * calling this, for the same {@code attributeFQN}
 	 * 
 	 * @param attributeFQN
