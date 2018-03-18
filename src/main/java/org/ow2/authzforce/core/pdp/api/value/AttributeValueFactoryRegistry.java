@@ -24,10 +24,12 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import net.sf.saxon.s9api.XPathCompiler;
-
+import org.ow2.authzforce.core.pdp.api.AttributeSource;
+import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
+
+import net.sf.saxon.s9api.XPathCompiler;
 
 /**
  * Registry of AttributeValue Factories supporting multiple datatypes. Any implementation of this must guarantee that there is a one-to-one relationship between AttributeValue (sub)classes and
@@ -56,7 +58,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 *             value datatype unknown/not supported, or if value cannot be parsed into the value's defined datatype
 	 */
 	ConstantExpression<? extends AttributeValue> newExpression(String datatypeId, List<Serializable> content, Map<QName, String> otherAttributes, XPathCompiler xPathCompiler)
-			throws IllegalArgumentException;
+	        throws IllegalArgumentException;
 
 	/**
 	 * Creates an {@link AttributeValue} from raw value using best compatible {@link AttributeValueFactory} available in this registry; <i>compatible</i> means that it supports
@@ -81,6 +83,23 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 * 
 	 * @param rawValues
 	 *            raw values to be converted to {@link AttributeBag}
+	 * @param attributeValueSource
+	 *            attribute value source
+	 * @return corresponding {@link AttributeBag} in internal model for (XACML) policy evaluation
+	 * @throws IllegalArgumentException
+	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (best compatible available) {@link AttributeValueFactory} (for example,
+	 *             some factories for numeric input, e.g. integer or double, may not support all kinds of integer (from -Infinity to +Infinity) but only in a limited range); or {@code rawValues} do
+	 *             not have a common type that can be mapped to a common (XACML) AttributeValue datatype, i.e. the input type mixing is not allowed by the factory.
+	 * @throws UnsupportedOperationException
+	 *             if one of the {@code rawValues} does not have a type supported by any {@link AttributeValueFactory} as input type in this registry
+	 */
+	AttributeBag<?> newAttributeBag(Collection<? extends Serializable> rawValues, AttributeSource attributeValueSource) throws UnsupportedOperationException, IllegalArgumentException;
+
+	/**
+	 * Same as {@link #newAttributeBag(Collection, AttributeSource)} but with {@code attributeValueSource} set to {@link AttributeSources#REQUEST}
+	 * 
+	 * @param rawValues
+	 *            raw values to be converted to {@link AttributeBag}
 	 * @return corresponding {@link AttributeBag} in internal model for (XACML) policy evaluation
 	 * @throws IllegalArgumentException
 	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (best compatible available) {@link AttributeValueFactory} (for example,
@@ -90,4 +109,5 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 *             if one of the {@code rawValues} does not have a type supported by any {@link AttributeValueFactory} as input type in this registry
 	 */
 	AttributeBag<?> newAttributeBag(final Collection<? extends Serializable> rawValues) throws UnsupportedOperationException, IllegalArgumentException;
+
 }
