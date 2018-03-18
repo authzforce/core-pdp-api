@@ -51,7 +51,7 @@ public final class Bags
 
 		private Empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty)
 		{
-			super(elementDatatype, ImmutableMultiset.<AV> of());
+			super(elementDatatype, ImmutableMultiset.<AV>of());
 			this.causeForEmpty = causeForEmpty;
 		}
 
@@ -79,9 +79,9 @@ public final class Bags
 	{
 		private final IndeterminateEvaluationException causeForEmpty;
 
-		private EmptyAttributeBag(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty)
+		private EmptyAttributeBag(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty, AttributeSource attValSrc)
 		{
-			super(elementDatatype, ImmutableMultiset.<AV> of(), Optional.empty());
+			super(elementDatatype, ImmutableMultiset.<AV>of(), Optional.of(attValSrc));
 			this.causeForEmpty = causeForEmpty;
 		}
 
@@ -261,7 +261,32 @@ public final class Bags
 	}
 
 	/**
-	 * Creates instance of immutable empty attribute bag with given exception as reason for bag being empty (no attribute value), e.g. error occurred during evaluation
+	 * Creates instance of immutable empty attribute bag containing val and only val value with given exception as reason for bag being empty (no attribute value), e.g. error occurred during
+	 * evaluation,
+	 * 
+	 * @param elementDatatype
+	 *            bag element datatype
+	 * @param causeForEmpty
+	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
+	 * @param attributeValueSource
+	 *            attribute value source
+	 * @return bag
+	 * @throws IllegalArgumentException
+	 *             if {@code val == null || elementDatatype == null}
+	 */
+	public static <AV extends AttributeValue> AttributeBag<AV> emptyAttributeBag(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty,
+	        final AttributeSource attributeValueSource) throws IllegalArgumentException
+	{
+		if (elementDatatype == null)
+		{
+			throw NULL_DATATYPE_EXCEPTION;
+		}
+
+		return new EmptyAttributeBag<>(elementDatatype, causeForEmpty, attributeValueSource);
+	}
+
+	/**
+	 * Creates instance of immutable empty attribute bag with given exception as reason for bag being empty (no attribute value), with {@value AttributeSources#REQUEST} as attribute source
 	 * 
 	 * @param causeForEmpty
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
@@ -272,14 +297,9 @@ public final class Bags
 	 *             if {@code elementDatatype == null}
 	 */
 	public static <AV extends AttributeValue> AttributeBag<AV> emptyAttributeBag(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
-		if (elementDatatype == null)
-		{
-			throw NULL_DATATYPE_EXCEPTION;
-		}
-
-		return new EmptyAttributeBag<>(elementDatatype, causeForEmpty);
+		return emptyAttributeBag(elementDatatype, causeForEmpty, AttributeSources.REQUEST);
 	}
 
 	/**
@@ -322,7 +342,7 @@ public final class Bags
 	 *             if {@code val == null || elementDatatype == null}
 	 */
 	public static <AV extends AttributeValue> AttributeBag<AV> singletonAttributeBag(final Datatype<AV> elementDatatype, final AV val, final AttributeSource attributeValueSource)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -412,7 +432,7 @@ public final class Bags
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
 	 */
 	public static <AV extends AttributeValue> AttributeBag<AV> newAttributeBag(final Datatype<AV> elementDatatype, final Collection<AV> values, final AttributeSource attributeBagSource)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
 		if (elementDatatype == null)
 		{
@@ -421,7 +441,7 @@ public final class Bags
 
 		if (values == null || values.isEmpty())
 		{
-			return new EmptyAttributeBag<>(elementDatatype, null);
+			return new EmptyAttributeBag<>(elementDatatype, null, attributeBagSource);
 		}
 
 		final Iterator<AV> valueIterator = values.iterator();
@@ -501,15 +521,8 @@ public final class Bags
 	/**
 	 * Dumb validator that does nothing, typically used for MustBePresent=False on XACML AttributeDesignator/AttributeSelector elements
 	 */
-	public static final Validator DUMB_VALIDATOR = new Validator()
-	{
-
-		@Override
-		public void validate(final Bag<?> bag)
-		{
-			// do nothing since the flag is disabled
-		}
-
+	public static final Validator DUMB_VALIDATOR = bag -> {
+		// do nothing since the flag is disabled
 	};
 
 	private Bags()
