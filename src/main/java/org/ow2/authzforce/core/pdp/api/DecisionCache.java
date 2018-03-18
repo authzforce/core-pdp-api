@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractDecisionCache;
 
 /**
@@ -50,9 +51,12 @@ public interface DecisionCache extends Closeable
 		 *            extension parameters
 		 * @param envProps
 		 *            environment properties
+		 * @param attributeValueFactories
+		 *            AttributeValue factories for the decision cache system to be able to create/restore AttributeValues from deserialized data stored or produced by external - possibly remote -
+		 *            systems (e.g. cache storage database). Remember that such attribute values can be present in decision results, typically in AttributeAssignments of Obligations/Advice.
 		 * @return instance of extension
 		 */
-		public abstract DecisionCache getInstance(CONF_T conf, EnvironmentProperties envProps);
+		public abstract DecisionCache getInstance(CONF_T conf, AttributeValueFactoryRegistry attributeValueFactories, EnvironmentProperties envProps);
 	}
 
 	/**
