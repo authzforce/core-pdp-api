@@ -22,9 +22,13 @@ import java.util.Set;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
 /**
- * "Designated" Attribute Provider, i.e. attribute provider supporting/assigned to designated attribute
+ * "Named" Attribute Provider, i.e. providing "named attribute(s)" as defined in §7.3 of XACML 3.0 specification:
+ * <p>
+ * <i>A named attribute is the term used for the criteria that the specific attribute designators use to refer to particular attributes in the <Attributes> elements of the request context.</i>
+ * </p>
+ * 
  */
-public interface DesignatedAttributeProvider extends AttributeProvider
+public interface NamedAttributeProvider extends AttributeProvider
 {
 
 	/**

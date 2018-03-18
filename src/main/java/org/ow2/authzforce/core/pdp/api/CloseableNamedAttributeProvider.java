@@ -20,24 +20,24 @@ package org.ow2.authzforce.core.pdp.api;
 import java.io.Closeable;
 import java.util.Set;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
-
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractAttributeProvider;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
+
 /**
- * {@link DesignatedAttributeProvider} that extends {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving
- * the attribute values. Therefore, these resources must be released by calling {@link #close()} when it is no longer needed.
+ * {@link NamedAttributeProvider} that extends {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
+ * attribute values. Therefore, these resources must be released by calling {@link #close()} when it is no longer needed.
  * <p>
  * PDP extensions of this type (to support new ways of providing attributes) must implement the {@link FactoryBuilder} class.
  */
-public interface CloseableDesignatedAttributeProvider extends DesignatedAttributeProvider, Closeable
+public interface CloseableNamedAttributeProvider extends NamedAttributeProvider, Closeable
 {
 	/**
-	 * Intermediate dependency-aware {@link CloseableDesignatedAttributeProvider} factory that can create instances of Attribute Providers from a XML/JAXB configuration, and also provides the
-	 * dependencies (required attributes) (based on this configuration), that any such instance (created by it) will need. Providing the dependencies helps to optimize the {@code depAttrProvider}
-	 * argument to {@link #getInstance(AttributeValueFactoryRegistry, AttributeProvider)} and therefore optimize the created provider's job of finding its own supported attribute values based on other
-	 * attributes in the evaluation context.
+	 * Intermediate dependency-aware {@link CloseableNamedAttributeProvider} factory that can create instances of Attribute Providers from a XML/JAXB configuration, and also provides the dependencies
+	 * (required attributes) (based on this configuration), that any such instance (created by it) will need. Providing the dependencies helps to optimize the {@code depAttrProvider} argument to
+	 * {@link #getInstance(AttributeValueFactoryRegistry, AttributeProvider)} and therefore optimize the created provider's job of finding its own supported attribute values based on other attributes
+	 * in the evaluation context.
 	 * 
 	 */
 	interface DependencyAwareFactory
@@ -56,14 +56,14 @@ public interface CloseableDesignatedAttributeProvider extends DesignatedAttribut
 		/**
 		 * Create Attribute Provider instance
 		 * 
-		 * @param attributeValueFactoryRegistry
-		 *            registry of Attribute value factories for the Provider to be able to create attribute values
+		 * @param attributeValueFactories
+		 *            AttributeValue factories for the Provider to be able to create AttributeValues
 		 * @param depAttrProvider
 		 *            Existing Attribute Provider supplying the possibly required attributes that new Providers instantiated here will depend on
 		 * 
 		 * @return attribute value in internal model
 		 */
-		CloseableDesignatedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactoryRegistry, AttributeProvider depAttrProvider);
+		CloseableNamedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactories, AttributeProvider depAttrProvider);
 	}
 
 	/**

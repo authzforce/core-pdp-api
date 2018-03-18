@@ -18,9 +18,9 @@
 package org.ow2.authzforce.core.pdp.api;
 
 /**
- * This is a convenience class to help implement {@link CloseableDesignatedAttributeProvider}.
+ * This is a convenience class to help implement {@link CloseableNamedAttributeProvider}.
  */
-public abstract class BaseDesignatedAttributeProvider implements CloseableDesignatedAttributeProvider
+public abstract class BaseNamedAttributeProvider implements CloseableNamedAttributeProvider
 {
 
 	private static final IllegalArgumentException UNDEF_INSTANCE_ID = new IllegalArgumentException("Undefined Attribute Provider's instance ID");
@@ -39,7 +39,7 @@ public abstract class BaseDesignatedAttributeProvider implements CloseableDesign
 	 * @throws IllegalArgumentException
 	 *             if instanceId null
 	 */
-	protected BaseDesignatedAttributeProvider(final String instanceID) throws IllegalArgumentException
+	protected BaseNamedAttributeProvider(final String instanceID) throws IllegalArgumentException
 	{
 		if (instanceID == null)
 		{
@@ -75,12 +75,12 @@ public abstract class BaseDesignatedAttributeProvider implements CloseableDesign
 			return true;
 		}
 
-		if (!(obj instanceof BaseDesignatedAttributeProvider))
+		if (!(obj instanceof BaseNamedAttributeProvider))
 		{
 			return false;
 		}
 
-		final BaseDesignatedAttributeProvider other = (BaseDesignatedAttributeProvider) obj;
+		final BaseNamedAttributeProvider other = (BaseNamedAttributeProvider) obj;
 		return this.instanceID.equals(other.instanceID);
 	}
 
