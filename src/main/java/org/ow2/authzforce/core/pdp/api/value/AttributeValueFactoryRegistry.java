@@ -33,7 +33,12 @@ import net.sf.saxon.s9api.XPathCompiler;
 
 /**
  * Registry of AttributeValue Factories supporting multiple datatypes. Any implementation of this must guarantee that there is a one-to-one relationship between AttributeValue (sub)classes and
- * datatype URIs (AttributeValueType DataType field)
+ * datatype URIs (AttributeValueType DataType field).
+ * 
+ * <p>
+ * A valid key in this registry, i.e. valid argument for {@link #getExtension(String)}, is an identifier of a datatype corresponding to the value factory, as returned by
+ * {@link AttributeValueFactory#getId()}
+ * </p>
  * 
  */
 public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<AttributeValueFactory<?>>

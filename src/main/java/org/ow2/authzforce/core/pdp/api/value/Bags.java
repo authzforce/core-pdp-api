@@ -419,7 +419,7 @@ public final class Bags
 	}
 
 	/**
-	 * Creates instance of immutable attribtue bag.
+	 * Creates instance of immutable attribute bag.
 	 * 
 	 * @param values
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
@@ -467,7 +467,8 @@ public final class Bags
 	}
 
 	/**
-	 * Creates instance of immutable attribute bag with {@link AttributeSources#REQUEST} as attribute source.
+	 * Creates instance of immutable attribute bag with {@link AttributeSources#REQUEST} as attribute source. Use {@link #newAttributeBag(Datatype, Collection, AttributeSource)} instead if attribute
+	 * bag comes from another source, e.g. AttributeProvider.
 	 * 
 	 * @param values
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)

@@ -58,12 +58,12 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 		 * 
 		 * @param attributeValueFactories
 		 *            AttributeValue factories for the Provider to be able to create AttributeValues
-		 * @param depAttrProvider
+		 * @param dependencyAttributeProvider
 		 *            Existing Attribute Provider supplying the possibly required attributes that new Providers instantiated here will depend on
 		 * 
 		 * @return attribute value in internal model
 		 */
-		CloseableNamedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactories, AttributeProvider depAttrProvider);
+		CloseableNamedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactories, AttributeProvider dependencyAttributeProvider);
 	}
 
 	/**
@@ -84,13 +84,13 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 		/**
 		 * Creates an attribute-dependency-aware AttributeProvider factory by inferring attribute dependencies (required attributes) from {@code conf}.
 		 * 
-		 * @param conf
+		 * @param configuration
 		 *            configuration, that may define what attributes are required (dependency attributes)
 		 * @param environmentProperties
 		 *            global PDP configuration environment properties
 		 * @return a factory aware of dependencies (required attributes) possibly inferred from input {@code conf}
 		 */
-		public abstract DependencyAwareFactory getInstance(CONF_T conf, EnvironmentProperties environmentProperties);
+		public abstract DependencyAwareFactory getInstance(CONF_T configuration, EnvironmentProperties environmentProperties);
 	}
 
 }
