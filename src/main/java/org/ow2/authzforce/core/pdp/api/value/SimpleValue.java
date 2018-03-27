@@ -29,11 +29,11 @@ import java.util.Set;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
-
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.w3c.dom.Element;
+
+import net.sf.saxon.s9api.XPathCompiler;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 
 /**
  * <p>
@@ -81,7 +81,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 	public static abstract class BaseFactory<AV extends AttributeValue> extends BaseAttributeValueFactory<AV>
 	{
 		private static final IllegalArgumentException MORE_THAN_ONE_ELEMENT_IN_XACML_ATTRIBUTE_VALUE_CONTENT_EXCEPTION = new IllegalArgumentException(
-				"Invalid primitive AttributeValueType: content has more than one element. Expected: empty or single String element ");
+		        "Invalid primitive AttributeValueType: content has more than one element. Expected: empty or single String element ");
 
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
@@ -107,6 +107,11 @@ public abstract class SimpleValue<V> extends AttributeValue
 		 */
 		protected final IllegalArgumentException newInvalidInputTypeException(final Serializable value)
 		{
+			if (value == null)
+			{
+				throw new IllegalArgumentException(this + ": invalid input: null/empty. Expected one of: " + getSupportedInputTypes());
+			}
+
 			throw new IllegalArgumentException(this + ": invalid input type: " + value.getClass() + ". Expected one of: " + getSupportedInputTypes());
 		}
 
@@ -147,8 +152,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 			if (!contentIterator.hasNext())
 			{
 				content0 = null;
-			}
-			else
+			} else
 			{
 				content0 = contentIterator.next();
 				if (contentIterator.hasNext())
@@ -171,7 +175,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 	public static abstract class StringParseableValueFactory<AV extends AttributeValue> extends BaseFactory<AV>
 	{
 		private static final IllegalArgumentException NON_NULL_OTHER_XML_ATTRIBUTES_ARG_EXCEPTION = new IllegalArgumentException(
-				"Invalid value content: extra XML attributes are not supported by this primitive datatype, only string content.");
+		        "Invalid value content: extra XML attributes are not supported by this primitive datatype, only string content.");
 
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
@@ -250,8 +254,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 				 * Original content is empty, e.g. empty JAXB content list if <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"/>, value is considered empty string.
 				 */
 				inputStrVal = "";
-			}
-			else
+			} else
 			{
 				if (!(value instanceof String))
 				{
@@ -321,7 +324,7 @@ public abstract class SimpleValue<V> extends AttributeValue
 	{
 		if (xmlString == null)
 		{
-			xmlString = Collections.<Serializable> singletonList(printXML());
+			xmlString = Collections.<Serializable>singletonList(printXML());
 		}
 
 		return xmlString;
