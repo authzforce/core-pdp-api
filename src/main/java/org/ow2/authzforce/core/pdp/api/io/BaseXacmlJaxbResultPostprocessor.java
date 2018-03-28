@@ -81,8 +81,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		{
 			obligationList = Collections.emptyList();
 			adviceList = Collections.emptyList();
-		}
-		else
+		} else
 		{
 			obligationList = pepActions.getObligatory();
 			adviceList = pepActions.getAdvisory();
@@ -93,16 +92,15 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (applicablePolicies == null || applicablePolicies.isEmpty())
 		{
 			jaxbPolicyIdentifiers = null;
-		}
-		else
+		} else
 		{
-			final List<JAXBElement<IdReferenceType>> jaxbPolicyIdRefs = new ArrayList<>();
+			final List<JAXBElement<IdReferenceType>> jaxbPolicyIdRefs = new ArrayList<>(applicablePolicies.size());
 			for (final PrimaryPolicyMetadata applicablePolicy : applicablePolicies)
 			{
 				final IdReferenceType jaxbIdRef = new IdReferenceType(applicablePolicy.getId(), applicablePolicy.getVersion().toString(), null, null);
 				final JAXBElement<IdReferenceType> jaxbPolicyIdRef = applicablePolicy.getType() == TopLevelPolicyElementType.POLICY
-						? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicyIdReference(jaxbIdRef)
-						: Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
+				        ? Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicyIdReference(jaxbIdRef)
+				        : Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createPolicySetIdReference(jaxbIdRef);
 				jaxbPolicyIdRefs.add(jaxbPolicyIdRef);
 			}
 
@@ -110,11 +108,11 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		return new Result(result.getDecision(), result.getStatus(), obligationList.isEmpty() ? null : new Obligations(obligationList), adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList),
-				request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
+		        request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
-			final Marshaller xacml3Marshaller) throws JAXBException
+	        final Marshaller xacml3Marshaller) throws JAXBException
 	{
 		if (cause == null)
 		{
@@ -194,8 +192,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (maxDepthOfErrorCauseIncludedInResult == 0)
 		{
 			finalStatus = error.getTopLevelStatus();
-		}
-		else
+		} else
 		{
 			/*
 			 * Get Status with detailed cause description. The resulting status contains a StatusDetail element with a list of StatusMessage elements. The nth StatusMessage contains the message of the
@@ -210,8 +207,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
-			}
-			catch (final JAXBException e)
+			} catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to create XACML/JAXB marshaller to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -220,8 +216,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult, statusDetailElements, marshaller);
-			}
-			catch (final JAXBException e)
+			} catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
