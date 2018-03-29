@@ -66,6 +66,14 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	        throws IllegalArgumentException;
 
 	/**
+	 * Get value factory that can handle a given class of Java values
+	 * 
+	 * @param rawValueClass
+	 * @return compatible attribute value factory
+	 */
+	AttributeValueFactory<?> getCompatibleFactory(Class<? extends Serializable> rawValueClass);
+
+	/**
 	 * Creates an {@link AttributeValue} from raw value using best compatible {@link AttributeValueFactory} available in this registry; <i>compatible</i> means that it supports
 	 * {@code rawValue.getClass()} as input type
 	 * 

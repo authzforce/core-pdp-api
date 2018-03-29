@@ -19,13 +19,13 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Optional;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
-
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
  * Factory for creating immutable {@link DecisionResult}s
@@ -33,7 +33,7 @@ import com.google.common.collect.ImmutableList;
  */
 public final class DecisionResults
 {
-	private static final class ImmutableNotApplicableResult extends AbstractDecisionResult
+	private static final class ImmutableNotApplicableResult extends BaseDecisionResult
 	{
 		private transient volatile String toString = null;
 
@@ -55,15 +55,15 @@ public final class DecisionResults
 		}
 
 		@Override
-		public ImmutablePepActions getPepActions()
+		public ImmutableList<PepAction> getPepActions()
 		{
-			return null;
+			return ImmutableList.of();
 		}
 
 		@Override
 		public ImmutableList<PrimaryPolicyMetadata> getApplicablePolicies()
 		{
-			return null;
+			return ImmutableList.of();
 		}
 
 		@Override
@@ -85,7 +85,7 @@ public final class DecisionResults
 		}
 	}
 
-	private static abstract class ApplicableResult extends AbstractDecisionResult
+	private static abstract class ApplicableResult extends BaseDecisionResult
 	{
 
 		protected final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList;
@@ -94,7 +94,7 @@ public final class DecisionResults
 		{
 			super(status);
 
-			this.applicablePolicyIdList = applicablePolicyIdList == null ? ImmutableList.<PrimaryPolicyMetadata> of() : applicablePolicyIdList;
+			this.applicablePolicyIdList = applicablePolicyIdList == null ? ImmutableList.<PrimaryPolicyMetadata>of() : applicablePolicyIdList;
 		}
 
 		@Override
@@ -148,9 +148,9 @@ public final class DecisionResults
 		}
 
 		@Override
-		public ImmutablePepActions getPepActions()
+		public ImmutableList<PepAction> getPepActions()
 		{
-			return null;
+			return ImmutableList.of();
 		}
 
 		@Override
@@ -179,20 +179,20 @@ public final class DecisionResults
 
 		private final DecisionType decision;
 
-		private final ImmutablePepActions pepActions;
+		private final ImmutableList<PepAction> pepActions;
 
 		private transient volatile String toString = null;
 
 		/*
 		 * For permit/deny result
 		 */
-		private ImmutableDPResult(final DecisionType decision, final Status status, final ImmutablePepActions pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
+		private ImmutableDPResult(final DecisionType decision, final Status status, final ImmutableList<PepAction> pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
 		{
 			super(status, applicablePolicyIdList);
 			assert decision == DecisionType.PERMIT || decision == DecisionType.DENY;
 
 			this.decision = decision;
-			this.pepActions = pepActions == null ? ImmutablePepActions.EMPTY : pepActions;
+			this.pepActions = pepActions == null ? ImmutableList.of() : pepActions;
 		}
 
 		/** {@inheritDoc} */
@@ -219,7 +219,7 @@ public final class DecisionResults
 		}
 
 		@Override
-		public ImmutablePepActions getPepActions()
+		public ImmutableList<PepAction> getPepActions()
 		{
 			return this.pepActions;
 		}
@@ -259,7 +259,7 @@ public final class DecisionResults
 	 *            list of identifiers of applicable policies that contributed to this result. If not null, the created instance uses only an immutable copy of this list.
 	 * @return permit result, more particularly {@link #SIMPLE_PERMIT} iff {@code status  == null && pepActions == null}.
 	 */
-	public static DecisionResult getPermit(final Status status, final ImmutablePepActions pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
+	public static DecisionResult getPermit(final Status status, final ImmutableList<PepAction> pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
 	{
 		if (status == null && (pepActions == null || pepActions.isEmpty()) && (applicablePolicyIdList == null || applicablePolicyIdList.isEmpty()))
 		{
@@ -282,7 +282,7 @@ public final class DecisionResults
 	 *            list of identifiers of applicable policies that contributed to this result. If not null, the created instance uses only an immutable copy of this list.
 	 * @return deny result, more particularly {@link #SIMPLE_DENY} iff {@code status  == null && pepActions == null}.
 	 */
-	public static DecisionResult getDeny(final Status status, final ImmutablePepActions pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
+	public static DecisionResult getDeny(final Status status, final ImmutableList<PepAction> pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
 	{
 		if (status == null && (pepActions == null || pepActions.isEmpty()) && (applicablePolicyIdList == null || applicablePolicyIdList.isEmpty()))
 		{
@@ -331,7 +331,7 @@ public final class DecisionResults
 	 *             if {@code cause  == null}
 	 */
 	public static DecisionResult newIndeterminate(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause,
-			final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList) throws IllegalArgumentException
+	        final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList) throws IllegalArgumentException
 	{
 		Preconditions.checkNotNull(cause, "No cause defined for Indeterminate result");
 		return new ImmutableIndeterminateResult(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause, applicablePolicyIdList);
@@ -351,8 +351,8 @@ public final class DecisionResults
 	 *             if
 	 *             {@code extendedDecision == null || extendedDecision.getDecision() ==null || (extendedDecision.getDecision() == INDETERMINATE && !extendedDecision.getCauseForIndeterminate().isPresent())}
 	 */
-	public static DecisionResult getInstance(final ExtendedDecision extendedDecision, final ImmutablePepActions pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
-			throws IllegalArgumentException
+	public static DecisionResult getInstance(final ExtendedDecision extendedDecision, final ImmutableList<PepAction> pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
+	        throws IllegalArgumentException
 	{
 		Preconditions.checkNotNull(extendedDecision, "Undefined extendedDecision");
 		final DecisionType decision = extendedDecision.getDecision();

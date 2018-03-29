@@ -27,13 +27,8 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  * 
  * @version $Id: $
  */
-public final class X500NameValue extends SimpleValue<String>
+public final class X500NameValue extends StringParseableValue<String>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private final X500Principal x500Name;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
@@ -48,7 +43,7 @@ public final class X500NameValue extends SimpleValue<String>
 	 */
 	public X500NameValue(final X500Principal value) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.X500_NAME.value(), value.getName());
+		super(value.getName());
 		this.x500Name = value;
 	}
 
@@ -62,12 +57,11 @@ public final class X500NameValue extends SimpleValue<String>
 	 */
 	public X500NameValue(final String value) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.X500_NAME.value(), value);
+		super(value);
 		try
 		{
 			this.x500Name = new X500Principal(value);
-		}
-		catch (final IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new IllegalArgumentException("Invalid value (X.500 Distinguished Name) for datatype: " + XacmlDatatypeId.X500_NAME.value(), e);
 		}

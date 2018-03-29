@@ -32,11 +32,11 @@ public interface DecisionResult extends ExtendedDecision
 {
 
 	/**
-	 * Get PEP actions (Obligations/Advices), may be null if the decision is neither Permit or Deny
+	 * Get PEP actions (Obligations/Advices), may be empty - but <b>not null</b> - if the decision is neither Permit or Deny
 	 * 
 	 * @return PEP actions
 	 */
-	ImmutablePepActions getPepActions();
+	ImmutableList<PepAction> getPepActions();
 
 	/**
 	 * Get the list of the "applicable" policy elements (XACML Policy/PolicySet elements) that contributed to this decision.
@@ -52,7 +52,7 @@ public interface DecisionResult extends ExtendedDecision
 	 * More formally: {@code isApplicable(policy) iff evaluate(policy) != NotApplicable && (policy.parent == null || isApplicable(policy.parent)) }
 	 * 
 	 * @return identifiers of policies found applicable for the decision request. Must be null if and only if the decision is NotApplicable. In particular, if the decision is different from
-	 *         NotApplicable but no applicable policy is returned (e.g. it was not requested to return such a list in the request), the returned list must be an empty list, not null.
+	 *         NotApplicable but no applicable policy is returned (e.g. it was not requested to return such a list in the request), the returned list must be an empty list, <b>not null</b>.
 	 */
 	ImmutableList<PrimaryPolicyMetadata> getApplicablePolicies();
 

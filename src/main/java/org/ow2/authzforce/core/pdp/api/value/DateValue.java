@@ -21,7 +21,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
  * Representation of an xs:date value. This class supports parsing xs:date values. All objects of this class are immutable and thread-safe.
@@ -31,11 +30,6 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  */
 public final class DateValue extends BaseTimeValue<DateValue>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Creates a new <code>DateAttributeValue</code> from a string representation of date
 	 *
@@ -59,7 +53,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 */
 	private DateValue(final XMLGregorianCalendar date) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.DATE.value(), date, DatatypeConstants.DATE);
+		super(date, DatatypeConstants.DATE);
 	}
 
 	/**

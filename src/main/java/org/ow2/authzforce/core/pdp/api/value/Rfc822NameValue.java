@@ -23,8 +23,6 @@ import java.util.Objects;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 /**
  * Representation of an RFC 822 email address. The valid syntax for such a name is described in IETF RFC 2821, Section 4.1.2, 4019 Command Argument Syntax, under the term "Mailbox". Mailbox =
  * Local-part "@" Domain
@@ -34,13 +32,8 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  * 
  * @version $Id: $
  */
-public final class Rfc822NameValue extends SimpleValue<String>
+public final class Rfc822NameValue extends StringParseableValue<String>
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	private static final IllegalArgumentException INVALID_RFC822NAME_MATCH_ARG0_EXCEPTION = new IllegalArgumentException("Invalid first arg to function 'rfc822Name-match': empty string");
 
@@ -67,8 +60,7 @@ public final class Rfc822NameValue extends SimpleValue<String>
 		{
 			final InternetAddress email = new InternetAddress(stringForm, true);
 			email.validate();
-		}
-		catch (final AddressException e)
+		} catch (final AddressException e)
 		{
 			throw new IllegalArgumentException("Invalid RFC822Name: " + stringForm, e);
 		}
@@ -89,7 +81,7 @@ public final class Rfc822NameValue extends SimpleValue<String>
 	 */
 	public Rfc822NameValue(final String value) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.RFC822_NAME.value(), validate(value));
+		super(validate(value));
 		/*
 		 * The validation with InternetAddress class in parse() method is not enough because InternetAddress is much less restrictive than this XACML type, since it takes names without '@' such as
 		 * "sun" or "sun.com" as valid.
@@ -97,7 +89,7 @@ public final class Rfc822NameValue extends SimpleValue<String>
 		final String[] parts = this.value.split("@", 2);
 		if (parts.length < 2)
 		{
-			throw new IllegalArgumentException("Invalid value for type '" + dataType + "': '" + this.value + "' missing local/domain part.");
+			throw new IllegalArgumentException("Invalid value for rfc822Name type: '" + this.value + "' is missing local/domain part.");
 		}
 
 		this.localPart = parts[0];

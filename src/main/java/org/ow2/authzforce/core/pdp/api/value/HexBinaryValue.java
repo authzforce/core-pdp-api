@@ -21,8 +21,6 @@ import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 /**
  * Representation of an xs:hexBinary value. This class supports parsing xs:hexBinary values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the
  * Java type byte[] is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
@@ -30,13 +28,8 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  * 
  * @version $Id: $
  */
-public final class HexBinaryValue extends SimpleValue<byte[]>
+public final class HexBinaryValue extends StringParseableValue<byte[]>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
 	/**
@@ -47,7 +40,7 @@ public final class HexBinaryValue extends SimpleValue<byte[]>
 	 */
 	public HexBinaryValue(final byte[] value)
 	{
-		super(XacmlDatatypeId.HEX_BINARY.value(), value);
+		super(value);
 	}
 
 	/**

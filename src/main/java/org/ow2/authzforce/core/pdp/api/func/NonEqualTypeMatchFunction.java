@@ -91,7 +91,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		private CallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSig, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 		{
 
-			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types: expected: " + paramType0 + "," + paramType1 + "; actual: ";
+			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types. Expected: " + paramType0 + "," + paramType1;
 			this.invalidRegexErrorMsg = "Function " + functionSig.getName() + ": Invalid regular expression in arg#0";
 			this.paramType0 = paramType0;
 			this.paramType1 = paramType1;
@@ -115,18 +115,16 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 					{
 						arg0 = paramType0.cast(rawArg0);
 						arg1 = paramType1.cast(rawArg1);
-					}
-					catch (final ClassCastException e)
+					} catch (final ClassCastException e)
 					{
-						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg + rawArg0.getDataType() + ", " + rawArg1.getDataType(), XacmlStatusCode.PROCESSING_ERROR.value(), e);
+						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
 
 					final boolean isMatched;
 					try
 					{
 						isMatched = matcher.match(arg0, arg1);
-					}
-					catch (final PatternSyntaxException e)
+					} catch (final PatternSyntaxException e)
 					{
 						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
@@ -222,14 +220,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	public static class RegexpMatchCallFactoryBuilder<AV extends SimpleValue<String>> implements CallFactoryBuilder<StringValue, AV>
 	{
 
-		private final Matcher<StringValue, AV> regexMatcher = new Matcher<StringValue, AV>()
-		{
-			@Override
-			public boolean match(final StringValue regex, final AV arg1)
-			{
-				return RegexpMatchFunctionHelper.match(regex, arg1);
-			}
-		};
+		private final Matcher<StringValue, AV> regexMatcher = (regex, arg1) -> RegexpMatchFunctionHelper.match(regex, arg1);
 
 		private class RegexpMatchCallFactory extends CallFactory<StringValue, AV>
 		{

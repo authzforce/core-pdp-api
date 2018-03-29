@@ -32,11 +32,13 @@ import javax.xml.transform.dom.DOMResult;
 
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
 import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
-import org.ow2.authzforce.core.pdp.api.ImmutablePepActions;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.PepAction;
+import org.ow2.authzforce.core.pdp.api.PepActionAttributeAssignment;
 import org.ow2.authzforce.core.pdp.api.StatusHelper;
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 import org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType;
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,6 +47,7 @@ import com.google.common.collect.ImmutableList;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeAssignment;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
@@ -64,6 +67,20 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	private static final IllegalArgumentException ILLEGAL_RESULTS_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined resultsByRequest arg");
 	private static final IllegalArgumentException ILLEGAL_ERROR_ARG_EXCEPTION = new IllegalArgumentException("Undefined input error arg");
 
+	private static List<AttributeAssignment> convert(ImmutableList<PepActionAttributeAssignment<?>> attributeAssignments)
+	{
+		if (attributeAssignments == null)
+		{
+			return null;
+		}
+
+		return attributeAssignments.stream().map(attAssignment -> {
+			final AttributeValue attVal = attAssignment.getValue();
+			return new AttributeAssignment(attVal.getContent(), attAssignment.getDatatype().getId(), attVal.getXmlAttributes(), attAssignment.getAttributeId(),
+			        attAssignment.getCategory().orElse(null), attAssignment.getIssuer().orElse(null));
+		}).collect(Collectors.toList());
+	}
+
 	/**
 	 * Convert AuthzForce-specific {@link DecisionResult} to XACML {@link Result}
 	 * 
@@ -74,17 +91,28 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	 */
 	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
 	{
-		final ImmutablePepActions pepActions = result.getPepActions();
+		final ImmutableList<PepAction> pepActions = result.getPepActions();
+		assert pepActions != null;
+
 		final List<Obligation> obligationList;
 		final List<Advice> adviceList;
-		if (pepActions == null || pepActions.isEmpty())
+		if (pepActions.isEmpty())
 		{
-			obligationList = Collections.emptyList();
-			adviceList = Collections.emptyList();
+			obligationList = null;
+			adviceList = null;
 		} else
 		{
-			obligationList = pepActions.getObligatory();
-			adviceList = pepActions.getAdvisory();
+			obligationList = new ArrayList<>(pepActions.size());
+			adviceList = new ArrayList<>(pepActions.size());
+			pepActions.forEach(pepAction -> {
+				if (pepAction.isMandatory())
+				{
+					obligationList.add(new Obligation(convert(pepAction.getAttributeAssignments()), pepAction.getId()));
+				} else
+				{
+					adviceList.add(new Advice(convert(pepAction.getAttributeAssignments()), pepAction.getId()));
+				}
+			});
 		}
 
 		final ImmutableList<PrimaryPolicyMetadata> applicablePolicies = result.getApplicablePolicies();
@@ -107,8 +135,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			jaxbPolicyIdentifiers = new PolicyIdentifierList(jaxbPolicyIdRefs);
 		}
 
-		return new Result(result.getDecision(), result.getStatus(), obligationList.isEmpty() ? null : new Obligations(obligationList), adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList),
-		        request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
+		return new Result(result.getDecision(), result.getStatus(), obligationList == null || obligationList.isEmpty() ? null : new Obligations(obligationList),
+		        adviceList == null || adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList), request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,

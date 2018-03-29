@@ -29,20 +29,13 @@ import java.util.Deque;
  * 
  * @version $Id: $
  */
-public abstract class NumericValue<N extends Number, NAV extends NumericValue<N, NAV>> extends SimpleValue<N>
+public abstract class NumericValue<N extends Number, NAV extends NumericValue<N, NAV>> extends StringParseableValue<N>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * <p>
 	 * Constructor for NumericValue.
 	 * </p>
 	 *
-	 * @param datatypeId
-	 *            a {@link java.lang.String} object.
 	 * @param val
 	 *            a N object.
 	 * @throws java.lang.IllegalArgumentException
@@ -50,9 +43,9 @@ public abstract class NumericValue<N extends Number, NAV extends NumericValue<N,
 	 * @throws NullPointerException
 	 *             if {@code datatypeId == null}
 	 */
-	protected NumericValue(final String datatypeId, final N val) throws IllegalArgumentException, NullPointerException
+	protected NumericValue(final N val) throws IllegalArgumentException, NullPointerException
 	{
-		super(datatypeId, val);
+		super(val);
 	}
 
 	/**

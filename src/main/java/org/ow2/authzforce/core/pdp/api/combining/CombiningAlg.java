@@ -21,8 +21,8 @@ import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ExtendedDecision;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
+import org.ow2.authzforce.core.pdp.api.PepAction;
 import org.ow2.authzforce.core.pdp.api.UpdatableList;
-import org.ow2.authzforce.core.pdp.api.UpdatablePepActions;
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 
 /**
@@ -56,7 +56,7 @@ public interface CombiningAlg<T extends Decidable> extends PdpExtension
 		 * 
 		 * @return combined result
 		 */
-		ExtendedDecision evaluate(EvaluationContext context, UpdatablePepActions updatablePepActions, UpdatableList<PrimaryPolicyMetadata> updatableApplicablePolicyIdList);
+		ExtendedDecision evaluate(EvaluationContext context, UpdatableList<PepAction> updatablePepActions, UpdatableList<PrimaryPolicyMetadata> updatableApplicablePolicyIdList);
 	}
 
 	/**

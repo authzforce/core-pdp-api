@@ -25,28 +25,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XdmNode;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Content;
 
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.AttributeFqns;
+import org.ow2.authzforce.core.pdp.api.DecisionResult;
+import org.ow2.authzforce.core.pdp.api.DecisionResults;
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.PepAction;
+import org.ow2.authzforce.core.pdp.api.PepActionAttributeAssignment;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.NoXmlnsFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.SAXBasedXmlnsFilteringParser;
-import org.ow2.authzforce.core.pdp.api.XmlUtils.XmlnsFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.XmlnsFilteringParserFactory;
+import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
 import org.ow2.authzforce.core.pdp.api.io.SingleCategoryAttributes.NamedAttributeIteratorConverter;
+import org.ow2.authzforce.core.pdp.api.policy.BasePrimaryPolicyMetadata;
+import org.ow2.authzforce.core.pdp.api.policy.PolicyVersion;
+import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
+import org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactory;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
@@ -56,8 +55,26 @@ import org.w3c.dom.Element;
 
 import com.google.common.collect.ImmutableList;
 
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XdmNode;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeAssignment;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Content;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+
 /**
- * XACML processing utilities based on JAXB API
+ * XACML/XML parsing utilities based on JAXB API. Mostly parse XACML/XML objects into AuthzForce data model's equivalents.
  * 
  */
 public final class XacmlJaxbParsingUtils
@@ -65,27 +82,15 @@ public final class XacmlJaxbParsingUtils
 	private static final IllegalArgumentException NULL_ATTRIBUTE_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined XACML attribute category");
 	private static final IllegalArgumentException NULL_INPUT_ATTRIBUTE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined input XACML attribute arg (inputXacmlAttribute)");
 	private static final IllegalArgumentException NO_JAXB_ATTRIBUTE_VALUE_LIST_ARGUMENT_EXCEPTION = new IllegalArgumentException(
-			"Input XACML attribute values null/empty (nonEmptyJaxbAttributeValues)");
-	private static final XmlnsFilteringParserFactory NS_FILTERING_XACML_PARSER_FACTORY = new XmlnsFilteringParserFactory()
-	{
-		@Override
-		public XmlnsFilteringParser getInstance() throws JAXBException
-		{
-			final Unmarshaller unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
-			return new SAXBasedXmlnsFilteringParser(unmarshaller);
-		}
+	        "Input XACML attribute values null/empty (nonEmptyJaxbAttributeValues)");
+	private static final XmlnsFilteringParserFactory NS_FILTERING_XACML_PARSER_FACTORY = () -> {
+		final Unmarshaller unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
+		return new SAXBasedXmlnsFilteringParser(unmarshaller);
 	};
 
-	private static final XmlnsFilteringParserFactory NO_NS_FILTERING_XACML_PARSER_FACTORY = new XmlnsFilteringParserFactory()
-	{
-
-		@Override
-		public XmlnsFilteringParser getInstance() throws JAXBException
-		{
-			final Unmarshaller unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
-			return new NoXmlnsFilteringParser(unmarshaller);
-		}
-
+	private static final XmlnsFilteringParserFactory NO_NS_FILTERING_XACML_PARSER_FACTORY = () -> {
+		final Unmarshaller unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
+		return new NoXmlnsFilteringParser(unmarshaller);
 	};
 
 	/**
@@ -107,7 +112,7 @@ public final class XacmlJaxbParsingUtils
 	public static final class NamedXacmlJaxbAttributeParser extends NamedXacmlAttributeParser<Attribute>
 	{
 		private static <AV extends AttributeValue> NamedXacmlAttributeParsingResult<AV> parseNamedAttribute(final AttributeFqn attName, final List<AttributeValueType> nonEmptyInputXacmlAttValues,
-				final AttributeValueFactory<AV> attValFactory, final XPathCompiler xPathCompiler)
+		        final AttributeValueFactory<AV> attValFactory, final XPathCompiler xPathCompiler)
 		{
 			assert attName != null && nonEmptyInputXacmlAttValues != null && !nonEmptyInputXacmlAttValues.isEmpty() && attValFactory != null;
 
@@ -225,8 +230,7 @@ public final class XacmlJaxbParsingUtils
 
 				attrMap = Collections.emptyMap();
 				attrsToIncludeInResult = null;
-			}
-			else
+			} else
 			{
 				/*
 				 * Let's iterate over the attributes to convert the list to a map indexed by the attribute category/id/issuer for quicker access during request evaluation. There might be multiple
@@ -248,8 +252,7 @@ public final class XacmlJaxbParsingUtils
 					try
 					{
 						xacmlReqAttributeParser.parseNamedAttribute(categoryId, jaxbAttr, xPathCompiler, attrMap);
-					}
-					catch (final IllegalArgumentException e)
+					} catch (final IllegalArgumentException e)
 					{
 						throw new IndeterminateEvaluationException("Invalid Attributes/Attribute element", XacmlStatusCode.SYNTAX_ERROR.value(), e);
 					}
@@ -275,7 +278,7 @@ public final class XacmlJaxbParsingUtils
 	private static final class ContentSkippingXacmlJaxbAttributesParser<BAG extends Iterable<? extends AttributeValue>> extends BaseXacmlJaxbAttributesParser<BAG>
 	{
 		private ContentSkippingXacmlJaxbAttributesParser(final XacmlRequestAttributeParser<Attribute, BAG> xacmlRequestAttributeParser,
-				final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
+		        final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)
 		{
 			super(xacmlRequestAttributeParser, namedAttributeIteratorConverter);
 		}
@@ -313,7 +316,7 @@ public final class XacmlJaxbParsingUtils
 		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null)}
 		 */
 		public ContentSkippingXacmlJaxbAttributesParserFactory(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser,
-				final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter) throws IllegalArgumentException
+		        final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter) throws IllegalArgumentException
 		{
 			instance = new ContentSkippingXacmlJaxbAttributesParser<>(xacmlReqAttributeParser, namedAttributeIteratorConverter);
 		}
@@ -332,7 +335,7 @@ public final class XacmlJaxbParsingUtils
 		private final DocumentBuilder xmlDocBuilder;
 
 		private FullXacmlJaxbAttributesParser(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser, final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter,
-				final DocumentBuilder xmlDocBuilder)
+		        final DocumentBuilder xmlDocBuilder)
 		{
 			super(xacmlReqAttributeParser, namedAttributeIteratorConverter);
 			assert xmlDocBuilder != null;
@@ -361,14 +364,14 @@ public final class XacmlJaxbParsingUtils
 
 			if (childElt == null)
 			{
-				throw new IndeterminateEvaluationException("Invalid Content of Attributes[@Category=" + categoryName + "] for XPath evaluation: no child element", XacmlStatusCode.SYNTAX_ERROR.value());
+				throw new IndeterminateEvaluationException("Invalid Content of Attributes[@Category=" + categoryName + "] for XPath evaluation: no child element",
+				        XacmlStatusCode.SYNTAX_ERROR.value());
 			}
 
 			try
 			{
 				return xmlDocBuilder.wrap(childElt);
-			}
-			catch (final IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				throw new IndeterminateEvaluationException("Error parsing Content of Attributes[@Category=" + categoryName + "] for XPath evaluation", XacmlStatusCode.SYNTAX_ERROR.value(), e);
 			}
@@ -404,7 +407,7 @@ public final class XacmlJaxbParsingUtils
 		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null || xmlProcessor == null)}
 		 */
 		public FullXacmlJaxbAttributesParserFactory(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser,
-				final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter, final Processor xmlProcessor)
+		        final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter, final Processor xmlProcessor)
 		{
 			if (xacmlReqAttributeParser == null)
 			{
@@ -431,6 +434,109 @@ public final class XacmlJaxbParsingUtils
 		{
 			// create instance of inner class (has access to this.xmlProc)
 			return new FullXacmlJaxbAttributesParser<>(xacmlReqAttributeParser, namedAttrIterConverter, xmlProc.newDocumentBuilder());
+		}
+	}
+
+	private static <AV extends AttributeValue> PepActionAttributeAssignment<AV> newPepActionAttributeAssignment(String attributeId, Optional<String> category, Optional<String> issuer,
+	        ConstantExpression<AV> constantExp)
+	{
+		return new PepActionAttributeAssignment<>(attributeId, category, issuer, constantExp.getReturnType(), constantExp.getValue().get());
+	}
+
+	private static ImmutableList<PepActionAttributeAssignment<?>> xacmlToAuthzForceAttributeAssignments(List<AttributeAssignment> xacmlAttributeAssignments,
+	        AttributeValueFactoryRegistry attributeValueFactories)
+	{
+		final List<PepActionAttributeAssignment<?>> attAssignments = new ArrayList<>(xacmlAttributeAssignments.size());
+		for (final AttributeAssignment xacmlAttAssig : xacmlAttributeAssignments)
+		{
+			final ConstantExpression<? extends AttributeValue> constantExp = attributeValueFactories.newExpression(xacmlAttAssig.getDataType(), xacmlAttAssig.getContent(),
+			        xacmlAttAssig.getOtherAttributes(), null);
+			final PepActionAttributeAssignment<?> attAssignment = newPepActionAttributeAssignment(xacmlAttAssig.getAttributeId(), Optional.ofNullable(xacmlAttAssig.getCategory()),
+			        Optional.ofNullable(xacmlAttAssig.getIssuer()), constantExp);
+			attAssignments.add(attAssignment);
+		}
+
+		return ImmutableList.copyOf(attAssignments);
+	}
+
+	/**
+	 * Parse/convert XACML/XML Result into AuthzForce decision result
+	 * 
+	 * @param xacmlResult
+	 *            XACML/XML Result (XML-schema-derived JAXB model)
+	 * @param attributeValueFactories
+	 *            AttributeValue factories (registry of datatype-specific parsers)
+	 * @return decision result in AuthzForce data model
+	 */
+	public static DecisionResult parseXacmlJaxbResult(final Result xacmlResult, AttributeValueFactoryRegistry attributeValueFactories)
+	{
+		final PolicyIdentifierList xacmlPolicyIdentifiers = xacmlResult.getPolicyIdentifierList();
+		final ImmutableList<PrimaryPolicyMetadata> immutableApplicablePolicyIdList;
+		if (xacmlPolicyIdentifiers == null)
+		{
+			immutableApplicablePolicyIdList = null;
+		} else
+		{
+			final List<PrimaryPolicyMetadata> applicablePolicyIdentifiers = xacmlPolicyIdentifiers.getPolicyIdReferencesAndPolicySetIdReferences().stream().map(jaxbElt -> {
+				final IdReferenceType idRef = jaxbElt.getValue();
+				return new BasePrimaryPolicyMetadata(jaxbElt.getName().getLocalPart().equals("PolicyIdReference") ? TopLevelPolicyElementType.POLICY : TopLevelPolicyElementType.POLICY_SET,
+				        idRef.getValue(), new PolicyVersion(idRef.getVersion()));
+			}).collect(Collectors.toList());
+
+			immutableApplicablePolicyIdList = ImmutableList.copyOf(applicablePolicyIdentifiers);
+		}
+
+		final Obligations xacmlObligations = xacmlResult.getObligations();
+		final List<Obligation> nonNullXacmlObligationList;
+		if (xacmlObligations == null)
+		{
+			nonNullXacmlObligationList = Collections.emptyList();
+		} else
+		{
+			final List<Obligation> xacmlObligationList = xacmlObligations.getObligations();
+			nonNullXacmlObligationList = xacmlObligationList == null ? Collections.emptyList() : xacmlObligationList;
+		}
+
+		final AssociatedAdvice xacmlAdvice = xacmlResult.getAssociatedAdvice();
+		final List<Advice> nonNullXacmlAdviceList;
+		if (xacmlAdvice == null)
+		{
+			nonNullXacmlAdviceList = Collections.emptyList();
+		} else
+		{
+			final List<Advice> xacmlAdviceList = xacmlAdvice.getAdvices();
+			nonNullXacmlAdviceList = xacmlAdviceList == null ? Collections.emptyList() : xacmlAdviceList;
+		}
+
+		final ImmutableList<PepAction> pepActions;
+		if (nonNullXacmlObligationList.isEmpty() && nonNullXacmlAdviceList.isEmpty())
+		{
+			pepActions = ImmutableList.of();
+		} else
+		{
+			final List<PepAction> mutablePepActions = new ArrayList<>(nonNullXacmlObligationList.size() + nonNullXacmlAdviceList.size());
+			nonNullXacmlObligationList.forEach(xacmlOb -> {
+				mutablePepActions.add(new PepAction(xacmlOb.getObligationId(), true, xacmlToAuthzForceAttributeAssignments(xacmlOb.getAttributeAssignments(), attributeValueFactories)));
+			});
+
+			nonNullXacmlAdviceList.forEach(xacmlAd -> {
+				mutablePepActions.add(new PepAction(xacmlAd.getAdviceId(), false, xacmlToAuthzForceAttributeAssignments(xacmlAd.getAttributeAssignments(), attributeValueFactories)));
+			});
+
+			pepActions = ImmutableList.copyOf(mutablePepActions);
+		}
+
+		final Status status = xacmlResult.getStatus();
+		switch (xacmlResult.getDecision())
+		{
+			case DENY:
+				return DecisionResults.getDeny(status, pepActions, immutableApplicablePolicyIdList);
+			case PERMIT:
+				return DecisionResults.getPermit(status, pepActions, immutableApplicablePolicyIdList);
+			case NOT_APPLICABLE:
+				return DecisionResults.getNotApplicable(status);
+			default:
+				return DecisionResults.newIndeterminate(null, new IndeterminateEvaluationException(status.getStatusMessage(), status.getStatusCode().getValue()), immutableApplicablePolicyIdList);
 		}
 	}
 

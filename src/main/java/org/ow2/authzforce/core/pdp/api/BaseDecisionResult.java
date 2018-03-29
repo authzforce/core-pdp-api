@@ -19,19 +19,21 @@ package org.ow2.authzforce.core.pdp.api;
 
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableList;
+
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 /**
  * This class provides a skeletal implementation of the {@link DecisionResult} interface to minimize the effort required to implement this interface. Note that this class only overrides/implements
  * {@link #equals(Object)}, {@link #hashCode()} and {@link #getStatus()}.
  */
-public abstract class AbstractDecisionResult implements DecisionResult
+public abstract class BaseDecisionResult implements DecisionResult
 {
 	private final Status status;
 
 	private transient volatile int hashCode = 0;
 
-	protected AbstractDecisionResult(final Status status)
+	protected BaseDecisionResult(final Status status)
 	{
 		this.status = status;
 	}
@@ -80,12 +82,9 @@ public abstract class AbstractDecisionResult implements DecisionResult
 			return false;
 		}
 
-		final PepActions otherPepActions = other.getPepActions();
-		final PepActions thisPepActions = other.getPepActions();
-		if (thisPepActions == null)
-		{
-			return otherPepActions == null || otherPepActions.isEmpty();
-		}
+		final ImmutableList<PepAction> otherPepActions = other.getPepActions();
+		assert otherPepActions != null;
+		final ImmutableList<PepAction> thisPepActions = this.getPepActions();
 
 		return thisPepActions.equals(otherPepActions);
 	}

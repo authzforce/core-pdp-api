@@ -49,7 +49,7 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 	private static final IllegalArgumentException NULL_DATATYPE_FACTORY_EXCEPTION = new IllegalArgumentException("Undefined attribute datatype");
 
 	private static final UnsupportedOperationException UNSUPPORTED_ADD_OPERATION_EXCEPTION = new UnsupportedOperationException(
-			"Operation forbidden: immutable bag (toImmutable() method already called)");
+	        "Operation forbidden: immutable bag (toImmutable() method already called)");
 
 	private static final IllegalArgumentException ILLEGAL_ATTRIBUTE_VALUE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
 
@@ -138,11 +138,10 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 		try
 		{
 			av = this.elementType.cast(value);
-		}
-		catch (final ClassCastException e)
+		} catch (final ClassCastException e)
 		{
-			throw new IllegalArgumentException("Invalid datatype of AttributeValue in Attribute element: " + value.getDataType() + ". Expected: " + elementType
-					+ " (datatype of other value(s) already found in the same attribute bag)");
+			throw new IllegalArgumentException(
+			        "Invalid datatype of AttributeValue in Attribute element. Expected: " + elementType + " (datatype of other value(s) already found in the same attribute bag)");
 		}
 
 		vals.add(av);

@@ -23,21 +23,14 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 /**
  * Represents the DNSName datatype introduced in XACML 2.0.
  *
  * 
  * @version $Id: $
  */
-public final class DnsNameWithPortRangeValue extends SimpleValue<String>
+public final class DnsNameWithPortRangeValue extends StringParseableValue<String>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * <p>
 	 * hostname = *( domainlabel "." ) toplabel [ "." ]
@@ -108,8 +101,7 @@ public final class DnsNameWithPortRangeValue extends SimpleValue<String>
 			// there is no port/portRange, so just use the name
 			host = dnsName;
 			range = NetworkPortRange.MAX;
-		}
-		else
+		} else
 		{
 			// split the name and the port/portRange
 			host = dnsName.substring(0, portSep);
@@ -136,7 +128,7 @@ public final class DnsNameWithPortRangeValue extends SimpleValue<String>
 	 */
 	public DnsNameWithPortRangeValue(final String val) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.DNS_NAME.value(), val);
+		super(val);
 		final Entry<String, NetworkPortRange> hostAndPortRange = parseDnsName(this.value);
 		this.hostname = hostAndPortRange.getKey();
 		this.portRange = hostAndPortRange.getValue();

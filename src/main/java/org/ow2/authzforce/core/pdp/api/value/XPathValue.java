@@ -17,12 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
+
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+
+import com.google.common.collect.ImmutableMap;
 
 import net.sf.saxon.lib.StandardURIChecker;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -30,14 +35,6 @@ import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
-
-import org.ow2.authzforce.core.pdp.api.EvaluationContext;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
-import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
-import org.ow2.authzforce.xacml.identifiers.XPathVersion;
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -63,11 +60,6 @@ import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 public final class XPathValue extends SimpleValue<String>
 {
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
 	 */
 	public static final String XPATH_CATEGORY_ATTRIBUTE_LOCALNAME = "XPathCategory";
@@ -88,7 +80,7 @@ public final class XPathValue extends SimpleValue<String>
 
 	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
 	private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
-			"Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
+	        "Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
 
 	private final String xpathCategory;
 
@@ -105,6 +97,7 @@ public final class XPathValue extends SimpleValue<String>
 	private final IndeterminateEvaluationException missingContextException;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile ImmutableMap<QName, String> extraXmlAtts = null;
 
 	/**
 	 * Instantiates from XPath expression.
@@ -121,7 +114,7 @@ public final class XPathValue extends SimpleValue<String>
 	 */
 	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.XPATH_EXPRESSION.value(), xpath);
+		super(xpath);
 		Objects.requireNonNull(otherXmlAttributes, "Undefined XML attributes (expected: " + XPATH_CATEGORY_ATTRIBUTE_QNAME + ")");
 		this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
 		if (xpathCategory == null)
@@ -144,20 +137,9 @@ public final class XPathValue extends SimpleValue<String>
 		}
 
 		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory,
-				XacmlStatusCode.SYNTAX_ERROR.value());
+		        XacmlStatusCode.SYNTAX_ERROR.value());
 		this.xpathEvalExceptionMessage = this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'";
 		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", XacmlStatusCode.PROCESSING_ERROR.value());
-	}
-
-	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-	{
-		in.defaultReadObject();
-		/*
-		 * Modify final field. More info: http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.5.3
-		 */
-		final Field f = XPathValue.class.getDeclaredField("xpathEvaluator");
-		f.setAccessible(true);
-		f.set(this, new XPathEvaluator(this.value, XmlUtils.newXPathCompiler(XPathVersion.V2_0.getURI(), null)));
 	}
 
 	/**
@@ -193,8 +175,7 @@ public final class XPathValue extends SimpleValue<String>
 		{
 			xpathSelector.setContextItem(contentNode);
 			return xpathSelector.evaluate();
-		}
-		catch (final SaxonApiException e)
+		} catch (final SaxonApiException e)
 		{
 			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, XacmlStatusCode.SYNTAX_ERROR.value(), e);
 		}
@@ -242,5 +223,16 @@ public final class XPathValue extends SimpleValue<String>
 	public String printXML()
 	{
 		return this.value;
+	}
+
+	@Override
+	public Map<QName, String> getXmlAttributes()
+	{
+		if (this.extraXmlAtts == null)
+		{
+			this.extraXmlAtts = ImmutableMap.of(XPATH_CATEGORY_ATTRIBUTE_QNAME, this.xpathCategory);
+		}
+
+		return this.extraXmlAtts;
 	}
 }

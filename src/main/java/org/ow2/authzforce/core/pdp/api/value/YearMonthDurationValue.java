@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
  * Representation of an xs:yearMonthDuration value. This class supports parsing xs:yearMonthDuration values. All objects of this class are immutable and thread-safe. The choice of the Java type
@@ -29,10 +28,6 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  */
 public final class YearMonthDurationValue extends DurationValue<YearMonthDurationValue>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Instantiates duration attribute value from string representation
@@ -53,7 +48,7 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 	 */
 	public YearMonthDurationValue(final String value) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.YEARMONTH_DURATION.value(), XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
+		super(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
 	}
 
 }
