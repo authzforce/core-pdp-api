@@ -155,12 +155,19 @@ public final class MediumInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof MediumInteger))
+		if (!(obj instanceof GenericInteger))
 		{
 			return false;
 		}
-		final MediumInteger other = (MediumInteger) obj;
-		return value == other.value;
+
+		final GenericInteger other = (GenericInteger) obj;
+		try
+		{
+			return value == other.intValueExact();
+		} catch (final ArithmeticException e)
+		{
+			return false;
+		}
 	}
 
 	@Override

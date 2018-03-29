@@ -156,12 +156,19 @@ public final class LongInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof LongInteger))
+		if (!(obj instanceof GenericInteger))
 		{
 			return false;
 		}
-		final LongInteger other = (LongInteger) obj;
-		return value == other.value;
+
+		final GenericInteger other = (GenericInteger) obj;
+		try
+		{
+			return value == other.longValueExact();
+		} catch (final ArithmeticException e)
+		{
+			return false;
+		}
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	private static final long serialVersionUID = 1L;
 
 	private static final IllegalArgumentException TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException(
-			"BigInteger argument outside the range which can be represented by a double");
+	        "BigInteger argument outside the range which can be represented by a double");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ArbitrarilyBigInteger.class);
 
@@ -102,8 +102,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 		{
 			l = big.longValueExact();
 			return INSTANCE_FACTORY.getValue(l);
-		}
-		catch (final ArithmeticException e)
+		} catch (final ArithmeticException e)
 		{
 			LOGGER.debug("Input integer value is too big to fit in a long: {}", big);
 		}
@@ -178,13 +177,13 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof ArbitrarilyBigInteger))
+		if (!(obj instanceof GenericInteger))
 		{
 			return false;
 		}
 
-		final ArbitrarilyBigInteger other = (ArbitrarilyBigInteger) obj;
-		return value.equals(other.value);
+		final GenericInteger other = (GenericInteger) obj;
+		return value.equals(other.bigIntegerValue());
 	}
 
 	/** {@inheritDoc} */
