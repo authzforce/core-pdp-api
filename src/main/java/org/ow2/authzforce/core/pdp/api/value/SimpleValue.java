@@ -46,8 +46,6 @@ import net.sf.saxon.s9api.XPathCompiler;
 public abstract class SimpleValue<V> implements AttributeValue
 {
 
-	private static final IllegalArgumentException UNDEF_ATTR_CONTENT_EXCEPTION = new IllegalArgumentException("Undefined attribute value");
-
 	/**
 	 * Datatype-specific Attribute Value Factory that supports values based on single {@link Serializable} element (i.e. no mixed XML content) with extra XML attributes.
 	 * 
@@ -109,31 +107,35 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 * supported {@code datatype}) and possibly other XML attributes (if original input is XML); or no value at all.
 		 * 
 		 * @param content
-		 *            XACML AttributeValue content, e.g. if original input is XML/JAXB, a singleton list with an element of one of the following types: {@link String}, {@link Element}; or if input is
-		 *            JSON, an single JSONObject, Number, Boolean, or String.
+		 *            XACML AttributeValue content, e.g. if original input is XML/JAXB, a singleton list with an item of one of the following types: {@link String}, {@link Element} (see
+		 *            {@link javax.xml.bind.annotation.XmlMixed}); or if input is JSON, an single JSONObject, Number, Boolean, or String.
 		 * @throws IllegalArgumentException
-		 *             if {@code datatype == null || content == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation
-		 *             for this datatype
+		 *             if {@code datatype == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation for this datatype
 		 */
 		@Override
 		public final AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
+			/*
+			 * content may be null in case of XML/JAXB when the tag is empty although it represents the empty string! E.g. <AttributeValue .../>.
+			 */
+			final Serializable content0;
 			if (content == null)
 			{
-				throw UNDEF_ATTR_CONTENT_EXCEPTION;
-			}
-
-			final Serializable content0;
-			final Iterator<Serializable> contentIterator = content.iterator();
-			if (!contentIterator.hasNext())
-			{
-				content0 = null;
+				content0 = "";
 			} else
 			{
-				content0 = contentIterator.next();
-				if (contentIterator.hasNext())
+
+				final Iterator<Serializable> contentIterator = content.iterator();
+				if (!contentIterator.hasNext())
 				{
-					throw MORE_THAN_ONE_ELEMENT_IN_XACML_ATTRIBUTE_VALUE_CONTENT_EXCEPTION;
+					content0 = "";
+				} else
+				{
+					content0 = contentIterator.next();
+					if (contentIterator.hasNext())
+					{
+						throw MORE_THAN_ONE_ELEMENT_IN_XACML_ATTRIBUTE_VALUE_CONTENT_EXCEPTION;
+					}
 				}
 			}
 
