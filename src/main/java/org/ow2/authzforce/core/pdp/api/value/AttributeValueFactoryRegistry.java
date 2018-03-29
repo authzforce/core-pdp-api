@@ -69,7 +69,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 * Get value factory that can handle a given class of Java values
 	 * 
 	 * @param rawValueClass
-	 * @return compatible attribute value factory
+	 * @return compatible attribute value factory; null if none
 	 */
 	AttributeValueFactory<?> getCompatibleFactory(Class<? extends Serializable> rawValueClass);
 
