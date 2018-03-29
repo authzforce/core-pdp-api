@@ -94,23 +94,27 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		final ImmutableList<PepAction> pepActions = result.getPepActions();
 		assert pepActions != null;
 
-		final List<Obligation> obligationList;
-		final List<Advice> adviceList;
+		final List<Obligation> xacmlObligations;
+		final List<Advice> xacmlAdvices;
 		if (pepActions.isEmpty())
 		{
-			obligationList = null;
-			adviceList = null;
-		} else
+			xacmlObligations = null;
+			xacmlAdvices = null;
+		}
+		else
 		{
-			obligationList = new ArrayList<>(pepActions.size());
-			adviceList = new ArrayList<>(pepActions.size());
+			xacmlObligations = new ArrayList<>(pepActions.size());
+			xacmlAdvices = new ArrayList<>(pepActions.size());
 			pepActions.forEach(pepAction -> {
+				final String pepActionId = pepAction.getId();
+				final List<AttributeAssignment> xacmlAttAssignments = convert(pepAction.getAttributeAssignments());
 				if (pepAction.isMandatory())
 				{
-					obligationList.add(new Obligation(convert(pepAction.getAttributeAssignments()), pepAction.getId()));
-				} else
+					xacmlObligations.add(new Obligation(xacmlAttAssignments, pepActionId));
+				}
+				else
 				{
-					adviceList.add(new Advice(convert(pepAction.getAttributeAssignments()), pepAction.getId()));
+					xacmlAdvices.add(new Advice(xacmlAttAssignments, pepActionId));
 				}
 			});
 		}
@@ -120,7 +124,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (applicablePolicies == null || applicablePolicies.isEmpty())
 		{
 			jaxbPolicyIdentifiers = null;
-		} else
+		}
+		else
 		{
 			final List<JAXBElement<IdReferenceType>> jaxbPolicyIdRefs = new ArrayList<>(applicablePolicies.size());
 			for (final PrimaryPolicyMetadata applicablePolicy : applicablePolicies)
@@ -135,8 +140,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			jaxbPolicyIdentifiers = new PolicyIdentifierList(jaxbPolicyIdRefs);
 		}
 
-		return new Result(result.getDecision(), result.getStatus(), obligationList == null || obligationList.isEmpty() ? null : new Obligations(obligationList),
-		        adviceList == null || adviceList.isEmpty() ? null : new AssociatedAdvice(adviceList), request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
+		return new Result(result.getDecision(), result.getStatus(), xacmlObligations == null || xacmlObligations.isEmpty() ? null : new Obligations(xacmlObligations),
+		        xacmlAdvices == null || xacmlAdvices.isEmpty() ? null : new AssociatedAdvice(xacmlAdvices), request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
 	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
@@ -220,7 +225,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		if (maxDepthOfErrorCauseIncludedInResult == 0)
 		{
 			finalStatus = error.getTopLevelStatus();
-		} else
+		}
+		else
 		{
 			/*
 			 * Get Status with detailed cause description. The resulting status contains a StatusDetail element with a list of StatusMessage elements. The nth StatusMessage contains the message of the
@@ -235,7 +241,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
-			} catch (final JAXBException e)
+			}
+			catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to create XACML/JAXB marshaller to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
@@ -244,7 +251,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			try
 			{
 				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult, statusDetailElements, marshaller);
-			} catch (final JAXBException e)
+			}
+			catch (final JAXBException e)
 			{
 				// Should not happen
 				throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
