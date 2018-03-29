@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
@@ -36,6 +37,9 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	private final Optional<String> issuer;
 	private final Datatype<AV> datatype;
 	private final AV value;
+
+	private transient volatile int hashCode = 0;
+	private transient volatile String toString = null;
 
 	/**
 	 * Default constructor
@@ -99,6 +103,45 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	public AV getValue()
 	{
 		return value;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		if (hashCode == 0)
+		{
+			hashCode = Objects.hash(this.attId, this.category, this.issuer, this.datatype, this.value);
+		}
+
+		return hashCode;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+
+		if (!(obj instanceof PepActionAttributeAssignment))
+		{
+			return false;
+		}
+
+		final PepActionAttributeAssignment<?> other = (PepActionAttributeAssignment<?>) obj;
+		return this.attId.equals(other.attId) && this.category.equals(other.category) && this.issuer.equals(other.issuer) && this.datatype.equals(other.datatype) && this.value.equals(other.value);
+	}
+
+	@Override
+	public String toString()
+	{
+		if (toString == null)
+		{
+			toString = "PepActionAttributeAssignment [attId=" + attId + ", category=" + category.orElse(null) + ", issuer=" + issuer.orElse(null) + ", datatype=" + datatype + ", value=" + value + "]";
+		}
+
+		return toString;
 	}
 
 }

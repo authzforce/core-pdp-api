@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
  * of all standard XACML primitive datatypes extend this. Contrary to {@link PrimitiveValue}, this does not represent Functions which are not attribute values. If you want to provide a new type of
  * AttributeValue, i.e. new datatype, extend {@link AttributeValueFactory} to provide a factory for it.
  * 
- * https://docs.oracle.com/javaee/7/api/javax/xml/bind/annotation/XmlMixed.html
+ * <b>All implementations must implement/override {@link #equals(Object)} and {@link #hashCode()} properly.</b>
  */
 public interface AttributeValue extends PrimitiveValue
 {

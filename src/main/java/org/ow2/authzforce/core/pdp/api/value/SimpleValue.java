@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XPathCompiler;
  * Superclass of all "simple" Attribute Values, including values of any XACML standard datatype; "simple" as in "simple type" or "simple content" of XML schema. This means the value can be represented
  * as character data only (String) with no sub-elements (no XML elements) - but with possibly extra XML attributes - as opposed to structured values that have sub-elements. In this definition, all
  * XACML core standard primitive types are "simple" types, and their corresponding Java classes extend this class.
- *
+ * 
  * @param <V>
  *            underlying Java value type
  * 
@@ -122,14 +122,16 @@ public abstract class SimpleValue<V> implements AttributeValue
 			if (content == null)
 			{
 				content0 = "";
-			} else
+			}
+			else
 			{
 
 				final Iterator<Serializable> contentIterator = content.iterator();
 				if (!contentIterator.hasNext())
 				{
 					content0 = "";
-				} else
+				}
+				else
 				{
 					content0 = contentIterator.next();
 					if (contentIterator.hasNext())

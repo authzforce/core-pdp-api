@@ -49,7 +49,7 @@ public final class DecisionResults
 		{
 			if (toString == null)
 			{
-				toString = "Result( decision= NotApplicable, status=" + getStatus() + " )";
+				toString = "Result[ decision= NotApplicable, status=" + getStatus() + " ]";
 			}
 			return toString;
 		}

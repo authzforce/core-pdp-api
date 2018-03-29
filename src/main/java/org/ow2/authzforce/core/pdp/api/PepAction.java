@@ -20,6 +20,8 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -33,6 +35,9 @@ public final class PepAction
 	private final String actionId;
 	private final boolean isMandatory;
 	private final ImmutableList<PepActionAttributeAssignment<?>> attAssignments;
+
+	private transient volatile int hashCode = 0;
+	private transient volatile String toString = null;
 
 	/**
 	 * Constructor
@@ -77,6 +82,45 @@ public final class PepAction
 	public ImmutableList<PepActionAttributeAssignment<?>> getAttributeAssignments()
 	{
 		return attAssignments;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		if (hashCode == 0)
+		{
+			hashCode = Objects.hash(isMandatory, actionId, attAssignments);
+		}
+
+		return hashCode;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+
+		if (!(obj instanceof PepAction))
+		{
+			return false;
+		}
+
+		final PepAction other = (PepAction) obj;
+		return this.isMandatory == other.isMandatory && this.actionId.equals(other.actionId) && this.attAssignments.equals(other.attAssignments);
+	}
+
+	@Override
+	public String toString()
+	{
+		if (toString == null)
+		{
+			toString = "PepAction [actionId=" + actionId + ", isMandatory=" + isMandatory + ", attAssignments=" + attAssignments + "]";
+		}
+
+		return toString;
 	}
 
 }
