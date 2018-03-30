@@ -95,7 +95,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 * @param input
 		 *            input raw value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
 		 * @param otherXmlAttributes
-		 *            other XML attributes (mandatory); if always empty, use {@link SimpleValue.StringContentOnlyValueFactory} instead)
+		 *            other XML attributes (mandatory); if always empty, use {@link StringContentOnlyValueFactory} instead)
 		 * @param xPathCompiler
 		 *            (optional) XPath compiler for compiling any XPath expression in the value, e.g. xpathExpression datatype
 		 * @return instance of {@code F_AV}
