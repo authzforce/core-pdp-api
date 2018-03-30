@@ -1,8 +1,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2804cd619dde437a883da48ad5c283bc)](https://www.codacy.com/app/coder103/authzforce-ce-core-pdp-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=authzforce/core-pdp-api&amp;utm_campaign=Badge_Grade)
 [![Javadocs](http://javadoc.io/badge/org.ow2.authzforce/authzforce-ce-core-pdp-api.svg)](http://javadoc.io/doc/org.ow2.authzforce/authzforce-ce-core-pdp-api)
 
-# AuthZForce Core PDP API
-High-level API for using AuthZForce PDP engine and implementing PDP engine extensions: attribute datatypes, functions, policy/rule combining algorithms, attribute providers, policy providers, XACML Request/Result filters, etc.
+# AuthzForce Core PDP API
+High-level API for using AuthzForce PDP engine and implementing PDP engine extensions: attribute datatypes, functions, policy/rule combining algorithms, attribute providers, policy providers, XACML Request/Result filters, etc.
 
 ## Support
 
@@ -15,5 +15,5 @@ Please include as much information as possible; the more we know, the better the
 * Log output can be useful too; sometimes enabling DEBUG logging can help;
 * Your code & configuration files are often useful.
 
-If you wish to contact the developers for other reasons, use [Authzforce contact mailing list](http://scr.im/azteam).
+If you wish to contact the developers for other reasons, use [AuthzForce contact mailing list](http://scr.im/azteam).
 
