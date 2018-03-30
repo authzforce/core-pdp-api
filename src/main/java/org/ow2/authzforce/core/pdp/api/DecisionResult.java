@@ -25,7 +25,7 @@ import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Result of evaluation of {@link Decidable} (Policy, Rule...) with Obligations/Advice elements packaged together in a {@link PepActions} field.
+ * Result of evaluation of {@link Decidable} (Policy, Rule...) with PEP actions (Obligations/Advice).
  * 
  */
 public interface DecisionResult extends ExtendedDecision
