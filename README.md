@@ -6,7 +6,7 @@ High-level API for using AuthZForce PDP engine and implementing PDP engine exten
 
 ## Support
 
-If you are experiencing any problem with this project, you may report it on the [OW2 Issue Tracker](https://jira.ow2.org/browse/AUTHZFORCE/).
+If you are experiencing any problem with this project, you may report it on the github Issues.
 Please include as much information as possible; the more we know, the better the chance of a quicker resolution:
 
 * Software version
