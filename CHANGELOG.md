@@ -2,6 +2,27 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## Unreleased
+### Added
+- Classes from authzforce-ce-core-pdp-engine, which may be useful to PEP implementations (PEPs should not depend on authzforce-ce-core-pdp-engine except if using an embedded PDP): 
+  - StandardAttributeValueFactories (for mapping standard Java types or XACML datatypes into AuthzForce data model)
+  - ImmutableAttributeValueFactoryRegistry (required by the previous one)
+  - BasePdpExtensionRegistry (required by the previous one).
+- AttributeValueFactoryRegistry#getCompatibleFactory(Class) method: used in unit tests.
+- AttributeValueFactoryRegistry#newAttributeBag(Collection, AttributeSource): creates an AttributeBag with a custom AttributeSource
+- PrimitiveDatatype#getInstanceClass() method: gives the Java class associated to the (XACML) datatype, in AuthzForce data model.
+- XacmlJaxbParsingUtils#parseXacmlJaxbResult(Result) method: to convert XACML/XML Result into AuthzForce data model's DecisionResult
+	
+### Changed
+- For more flexibility, genericity and code simplification (better adaptation to non-XML formats such as JSON in particular), AuthzForce data model classes (e.g. AttributeValue) no longer extend XACML-schema-derived (JAXB-annotated) classes (e.g. AttributeValueType). 
+- DecisionCache.Factory#getInstance(...): new AttributeValueFactoryRegistry parameter for the decision cache system to be able to create/restore AttributeValues from deserialized data stored or produced by external - possibly remote - systems (e.g. cache storage database).
+- CloseableDesignatedAttributeProvider (resp. BaseDesignatedAttributeProvider) class renamed to CloseableNamedAttributeProvider (resp. BaseNamedAttributeProvider) to reuse the official term "named attribute" from §7.3 of XACML 3.0 spec.
+
+### Fixed
+- IllegalArgumentException for empty XACML anyURI, i.e. `<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI" />`. XACML 3.0 spec's anyURI datatype (annex B.3) is defined by W3C XML schema specification (2004)'s anyURI datatype, itself defined by RFC 2396 and 2732 at IETF. An empty URI is valid according to RFC 2396 (section 4.2), therefore an empty AttributeValue with anyURI datatype must be parsed successfully into an empty value. (Fix to SimpleValue class.)  
+- AuthzForce IntegerValues wrongly considered not equal if created from different Java integer types (for the same value), e.g. `1` (Integer) and `1L` (Long). (Fix to equals() implementations in GenericInteger subclasses.)
+
+
 ## 14.0.0
 ### Changed
 - Interface method DecisionCache.Factory#getInstance(...): added EnvironmentProperties parameter to allow passing environment properties to DecisionCache implementations
