@@ -22,8 +22,6 @@ import java.util.Objects;
 
 import javax.xml.ws.Holder;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 import com.google.common.net.InetAddresses;
 
 /**
@@ -32,19 +30,14 @@ import com.google.common.net.InetAddresses;
  * 
  * @version $Id: $
  */
-public final class IpAddressValue extends SimpleValue<String>
+public final class IpAddressValue extends StringParseableValue<String>
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/*
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
 	private static void parseIPv4Address(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
 		assert val != null;
 
@@ -65,8 +58,7 @@ public final class IpAddressValue extends SimpleValue<String>
 			address = InetAddresses.forString(val);
 			mask = null;
 			range = NetworkPortRange.MAX;
-		}
-		else if (maskPos != -1)
+		} else if (maskPos != -1)
 		{
 			// there is also a mask (and maybe a range)
 			/*
@@ -81,8 +73,7 @@ public final class IpAddressValue extends SimpleValue<String>
 				 */
 				mask = InetAddresses.forString(val.substring(maskPos + 1, rangePos));
 				range = NetworkPortRange.getInstance(val.substring(rangePos + 1, val.length()));
-			}
-			else
+			} else
 			{
 				// there's no range, so just get the mask
 				/*
@@ -92,8 +83,7 @@ public final class IpAddressValue extends SimpleValue<String>
 				// if the range is null, then create it as unbound
 				range = NetworkPortRange.MAX;
 			}
-		}
-		else
+		} else
 		{
 			// there is a range, but no mask
 			/*
@@ -113,7 +103,7 @@ public final class IpAddressValue extends SimpleValue<String>
 	 * InetAddresses deliberately avoids all nameservice lookups (e.g. no DNS) on the contrary to the JDK InetAddress.getByName(). Therefore no UnknownHostException to handle.
 	 */
 	private static void parseIPv6Address(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
 		// Let's validate
 		final InetAddress address;
@@ -137,8 +127,7 @@ public final class IpAddressValue extends SimpleValue<String>
 				final int startIndex = endIndex + 3;
 				endIndex = val.indexOf(']', startIndex);
 				mask = InetAddresses.forString(val.substring(startIndex, endIndex));
-			}
-			else
+			} else
 			{
 				mask = null;
 			}
@@ -147,13 +136,11 @@ public final class IpAddressValue extends SimpleValue<String>
 			if (endIndex != len - 1 && val.charAt(endIndex + 1) == ':')
 			{
 				range = NetworkPortRange.getInstance(val.substring(endIndex + 2, len));
-			}
-			else
+			} else
 			{
 				range = NetworkPortRange.MAX;
 			}
-		}
-		else
+		} else
 		{
 			mask = null;
 			range = NetworkPortRange.MAX;
@@ -165,14 +152,13 @@ public final class IpAddressValue extends SimpleValue<String>
 	}
 
 	private static void parseIPAddress(final String val, final Holder<InetAddress> returnedAddress, final Holder<InetAddress> returnedMask, final Holder<NetworkPortRange> returnedRange)
-			throws IllegalArgumentException
+	        throws IllegalArgumentException
 	{
 		// an IPv6 address starts with a '['
 		if (val.indexOf('[') == 0)
 		{
 			parseIPv6Address(val, returnedAddress, returnedMask, returnedRange);
-		}
-		else
+		} else
 		{
 			parseIPv4Address(val, returnedAddress, returnedMask, returnedRange);
 		}
@@ -202,7 +188,7 @@ public final class IpAddressValue extends SimpleValue<String>
 	 */
 	public IpAddressValue(final String val) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.IP_ADDRESS.value(), val);
+		super(val);
 		final Holder<InetAddress> addressHolder = new Holder<>();
 		final Holder<InetAddress> maskHolder = new Holder<>();
 		final Holder<NetworkPortRange> rangeHolder = new Holder<>();

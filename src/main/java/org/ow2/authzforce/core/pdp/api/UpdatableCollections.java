@@ -26,6 +26,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Factory for {@code UpdatableList}s
@@ -77,6 +79,25 @@ public final class UpdatableCollections
 			return ImmutableList.copyOf(list);
 		}
 
+		@Override
+		public UnmodifiableIterator<E> iterator()
+		{
+			return Iterators.unmodifiableIterator(list.iterator());
+		}
+
+		@Override
+		public boolean addAll(UpdatableCollection<E> c)
+		{
+			final UnmodifiableIterator<E> it = c.iterator();
+			boolean added = false;
+			while (it.hasNext())
+			{
+				added = list.add(it.next()) || added;
+			}
+
+			return added;
+		}
+
 	}
 
 	private static final class EmptyList<E> implements UpdatableList<E>
@@ -98,6 +119,18 @@ public final class UpdatableCollections
 		public ImmutableList<E> copy()
 		{
 			return ImmutableList.of();
+		}
+
+		@Override
+		public UnmodifiableIterator<E> iterator()
+		{
+			return ImmutableList.<E>of().iterator();
+		}
+
+		@Override
+		public boolean addAll(UpdatableCollection<E> c)
+		{
+			return false;
 		}
 
 	}
@@ -145,6 +178,18 @@ public final class UpdatableCollections
 		public ImmutableSet<E> copy()
 		{
 			return ImmutableSet.of();
+		}
+
+		@Override
+		public boolean addAll(UpdatableCollection<E> c)
+		{
+			return false;
+		}
+
+		@Override
+		public UnmodifiableIterator<E> iterator()
+		{
+			return ImmutableSet.<E>of().iterator();
 		}
 
 	}
@@ -199,6 +244,25 @@ public final class UpdatableCollections
 		public ImmutableSet<E> copy()
 		{
 			return ImmutableSet.copyOf(set);
+		}
+
+		@Override
+		public UnmodifiableIterator<E> iterator()
+		{
+			return Iterators.unmodifiableIterator(set.iterator());
+		}
+
+		@Override
+		public boolean addAll(UpdatableCollection<E> c)
+		{
+			final UnmodifiableIterator<E> it = c.iterator();
+			boolean added = false;
+			while (it.hasNext())
+			{
+				added = set.add(it.next()) || added;
+			}
+
+			return added;
 		}
 
 	}

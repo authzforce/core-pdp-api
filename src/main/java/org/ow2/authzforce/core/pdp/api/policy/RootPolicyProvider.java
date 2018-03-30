@@ -85,10 +85,10 @@ public interface RootPolicyProvider extends Closeable
 		 * 
 		 * @return the root policy provider instance
 		 * @throws IllegalArgumentException
-		 *             invalid {@code conf}
+		 *             invalid parameters
 		 */
 		public abstract RootPolicyProvider getInstance(ROOT_POLICY_PROVIDER_CONF conf, XmlnsFilteringParserFactory xacmlParserFactory, ExpressionFactory expressionFactory,
-				CombiningAlgRegistry combiningAlgRegistry, Optional<CloseableRefPolicyProvider> refPolicyProvider, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
+		        CombiningAlgRegistry combiningAlgRegistry, Optional<CloseableRefPolicyProvider> refPolicyProvider, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
 	}
 
 }

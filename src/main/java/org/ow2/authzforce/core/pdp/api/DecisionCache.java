@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractDecisionCache;
 
 /**
@@ -48,10 +49,14 @@ public interface DecisionCache extends Closeable
 		 * 
 		 * @param conf
 		 *            extension parameters
-		 * @param envProps environment properties
+		 * @param envProps
+		 *            environment properties
+		 * @param attributeValueFactories
+		 *            AttributeValue factories for the decision cache system to be able to create/restore AttributeValues from deserialized data stored or produced by external - possibly remote -
+		 *            systems (e.g. cache storage database). Remember that such attribute values can be present in decision results, typically in AttributeAssignments of Obligations/Advice.
 		 * @return instance of extension
 		 */
-		public abstract DecisionCache getInstance(CONF_T conf, EnvironmentProperties envProps);
+		public abstract DecisionCache getInstance(CONF_T conf, AttributeValueFactoryRegistry attributeValueFactories, EnvironmentProperties envProps);
 	}
 
 	/**
@@ -71,7 +76,8 @@ public interface DecisionCache extends Closeable
 	 * @param evalCtx
 	 *            evaluation context that can be used to save context about any partial/preliminary evaluation done by this decision cache when there is no cached result for {code request} yet. In
 	 *            this case, the PDP will call back {@link DecisionCache#put(DecisionRequest, DecisionResult, EvaluationContext)} with this same {@code evalCtx} after the PDP has computed the new
-	 *            result. Therefore, this allows the decision cache to reuse some context during an evaluation, and also to do some evaluation itself.
+	 *            result. Therefore, this allows the decision cache to reuse some context during an evaluation, and also to do some evaluation itself. This argument may be null if not required, i.e.
+	 *            {@link #isEvaluationContextRequired()} returns false.
 	 * @return the corresponding decision result from cache; null if there is no such result in cache.
 	 */
 	DecisionResult get(DecisionRequest request, EvaluationContext evalCtx);
@@ -97,7 +103,7 @@ public interface DecisionCache extends Closeable
 	 *            the corresponding decision result
 	 * @param evalCtx
 	 *            evaluation context that can be used to retrieve context about any partial/preliminary evaluation done by this decision cache when {@link #get(DecisionRequest, EvaluationContext)} was
-	 *            called in the same request context.
+	 *            called in the same request context. This argument may be null if not required, i.e. {@link #isEvaluationContextRequired()} returns false.
 	 */
 	void put(DecisionRequest request, DecisionResult result, EvaluationContext evalCtx);
 

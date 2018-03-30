@@ -94,7 +94,7 @@ public interface EvaluationContext
 
 	/**
 	 * Returns the value of a named attribute available in the request context. Used to evaluate {@link AttributeDesignatorExpression}, ContextSelectorId of {@link AttributeSelectorExpression}, or to
-	 * get values of attributes on which {@link DesignatedAttributeProvider}s depends to resolve their own attributes (e.g. some module may need attribute X, such as a subject ID, as input to resolve
+	 * get values of attributes on which {@link NamedAttributeProvider}s depends to resolve their own attributes (e.g. some module may need attribute X, such as a subject ID, as input to resolve
 	 * attribute Y from an external source, such as subject role from a user database).
 	 * 
 	 * @param attributeFQN
@@ -264,12 +264,11 @@ public interface EvaluationContext
 	<L extends Listener> L putListener(Class<L> listenerType, L listener);
 
 	/**
-	 * Returns the listener the specified class is mapped to, or null if no entry for this class is present. This will only return a value that was bound to this specific class, not a value that may
-	 * have been bound to a subtype.
+	 * Returns the listener the specified class is mapped to. This will only return a value that was bound to this specific class, not a value that may have been bound to a subtype.
 	 * 
 	 * @param listenerType
 	 *            listener type, used as key to retrieve the listener registered with this type with {@link #putListener(Class, Listener)}
-	 * @return the listener associated with this class
+	 * @return the listener associated with this class, or null if no entry for this class is present
 	 */
 	<L extends Listener> L getListener(Class<L> listenerType);
 

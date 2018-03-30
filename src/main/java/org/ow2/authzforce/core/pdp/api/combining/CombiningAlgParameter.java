@@ -42,5 +42,5 @@ public interface CombiningAlgParameter<T extends Decidable>
 	 * 
 	 * @return a <code>List</code> of <code>CombinerParameterEvaluator</code>s
 	 */
-	List<CombinerParameterEvaluator> getParameters();
+	List<ParameterAssignment> getParameters();
 }

@@ -26,14 +26,14 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.VariableDefinition;
 
-import org.ow2.authzforce.core.pdp.api.DesignatedAttributeProvider;
+import org.ow2.authzforce.core.pdp.api.NamedAttributeProvider;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
  * Expression factory for parsing XACML {@link ExpressionType}s in policies: AttributeDesignator, AttributeSelector, Apply, etc.
  * <p>
- * Extends {@link Closeable} because it may use {@link DesignatedAttributeProvider}s (implement {@link Closeable}) to resolve AttributeDesignators for attributes not provided in the request.
+ * Extends {@link Closeable} because it may use {@link NamedAttributeProvider}s (implement {@link Closeable}) to resolve AttributeDesignators for attributes not provided in the request.
  */
 public interface ExpressionFactory extends Closeable
 {

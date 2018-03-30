@@ -22,7 +22,6 @@ import java.util.Deque;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +33,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class IntegerValue extends NumericValue<GenericInteger, IntegerValue> implements Comparable<IntegerValue>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private static final IllegalArgumentException TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException(
-			"BigInteger argument outside the range which can be represented by a double");
+	        "BigInteger argument outside the range which can be represented by a double");
 
 	/**
 	 * Creates instance from integer argument
@@ -50,7 +44,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	 */
 	public IntegerValue(final GenericInteger val)
 	{
-		super(XacmlDatatypeId.INTEGER.value(), val);
+		super(val);
 	}
 
 	private static final IntBasedValueFactory.CachingHelper<IntegerValue> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<IntegerValue>()
@@ -108,8 +102,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 		{
 			final int intVal = i.intValueExact();
 			return IntegerValue.valueOf(intVal);
-		}
-		catch (final ArithmeticException e)
+		} catch (final ArithmeticException e)
 		{
 			LOGGER.debug("Input integer value is too big to fit in an int: {}", i);
 		}

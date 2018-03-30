@@ -85,6 +85,16 @@ public class PrimitiveDatatype<AV extends PrimitiveValue> extends Datatype<AV>
 	}
 
 	/**
+	 * Get class of instances of this datatype
+	 * 
+	 * @return class of instances of this datatype
+	 */
+	public final Class<AV> getInstanceClass()
+	{
+		return valueClass;
+	}
+
+	/**
 	 * Get class of array of instances of this datatype
 	 * 
 	 * @return class of array where the component type is this datatype

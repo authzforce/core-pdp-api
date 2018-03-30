@@ -19,8 +19,6 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 /**
  * Representation of an xs:boolean value. This class supports parsing xs:boolean values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java
  * type boolean is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
@@ -28,13 +26,8 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
  * 
  * @version $Id: $
  */
-public final class BooleanValue extends SimpleValue<Boolean>
+public final class BooleanValue extends StringParseableValue<Boolean>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private final int hashCode;
 
 	/**
@@ -112,7 +105,7 @@ public final class BooleanValue extends SimpleValue<Boolean>
 	 */
 	public BooleanValue(final Boolean value)
 	{
-		super(XacmlDatatypeId.BOOLEAN.value(), value);
+		super(value);
 		hashCode = this.value.hashCode();
 	}
 

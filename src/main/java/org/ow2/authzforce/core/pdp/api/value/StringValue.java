@@ -21,21 +21,14 @@ import java.util.Locale;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
-
 /**
  * Representation of an xs:string value. This class supports parsing xs:string values. All objects of this class are immutable and all methods of the class are thread-safe.
  *
  * 
  * @version $Id: $
  */
-public final class StringValue extends SimpleValue<String> implements Comparable<StringValue>
+public final class StringValue extends StringParseableValue<String> implements Comparable<StringValue>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private static final StringValue TRUE = new StringValue("true");
 	private static final StringValue FALSE = new StringValue("false");
 
@@ -67,7 +60,7 @@ public final class StringValue extends SimpleValue<String> implements Comparable
 	 */
 	public StringValue(final String validXsdString)
 	{
-		super(XacmlDatatypeId.STRING.value(), validXsdString);
+		super(validXsdString);
 	}
 
 	/** {@inheritDoc} */

@@ -22,20 +22,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
-
-import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
  * Simplifies XACML Status handling.
  */
-public class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.Status
+public final class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd_17.Status
 {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

@@ -32,27 +32,20 @@ import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
  * 
  * @version $Id: $
  */
-public abstract class DurationValue<DAV extends DurationValue<DAV>> extends SimpleValue<Duration>
+public abstract class DurationValue<DAV extends DurationValue<DAV>> extends StringParseableValue<Duration>
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Instantiates duration attribute value from string representation
 	 *
-	 * @param datatypeId
-	 *            duration datatype ID
 	 * @param duration
 	 *            duration
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code val} is not a valid string representation for this datatype
 	 */
-	public DurationValue(final String datatypeId, final Duration duration) throws IllegalArgumentException
+	public DurationValue(final Duration duration) throws IllegalArgumentException
 	{
-		super(datatypeId, duration);
+		super(duration);
 	}
 
 	/**

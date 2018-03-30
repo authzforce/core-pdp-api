@@ -40,6 +40,9 @@ public abstract class BaseAttributeValueFactory<AV extends AttributeValue> imple
 		this.hashCode = this.instanceDatatype.hashCode();
 	}
 
+	/**
+	 * Returns the ID of the Datatype of values created by this factory
+	 */
 	@Override
 	public final String getId()
 	{

@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
-import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
  * Representation of an xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and thread-safe.
@@ -29,11 +28,6 @@ import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 public final class DayTimeDurationValue extends DurationValue<DayTimeDurationValue>
 {
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * Creates instance from string representation
 	 *
 	 * @param val
@@ -43,6 +37,6 @@ public final class DayTimeDurationValue extends DurationValue<DayTimeDurationVal
 	 */
 	public DayTimeDurationValue(final String val) throws IllegalArgumentException
 	{
-		super(XacmlDatatypeId.DAYTIME_DURATION.value(), XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
+		super(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
 	}
 }

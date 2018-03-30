@@ -17,41 +17,22 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.Collection;
-
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Updatable Set; "updatable" means elements can only be added to the Set (no
- * removal, no clear)
+ * Updatable Set; "updatable" means elements can only be added to the Set (no removal, no clear)
  * 
  * @param <E>
  *            the type of elements in this Set
  */
-public interface UpdatableSet<E>
+public interface UpdatableSet<E> extends UpdatableCollection<E>
 {
-	/**
-	 * Append element to the end of the Set
-	 * 
-	 * @param e
-	 *            new element to append
-	 * @return true iff the Set changed as a result of the call
-	 */
-	boolean add(E e);
-
-	/**
-	 * Appends all the elements in the specified Set, in the same order
-	 * 
-	 * @param c
-	 *            list containing elements to be added to this Set
-	 * @return true iff the Set changed as a result of the call
-	 */
-	boolean addAll(Collection<? extends E> c);
 
 	/**
 	 * Creates an immutable Set copy with all the elements currently in this Set
 	 * 
 	 * @return immutable copy of the Set
 	 */
+	@Override
 	ImmutableSet<E> copy();
 }

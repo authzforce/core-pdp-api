@@ -18,9 +18,8 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 /**
- * The base type for all primitive/non-bag values. This abstract class represents a value for a given datatype. AttributeValues, including those whose dataype is a standard defined in the XACML
- * specification, as well as Functions ("special" datatype because they can be used as parameter of higher-order functions) are considered such primitive values, as opposed to bags/sets. If you want
- * to provide a new datatype, extend {@link org.ow2.authzforce.core.pdp.api.value.AttributeValueFactory} to provide a factory for it.
+ * The base type for all primitive/non-bag values that may be used as function arguments (e.g. in XACML policy) or result. In particular, AttributeValues as well as Functions ("special" datatype
+ * because they can be used as arguments to higher-order functions) are considered such primitive values, as opposed to bags/sets.
  * 
  */
 public interface PrimitiveValue extends Value
