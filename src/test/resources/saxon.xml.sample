@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!-- Many of the options included here are defaults, and do not need to be specified in a real configuration file. They are provided for convenience of editing, so 
+   it is easy to set up a configuration file with non-default options. For documentation on the contents of a Saxon configuration file, see http://www.saxonica.com/documentation9.6/index.html#!configuration/configuration-file -->
+<!-- WARNING: 1) for AuthZForce compatibility, do not set xInclude property here (do not even set xInclude="false") This would cause an error with XACML Request Attributes/Content XML parsing: net.sf.saxon.s9api.SaxonApiException: 
+   Selected XML parser javax.xml.bind.util.JAXBSource$1 does not recognize request for XInclude processing at net.sf.saxon.s9api.DocumentBuilder.build(DocumentBuilder.java:374) ~[Saxon-HE-9.6.0-5.jar:na] 
+   at org.ow2.authzforce.core.XACMLParsers$FullJaxbXACMLAttributesParserFactory$FullJaxbXACMLAttributesParser.parseContent(XACMLParsers.java:909) ~[classes/:na] -->
 <configuration
    edition="HE"
    xmlns="http://saxon.sf.net/ns/configuration"
@@ -87,7 +92,7 @@
       stylesheetParser="">
    </xslt>
    <xquery
-      version="1.1"
+      version="3.1"
       allowUpdate="false"
       errorListener="net.sf.saxon.StandardErrorListener"
       moduleUriResolver="net.sf.saxon.lib.StandardModuleURIResolver"
@@ -98,12 +103,5 @@
       defaultElementNamespace=""
       preserveBoundarySpace="false"
       requiredContextItemType="document-node()"
-      emptyLeast="true" />
-      <!-- XSD occurrenceLimits property is not considered valid by SAXON 9.6 although it is in the doc:
-      http://www.saxonica.com/documentation9.6/index.html#!configuration/configuration-file/config-xsd 
-      Bug reported here: https://saxonica.plan.io/issues/2731
-      -->
-  <xsd
-      occurrenceLimits="100,250"
-      version="1.1" />    
+      emptyLeast="true" />   
 </configuration>
