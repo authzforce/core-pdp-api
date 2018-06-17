@@ -2,6 +2,19 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 15.1.0
+### Changed
+- Parent project (authzforce-ce-parent) version: 7.3.0, which changes dependency versions:
+  - authzforce-ce-xmlns-model: 7.3.0
+  - authzforce-ce-xacml-model: 7.3.0
+  - authzforce-ce-pdp-ext-model: 7.3.0
+  - Spring: 4.3.14.RELEASE
+  - Saxon-HE: 9.8.0-12
+  
+### Added
+- Interfaces: PolicyEvaluator has new method getEnclosedPolicies(), used to detect duplicate PolicyId/Version
+
+
 ## 15.0.0
 ### Added
 - Classes from authzforce-ce-core-pdp-engine, which may be useful to PEP implementations (PEPs should not depend on authzforce-ce-core-pdp-engine except if using an embedded PDP): 
