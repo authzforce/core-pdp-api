@@ -21,6 +21,7 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.ow2.authzforce.core.pdp.api.Decidable;
 import org.ow2.authzforce.core.pdp.api.DecisionResult;
@@ -88,6 +89,15 @@ public interface PolicyEvaluator extends Decidable
 	 *             if the policy version could not be determined in {@code evaluationCtx}
 	 */
 	PolicyVersion getPolicyVersion(EvaluationContext evaluationCtx) throws IndeterminateEvaluationException;
+
+	/**
+	 * Get metadata about the policies enclosed in the evaluated policy (including itself), i.e. whose actual content is enclosed inside the evaluated policy (as opposed to policy references).
+	 * <p>
+	 * This allows to detect duplicates, i.e. when the same policy (ID and version) is re-used multiple times in the same enclosing policy.
+	 * 
+	 * @return the set of enclosed policies, including itself. (May be empty if the policy corresponds to a XACML Policy (no child Policy(Set)s, but never null );
+	 */
+	Set<PrimaryPolicyMetadata> getEnclosedPolicies();
 
 	/**
 	 * Get metadata about the child policy references of the evaluated policy, present iff there is any (e.g. no the case for a XACML Policy element). These metadata may depend on the evaluation

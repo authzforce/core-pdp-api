@@ -28,4 +28,5 @@ package org.ow2.authzforce.core.pdp.api.policy;
 public interface StaticTopLevelPolicyElementEvaluator extends StaticPolicyEvaluator, TopLevelPolicyElementEvaluator
 {
 	// Merge of StaticPolicyEvaluator and TopLevelPolicyElementEvaluator
+
 }

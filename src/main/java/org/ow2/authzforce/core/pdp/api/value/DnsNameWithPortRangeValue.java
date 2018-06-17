@@ -46,7 +46,7 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 	static
 	{
 		/*
-		 * Limit repetitions in regex to mitiate Regex DoS attacks
+		 * Limit repetitions in regex to mitigate Regex DoS attacks
 		 */
 		final String domainlabel = "\\w[[\\w|\\-]{0,1000}\\w]?";
 		final String toplabel = "[a-zA-Z][[\\w|\\-]{0,1000}\\w]?";
@@ -101,7 +101,8 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 			// there is no port/portRange, so just use the name
 			host = dnsName;
 			range = NetworkPortRange.MAX;
-		} else
+		}
+		else
 		{
 			// split the name and the port/portRange
 			host = dnsName.substring(0, portSep);

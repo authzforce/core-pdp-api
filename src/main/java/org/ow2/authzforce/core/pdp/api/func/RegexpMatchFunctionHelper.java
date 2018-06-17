@@ -22,12 +22,9 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import net.sf.saxon.Version;
-import net.sf.saxon.regex.RegularExpression;
-import net.sf.saxon.trans.XPathException;
-
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.expression.Expressions;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
@@ -39,6 +36,10 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
+import net.sf.saxon.Version;
+import net.sf.saxon.regex.RegularExpression;
+import net.sf.saxon.trans.XPathException;
+
 /**
  * *-regexp-match function helper
  * <p>
@@ -48,10 +49,8 @@ import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
  * <li>{@link Pattern} matches the entire string against the pattern always, whereas <code>xf:matches</code> considers the string to match the pattern if any substring matches the pattern.</li>
  * <li><code>xf:matches</code> regular expression syntax is based on XML schema which defines character class substraction using '-' character, whereas {@link Pattern} does not support this syntax but
  * <code>&&[^</code> instead.</li>
- * <li>
- * Category escape: can be done in XML SCHEMA with: <code>[\P{X}]</code>. {@link Pattern} only supports this form: <code>[^\p{X}]</code>.</li>
- * <li>
- * Character classes: XML schema define categories <code>\c</code> and <code>\C</code>. {@link Pattern} does not support them.</li>
+ * <li>Category escape: can be done in XML SCHEMA with: <code>[\P{X}]</code>. {@link Pattern} only supports this form: <code>[^\p{X}]</code>.</li>
+ * <li>Character classes: XML schema define categories <code>\c</code> and <code>\C</code>. {@link Pattern} does not support them.</li>
  * </ul>
  * EXAMPLE: this regex from XML schema spec uses character class substraction. It is valid for <code>xf:matches</code> but does not compile with {@link Pattern}:
  * 
@@ -71,7 +70,7 @@ public final class RegexpMatchFunctionHelper
 		private final String funcId;
 
 		private CompiledRegexMatchFunctionCall(final FirstOrderFunctionSignature<BooleanValue> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes,
-				final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
+		        final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
 		{
 			super(functionSig, argExpressions, remainingArgTypes);
 			this.funcId = functionSig.getName();
@@ -136,7 +135,7 @@ public final class RegexpMatchFunctionHelper
 		final RegularExpression compiledRegex;
 		try
 		{
-			compiledRegex = Version.platform.compileRegularExpression(regex.getUnderlyingValue(), "", "XP20", null);
+			compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), regex.getUnderlyingValue(), "", "XP20", null);
 		}
 		catch (final XPathException e)
 		{
@@ -206,7 +205,7 @@ public final class RegexpMatchFunctionHelper
 					/*
 					 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
 					 */
-					compiledRegex = Version.platform.compileRegularExpression(regex, "", "XP20", null);
+					compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), regex, "", "XP20", null);
 				}
 				catch (final XPathException e)
 				{
