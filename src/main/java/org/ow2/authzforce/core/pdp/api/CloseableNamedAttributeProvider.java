@@ -89,8 +89,10 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 		 * @param environmentProperties
 		 *            global PDP configuration environment properties
 		 * @return a factory aware of dependencies (required attributes) possibly inferred from input {@code conf}
+		 * @throws IllegalArgumentException
+		 *             invalid {code configuration}
 		 */
-		public abstract DependencyAwareFactory getInstance(CONF_T configuration, EnvironmentProperties environmentProperties);
+		public abstract DependencyAwareFactory getInstance(CONF_T configuration, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
 	}
 
 }
