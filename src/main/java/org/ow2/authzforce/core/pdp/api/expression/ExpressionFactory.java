@@ -20,15 +20,15 @@ package org.ow2.authzforce.core.pdp.api.expression;
 import java.io.Closeable;
 import java.util.Deque;
 
+import org.ow2.authzforce.core.pdp.api.NamedAttributeProvider;
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Datatype;
+
 import net.sf.saxon.s9api.XPathCompiler;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.VariableDefinition;
-
-import org.ow2.authzforce.core.pdp.api.NamedAttributeProvider;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
  * Expression factory for parsing XACML {@link ExpressionType}s in policies: AttributeDesignator, AttributeSelector, Apply, etc.
@@ -70,7 +70,7 @@ public interface ExpressionFactory extends Closeable
 	ConstantExpression<? extends AttributeValue> getInstance(AttributeValueType jaxbAttrVal, XPathCompiler xPathCompiler) throws IllegalArgumentException;
 
 	/**
-	 * Add VariableDefinition to be managed
+	 * Add VariableDefinition (variable assignment expression)
 	 * 
 	 * @param varDef
 	 *            VariableDefinition
@@ -86,6 +86,14 @@ public interface ExpressionFactory extends Closeable
 	 *             invalid expression in {@code varDef}
 	 */
 	VariableReference<?> addVariable(VariableDefinition varDef, XPathCompiler xPathCompiler, Deque<String> longestVarRefChain) throws IllegalArgumentException;
+
+	/**
+	 * Get a given variable's assignment expression (definition)
+	 * 
+	 * @param varId
+	 * @return the VariableReference identified by <code>varId</code> , or null if there is no such variable.
+	 */
+	VariableReference<?> getVariableExpression(String varId);
 
 	/**
 	 * Removes the VariableReference(Definition) from the manager

@@ -24,7 +24,16 @@ import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
  * Representation of an xs:time value. This class supports parsing xs:time values. All objects of this class are immutable and thread-safe.
- *
+ * <p>
+ * The {@link XMLGregorianCalendar} returned by {@link #getUnderlyingValue()} have the following characteristics:
+ * <ul>
+ * <li>{@link XMLGregorianCalendar#getYear()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
+ * <li>{@link XMLGregorianCalendar#getEon()} and {@link XMLGregorianCalendar#getEonAndYear()} always return null</li>
+ * <li>{@link XMLGregorianCalendar#getMonth()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
+ * <li>{@link XMLGregorianCalendar#getDay()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
+ * <li>{@link XMLGregorianCalendar#getYear()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
+ * </ul>
+ * </p>
  * 
  * @version $Id: $
  */
