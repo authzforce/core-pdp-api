@@ -19,6 +19,7 @@ package org.ow2.authzforce.core.pdp.api.func;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.expression.FunctionExpression;
@@ -100,7 +101,14 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 		}
 		else if (input0 instanceof VariableReference)
 		{
-			final Value varValue = ((VariableReference<?>) input0).getValue().get();
+			final Optional<? extends Value> optVal = ((VariableReference<?>) input0).getValue();
+			if (!optVal.isPresent())
+			{
+				throw new IllegalArgumentException(this + ": Unsupported type of first argument: " + input0
+				        + " cannot be evaluated to a constant (Function) value (out of context). Variable Function arg to higher-order function is not supported.");
+			}
+
+			final Value varValue = optVal.get();
 			if (!(varValue instanceof Function))
 			{
 				throw new IllegalArgumentException(this + ": Invalid type of first argument: " + varValue.getClass().getSimpleName() + ". Required: Function");

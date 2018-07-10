@@ -2,6 +2,14 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 15.2.0
+### Added
+- ExpressionFactory interface: new method `getVariableExpression(variableId)`
+- Apply class: added check for VariableReference used as first arg (sub-function) to higher-order function: variables (resolved at evaluation time) are not allowed, only constant
+- TimeValue class: more Javadoc giving info about underlying XmlGregorianCalendar's year/month/day fields (set to DatatypeConstants.FIELD_UNDEFINED)
+- GenericAttributeProviderBasedAttributeDesignatorExpression class: moved from authzforce-ce-core-pdp-engine project
+
+
 ## 15.1.0
 ### Changed
 - Parent project (authzforce-ce-parent) version: 7.3.0, which changes dependency versions:
