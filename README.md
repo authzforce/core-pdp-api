@@ -17,3 +17,14 @@ Please include as much information as possible; the more we know, the better the
 
 If you wish to contact the developers for other reasons, use [AuthzForce contact mailing list](http://scr.im/azteam).
 
+## Known issues
+### Class not found: com.sun.mail.XXX
+If you need to use XACML RFC822Name datatype, you need to add an actual implementation of JavaMail API as dependency (must match the version of `javax.mail-api` dependency in the [POM](pom.xml) ), such as:
+
+```xml
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>1.6.0</version>
+</dependency>
+```
