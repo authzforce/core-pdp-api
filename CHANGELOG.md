@@ -2,6 +2,16 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 15.3.0
+### Changed
+- Parent project version: 7.5.0 -> changed dependency versions:
+  - authzforce-ce-xmlns-model: 7.5.0
+  - authzforce-ce-xacml-model: 7.5.0
+  - authzforce-ce-pdp-ext-model: 7.5.0
+  - Guava: 24.1.1-jre
+- Replaced dependency mailapi with javax.mail-api v1.6.0
+
+
 ## 15.2.0
 ### Added
 - ExpressionFactory interface: new method `getVariableExpression(variableId)`
