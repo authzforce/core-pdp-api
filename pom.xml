@@ -3,10 +3,10 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>7.3.0</version>
+      <version>7.5.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>15.2.0</version>
+   <version>15.3.0</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthzForce - Core PDP API</description>
    <url>${project.url}</url>
@@ -32,9 +32,9 @@
       </dependency>
       <dependency>
          <!-- For validation of XACML RFC822Name (email address) -->
-         <groupId>com.sun.mail</groupId>
-         <artifactId>mailapi</artifactId>
-         <version>1.5.6</version>
+         <groupId>javax.mail</groupId>
+         <artifactId>javax.mail-api</artifactId>
+         <version>1.6.0</version>
       </dependency>
       <dependency>
          <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAdress datatype), Domain names (XACML 
@@ -87,7 +87,6 @@
             </executions>
          </plugin>
          <plugin>
-            <!-- Consider combining with Red Hat Victims and OSS Index. More info on Victims vs. Dependency-check: https://bugzilla.redhat.com/show_bug.cgi?id=1388712 -->
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
             <configuration>
