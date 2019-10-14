@@ -28,7 +28,7 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
  * Policy(Set) is constant (always the same) and statically defined.
  * 
  */
-public interface StaticRefPolicyProvider extends RefPolicyProvider
+public interface StaticRefPolicyProvider extends PolicyProvider
 {
 
 	/**

@@ -28,7 +28,7 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 /**
  * Policy-by-reference provider, used by the PDP to get policies referenced by Policy(Set)IdReference in PolicySets.
  */
-public interface RefPolicyProvider
+public interface PolicyProvider
 {
 	/**
 	 * Exception thrown if first arg to {@link #joinPolicyRefChains(Deque, List, int)} is null

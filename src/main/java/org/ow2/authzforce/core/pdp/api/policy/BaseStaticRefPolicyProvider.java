@@ -46,7 +46,7 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	@Override
 	public final Deque<String> joinPolicyRefChains(final Deque<String> policyRefChain1, final List<String> policyRefChain2) throws IllegalArgumentException
 	{
-		return RefPolicyProvider.joinPolicyRefChains(policyRefChain1, policyRefChain2, maxPolicySetRefDepth);
+		return PolicyProvider.joinPolicyRefChains(policyRefChain1, policyRefChain2, maxPolicySetRefDepth);
 	}
 
 	/**

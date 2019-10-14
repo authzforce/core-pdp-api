@@ -27,12 +27,12 @@ import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;
 
 /**
- * {@link RefPolicyProvider} that implements {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
+ * {@link PolicyProvider} that implements {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
  * policies. Therefore, these resources must be release by calling {@link #close()} when it is no longer needed.
  * <p>
  * PDP extensions of this type (to support new ways of providing policies by reference) must implement the {@link Factory} class
  */
-public interface CloseableRefPolicyProvider extends RefPolicyProvider, Closeable
+public interface CloseableRefPolicyProvider extends PolicyProvider, Closeable
 {
 	/**
 	 * RefPolicyProviderModule factory
