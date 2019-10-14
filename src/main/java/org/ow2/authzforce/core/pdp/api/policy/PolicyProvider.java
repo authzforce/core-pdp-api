@@ -26,7 +26,7 @@ import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
- * Policy-by-reference provider, used by the PDP to get policies referenced by Policy(Set)IdReference in PolicySets.
+ * Policy provider, used by the PDP to get policies given a Policy(Set)IdReference (e.g. in PolicySets).
  */
 public interface PolicyProvider
 {
@@ -82,8 +82,8 @@ public interface PolicyProvider
 			final int resultRefDepth = policyRefChain1.size() + policyRefChain2.size() - 1;
 			if (resultRefDepth > maxPolicyRefDepth)
 			{
-				throw new IllegalArgumentException("Depth of Policy Reference (" + resultRefDepth + ") > max allowed (" + maxPolicyRefDepth
-						+ ") resulting from chaining these 2 chains of references: " + policyRefChain1 + " -> " + policyRefChain2);
+				throw new IllegalArgumentException("Depth of Policy Reference (" + resultRefDepth + ") > max allowed (" + maxPolicyRefDepth + ") resulting from chaining these 2 chains of references: "
+				        + policyRefChain1 + " -> " + policyRefChain2);
 			}
 		}
 
@@ -130,7 +130,7 @@ public interface PolicyProvider
 	Deque<String> joinPolicyRefChains(final Deque<String> policyRefChain1, final List<String> policyRefChain2) throws IllegalArgumentException;
 
 	/**
-	 * Finds a policy based on an id reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to lookup a policy.
 	 * 
 	 * @param policyId
 	 *            the identifier used to resolve the policy by its Policy(Set)Id
@@ -176,6 +176,6 @@ public interface PolicyProvider
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
 	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
-			EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
+	        EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
 
 }
