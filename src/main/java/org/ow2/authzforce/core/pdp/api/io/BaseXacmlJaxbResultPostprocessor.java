@@ -67,7 +67,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	private static final IllegalArgumentException ILLEGAL_RESULTS_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined resultsByRequest arg");
 	private static final IllegalArgumentException ILLEGAL_ERROR_ARG_EXCEPTION = new IllegalArgumentException("Undefined input error arg");
 
-	private static List<AttributeAssignment> convert(ImmutableList<PepActionAttributeAssignment<?>> attributeAssignments)
+	private static List<AttributeAssignment> convert(final ImmutableList<PepActionAttributeAssignment<?>> attributeAssignments)
 	{
 		if (attributeAssignments == null)
 		{
@@ -87,6 +87,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	 * @param request
 	 *            request corresponding to result; iff null, some content from it, esp. the list of {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes}, is included in {@code result}
 	 * @param result
+	 *            native policy decision result
 	 * @return XACML Result
 	 */
 	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)

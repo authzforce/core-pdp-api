@@ -21,7 +21,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
  * Closeable {@link StaticPolicyProvider}
  * 
  */
-public interface CloseableStaticRefPolicyProvider extends StaticPolicyProvider, CloseableRefPolicyProvider
+public interface CloseableStaticPolicyProvider extends StaticPolicyProvider, CloseablePolicyProvider<StaticTopLevelPolicyElementEvaluator>
 {
 	// combine StaticRefPolicyProvider and Closeable interface
 }

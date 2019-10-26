@@ -27,8 +27,11 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
  * Policy provider, used by the PDP to get policies given a Policy(Set)IdReference (e.g. in PolicySets).
+ * 
+ * @param <PE>
+ *            type of returned PolicyEvaluator
  */
-public interface PolicyProvider
+public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 {
 	/**
 	 * Exception thrown if first arg to {@link #joinPolicyRefChains(Deque, List, int)} is null
@@ -175,7 +178,7 @@ public interface PolicyProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
-	        EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
+	PE get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
+	        throws IllegalArgumentException, IndeterminateEvaluationException;
 
 }

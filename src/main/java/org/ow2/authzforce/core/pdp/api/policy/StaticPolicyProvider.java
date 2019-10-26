@@ -28,7 +28,7 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
  * is constant (always the same) and statically defined, i.e. independent of evaluation context.
  * 
  */
-public interface StaticPolicyProvider extends PolicyProvider
+public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolicyElementEvaluator>
 {
 
 	/**
@@ -67,13 +67,13 @@ public interface StaticPolicyProvider extends PolicyProvider
 	 * 
 	 * @return the policy matching the policy reference; or null if no match
 	 * @throws IndeterminateEvaluationException
-	 *             if error determining a matching policy of type {@code policyType}
+	 * 
 	 */
 	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChain)
 	        throws IndeterminateEvaluationException;
 
 	@Override
-	default TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
+	default StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
 	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);

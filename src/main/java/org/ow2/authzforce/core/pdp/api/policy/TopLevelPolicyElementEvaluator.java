@@ -23,7 +23,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 /**
  * Marker interface for evaluators of top-level policy elements: XACML Policy or PolicySet.
  * <p>
- * This is the type returned by {@link RootPolicyProvider} and {@link PolicyProvider}.
+ * This is the type returned by {@link PolicyProvider}.
  * 
  */
 public interface TopLevelPolicyElementEvaluator extends VersionFixedPolicyEvaluator

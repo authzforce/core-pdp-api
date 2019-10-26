@@ -25,10 +25,10 @@ import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
- * Convenient base class for {@link CloseableStaticRefPolicyProvider} implementations
+ * Convenient base class for {@link CloseableStaticPolicyProvider} implementations
  * 
  */
-public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefPolicyProvider
+public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyProvider
 {
 	private final int maxPolicySetRefDepth;
 
@@ -38,7 +38,7 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	 * @param maxPolicySetRefDepth
 	 *            max policy reference (e.g. XACML PolicySetIdReference) depth, i.e. max length of the chain of policy references
 	 */
-	public BaseStaticRefPolicyProvider(final int maxPolicySetRefDepth)
+	public BaseStaticPolicyProvider(final int maxPolicySetRefDepth)
 	{
 		this.maxPolicySetRefDepth = maxPolicySetRefDepth < 0 ? UNLIMITED_POLICY_REF_DEPTH : maxPolicySetRefDepth;
 	}
@@ -99,11 +99,11 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
 	protected abstract StaticTopLevelPolicyElementEvaluator getPolicySet(String policyIdRef, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChainWithPolicyIdRef)
-			throws IndeterminateEvaluationException;
+	        throws IndeterminateEvaluationException;
 
 	@Override
 	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType refPolicyType, final String policyIdRef, final Optional<PolicyVersionPatterns> constraints,
-			final Deque<String> policySetRefChain) throws IndeterminateEvaluationException
+	        final Deque<String> policySetRefChain) throws IndeterminateEvaluationException
 	{
 		if (refPolicyType == TopLevelPolicyElementType.POLICY)
 		{
@@ -114,8 +114,8 @@ public abstract class BaseStaticRefPolicyProvider implements CloseableStaticRefP
 	}
 
 	@Override
-	public final TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
-			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
+	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
 	}

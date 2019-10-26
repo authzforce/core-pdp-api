@@ -31,11 +31,14 @@ import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;
  * policies. Therefore, these resources must be release by calling {@link #close()} when it is no longer needed.
  * <p>
  * PDP extensions of this type (to support new ways of providing policies by reference) must implement the {@link Factory} class
+ * 
+ * @param <PE>
+ *            type of returned PolicyEvaluator
  */
-public interface CloseableRefPolicyProvider extends PolicyProvider, Closeable
+public interface CloseablePolicyProvider<PE extends TopLevelPolicyElementEvaluator> extends PolicyProvider<PE>, Closeable
 {
 	/**
-	 * RefPolicyProviderModule factory
+	 * PolicyProvider factory
 	 * 
 	 * @param <CONF_T>
 	 *            type of configuration (XML-schema-derived) of the module (initialization parameter)
@@ -45,7 +48,7 @@ public interface CloseableRefPolicyProvider extends PolicyProvider, Closeable
 	abstract class Factory<CONF_T extends AbstractPolicyProvider> extends JaxbBoundPdpExtension<CONF_T>
 	{
 		/**
-		 * Create RefPolicyProvider instance
+		 * Create PolicyProvider instance
 		 * 
 		 * @param conf
 		 *            configuration
@@ -65,7 +68,7 @@ public interface CloseableRefPolicyProvider extends PolicyProvider, Closeable
 		 * @throws IllegalArgumentException
 		 *             if {@code conf} required but null
 		 */
-		public abstract CloseableRefPolicyProvider getInstance(CONF_T conf, XmlnsFilteringParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory,
-				CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
+		public abstract CloseablePolicyProvider<?> getInstance(CONF_T conf, XmlnsFilteringParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory,
+		        CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
 	}
 }

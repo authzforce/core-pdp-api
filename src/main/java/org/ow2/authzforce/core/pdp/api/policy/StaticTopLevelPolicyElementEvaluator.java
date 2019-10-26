@@ -23,7 +23,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 /**
  * Marker interface for statically-defined top-level policy element (XACML Policy(Set)) evaluators. In such element, the policy references, if any, must be statically resolved at initialization time.
  * <p>
- * This is the type returned by {@link StaticRootPolicyProvider} and {@link StaticPolicyProvider}
+ * This is the type returned by {@link StaticPolicyProvider}
  */
 public interface StaticTopLevelPolicyElementEvaluator extends StaticPolicyEvaluator, TopLevelPolicyElementEvaluator
 {
