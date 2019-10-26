@@ -29,11 +29,12 @@ import net.sf.saxon.s9api.XPathCompiler;
  * Attribute Value based on string or possibly other type of {@link Serializable} content, without any extra XML attributes.
  *
  * @param <V>
+ *            underlying Java data type
  */
 public abstract class StringParseableValue<V> extends SimpleValue<V>
 {
 
-	protected StringParseableValue(V rawVal) throws IllegalArgumentException, NullPointerException
+	protected StringParseableValue(final V rawVal) throws IllegalArgumentException, NullPointerException
 	{
 		super(rawVal);
 	}
