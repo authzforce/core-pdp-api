@@ -2,6 +2,14 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 16.0.0
+### Changed
+- More generic PolicyProvider interface: type-parametered with the type of PolicyEvaluator returned by get(...) method
+
+### Removed
+- \*RootPolicyProvider and \*RefPolicyProvider interfaces removed; only (Closeable)PolicyProvider and (Base|Closeable)StaticPolicyProvider remain.
+
+
 ## 15.3.0
 ### Changed
 - Parent project version: 7.5.0 -> changed dependency versions:

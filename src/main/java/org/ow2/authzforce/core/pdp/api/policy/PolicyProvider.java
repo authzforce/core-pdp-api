@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -26,9 +26,12 @@ import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
- * Policy-by-reference provider, used by the PDP to get policies referenced by Policy(Set)IdReference in PolicySets.
+ * Policy provider, used by the PDP to get policies given a Policy(Set)IdReference (e.g. in PolicySets).
+ * 
+ * @param <PE>
+ *            type of returned PolicyEvaluator
  */
-public interface RefPolicyProvider
+public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 {
 	/**
 	 * Exception thrown if first arg to {@link #joinPolicyRefChains(Deque, List, int)} is null
@@ -82,8 +85,8 @@ public interface RefPolicyProvider
 			final int resultRefDepth = policyRefChain1.size() + policyRefChain2.size() - 1;
 			if (resultRefDepth > maxPolicyRefDepth)
 			{
-				throw new IllegalArgumentException("Depth of Policy Reference (" + resultRefDepth + ") > max allowed (" + maxPolicyRefDepth
-						+ ") resulting from chaining these 2 chains of references: " + policyRefChain1 + " -> " + policyRefChain2);
+				throw new IllegalArgumentException("Depth of Policy Reference (" + resultRefDepth + ") > max allowed (" + maxPolicyRefDepth + ") resulting from chaining these 2 chains of references: "
+				        + policyRefChain1 + " -> " + policyRefChain2);
 			}
 		}
 
@@ -130,7 +133,7 @@ public interface RefPolicyProvider
 	Deque<String> joinPolicyRefChains(final Deque<String> policyRefChain1, final List<String> policyRefChain2) throws IllegalArgumentException;
 
 	/**
-	 * Finds a policy based on an id reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to lookup a policy.
 	 * 
 	 * @param policyId
 	 *            the identifier used to resolve the policy by its Policy(Set)Id
@@ -175,7 +178,7 @@ public interface RefPolicyProvider
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	TopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain,
-			EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException;
+	PE get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
+	        throws IllegalArgumentException, IndeterminateEvaluationException;
 
 }

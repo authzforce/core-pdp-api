@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -75,7 +75,7 @@ public interface PolicyEvaluator extends Decidable
 	String getPolicyId();
 
 	/**
-	 * Get policy version, e.g. for auditing. This may depend on the evaluation context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link RefPolicyProvider}
+	 * Get policy version, e.g. for auditing. This may depend on the evaluation context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link PolicyProvider}
 	 * that resolve policy references at evaluation time based on the context, especially if the policy reference does not specify the version or use non-literal version match rules (with wildcards).
 	 * <p>
 	 * Implementations must still guarantee that the result - once computed in a given request context - remains constant over the lifetime of this request context. This is required for consistent
@@ -101,7 +101,7 @@ public interface PolicyEvaluator extends Decidable
 
 	/**
 	 * Get metadata about the child policy references of the evaluated policy, present iff there is any (e.g. no the case for a XACML Policy element). These metadata may depend on the evaluation
-	 * context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link RefPolicyProvider} that resolve policy references at evaluation time based on the context,
+	 * context in case of a Policy(Set)IdReference evaluator when using dynamic aka context-dependent {@link PolicyProvider} that resolve policy references at evaluation time based on the context,
 	 * especially if the policy reference does not specify the version or use non-literal version match rules (with wildcards).
 	 * <p>
 	 * Implementations must still guarantee that the result - once computed in a given request context - remains constant over the lifetime of this request context. This is required for consistent

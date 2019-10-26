@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -18,10 +18,10 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 /**
- * Closeable {@link StaticRefPolicyProvider}
+ * Closeable {@link StaticPolicyProvider}
  * 
  */
-public interface CloseableStaticRefPolicyProvider extends StaticRefPolicyProvider, CloseableRefPolicyProvider
+public interface CloseableStaticPolicyProvider extends StaticPolicyProvider, CloseablePolicyProvider<StaticTopLevelPolicyElementEvaluator>
 {
 	// combine StaticRefPolicyProvider and Closeable interface
 }

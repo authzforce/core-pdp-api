@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -24,18 +24,18 @@ import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 /**
- * Static Policy-by-reference provider, used by the PDP to get policies referenced by Policy(Set)IdReference in PolicySets. "Static" means here that, given a Policy(Set)IdReference, the returned
- * Policy(Set) is constant (always the same) and statically defined.
+ * Static Policy Provider, used by the PDP to get policies referenced by Policy(Set)IdReference (e.g. in PolicySets). "Static" means here that, given a Policy(Set)IdReference, the returned Policy(Set)
+ * is constant (always the same) and statically defined, i.e. independent of evaluation context.
  * 
  */
-public interface StaticRefPolicyProvider extends RefPolicyProvider
+public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolicyElementEvaluator>
 {
 
 	/**
-	 * Finds a policy based on an id reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to lookup a policy.
 	 * 
-	 * @param policyIdRef
-	 *            the identifier used to resolve the policy by its Policy(Set)Id
+	 * @param policyId
+	 *            the requested Policy(Set)Id
 	 *            <p>
 	 *            WARNING: java.net.URI cannot be used here, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
 	 *            </p>
@@ -50,8 +50,8 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 *            </p>
 	 *            <p>
 	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
-	 * @param refPolicyType
-	 *            type of policy element requested (policy or policySet)
+	 * @param policyType
+	 *            type of requested policy element (Policy or PolicySet)
 	 * @param constraints
 	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
 	 * @param policySetRefChain
@@ -67,14 +67,14 @@ public interface StaticRefPolicyProvider extends RefPolicyProvider
 	 * 
 	 * @return the policy matching the policy reference; or null if no match
 	 * @throws IndeterminateEvaluationException
-	 *             if error determining a matching policy of type {@code policyType}
+	 * 
 	 */
-	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType refPolicyType, String policyIdRef, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChain)
-			throws IndeterminateEvaluationException;
+	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChain)
+	        throws IndeterminateEvaluationException;
 
 	@Override
-	default TopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
-			final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	default StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
+	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
 	}

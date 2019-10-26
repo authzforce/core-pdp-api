@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -23,7 +23,7 @@ package org.ow2.authzforce.core.pdp.api.policy;
 /**
  * Marker interface for evaluators of top-level policy elements: XACML Policy or PolicySet.
  * <p>
- * This is the type returned by {@link RootPolicyProvider} and {@link RefPolicyProvider}.
+ * This is the type returned by {@link PolicyProvider}.
  * 
  */
 public interface TopLevelPolicyElementEvaluator extends VersionFixedPolicyEvaluator

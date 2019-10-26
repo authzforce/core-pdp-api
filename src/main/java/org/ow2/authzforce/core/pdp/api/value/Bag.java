@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -222,8 +222,11 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	/**
 	 * Get the reason why {@link #isEmpty()} returns true iff it does; or null if it doesn't or if reason is unknown.
 	 * 
-	 * @return reason why the bag is empty, if it is
+	 * @return reason why the bag is empty, if it is.
+	 * 
+	 *         NB: cannot be declared static because overridden by various empty Bag subclasses using member attributes
 	 */
+	@SuppressWarnings("static-method")
 	public IndeterminateEvaluationException getReasonWhyEmpty()
 	{
 		throw UNSUPPORTED_OPERATION_EXCEPTION;

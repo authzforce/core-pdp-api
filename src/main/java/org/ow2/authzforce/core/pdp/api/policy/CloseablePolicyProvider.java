@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2018 Thales Services SAS.
+ * Copyright 2012-2019 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -27,15 +27,18 @@ import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
 import org.ow2.authzforce.xmlns.pdp.ext.AbstractPolicyProvider;
 
 /**
- * {@link RefPolicyProvider} that implements {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
+ * {@link PolicyProvider} that implements {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
  * policies. Therefore, these resources must be release by calling {@link #close()} when it is no longer needed.
  * <p>
  * PDP extensions of this type (to support new ways of providing policies by reference) must implement the {@link Factory} class
+ * 
+ * @param <PE>
+ *            type of returned PolicyEvaluator
  */
-public interface CloseableRefPolicyProvider extends RefPolicyProvider, Closeable
+public interface CloseablePolicyProvider<PE extends TopLevelPolicyElementEvaluator> extends PolicyProvider<PE>, Closeable
 {
 	/**
-	 * RefPolicyProviderModule factory
+	 * PolicyProvider factory
 	 * 
 	 * @param <CONF_T>
 	 *            type of configuration (XML-schema-derived) of the module (initialization parameter)
@@ -45,7 +48,7 @@ public interface CloseableRefPolicyProvider extends RefPolicyProvider, Closeable
 	abstract class Factory<CONF_T extends AbstractPolicyProvider> extends JaxbBoundPdpExtension<CONF_T>
 	{
 		/**
-		 * Create RefPolicyProvider instance
+		 * Create PolicyProvider instance
 		 * 
 		 * @param conf
 		 *            configuration
@@ -65,7 +68,7 @@ public interface CloseableRefPolicyProvider extends RefPolicyProvider, Closeable
 		 * @throws IllegalArgumentException
 		 *             if {@code conf} required but null
 		 */
-		public abstract CloseableRefPolicyProvider getInstance(CONF_T conf, XmlnsFilteringParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory,
-				CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
+		public abstract CloseablePolicyProvider<?> getInstance(CONF_T conf, XmlnsFilteringParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory,
+		        CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
 	}
 }
