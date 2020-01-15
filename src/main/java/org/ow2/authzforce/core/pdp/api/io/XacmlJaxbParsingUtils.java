@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2019 THALES.
+ * Copyright 2012-2020 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -230,7 +230,8 @@ public final class XacmlJaxbParsingUtils
 
 				attrMap = Collections.emptyMap();
 				attrsToIncludeInResult = null;
-			} else
+			}
+			else
 			{
 				/*
 				 * Let's iterate over the attributes to convert the list to a map indexed by the attribute category/id/issuer for quicker access during request evaluation. There might be multiple
@@ -252,7 +253,8 @@ public final class XacmlJaxbParsingUtils
 					try
 					{
 						xacmlReqAttributeParser.parseNamedAttribute(categoryId, jaxbAttr, xPathCompiler, attrMap);
-					} catch (final IllegalArgumentException e)
+					}
+					catch (final IllegalArgumentException e)
 					{
 						throw new IndeterminateEvaluationException("Invalid Attributes/Attribute element", XacmlStatusCode.SYNTAX_ERROR.value(), e);
 					}
@@ -371,7 +373,8 @@ public final class XacmlJaxbParsingUtils
 			try
 			{
 				return xmlDocBuilder.wrap(childElt);
-			} catch (final IllegalArgumentException e)
+			}
+			catch (final IllegalArgumentException e)
 			{
 				throw new IndeterminateEvaluationException("Error parsing Content of Attributes[@Category=" + categoryName + "] for XPath evaluation", XacmlStatusCode.SYNTAX_ERROR.value(), e);
 			}
@@ -437,14 +440,14 @@ public final class XacmlJaxbParsingUtils
 		}
 	}
 
-	private static <AV extends AttributeValue> PepActionAttributeAssignment<AV> newPepActionAttributeAssignment(String attributeId, Optional<String> category, Optional<String> issuer,
-	        ConstantExpression<AV> constantExp)
+	private static <AV extends AttributeValue> PepActionAttributeAssignment<AV> newPepActionAttributeAssignment(final String attributeId, final Optional<String> category,
+	        final Optional<String> issuer, final ConstantExpression<AV> constantExp)
 	{
 		return new PepActionAttributeAssignment<>(attributeId, category, issuer, constantExp.getReturnType(), constantExp.getValue().get());
 	}
 
-	private static ImmutableList<PepActionAttributeAssignment<?>> xacmlToAuthzForceAttributeAssignments(List<AttributeAssignment> xacmlAttributeAssignments,
-	        AttributeValueFactoryRegistry attributeValueFactories)
+	private static ImmutableList<PepActionAttributeAssignment<?>> xacmlToAuthzForceAttributeAssignments(final List<AttributeAssignment> xacmlAttributeAssignments,
+	        final AttributeValueFactoryRegistry attributeValueFactories)
 	{
 		final List<PepActionAttributeAssignment<?>> attAssignments = new ArrayList<>(xacmlAttributeAssignments.size());
 		for (final AttributeAssignment xacmlAttAssig : xacmlAttributeAssignments)
@@ -468,14 +471,15 @@ public final class XacmlJaxbParsingUtils
 	 *            AttributeValue factories (registry of datatype-specific parsers)
 	 * @return decision result in AuthzForce data model
 	 */
-	public static DecisionResult parseXacmlJaxbResult(final Result xacmlResult, AttributeValueFactoryRegistry attributeValueFactories)
+	public static DecisionResult parseXacmlJaxbResult(final Result xacmlResult, final AttributeValueFactoryRegistry attributeValueFactories)
 	{
 		final PolicyIdentifierList xacmlPolicyIdentifiers = xacmlResult.getPolicyIdentifierList();
 		final ImmutableList<PrimaryPolicyMetadata> immutableApplicablePolicyIdList;
 		if (xacmlPolicyIdentifiers == null)
 		{
 			immutableApplicablePolicyIdList = null;
-		} else
+		}
+		else
 		{
 			final List<PrimaryPolicyMetadata> applicablePolicyIdentifiers = xacmlPolicyIdentifiers.getPolicyIdReferencesAndPolicySetIdReferences().stream().map(jaxbElt -> {
 				final IdReferenceType idRef = jaxbElt.getValue();
@@ -491,7 +495,8 @@ public final class XacmlJaxbParsingUtils
 		if (xacmlObligations == null)
 		{
 			nonNullXacmlObligationList = Collections.emptyList();
-		} else
+		}
+		else
 		{
 			final List<Obligation> xacmlObligationList = xacmlObligations.getObligations();
 			nonNullXacmlObligationList = xacmlObligationList == null ? Collections.emptyList() : xacmlObligationList;
@@ -502,7 +507,8 @@ public final class XacmlJaxbParsingUtils
 		if (xacmlAdvice == null)
 		{
 			nonNullXacmlAdviceList = Collections.emptyList();
-		} else
+		}
+		else
 		{
 			final List<Advice> xacmlAdviceList = xacmlAdvice.getAdvices();
 			nonNullXacmlAdviceList = xacmlAdviceList == null ? Collections.emptyList() : xacmlAdviceList;
@@ -512,7 +518,8 @@ public final class XacmlJaxbParsingUtils
 		if (nonNullXacmlObligationList.isEmpty() && nonNullXacmlAdviceList.isEmpty())
 		{
 			pepActions = ImmutableList.of();
-		} else
+		}
+		else
 		{
 			final List<PepAction> mutablePepActions = new ArrayList<>(nonNullXacmlObligationList.size() + nonNullXacmlAdviceList.size());
 			nonNullXacmlObligationList.forEach(xacmlOb -> {

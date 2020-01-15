@@ -2,6 +2,12 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 16.1.0
+### Changed
+- Parent project version: 7.5.1 (security fix)
+- `PolicyProvider` interface: new method `getCandidateRootPolicy()` provides a default root policy to the PDP when 'rootPolicyRef' undefined in PDP configuration (helps simplify PDP configuration)
+
+
 ## 16.0.0
 ### Changed
 - More generic PolicyProvider interface: type-parametered with the type of PolicyEvaluator returned by get(...) method

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2019 THALES.
+ * Copyright 2012-2020 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -180,5 +180,17 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 */
 	PE get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
 	        throws IllegalArgumentException, IndeterminateEvaluationException;
+
+	/**
+	 * Returns the policy that may be used by the PDP as root of evaluation, if any defined/identified by this Policy Provider. For example, if the policy repository is made of one and only one static
+	 * policy document, this is obviously the one possible candidate for root policy to be returned by this method.
+	 * 
+	 * @return (metadata of) the candidate root policy. The {@link #get(TopLevelPolicyElementType, String, Optional, Deque, EvaluationContext)} method can then be used to retrieve the actual policy
+	 *         evaluator for evaluation.
+	 */
+	default Optional<PrimaryPolicyMetadata> getCandidateRootPolicy()
+	{
+		return Optional.empty();
+	}
 
 }
