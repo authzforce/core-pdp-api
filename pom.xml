@@ -35,6 +35,8 @@
          <groupId>javax.mail</groupId>
          <artifactId>javax.mail-api</artifactId>
          <version>1.6.0</version>
+         <!-- Must be replaced with actual implementation at runtime (to be provided), e.g. com.sun.mail:javax.mail -->
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAdress datatype), Domain names (XACML 
