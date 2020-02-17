@@ -2,6 +2,11 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 16.2.0
+### Changed
+- Maven dependency `javax.mail-api`: scope changed to `provided` since an actual implementation should be *provided* at runtime instead, e.g. `com.sun.mail:javax.mail` (in the same version) to avoid class overlap/duplicate.
+
+
 ## 16.1.0
 ### Changed
 - Parent project version: 7.5.1 (security fix)
