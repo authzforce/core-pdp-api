@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 import java.io.Closeable;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.EnvironmentProperties;
 import org.ow2.authzforce.core.pdp.api.JaxbBoundPdpExtension;
@@ -63,12 +64,15 @@ public interface CloseablePolicyProvider<PE extends TopLevelPolicyElementEvaluat
 		 *            Combining algorithm registry for getting implementations of algorithms used in the policies
 		 * @param environmentProperties
 		 *            global PDP configuration environment properties
+		 * @param otherHelpingPolicyProvider
+		 *            other optional policy provider that helps the new instance resolve policy references that it cannot resolve on its own. It is meant to be a combination of the policy providers
+		 *            instantiated previously, if there was any.
 		 * 
 		 * @return the instance
 		 * @throws IllegalArgumentException
 		 *             if {@code conf} required but null
 		 */
 		public abstract CloseablePolicyProvider<?> getInstance(CONF_T conf, XmlnsFilteringParserFactory xacmlParserFactory, int maxPolicySetRefDepth, ExpressionFactory expressionFactory,
-		        CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties) throws IllegalArgumentException;
+		        CombiningAlgRegistry combiningAlgRegistry, EnvironmentProperties environmentProperties, Optional<PolicyProvider<?>> otherHelpingPolicyProvider) throws IllegalArgumentException;
 	}
 }

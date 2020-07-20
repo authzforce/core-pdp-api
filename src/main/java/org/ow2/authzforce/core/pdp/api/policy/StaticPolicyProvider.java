@@ -52,7 +52,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
 	 * @param policyType
 	 *            type of requested policy element (Policy or PolicySet)
-	 * @param constraints
+	 * @param versionConstraints
 	 *            any optional constraints on the version of the referenced policy, matched against its Version attribute
 	 * @param policySetRefChain
 	 *            null iff this is not called to resolve a PolicySetIdReference; else ({@code policyType == TopLevelPolicyElementType#POLICY_SET}) this is the chain of PolicySets linked via
@@ -69,7 +69,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 	 * @throws IndeterminateEvaluationException
 	 * 
 	 */
-	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> constraints, Deque<String> policySetRefChain)
+	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> versionConstraints, Deque<String> policySetRefChain)
 	        throws IndeterminateEvaluationException;
 
 	@Override
