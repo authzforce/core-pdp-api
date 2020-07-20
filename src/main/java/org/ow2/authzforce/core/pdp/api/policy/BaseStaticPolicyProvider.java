@@ -63,7 +63,7 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 	protected abstract StaticTopLevelPolicyElementEvaluator getPolicy(String policyIdRef, Optional<PolicyVersionPatterns> constraints) throws IndeterminateEvaluationException;
 
 	/**
-	 * Finds a policySet based on an reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Resolve reference to PolicySet, e.g. PolicySetIdReference. This may involve using the reference as indexing data to lookup a policy.
 	 * 
 	 * @param policyIdRef
 	 *            the target PolicySetId
