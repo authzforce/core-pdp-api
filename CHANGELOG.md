@@ -2,6 +2,17 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 17.0.0
+### Changed
+- Upgraded project parent version: 7.6.1
+	- Upgraded managed dependency slf4j-api: 1.7.30
+- PolicyProvider API: `CloseablePolicyProvider.Factory#getInstance(...)` takes new parameter `otherHelpingPolicyProvider` which allows a new Policy Provider to call other(s) previously instantiated ones for help - during instantiation or later - in order to resolve policies (references) it cannot resolve on its own. Therefore, this allows to combine multiple Policy Providers together.
+	
+
+### Fixed
+- #2: CVE-2018-8088 affecting slf4j (upgraded version of slf4j managed by parent project)
+
+
 ## 16.3.0
 ### Changed
 - Upgraded project parent version to 7.6.0
