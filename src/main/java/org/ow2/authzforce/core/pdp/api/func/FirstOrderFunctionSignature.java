@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -155,22 +155,22 @@ public abstract class FirstOrderFunctionSignature<RETURN_T extends Value>
 		// immutable class -> cache result
 		if (toString == null)
 		{
-			final StringBuffer strBuf = new StringBuffer(returnType + " " + name + "(");
+			final StringBuilder strBuilder = new StringBuilder(returnType + " " + name + "(");
 			final Iterator<? extends Datatype<?>> paramTypesIterator = this.getParameterTypes().iterator();
 			// at least one parameter, we make sure of that in the constructor
-			strBuf.append(paramTypesIterator.next());
+			strBuilder.append(paramTypesIterator.next());
 			while (paramTypesIterator.hasNext())
 			{
-				strBuf.append(',').append(paramTypesIterator.next());
+				strBuilder.append(',').append(paramTypesIterator.next());
 			}
 
 			if (isVarArgs)
 			{
-				strBuf.append("...");
+				strBuilder.append("...");
 			}
 
-			strBuf.append(')');
-			toString = strBuf.toString();
+			strBuilder.append(')');
+			toString = strBuilder.toString();
 		}
 
 		return toString;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -65,15 +65,15 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 *            return type of argument expression evaluation
 	 * @param resultsToUpdate
 	 *            attribute values to be updated with results from evaluating all <code>args</code> in <code>context</code>; the specified type <code>AV</code> of array elements must be a supertype of
-	 *            any expected arg evalution result datatype. Used as the method result if not null; If null, a new instance is created.
+	 *            any expected arg evaluation result datatype. Used as the method result if not null; If null, a new instance is created.
 	 * @return results containing all evaluation results.
 	 * @throws IndeterminateEvaluationException
 	 *             if evaluation of one of the arg failed, or <code>T</code> is not a supertype of the result value datatype
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private final static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Datatype<AV> argReturnType,
-	        final Deque<AV> resultsToUpdate) throws IndeterminateEvaluationException
+	private static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Datatype<AV> argReturnType,
+																		   final Deque<AV> resultsToUpdate) throws IndeterminateEvaluationException
 	{
 		assert args != null;
 		final Deque<AV> results = resultsToUpdate == null ? new ArrayDeque<>() : resultsToUpdate;
@@ -107,14 +107,13 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @param context
 	 *            evaluation context
 	 * @param resultsToUpdate
-	 *            attribute values to be updated with results from evaluating all <code>args</code> in <code>context</code>e. Used as the method result if not null; If null, a new instance is created.
-	 * @return results containing all evaluation results.
+	 *            attribute values to be updated with results from evaluating all <code>args</code> in <code>context</code>. Used as the method result if not null; If null, a new instance is created.
 	 * @throws IndeterminateEvaluationException
 	 *             if evaluation of one of the arg failed
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private final static Deque<AttributeValue> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Deque<AttributeValue> resultsToUpdate)
+	private static void evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Deque<AttributeValue> resultsToUpdate)
 	        throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -137,11 +136,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 
 			results.add(argVal);
 		}
-
-		return results;
 	}
 
-	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType,
+	private static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType,
 	        final Bag<AV>[] results) throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -180,14 +177,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		return results;
 	}
 
-	private final static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType)
-	        throws IndeterminateEvaluationException
-	{
-		final Bag<AV>[] results = argReturnType.newArray(args.size());
-		return evalBagArgs(args, context, argReturnType, results);
-	}
-
-	private static final void checkArgType(final Datatype<?> argType, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
+	private static void checkArgType(final Datatype<?> argType, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
 	{
 		if (!argType.equals(expectedType))
 		{
@@ -195,9 +185,13 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		}
 	}
 
-	private static final void checkArgType(final AttributeValue arg, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
+	private static void checkArgType(final AttributeValue arg, final int argIndex, final Datatype<?> expectedType, final String funcId) throws IllegalArgumentException
 	{
-		if (expectedType.isInstance(arg))
+		if(expectedType == null) {
+			throw new IllegalArgumentException("Function " + funcId + ": arg #" + argIndex + " is unexpected.");
+		}
+
+		if (!expectedType.isInstance(arg))
 		{
 			throw new IllegalArgumentException("Function " + funcId + ": type of arg #" + argIndex + " does not match required type: " + expectedType + ".");
 		}
@@ -432,7 +426,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			Datatype<?> commonPrimitiveType = null;
 			for (final Datatype<?> paramType : paramTypes)
 			{
-				if (!paramType.getTypeParameter().isPresent())
+				if (paramType.getTypeParameter().isEmpty())
 				{
 					// primitive type
 					if (primParamCount == 0)
@@ -483,7 +477,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				}
 			} else
 			{
-				// parly primitive, partly bag -> use EagerPartlyBagEval
+				// partly primitive, partly bag -> use EagerPartlyBagEval
 				/*
 				 * For anonymous class used often to instantiate function call, call Class#getSuperClass() to get actual FunctionCall class implemented.
 				 */
@@ -543,11 +537,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		 */
 		protected abstract RETURN_T evaluate(Deque<AttributeValue> args) throws IndeterminateEvaluationException;
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.thalesgroup.authzforce.core.func.FirstOrderFunctionCall#evaluate(com.thalesgroup. authzforce .core.test.EvaluationCtx , com.thalesgroup.authzforce.core.datatypes.AttributeValue[])
-		 */
 		@Override
 		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
@@ -627,11 +616,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		 */
 		protected abstract RETURN_T evaluate(Deque<PARAM_T> argStack) throws IndeterminateEvaluationException;
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see com.thalesgroup.authzforce.core.func.FirstOrderFunctionCall#evaluate(com.thalesgroup. authzforce .core.test.EvaluationCtx , com.thalesgroup.authzforce.core.datatypes.AttributeValue[])
-		 */
 		@Override
 		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
@@ -738,8 +722,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final Bag<PARAM_BAG_ELEMENT_T>[] bagArgs;
 			try
 			{
-				bagArgs = evalBagArgs(argExpressions, context, paramBagType);
-
+				bagArgs = evalBagArgs(argExpressions, context, paramBagType, paramBagType.newArray(argExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
@@ -806,7 +789,8 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			try
 			{
 				primArgsBeforeBag = evalPrimitiveArgs(argExpressions.subList(0, numOfSameTypePrimitiveParamsBeforeBag), context, primitiveParamType, null);
-				bagArgs = evalBagArgs(argExpressions.subList(numOfSameTypePrimitiveParamsBeforeBag, numOfArgExpressions), context, bagParamType);
+				final List<Expression<?>> bagArgExpressions = argExpressions.subList(numOfSameTypePrimitiveParamsBeforeBag, numOfArgExpressions);
+				bagArgs = evalBagArgs(bagArgExpressions, context, bagParamType, bagParamType.newArray(bagArgExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);

@@ -7,3 +7,5 @@
 /.CHANGELOG.md.html
 /.README.md.html
 /bin/
+**/.idea
+*.iml

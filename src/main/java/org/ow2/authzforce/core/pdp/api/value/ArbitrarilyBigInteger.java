@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -65,7 +65,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 		this(BigInteger.valueOf(val));
 	}
 
-	private static final IntBasedValueFactory.CachingHelper<ArbitrarilyBigInteger> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<ArbitrarilyBigInteger>()
+	private static final IntBasedValueFactory.CachingHelper<ArbitrarilyBigInteger> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<>()
 	{
 
 		@Override
@@ -199,7 +199,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger add(final GenericInteger other)
 	{
 		final BigInteger result = value.add(other.bigIntegerValue());
-		return result == value ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -207,7 +207,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger multiply(final GenericInteger other) throws ArithmeticException
 	{
 		final BigInteger result = value.multiply(other.bigIntegerValue());
-		return result == value ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -215,7 +215,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger divide(final GenericInteger divisor) throws ArithmeticException
 	{
 		final BigInteger result = value.divide(divisor.bigIntegerValue());
-		return result == value ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -223,14 +223,14 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger subtract(final GenericInteger subtractedVal)
 	{
 		final BigInteger result = value.subtract(subtractedVal.bigIntegerValue());
-		return result == value ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
 	}
 
 	@Override
 	public ArbitrarilyBigInteger remainder(final GenericInteger divisor) throws ArithmeticException
 	{
 		final BigInteger result = value.remainder(divisor.bigIntegerValue());
-		return result == value ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
 	}
 
 	@Override

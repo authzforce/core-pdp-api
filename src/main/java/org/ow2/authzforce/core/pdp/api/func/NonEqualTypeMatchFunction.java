@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -101,7 +101,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 
 		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
-			return new EagerMultiPrimitiveTypeEval<BooleanValue>(funcSig, argExpressions, remainingArgTypes)
+			return new EagerMultiPrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
 				protected final BooleanValue evaluate(final Deque<AttributeValue> args) throws IndeterminateEvaluationException
@@ -220,7 +220,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	public static class RegexpMatchCallFactoryBuilder<AV extends SimpleValue<String>> implements CallFactoryBuilder<StringValue, AV>
 	{
 
-		private final Matcher<StringValue, AV> regexMatcher = (regex, arg1) -> RegexpMatchFunctionHelper.match(regex, arg1);
+		private final Matcher<StringValue, AV> regexMatcher = RegexpMatchFunctionHelper::match;
 
 		private class RegexpMatchCallFactory extends CallFactory<StringValue, AV>
 		{

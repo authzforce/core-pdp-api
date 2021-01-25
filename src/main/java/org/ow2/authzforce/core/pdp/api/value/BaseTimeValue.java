@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -37,7 +37,7 @@ import javax.xml.namespace.QName;
 public abstract class BaseTimeValue<TAV extends BaseTimeValue<TAV>> extends StringParseableValue<XMLGregorianCalendar> implements Comparable<TAV>
 {
 
-	private static final XMLGregorianCalendar validate(final XMLGregorianCalendar time, final QName xmlSchemaDatatype)
+	private static XMLGregorianCalendar validate(final XMLGregorianCalendar time, final QName xmlSchemaDatatype)
 	{
 		if (!time.getXMLSchemaType().equals(xmlSchemaDatatype))
 		{

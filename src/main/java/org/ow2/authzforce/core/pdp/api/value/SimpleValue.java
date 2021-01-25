@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.xml.bind.DatatypeConverter;
+
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -186,7 +186,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 
 	/**
 	 * Converts the internal value (accessible via {@link #getUnderlyingValue()} to a valid lexical representation for XML marshalling. Equivalent to the 'printMethod' in JAXB 'javaType' binding
-	 * customizations. Implementations of this typically call {@link DatatypeConverter}. This method is called by {@link #getContent()} and its result cached by the same method for later use.
+	 * customizations. Implementations of this typically call {@link javax.xml.bind.DatatypeConverter}. This method is called by {@link #getContent()} and its result cached by the same method for later use.
 	 * Therefore, no need to cache the result in the implementation.
 	 *
 	 * @return XML-valid lexical representation.

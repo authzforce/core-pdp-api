@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,10 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -77,7 +74,7 @@ public final class FirstOrderBagFunctions
 		 */
 		public SingletonBagToPrimitive(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_ONE_AND_ONLY, paramType, false, Collections.singletonList(paramBagType));
 			this.invalidArgEmptyException = new IndeterminateEvaluationException("Function " + this + ": Invalid arg #0: empty bag or bag size > 1. Required: one and only one value in bag.",
 					XacmlStatusCode.PROCESSING_ERROR.value());
 		}
@@ -85,26 +82,22 @@ public final class FirstOrderBagFunctions
 		@Override
 		public FirstOrderFunctionCall<AV> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
-			return new EagerBagEval<AV, AV>(functionSignature, argExpressions)
+			return new EagerBagEval<>(functionSignature, argExpressions)
 			{
 
 				@Override
 				protected final AV evaluate(final Bag<AV>[] bagArgs) throws IndeterminateEvaluationException
 				{
-					return eval(bagArgs[0]);
+					if (bagArgs[0].size() != 1)
+					{
+						throw invalidArgEmptyException;
+					}
+
+					return bagArgs[0].getSingleElement();
 				}
 			};
 		}
 
-		private AV eval(final Bag<AV> bag) throws IndeterminateEvaluationException
-		{
-			if (bag.size() != 1)
-			{
-				throw invalidArgEmptyException;
-			}
-
-			return bag.getSingleElement();
-		}
 	}
 
 	/**
@@ -128,28 +121,24 @@ public final class FirstOrderBagFunctions
 		 */
 		public BagSize(final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER, false, Arrays.asList(paramBagType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG_SIZE, StandardDatatypes.INTEGER, false, Collections.singletonList(paramBagType));
 		}
 
 		@Override
 		public FirstOrderFunctionCall<IntegerValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
-			return new EagerBagEval<IntegerValue, AV>(functionSignature, argExpressions)
+			return new EagerBagEval<>(functionSignature, argExpressions)
 			{
 
 				@Override
-				protected final IntegerValue evaluate(final Bag<AV>[] bagArgs) throws IndeterminateEvaluationException
+				protected final IntegerValue evaluate(final Bag<AV>[] bagArgs)
 				{
-					return eval(bagArgs[0]);
+					return IntegerValue.valueOf(bagArgs[0].size());
 				}
 
 			};
 		}
 
-		private static IntegerValue eval(final Bag<?> bag)
-		{
-			return IntegerValue.valueOf(bag.size());
-		}
 	}
 
 	/**
@@ -189,11 +178,11 @@ public final class FirstOrderBagFunctions
 		@Override
 		public FirstOrderFunctionCall<BooleanValue> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
-			return new EagerPartlyBagEval<BooleanValue, AV>(functionSignature, bagType, arrayClass, argExpressions, remainingArgTypes)
+			return new EagerPartlyBagEval<>(functionSignature, bagType, arrayClass, argExpressions, remainingArgTypes)
 			{
 
 				@Override
-				protected final BooleanValue evaluate(final Deque<AV> primArgsBeforeBag, final Bag<AV>[] bagArgs, final AV[] remainingArgs) throws IndeterminateEvaluationException
+				protected final BooleanValue evaluate(final Deque<AV> primArgsBeforeBag, final Bag<AV>[] bagArgs, final AV[] remainingArgs)
 				{
 					return BooleanValue.valueOf(eval(primArgsBeforeBag.getFirst(), bagArgs[0]));
 				}
@@ -241,18 +230,18 @@ public final class FirstOrderBagFunctions
 		 */
 		public PrimitiveToBag(final Datatype<AV> paramType, final BagDatatype<AV> paramBagType)
 		{
-			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Arrays.asList(paramType));
+			super(paramBagType.getElementType().getFunctionIdPrefix() + NAME_SUFFIX_BAG, paramBagType, true, Collections.singletonList(paramType));
 			this.paramType = paramType;
 		}
 
 		@Override
 		public FirstOrderFunctionCall<Bag<AV>> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
-			return new EagerSinglePrimitiveTypeEval<Bag<AV>, AV>(functionSignature, argExpressions, remainingArgTypes)
+			return new EagerSinglePrimitiveTypeEval<>(functionSignature, argExpressions, remainingArgTypes)
 			{
 
 				@Override
-				protected Bag<AV> evaluate(final Deque<AV> args) throws IndeterminateEvaluationException
+				protected Bag<AV> evaluate(final Deque<AV> args)
 				{
 					return Bags.newBag(paramType, args);
 				}
@@ -304,11 +293,11 @@ public final class FirstOrderBagFunctions
 		@Override
 		public final FirstOrderFunctionCall<RETURN> newCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes) throws IllegalArgumentException
 		{
-			return new EagerBagEval<RETURN, AV>(functionSignature, argExpressions)
+			return new EagerBagEval<>(functionSignature, argExpressions)
 			{
 
 				@Override
-				protected RETURN evaluate(final Bag<AV>[] bagArgs) throws IndeterminateEvaluationException
+				protected RETURN evaluate(final Bag<AV>[] bagArgs)
 				{
 					return eval(bagArgs);
 				}
@@ -551,7 +540,7 @@ public final class FirstOrderBagFunctions
 	{
 		final BagDatatype<AV> paramBagType = paramType.getBagDatatype();
 		final Class<AV[]> paramArrayClass = paramType.getArrayClass();
-		return HashCollections.<Function<?>>newImmutableSet(new Function[] {
+		return HashCollections.newImmutableSet(new Function[] {
 				/**
 				 * 
 				 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,7 +32,7 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
  * </p>
  * <p>
  * All derived classes are required to implement {@link Object#equals(Object)} and {@link Object#hashCode()} to allow optimal decision caching (where instances of this class are used as keys) in PDP
- * DecicionCache extensions
+ * DecisionCache extensions
  * </p>
  * 
  */

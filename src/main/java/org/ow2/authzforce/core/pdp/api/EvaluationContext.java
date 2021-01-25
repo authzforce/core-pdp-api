@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -160,7 +160,7 @@ public interface EvaluationContext
 	<AV extends AttributeValue> boolean putAttributeSelectorResultIfAbsent(AttributeSelectorExpression<AV> attributeSelector, Bag<AV> result) throws IndeterminateEvaluationException;
 
 	/**
-	 * Returns the {@literal <Content>} of the {@literal <Attibutes>} identified by a given category, to be used for AttributeSelector evaluation.
+	 * Returns the {@literal <Content>} of the {@literal <Attributes>} identified by a given category, to be used for AttributeSelector evaluation.
 	 * 
 	 * @param category
 	 *            category of the Attributes element from which to get the Content.
@@ -213,7 +213,7 @@ public interface EvaluationContext
 	 * Get custom property
 	 * 
 	 * @see java.util.Map#get(Object)
-	 * @param key
+	 * @param key property key
 	 * @return property
 	 */
 	Object getOther(String key);
@@ -222,7 +222,7 @@ public interface EvaluationContext
 	 * Check whether custom property is in the context
 	 * 
 	 * @see java.util.Map#containsKey(Object)
-	 * @param key
+	 * @param key property key
 	 * @return true if and only if key exists in updatable property keys
 	 */
 	boolean containsKey(String key);
@@ -231,8 +231,8 @@ public interface EvaluationContext
 	 * Puts custom property in the context
 	 * 
 	 * @see java.util.Map#put(Object, Object)
-	 * @param key
-	 * @param val
+	 * @param key property key
+	 * @param val property value
 	 */
 	void putOther(String key, Object val);
 
@@ -240,7 +240,7 @@ public interface EvaluationContext
 	 * Removes custom property from the context
 	 * 
 	 * @see java.util.Map#remove(Object)
-	 * @param key
+	 * @param key property key
 	 * @return the previous value associated with key, or null if there was no mapping for key.
 	 */
 	Object remove(String key);
@@ -258,7 +258,7 @@ public interface EvaluationContext
 	 * 
 	 * @param listenerType
 	 *            listener type used as key for retrieving the listener with {@link #getListener(Class)}
-	 * @param listener
+	 * @param listener the new listener to be registered
 	 * @return the listener previously associated with this class (possibly null), or null if there was no previous entry.
 	 */
 	<L extends Listener> L putListener(Class<L> listenerType, L listener);

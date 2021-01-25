@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,10 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
-
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
@@ -28,6 +24,10 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
 
 /**
  * A superclass of primitive datatype conversion functions such as double-to-integer, integer-to-double, *-from-string, *-to-string, etc. May be used for non-standard datatype conversion functions as
@@ -81,7 +81,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 
 		public FirstOrderFunctionCall<RETURN> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
-			return new EagerSinglePrimitiveTypeEval<RETURN, PARAM>(funcSig, argExpressions, remainingArgTypes)
+			return new EagerSinglePrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
 				protected RETURN evaluate(final Deque<PARAM> args) throws IndeterminateEvaluationException
@@ -90,8 +90,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 					try
 					{
 						return converter.convert(arg0);
-					}
-					catch (final IllegalArgumentException e)
+					} catch (final IllegalArgumentException e)
 					{
 						throw new IndeterminateEvaluationException(invalidArgMsgPrefix + arg0, XacmlStatusCode.PROCESSING_ERROR.value(), e);
 					}
@@ -119,7 +118,7 @@ public class DatatypeConversionFunction<PARAM_T extends AttributeValue, RETURN_T
 	 */
 	public DatatypeConversionFunction(final String functionID, final Datatype<PARAM_T> paramType, final Datatype<RETURN_T> returnType, final TypeConverter<RETURN_T, PARAM_T> converter)
 	{
-		super(functionID, returnType, false, Arrays.asList(paramType));
+		super(functionID, returnType, false, Collections.singletonList(paramType));
 		this.funcCallFactory = new CallFactory<>(functionSignature, converter);
 	}
 

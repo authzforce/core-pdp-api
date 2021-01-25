@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -58,7 +58,7 @@ public interface HashCollectionFactory
 	 * 
 	 * @param expectedSize
 	 *            expected size of the returned map
-	 * @return a new empty updatable map of the given expected size (postive)
+	 * @return a new empty updatable map of the given expected size (positive)
 	 * @throws IllegalArgumentException
 	 *             if {@code expectedSize} is negative
 	 */

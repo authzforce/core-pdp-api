@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -90,7 +90,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	 *            native policy decision result
 	 * @return XACML Result
 	 */
-	public static final Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
+	public static Result convert(final IndividualXacmlJaxbRequest request, final DecisionResult result)
 	{
 		final ImmutableList<PepAction> pepActions = result.getPepActions();
 		assert pepActions != null;

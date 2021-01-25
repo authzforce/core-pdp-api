@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -89,13 +89,12 @@ public final class UpdatableCollections
 		public boolean addAll(UpdatableCollection<E> c)
 		{
 			final UnmodifiableIterator<E> it = c.iterator();
-			boolean added = false;
 			while (it.hasNext())
 			{
-				added = list.add(it.next()) || added;
+				list.add(it.next());
 			}
 
-			return added;
+			return true;
 		}
 
 	}
@@ -209,7 +208,7 @@ public final class UpdatableCollections
 	}
 
 	/**
-	 * {@link HashObjSet}-based implementation of {@link UpdatableSet}
+	 * {@link HashCollections}-based implementation of {@link UpdatableSet}
 	 * 
 	 * @param <E>
 	 *            type of elements in this Set
@@ -332,7 +331,7 @@ public final class UpdatableCollections
 	}
 
 	/**
-	 * {@link HashObjObjMap}-based implementation of {@link UpdatableMap}
+	 * {@link HashCollections}-based implementation of {@link UpdatableMap}
 	 */
 	private static final class UpdatableHashMap<K, V> implements UpdatableMap<K, V>
 	{

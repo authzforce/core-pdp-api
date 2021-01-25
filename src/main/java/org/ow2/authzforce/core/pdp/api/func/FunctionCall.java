@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -27,7 +27,7 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
  * Function call. This is the recommended way of calling any {@link BaseFunction}. This is quite similar to XACML Apply except it does not include the Description field; and arguments are optimized
- * specifically for each function by extending this class accordinly, therefore they might be quite different from original input Expressions of the Apply. In particular, if some expressions are
+ * specifically for each function by extending this class accordingly, therefore they might be quite different from original input Expressions of the Apply. In particular, if some expressions are
  * actually static values (e.g. AttributeValue, VariableReference to AttributeValue, function applied to static values...), these expressions might be pre-compiled/pre-evaluated. For instance, a
  * static regex parameter to regexp-match function may be pre-compiled to a regex for re-use.
  * 

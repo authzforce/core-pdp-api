@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -64,7 +64,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * string
 	 */
-	public static final StringContentOnlyValueFactory<StringValue> STRING = new StringContentOnlyValueFactory<StringValue>(StandardDatatypes.STRING)
+	public static final StringContentOnlyValueFactory<StringValue> STRING = new StringContentOnlyValueFactory<>(StandardDatatypes.STRING)
 	{
 
 		@Override
@@ -80,7 +80,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * boolean
 	 */
-	public static final StringParseableValue.Factory<BooleanValue> BOOLEAN = new StringParseableValue.Factory<BooleanValue>(StandardDatatypes.BOOLEAN)
+	public static final StringParseableValue.Factory<BooleanValue> BOOLEAN = new StringParseableValue.Factory<>(StandardDatatypes.BOOLEAN)
 	{
 
 		@Override
@@ -163,7 +163,7 @@ public final class StandardAttributeValueFactories
 
 			if (value instanceof Integer)
 			{
-				return IntegerValue.valueOf(((Integer) value).intValue());
+				return IntegerValue.valueOf((Integer) value);
 			}
 
 			if (value instanceof Long)
@@ -172,7 +172,7 @@ public final class StandardAttributeValueFactories
 				final int i;
 				try
 				{
-					i = Math.toIntExact(l.longValue());
+					i = Math.toIntExact(l);
 				} catch (final ArithmeticException e)
 				{
 					throw new IllegalArgumentException(this + ": input value not supported (too big for Java int): " + value);
@@ -215,12 +215,12 @@ public final class StandardAttributeValueFactories
 
 		if (value instanceof Integer)
 		{
-			return IntegerValue.valueOf(((Integer) value).intValue());
+			return IntegerValue.valueOf((Integer) value);
 		}
 
 		if (value instanceof Long)
 		{
-			return IntegerValue.valueOf(((Long) value).longValue());
+			return IntegerValue.valueOf((Long) value);
 		}
 
 		return null;
@@ -347,7 +347,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * double
 	 */
-	public static final StringParseableValue.Factory<DoubleValue> DOUBLE = new StringParseableValue.Factory<DoubleValue>(StandardDatatypes.DOUBLE)
+	public static final StringParseableValue.Factory<DoubleValue> DOUBLE = new StringParseableValue.Factory<>(StandardDatatypes.DOUBLE)
 	{
 
 		@Override
@@ -367,7 +367,7 @@ public final class StandardAttributeValueFactories
 		{
 			if (value instanceof Float)
 			{
-				return new DoubleValue(Double.valueOf(((Float) value).doubleValue()));
+				return new DoubleValue(((Float) value).doubleValue());
 			}
 
 			if (value instanceof Double)
@@ -395,7 +395,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * time
 	 */
-	public static final StringParseableValue.Factory<TimeValue> TIME = new StringParseableValue.Factory<TimeValue>(StandardDatatypes.TIME)
+	public static final StringParseableValue.Factory<TimeValue> TIME = new StringParseableValue.Factory<>(StandardDatatypes.TIME)
 	{
 
 		@Override
@@ -442,7 +442,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * date
 	 */
-	public static final StringParseableValue.Factory<DateValue> DATE = new StringParseableValue.Factory<DateValue>(StandardDatatypes.DATE)
+	public static final StringParseableValue.Factory<DateValue> DATE = new StringParseableValue.Factory<>(StandardDatatypes.DATE)
 	{
 
 		@Override
@@ -490,7 +490,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * dateTime
 	 */
-	public static final StringParseableValue.Factory<DateTimeValue> DATETIME = new StringParseableValue.Factory<DateTimeValue>(StandardDatatypes.DATETIME)
+	public static final StringParseableValue.Factory<DateTimeValue> DATETIME = new StringParseableValue.Factory<>(StandardDatatypes.DATETIME)
 	{
 
 		@Override
@@ -519,14 +519,14 @@ public final class StandardAttributeValueFactories
 			{
 				final OffsetDateTime dateTime = (OffsetDateTime) value;
 				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
-				        dateTime.getOffset().getTotalSeconds() / 60);
+						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
 			if (value instanceof ZonedDateTime)
 			{
 				final ZonedDateTime dateTime = (ZonedDateTime) value;
 				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
-				        dateTime.getOffset().getTotalSeconds() / 60);
+						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
 			if (value instanceof Instant)
@@ -552,7 +552,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * anyURI
 	 */
-	public static final StringParseableValue.Factory<AnyUriValue> ANYURI = new StringParseableValue.Factory<AnyUriValue>(StandardDatatypes.ANYURI)
+	public static final StringParseableValue.Factory<AnyUriValue> ANYURI = new StringParseableValue.Factory<>(StandardDatatypes.ANYURI)
 	{
 
 		@Override
@@ -591,7 +591,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * hexBinary
 	 */
-	public static final StringParseableValue.Factory<HexBinaryValue> HEXBINARY = new StringParseableValue.Factory<HexBinaryValue>(StandardDatatypes.HEXBINARY)
+	public static final StringParseableValue.Factory<HexBinaryValue> HEXBINARY = new StringParseableValue.Factory<>(StandardDatatypes.HEXBINARY)
 	{
 
 		@Override
@@ -628,7 +628,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * base64Binary
 	 */
-	public static final StringContentOnlyValueFactory<Base64BinaryValue> BASE64BINARY = new StringContentOnlyValueFactory<Base64BinaryValue>(StandardDatatypes.BASE64BINARY)
+	public static final StringContentOnlyValueFactory<Base64BinaryValue> BASE64BINARY = new StringContentOnlyValueFactory<>(StandardDatatypes.BASE64BINARY)
 	{
 		@Override
 		public Base64BinaryValue parse(final String val)
@@ -643,7 +643,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * x500Name
 	 */
-	public static final StringParseableValue.Factory<X500NameValue> X500NAME = new StringParseableValue.Factory<X500NameValue>(StandardDatatypes.X500NAME)
+	public static final StringParseableValue.Factory<X500NameValue> X500NAME = new StringParseableValue.Factory<>(StandardDatatypes.X500NAME)
 	{
 
 		@Override
@@ -679,7 +679,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * rfc822Name
 	 */
-	public static final StringContentOnlyValueFactory<Rfc822NameValue> RFC822NAME = new StringContentOnlyValueFactory<Rfc822NameValue>(StandardDatatypes.RFC822NAME)
+	public static final StringContentOnlyValueFactory<Rfc822NameValue> RFC822NAME = new StringContentOnlyValueFactory<>(StandardDatatypes.RFC822NAME)
 	{
 
 		@Override
@@ -692,12 +692,12 @@ public final class StandardAttributeValueFactories
 	/**
 	 * ipAddress
 	 */
-	public static final StringContentOnlyValueFactory<IpAddressValue> IPADDRESS = new StringContentOnlyValueFactory<IpAddressValue>(StandardDatatypes.IPADDRESS)
+	public static final StringContentOnlyValueFactory<IpAddressValue> IPADDRESS = new StringContentOnlyValueFactory<>(StandardDatatypes.IPADDRESS)
 	{
 		@Override
 		public IpAddressValue parse(final String value)
 		{
-			return new IpAddressValue(value);
+			return IpAddressValue.valueOf(value);
 		}
 
 	};
@@ -705,7 +705,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * dnsName
 	 */
-	public static final StringContentOnlyValueFactory<DnsNameWithPortRangeValue> DNSNAME = new StringContentOnlyValueFactory<DnsNameWithPortRangeValue>(StandardDatatypes.DNSNAME)
+	public static final StringContentOnlyValueFactory<DnsNameWithPortRangeValue> DNSNAME = new StringContentOnlyValueFactory<>(StandardDatatypes.DNSNAME)
 	{
 
 		@Override
@@ -719,7 +719,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * dayTimeDuration
 	 */
-	public static final StringContentOnlyValueFactory<DayTimeDurationValue> DAYTIMEDURATION = new StringContentOnlyValueFactory<DayTimeDurationValue>(StandardDatatypes.DAYTIMEDURATION)
+	public static final StringContentOnlyValueFactory<DayTimeDurationValue> DAYTIMEDURATION = new StringContentOnlyValueFactory<>(StandardDatatypes.DAYTIMEDURATION)
 	{
 
 		@Override
@@ -733,7 +733,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * yearMonthDuration
 	 */
-	public static final StringContentOnlyValueFactory<YearMonthDurationValue> YEARMONTHDURATION = new StringContentOnlyValueFactory<YearMonthDurationValue>(StandardDatatypes.YEARMONTHDURATION)
+	public static final StringContentOnlyValueFactory<YearMonthDurationValue> YEARMONTHDURATION = new StringContentOnlyValueFactory<>(StandardDatatypes.YEARMONTHDURATION)
 	{
 
 		@Override
@@ -749,7 +749,7 @@ public final class StandardAttributeValueFactories
 	/**
 	 * xpathExpression
 	 */
-	public static final SimpleValue.BaseFactory<XPathValue> XPATH = new SimpleValue.BaseFactory<XPathValue>(StandardDatatypes.XPATH)
+	public static final SimpleValue.BaseFactory<XPathValue> XPATH = new SimpleValue.BaseFactory<>(StandardDatatypes.XPATH)
 	{
 
 		@Override
@@ -777,7 +777,7 @@ public final class StandardAttributeValueFactories
 	 * the first one in the list is always used, when no specific output XACML datatype is requested. For example, all factories support String type, but STRING factory is first in the list, so this
 	 * is the one that is used for creating attribute values from String when no specific output XACML datatype (different from string) is requested.
 	 */
-	public static final List<StringParseableValue.Factory<? extends SimpleValue<? extends Object>>> MANDATORY_SET_EXCEPT_INTEGER = ImmutableList.of(STRING, BOOLEAN, DOUBLE, TIME, DATE, DATETIME,
+	public static final List<StringParseableValue.Factory<? extends SimpleValue<?>>> MANDATORY_SET_EXCEPT_INTEGER = ImmutableList.of(STRING, BOOLEAN, DOUBLE, TIME, DATE, DATETIME,
 	        ANYURI, HEXBINARY, BASE64BINARY, X500NAME, RFC822NAME, IPADDRESS, DNSNAME, DAYTIMEDURATION, YEARMONTHDURATION);
 
 	// private static BigInteger BYTE_MAX_AS_BIG_INT = BigInteger.valueOf(Byte.valueOf(Byte.MAX_VALUE).longValue());
@@ -810,13 +810,10 @@ public final class StandardAttributeValueFactories
 		 * There is one more factory for XPathExpression if XPath support is requested
 		 */
 		final List<SimpleValue.BaseFactory<?>> attValFactories = new ArrayList<>(StandardDatatypes.MANDATORY_SET.size() + (enableXPath ? 1 : 0));
-		for (final StringParseableValue.Factory<? extends SimpleValue<? extends Object>> typeFactory : MANDATORY_SET_EXCEPT_INTEGER)
-		{
-			attValFactories.add(typeFactory);
-		}
+		attValFactories.addAll(MANDATORY_SET_EXCEPT_INTEGER);
 
 		final SimpleValue.BaseFactory<?> integerValFactory;
-		if (!maxIntegerValue.isPresent())
+		if (maxIntegerValue.isEmpty())
 		{
 			integerValFactory = MEDIUM_INTEGER;
 		} else

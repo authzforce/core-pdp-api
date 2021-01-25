@@ -3,10 +3,10 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>7.6.1</version>
+      <version>8.0.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>17.0.0</version>
+   <version>18.0.0</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthzForce - Core PDP API</description>
    <url>${project.url}</url>
@@ -14,7 +14,7 @@
       <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
       <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
       <tag>HEAD</tag>
-      <!-- Publicly browsable repository URL. For example, via Gitlab web UI. -->
+      <!-- Public browsable repository URL. For example, via Gitlab web UI. -->
       <url>${git.url.base}/core-pdp-api</url>
    </scm>
    <dependencies>
@@ -74,10 +74,10 @@
             </executions>
          </plugin>
          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+               <artifactId>spotbugs-maven-plugin</artifactId>
             <configuration>
-               <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
+               <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
             </configuration>
             <executions>
                <execution>
@@ -106,7 +106,6 @@
             </executions>
          </plugin>
          <plugin>
-            <!-- Override license-maven-plugin configuration to exclude Sunxacml files from adding GPL license headers (different license) -->
             <groupId>com.mycila</groupId>
             <artifactId>license-maven-plugin</artifactId>
             <configuration>

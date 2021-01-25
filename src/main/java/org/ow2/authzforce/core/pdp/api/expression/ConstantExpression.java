@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,12 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import java.util.Optional;
-
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+
+import java.util.Optional;
 
 /**
  * 
@@ -77,7 +76,7 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 	 * Returns the value itself
 	 */
 	@Override
-	public final V evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
+	public final V evaluate(final EvaluationContext context)
 	{
 		return this.alwaysPresentValue.get();
 	}

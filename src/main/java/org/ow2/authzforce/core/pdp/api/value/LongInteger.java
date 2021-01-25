@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -45,7 +45,7 @@ public final class LongInteger extends GenericInteger
 		this.value = value;
 	}
 
-	private static final IntBasedValueFactory.CachingHelper<LongInteger> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<LongInteger>()
+	private static final IntBasedValueFactory.CachingHelper<LongInteger> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<>()
 	{
 
 		@Override

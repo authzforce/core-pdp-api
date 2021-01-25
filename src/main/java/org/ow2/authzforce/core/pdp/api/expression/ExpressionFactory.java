@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -90,7 +90,7 @@ public interface ExpressionFactory extends Closeable
 	/**
 	 * Get a given variable's assignment expression (definition)
 	 * 
-	 * @param varId
+	 * @param varId variable identifier
 	 * @return the VariableReference identified by <code>varId</code> , or null if there is no such variable.
 	 */
 	VariableReference<?> getVariableExpression(String varId);
@@ -98,7 +98,7 @@ public interface ExpressionFactory extends Closeable
 	/**
 	 * Removes the VariableReference(Definition) from the manager
 	 * 
-	 * @param varId
+	 * @param varId variable identifier
 	 * @return the VariableReference previously identified by <code>varId</code> , or null if there was no such variable.
 	 */
 	VariableReference<?> removeVariable(String varId);

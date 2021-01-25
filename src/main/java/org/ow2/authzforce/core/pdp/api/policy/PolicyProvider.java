@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -94,7 +94,7 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 		/*
 		 * Check for circular reference (loop). We check only the policy ID because we consider that a mere reference back to the same ID is not allowed, no matter what the version is.
 		 */
-		policyRefChain2.stream().forEach(policyId -> {
+		policyRefChain2.forEach(policyId -> {
 			if (policyRefChain1.contains(policyId))
 			{
 				throw new IllegalArgumentException("Invalid PolicySetIdReference: circular reference (loop) detected: " + resultPolicyRefChain + " -> " + policyId);
@@ -124,8 +124,6 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 *            chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getPolicyRefsMetadata(EvaluationContext)}
 	 *            (#getLongestPolicyRefChain) to create the joined chain
 	 * @return new joined chain that is {@code policyRefChain1} if {@code policyRefChain2 == null || policyRefChain2.isEmpty()}, else {@code policyRefChain2} appended to {@code policyRefChain1}
-	 * @param maxPolicyRefDepth
-	 *            max policy reference (e.g. XACML PolicySetIdReference) depth, i.e. max length of the chain of policy references
 	 * @throws IllegalArgumentException
 	 *             {@code policyRefChain1 == null}, or circular reference (same ID in both chains) detected or resulting length (sum of the lengths of the two chains) is greater than
 	 *             {@code maxPolicyRefDepth}
