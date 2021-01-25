@@ -2,6 +2,13 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 18.0.0
+### Changed
+- Upgraded project parent version: 8.0.0
+- Upgraded to Java 11 (Java 8 no longer supported)
+- Maven plugin findbugs (obsolete) replaced with spotbugs
+
+
 ## 17.0.0
 ### Changed
 - Upgraded project parent version: 7.6.1
