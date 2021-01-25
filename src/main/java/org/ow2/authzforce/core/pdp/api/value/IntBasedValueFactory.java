@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -28,12 +28,12 @@ interface IntBasedValueFactory<V>
 	/**
 	 * Name of system property setting the lower bound (int) of cached integer-based values, e.g. {@link IntegerValue}s. Default: {@link Byte#MIN_VALUE}
 	 */
-	String INTEGER_VALUE_CACHE_MIN = "org.ow2.authzforce.core.pdp.api.value.IntBasedValueFactory.cacheMin";
+	String INTEGER_VALUE_CACHE_MIN_SYS_PROPERTY_NAME = "org.ow2.authzforce.core.pdp.api.value.IntBasedValueFactory.cacheMin";
 
 	/**
 	 * Name of system property setting the upper bound (int) of cached integer-based values, e.g. {@link IntegerValue}s. Default: {@link Byte#MAX_VALUE}
 	 */
-	String INTEGER_VALUE_CACHE_MAX = "org.ow2.authzforce.core.pdp.api.value.IntBasedValueFactory.cacheMax";
+	String INTEGER_VALUE_CACHE_MAX_SYS_PROPERTY_NAME = "org.ow2.authzforce.core.pdp.api.value.IntBasedValueFactory.cacheMax";
 
 	Class<V> getInstanceClass();
 
@@ -43,58 +43,57 @@ interface IntBasedValueFactory<V>
 
 	final class CachingHelper<V>
 	{
-		private static int DEFAULT_CACHE_MIN;
-		private static int DEFAULT_CACHE_MAX;
+		private static final int CACHE_MIN;
+		private static final int CACHE_MAX;
 		static
 		{
-			final String cacheMinSysPropVal = System.getProperty(INTEGER_VALUE_CACHE_MIN);
+			final String cacheMinSysPropVal = System.getProperty(INTEGER_VALUE_CACHE_MIN_SYS_PROPERTY_NAME);
 			if (cacheMinSysPropVal == null)
 			{
-				DEFAULT_CACHE_MIN = Byte.MIN_VALUE;
+				CACHE_MIN = Byte.MIN_VALUE;
 			}
 			else
 			{
 				try
 				{
-					DEFAULT_CACHE_MIN = Integer.parseInt(cacheMinSysPropVal);
+					CACHE_MIN = Integer.parseInt(cacheMinSysPropVal);
 				}
 				catch (final NumberFormatException e)
 				{
-					throw new RuntimeException("Invalid value of system property '" + INTEGER_VALUE_CACHE_MIN + "': " + cacheMinSysPropVal + ". Expected: int (Java)");
+					throw new RuntimeException("Invalid value of system property '" + INTEGER_VALUE_CACHE_MIN_SYS_PROPERTY_NAME + "': " + cacheMinSysPropVal + ". Expected: int (Java)");
 				}
 			}
 
-			final String cacheMaxSysPropVal = System.getProperty(INTEGER_VALUE_CACHE_MAX);
+			final String cacheMaxSysPropVal = System.getProperty(INTEGER_VALUE_CACHE_MAX_SYS_PROPERTY_NAME);
 			if (cacheMaxSysPropVal == null)
 			{
-				DEFAULT_CACHE_MAX = Byte.MAX_VALUE;
+				CACHE_MAX = Byte.MAX_VALUE;
 			}
 			else
 			{
 				try
 				{
-					DEFAULT_CACHE_MAX = Integer.parseInt(cacheMaxSysPropVal);
+					CACHE_MAX = Integer.parseInt(cacheMaxSysPropVal);
 				}
 				catch (final NumberFormatException e)
 				{
-					throw new RuntimeException("Invalid value of system property '" + INTEGER_VALUE_CACHE_MAX + "': " + cacheMaxSysPropVal + ". Expected: int (Java)");
+					throw new RuntimeException("Invalid value of system property '" + INTEGER_VALUE_CACHE_MAX_SYS_PROPERTY_NAME + "': " + cacheMaxSysPropVal + ". Expected: int (Java)");
+				}
+
+				if(CACHE_MAX <= CACHE_MIN) {
+					throw new RuntimeException("Invalid value of system property '" + INTEGER_VALUE_CACHE_MAX_SYS_PROPERTY_NAME + "' (too small): " + CACHE_MAX + " <= " + CACHE_MIN + "(may be changed by system property '"+ INTEGER_VALUE_CACHE_MAX_SYS_PROPERTY_NAME + "')" );
 				}
 			}
 		}
 
 		private final IntBasedValueFactory<V> baseFactory;
-		private final int cacheMin;
-		private final int cacheMax;
 		private final V[] cache;
 
-		private CachingHelper(final IntBasedValueFactory<V> baseFactory, final int cacheMin, final int cacheMax)
+		CachingHelper(final IntBasedValueFactory<V> baseFactory)
 		{
-			assert cacheMax > cacheMin;
-			this.cacheMin = cacheMin;
-			this.cacheMax = cacheMax;
 			this.baseFactory = baseFactory;
-			cache = (V[]) Array.newInstance(baseFactory.getInstanceClass(), cacheMax - cacheMin + 1);
-			int cachedInt = cacheMin;
+			this.cache = (V[]) Array.newInstance(baseFactory.getInstanceClass(), CACHE_MAX - CACHE_MIN + 1);
+			int cachedInt = CACHE_MIN;
 			for (int i = 0; i < cache.length; i++)
 			{
 				cache[i] = baseFactory.newInstance(cachedInt);
@@ -102,17 +101,11 @@ interface IntBasedValueFactory<V>
 			}
 		}
 
-		CachingHelper(final IntBasedValueFactory<V> baseFactory)
-		{
-
-			this(baseFactory, DEFAULT_CACHE_MIN, DEFAULT_CACHE_MAX);
-		}
-
 		V getValue(final int i)
 		{
-			if (i >= cacheMin && i <= cacheMax)
+			if (i >= CACHE_MIN && i <= CACHE_MAX)
 			{
-				return cache[i - cacheMin];
+				return cache[i - CACHE_MIN];
 			}
 
 			return baseFactory.newInstance(i);
@@ -120,9 +113,9 @@ interface IntBasedValueFactory<V>
 
 		V getValue(final long l)
 		{
-			if (l >= cacheMin && l <= cacheMax)
+			if (l >= CACHE_MIN && l <= CACHE_MAX)
 			{
-				return cache[(int) l - cacheMin];
+				return cache[(int) l - CACHE_MIN];
 			}
 
 			return baseFactory.newInstance(l);

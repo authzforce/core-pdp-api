@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -74,7 +74,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 	}
 
 	/**
-	 * Creates function call from sub-function definition and all inputs to higher-order function. To be overriden by OneBagOnlyFunctions (any-of/all-of)
+	 * Creates function call from sub-function definition and all inputs to higher-order function. To be overridden by OneBagOnlyFunctions (any-of/all-of)
 	 *
 	 * @param subFunc
 	 *            first-order sub-function
@@ -102,7 +102,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 		else if (input0 instanceof VariableReference)
 		{
 			final Optional<? extends Value> optVal = ((VariableReference<?>) input0).getValue();
-			if (!optVal.isPresent())
+			if (optVal.isEmpty())
 			{
 				throw new IllegalArgumentException(this + ": Unsupported type of first argument: " + input0
 				        + " cannot be evaluated to a constant (Function) value (out of context). Variable Function arg to higher-order function is not supported.");

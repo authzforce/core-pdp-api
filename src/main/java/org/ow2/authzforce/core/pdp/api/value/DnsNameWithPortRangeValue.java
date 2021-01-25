@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -107,7 +107,7 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 			// split the name and the port/portRange
 			host = dnsName.substring(0, portSep);
 			// validate port/portRange
-			range = NetworkPortRange.getInstance(dnsName.substring(portSep + 1, dnsName.length()));
+			range = NetworkPortRange.getInstance(dnsName.substring(portSep + 1));
 		}
 
 		// verify that the hostname is valid before we store it
@@ -137,36 +137,6 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 		// see if hostname started with a '*' character
 		// this.isAnySubdomain = hostname.charAt(0) == '*' ? true : false;
 	}
-
-	// /**
-	// * Returns the host name represented by this object.
-	// *
-	// * @return the host name
-	// */
-	// public String getHostName()
-	// {
-	// return hostname;
-	// }
-
-	// /**
-	// * Returns the port/portRange represented by this object which will be unbound if no portRange was specified.
-	// *
-	// * @return the port/portRange
-	// */
-	// public PortRange getPortRange()
-	// {
-	// return portRange;
-	// }
-
-	// /**
-	// * Returns true if the leading character in the hostname is a '*', and therefore represents a matching subdomain, or false otherwise.
-	// *
-	// * @return true if the name represents a subdomain, false otherwise
-	// */
-	// public boolean isAnySubdomain()
-	// {
-	// return isAnySubdomain;
-	// }
 
 	/** {@inheritDoc} */
 	@Override

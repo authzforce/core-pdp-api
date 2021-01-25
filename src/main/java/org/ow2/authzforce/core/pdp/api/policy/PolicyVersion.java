@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -92,7 +92,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'", e);
 			}
 
-			if (number.intValue() < 0)
+			if (number < 0)
 			{
 				throw new IllegalArgumentException("Invalid Policy(Set) Version: '" + version + "'. Number #" + i
 						+ " (=" + number + ") is not a positive integer");

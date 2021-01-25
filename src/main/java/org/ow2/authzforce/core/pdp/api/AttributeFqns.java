@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -129,7 +129,7 @@ public final class AttributeFqns
 			{
 
 				final Optional<String> optIssuer = getIssuer();
-				toString = "[category='" + category + "', issuer=" + (optIssuer.isPresent() ? "'" + optIssuer.get() + "'" : null) + ", id='" + id + "']";
+				toString = "[category='" + category + "', issuer=" + (optIssuer.map(s -> "'" + s + "'").orElse(null)) + ", id='" + id + "']";
 			}
 
 			return toString;
@@ -205,7 +205,7 @@ public final class AttributeFqns
 
 		/**
 		 * Creates instance from attribute category, issuer and ID
-		 * 
+		 *
 		 * @param attrCat
 		 *            attribute category (non-null)
 		 * @param attrIssuer
@@ -226,7 +226,7 @@ public final class AttributeFqns
 		@Override
 		protected int compareIssuers(final Optional<String> otherIssuer)
 		{
-			return !otherIssuer.isPresent() ? 1 : this.alwaysPresentIssuer.get().compareTo(otherIssuer.get());
+			return otherIssuer.map(s -> this.alwaysPresentIssuer.get().compareTo(s)).orElse(1);
 		}
 
 	}

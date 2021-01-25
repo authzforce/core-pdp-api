@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -45,8 +45,7 @@ public interface FirstOrderFunctionCall<RETURN extends Value> extends FunctionCa
 	 * @param context
 	 *            evaluation context
 	 * @param remainingArgs
-	 *            remaining args (not yet known at initialization time). Null if none. Only non-bag/primitive values are valid <code>remainingArgs</code> to prevent varargs warning in
-	 *            {@link #evaluate(EvaluationContext, AttributeValue...)} (potential heap pollution via varargs parameter) that would be caused by using a parameterized type such as Value/Collection
+	 *            remaining args (not yet known at initialization time). Null if none. Only non-bag/primitive values are valid <code>remainingArgs</code> to prevent varargs warning (potential heap pollution via varargs parameter) that would be caused by using a parameterized type such as Value/Collection
 	 *            to represent both bags and primitives.
 	 * @return result of the call
 	 * @throws IndeterminateEvaluationException

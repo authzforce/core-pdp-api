@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -39,10 +40,23 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 
 	/**
 	 * 
-	 * @param name
-	 * @param returnType
-	 * @param varArgs
-	 * @param parameterTypes
+	 * @param name function name
+	 * @param returnType function's return type
+	 * @param varArgs true iff the function takes a variable number of arguments (like Java {@link Method#isVarArgs()}, i.e. the final type in <code>paramTypes</code> can be repeated 0 or more times to
+	 * 	 *            match a variable-length argument
+	 * 	 *            <p>
+	 * 	 *            Examples with varargs=true ('...' means varargs like in Java):
+	 * 	 *            </p>
+	 * 	 *            <p>
+	 * 	 *            Example 1: string-concat(string, string, string...) -> paramTypes={string, string, string}
+	 * 	 *            </p>
+	 * 	 *            <p>
+	 * 	 *            Example 2: or(boolean...) -> paramTypes={boolean} (As you can see, isVarargs=true really means 0 or more args; indeed, the or function can take 0 parameter according to spec)
+	 * 	 *            </p>
+	 * 	 *            <p>
+	 * 	 *            Example 3: n-of(integer, boolean...) -> paramTypes={integer, boolean}
+	 * 	 *            </p>
+	 * @param parameterTypes function's parameter types
 	 * @throws IllegalArgumentException
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.size() < 2 })
 	 */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -20,10 +20,10 @@ package org.ow2.authzforce.core.pdp.api.value;
 import java.math.BigInteger;
 import java.util.Deque;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Representation of an xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -47,7 +47,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 		super(val);
 	}
 
-	private static final IntBasedValueFactory.CachingHelper<IntegerValue> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<IntegerValue>()
+	private static final IntBasedValueFactory.CachingHelper<IntegerValue> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<>()
 	{
 
 		@Override
@@ -121,7 +121,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	{
 		// TODO: caching
 		final GenericInteger result = value.abs();
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 			result = result.add(others.poll().value);
 		}
 
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	@Override
@@ -145,21 +145,21 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 			result = result.multiply(others.poll().value);
 		}
 
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	@Override
 	public IntegerValue divide(final IntegerValue divisor) throws ArithmeticException
 	{
 		final GenericInteger result = value.divide(divisor.value);
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	@Override
 	public IntegerValue subtract(final IntegerValue subtractedVal) throws ArithmeticException
 	{
 		final GenericInteger result = value.subtract(subtractedVal.value);
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	public IntegerValue remainder(final IntegerValue divisor) throws ArithmeticException
 	{
 		final GenericInteger result = this.value.remainder(divisor.value);
-		return result == value ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : IntegerValue.valueOf(result);
 	}
 
 	/**

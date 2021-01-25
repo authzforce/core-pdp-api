@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -286,7 +286,7 @@ public final class XacmlJaxbParsingUtils
 		}
 
 		@Override
-		protected XdmNode parseContent(final String categoryName, final Content jaxbContent) throws IndeterminateEvaluationException
+		protected XdmNode parseContent(final String categoryName, final Content jaxbContent)
 		{
 			// Content parsing not supported
 			return null;
@@ -314,7 +314,7 @@ public final class XacmlJaxbParsingUtils
 		 *            parser used to parse each JAXB/XACML &lt;Attribute&gt;
 		 * @param namedAttributeIteratorConverter
 		 *            converts iterator over attributes with values produced by {@code jaxbAttributeParser}, into constant-valued/immutable attribute iterator
-		 * @throws IllegalArgumentException
+		 * @throws IllegalArgumentException error
 		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null)}
 		 */
 		public ContentSkippingXacmlJaxbAttributesParserFactory(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser,
@@ -406,7 +406,7 @@ public final class XacmlJaxbParsingUtils
 		 *            converts iterator over attributes with values produced by {@code jaxbAttributeParser}, into constant-valued/immutable attribute iterator
 		 * @param xmlProcessor
 		 *            SAXON XML processor to process the Attributes/Content node
-		 * @throws IllegalArgumentException
+		 * @throws IllegalArgumentException error
 		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null || xmlProcessor == null)}
 		 */
 		public FullXacmlJaxbAttributesParserFactory(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser,
@@ -522,14 +522,8 @@ public final class XacmlJaxbParsingUtils
 		else
 		{
 			final List<PepAction> mutablePepActions = new ArrayList<>(nonNullXacmlObligationList.size() + nonNullXacmlAdviceList.size());
-			nonNullXacmlObligationList.forEach(xacmlOb -> {
-				mutablePepActions.add(new PepAction(xacmlOb.getObligationId(), true, xacmlToAuthzForceAttributeAssignments(xacmlOb.getAttributeAssignments(), attributeValueFactories)));
-			});
-
-			nonNullXacmlAdviceList.forEach(xacmlAd -> {
-				mutablePepActions.add(new PepAction(xacmlAd.getAdviceId(), false, xacmlToAuthzForceAttributeAssignments(xacmlAd.getAttributeAssignments(), attributeValueFactories)));
-			});
-
+			nonNullXacmlObligationList.forEach(xacmlOb -> mutablePepActions.add(new PepAction(xacmlOb.getObligationId(), true, xacmlToAuthzForceAttributeAssignments(xacmlOb.getAttributeAssignments(), attributeValueFactories))));
+			nonNullXacmlAdviceList.forEach(xacmlAd -> mutablePepActions.add(new PepAction(xacmlAd.getAdviceId(), false, xacmlToAuthzForceAttributeAssignments(xacmlAd.getAttributeAssignments(), attributeValueFactories))));
 			pepActions = ImmutableList.copyOf(mutablePepActions);
 		}
 

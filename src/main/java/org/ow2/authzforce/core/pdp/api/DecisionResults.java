@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -94,7 +94,7 @@ public final class DecisionResults
 		{
 			super(status);
 
-			this.applicablePolicyIdList = applicablePolicyIdList == null ? ImmutableList.<PrimaryPolicyMetadata>of() : applicablePolicyIdList;
+			this.applicablePolicyIdList = applicablePolicyIdList == null ? ImmutableList.of() : applicablePolicyIdList;
 		}
 
 		@Override

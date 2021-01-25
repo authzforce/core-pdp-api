@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -68,7 +68,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	/**
 	 * Get value factory that can handle a given class of Java values
 	 * 
-	 * @param rawValueClass
+	 * @param rawValueClass class of the raw value
 	 * @return compatible attribute value factory; null if none
 	 */
 	AttributeValueFactory<?> getCompatibleFactory(Class<? extends Serializable> rawValueClass);

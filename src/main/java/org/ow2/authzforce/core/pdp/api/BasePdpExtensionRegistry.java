@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,12 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * This is a base implementation of <code>PdpExtensionRegistry</code>. This should be used as basis to implement (in a final class) an immutable PDP extension registry of a specific type. If you need
@@ -34,8 +34,6 @@ import com.google.common.collect.Maps;
  */
 public abstract class BasePdpExtensionRegistry<T extends PdpExtension> implements PdpExtensionRegistry<T>
 {
-
-	private final Class<? super T> extClass;
 	private final Map<String, T> extensionsById;
 	private final transient String toString;
 
@@ -51,9 +49,8 @@ public abstract class BasePdpExtensionRegistry<T extends PdpExtension> implement
 	{
 		assert extensionClass != null && extensionsById != null;
 
-		this.extClass = extensionClass;
 		this.extensionsById = HashCollections.newImmutableMap(extensionsById);
-		this.toString = this + "( extensionClass= " + extClass.getCanonicalName() + " )";
+		this.toString = this + "( extensionClass= " + extensionClass.getCanonicalName() + " )";
 	}
 
 	/** {@inheritDoc} */
@@ -70,24 +67,10 @@ public abstract class BasePdpExtensionRegistry<T extends PdpExtension> implement
 		return HashCollections.newImmutableSet(extensionsById.values());
 	}
 
-	private static final class ExtensionToIdFunction<E extends PdpExtension> implements Function<E, String>
-	{
-
-		@Override
-		public String apply(final E extension) throws NullPointerException
-		{
-			assert extension != null;
-			return Preconditions.checkNotNull(extension, "One of the input extensions is invalid (null)").getId();
-		}
-
-	}
-
-	private static final Function<? extends PdpExtension, String> EXTENSION_TO_ID_FUNCTION = new ExtensionToIdFunction<>();
-
 	@SuppressWarnings("unchecked")
 	private static <E extends PdpExtension> Map<String, E> newImmutableMap(final Set<E> extensions)
 	{
-		return Maps.uniqueIndex(extensions, (Function<E, String>) EXTENSION_TO_ID_FUNCTION);
+		return extensions.stream().collect(Collectors.toUnmodifiableMap(ext -> {assert ext != null; return Preconditions.checkNotNull(ext, "One of the input extensions is invalid (null)").getId();}, Function.identity()));
 	}
 
 	/**

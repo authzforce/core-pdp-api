@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -117,7 +117,7 @@ public final class PolicyVersionPatterns
 	 * @return true iff LatestVersion matched
 	 */
 	public boolean matchLatestVersion(final PolicyVersion version) {
-		return !latestVersionPattern.isPresent() || latestVersionPattern.get().isLaterOrMatches(version);
+		return latestVersionPattern.isEmpty() || latestVersionPattern.get().isLaterOrMatches(version);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public final class PolicyVersionPatterns
 	 * @return true iff EarliestVersion matched
 	 */
 	public boolean matchEarliestVersion(final PolicyVersion version) {
-		return !earliestVersionPattern.isPresent() || earliestVersionPattern.get().isEarlierOrMatches(version);
+		return earliestVersionPattern.isEmpty() || earliestVersionPattern.get().isEarlierOrMatches(version);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public final class PolicyVersionPatterns
 	 * @return true iff Version matched
 	 */
 	public boolean matchVersion(final PolicyVersion version) {
-		return !versionPattern.isPresent() || versionPattern.get().matches(version);
+		return versionPattern.isEmpty() || versionPattern.get().matches(version);
 	}
 
 	/**

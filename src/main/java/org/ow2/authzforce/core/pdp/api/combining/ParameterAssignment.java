@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -58,10 +58,11 @@ public final class ParameterAssignment
 	 */
 	public ParameterAssignment(final CombinerParameter param, final ExpressionFactory expFactory, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 	{
-		// set JAXB AttributeValueType.attributeValue = null, and overridde
+		// set JAXB AttributeValueType.attributeValue = null, and override
 		// getAttributeValue() to return an instance of AttributeValue instead
 		this.paramName = param.getParameterName();
 		final ConstantExpression<? extends AttributeValue> valExpr = expFactory.getInstance(param.getAttributeValue(), xPathCompiler);
+		assert valExpr.getValue().isPresent();
 		this.paramValue = valExpr.getValue().get();
 		this.hashCode = Objects.hash(this.paramName, this.paramValue);
 		this.toString = "ParameterAssignment [paramName=" + paramName + ", paramValue=" + paramValue + "]";

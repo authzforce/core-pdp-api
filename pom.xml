@@ -3,7 +3,7 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>7.6.1</version>
+      <version>8.0.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
    <version>17.0.1-SNAPSHOT</version>
@@ -14,7 +14,7 @@
       <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
       <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
       <tag>HEAD</tag>
-      <!-- Publicly browsable repository URL. For example, via Gitlab web UI. -->
+      <!-- Public browsable repository URL. For example, via Gitlab web UI. -->
       <url>${git.url.base}/core-pdp-api</url>
    </scm>
    <dependencies>
@@ -74,10 +74,10 @@
             </executions>
          </plugin>
          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+               <artifactId>spotbugs-maven-plugin</artifactId>
             <configuration>
-               <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
+               <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
             </configuration>
             <executions>
                <execution>

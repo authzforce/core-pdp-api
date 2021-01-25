@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -20,6 +20,7 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,11 +100,11 @@ public final class HashCollections
 			try
 			{
 				final Class<?> hashCollectionFactoryClass = Class.forName(hashCollectionFactoryClassName);
-				final Object obj = hashCollectionFactoryClass.newInstance();
-				FACTORY = HashCollectionFactory.class.cast(obj);
+				final Object obj = hashCollectionFactoryClass.getDeclaredConstructor().newInstance();
+				FACTORY = (HashCollectionFactory) obj;
 				LOGGER.debug("Set {} as implementation of {}", hashCollectionFactoryClassName, HashCollectionFactory.class);
 			}
-			catch (final ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException e)
+			catch (final ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
 			{
 				throw new RuntimeException("Error instantiating " + HashCollectionFactory.class + " from class name '" + hashCollectionFactoryClassName + "' set by system property '"
 						+ HASH_COLLECTION_FACTORY_SYSTEM_PROPERTY_NAME + "'", e);

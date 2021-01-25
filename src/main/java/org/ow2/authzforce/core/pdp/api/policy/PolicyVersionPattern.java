@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -30,8 +30,8 @@ public final class PolicyVersionPattern
 {
 	private static final int WILDCARD_INT = -1;
 	private static final int PLUS_INT = -2;
-	private static final Integer WILDCARD_INTEGER = Integer.valueOf(WILDCARD_INT);
-	private static final Integer PLUS_INTEGER = Integer.valueOf(PLUS_INT);
+	private static final Integer WILDCARD_INTEGER = WILDCARD_INT;
+	private static final Integer PLUS_INTEGER = PLUS_INT;
 
 	private final String xacmlVersionMatch;
 	private final List<Integer> matchNumbers;
@@ -80,7 +80,7 @@ public final class PolicyVersionPattern
 						throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'", e);
 					}
 
-					if (number.intValue() < 0)
+					if (number < 0)
 					{
 						throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'. Number #" + i + " (=" + number + ") is not a positive integer");
 					}
@@ -154,7 +154,7 @@ public final class PolicyVersionPattern
 		{
 			final Integer matchNum = matchNumsIterator.next();
 			final Integer versionNum = versionNumsIterator.next();
-			switch (matchNum.intValue())
+			switch (matchNum)
 			{
 				case PLUS_INT:
 					// always matches everything from here
@@ -194,7 +194,7 @@ public final class PolicyVersionPattern
 		{
 			final Integer matchNum = matchNumsIterator.next();
 			final Integer versionNum = versionNumsIterator.next();
-			switch (matchNum.intValue())
+			switch (matchNum)
 			{
 				case PLUS_INT:
 					// always matches everything from here
@@ -243,13 +243,13 @@ public final class PolicyVersionPattern
 		{
 			final Integer matchNum = matchNumsIterator.next();
 			final Integer versionNum = versionNumsIterator.next();
-			switch (matchNum.intValue())
+			switch (matchNum)
 			{
 				case PLUS_INT:
 					// always matches everything from here
 					return true;
 				case WILDCARD_INT:
-					if (versionNum.intValue() != 0)
+					if (versionNum != 0)
 					{
 						/*
 						 * We can find an earlier matching version (with any number < versionNum here).

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,9 +17,8 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Locale;
-
 import javax.xml.bind.DatatypeConverter;
+import java.util.Locale;
 
 /**
  * Representation of an xs:string value. This class supports parsing xs:string values. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -113,18 +112,6 @@ public final class StringValue extends StringParseableValue<String> implements C
 		// if the value is same as result, return itself, else return new value from result
 		return result.equals(value) ? this : new StringValue(result);
 	}
-
-	// /**
-	// * Get string representation of boolean
-	// *
-	// * @param value
-	// * boolean
-	// * @return string equivalent ("true" or "false")
-	// */
-	// public static StringValue getInstance(final Boolean value)
-	// {
-	// return value.booleanValue() ? TRUE : FALSE;
-	// }
 
 	/**
 	 * Converts BooleanAttributeValue to String

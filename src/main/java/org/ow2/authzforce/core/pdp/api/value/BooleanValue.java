@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.ow2.authzforce.core.pdp.api.value;
+
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -54,11 +55,11 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	 */
 	public static BooleanValue getInstance(final String s) throws IllegalArgumentException
 	{
-		// implementation designed to avoid creating new objects
-		// contrary to Saxon's original code, we don't allow whitespaces to apply the XML schema
-		// spec
-		// strictly
-		// s = Whitespace.trimWhitespace(s);
+		/* implementation designed to avoid creating new objects
+		 contrary to Saxon's original code, we don't allow whitespaces to apply the XML schema
+		 spec strictly
+		s = Whitespace.trimWhitespace(s);
+		 */
 		switch (s.length())
 		{
 			case 1:
@@ -128,7 +129,7 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	 */
 	public BooleanValue not()
 	{
-		return value.booleanValue() ? FALSE : TRUE;
+		return value ? FALSE : TRUE;
 	}
 
 	// public static void main(String[] args)
@@ -170,6 +171,6 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	@Override
 	public String printXML()
 	{
-		return DatatypeConverter.printBoolean(this.value.booleanValue());
+		return DatatypeConverter.printBoolean(this.value);
 	}
 }

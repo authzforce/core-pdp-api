@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -96,22 +96,6 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 		this.domainPartLowerCase = parts[1].toLowerCase(Locale.US);
 	}
 
-	// /**
-	// * @return the localPart
-	// */
-	// public String getLocalPart()
-	// {
-	// return localPart;
-	// }
-	//
-	// /**
-	// * @return the domainPartLowerCase
-	// */
-	// public String getDomainPartLowerCase()
-	// {
-	// return domainPartLowerCase;
-	// }
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -190,7 +174,7 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 		{
 			// this is case #3 : a sub-domain of this domain (ignore case)
 			/*
-			 * Either the arg without the dot is equal to this domain-part (ignore case), or the arg is a suffix of this domain-part (with the dot! if you removed the dot, it could be a suffix witouth
+			 * Either the arg without the dot is equal to this domain-part (ignore case), or the arg is a suffix of this domain-part (with the dot! if you removed the dot, it could be a suffix without
 			 * being a valid subdomain; e.g. ".east.sun.com" matches domain-part "isrg.east.sun.com" but must not match "northeast.sun.com" although it is a valid suffix without the dot)
 			 */
 			final String otherToLowerCase = maybePartialRfc822Name.toLowerCase(Locale.US);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -51,7 +51,7 @@ public class AttributeBag<AV extends AttributeValue> extends Bag<AV>
 	protected AttributeBag(final Datatype<AV> elementDatatype, final ImmutableMultiset<AV> elements, final Optional<AttributeSource> attributeValueSource)
 	{
 		super(elementDatatype, elements);
-		assert attributeValueSource != null && (elements.isEmpty() || attributeValueSource.isPresent());
+		assert elements.isEmpty() || attributeValueSource.isPresent();
 		this.source = attributeValueSource;
 	}
 

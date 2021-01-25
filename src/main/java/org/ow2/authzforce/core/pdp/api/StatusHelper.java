@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -100,7 +100,7 @@ public final class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd
 	 */
 	public StatusHelper(final List<String> codes, final Optional<String> message)
 	{
-		this(codes, message, null);
+		this(codes, message, Optional.empty());
 	}
 
 	/**
@@ -117,11 +117,11 @@ public final class StatusHelper extends oasis.names.tc.xacml._3_0.core.schema.wd
 	}
 
 	/**
-	 * Buils the chain of status codes (recursive) (similar to error stacktrace)
+	 * Builds the chain of status codes (recursive) (similar to error stacktrace)
 	 * 
-	 * @param codesIterator
-	 * @param depth
-	 * @return
+	 * @param codesIterator iterator over status codes
+	 * @param depth depth of the StatusCode (max length of the chain of status codes)
+	 * @return recursive status code
 	 */
 	private static StatusCode stringsToStatusCode(final Iterator<String> codesIterator, final int depth)
 	{

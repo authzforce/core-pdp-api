@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -27,7 +27,7 @@ public interface CombiningAlgRegistry extends PdpExtensionRegistry<CombiningAlg<
 {
 
 	/**
-	 * Tries to return the correct combinging algorithm based on the given algorithm ID.
+	 * Tries to return the correct combining algorithm based on the given algorithm ID.
 	 * 
 	 * @param algId
 	 *            the identifier by which the algorithm is known

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,7 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 
-import net.sf.saxon.lib.FeatureKeys;
+import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -98,7 +98,7 @@ public final class XmlUtils
 			throw new RuntimeException("Error loading Saxon processor from configuration file at this location: " + SAXON_CONFIGURATION_CLASSPATH_LOCATION, e);
 		}
 
-		final Boolean isXincludeAware = (Boolean) SAXON_PROCESSOR.getConfigurationProperty(FeatureKeys.XINCLUDE);
+		final Boolean isXincludeAware = SAXON_PROCESSOR.getConfigurationProperty(Feature.XINCLUDE);
 		if (isXincludeAware)
 		{
 			/**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -34,7 +34,7 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  */
 public abstract class SingleParameterTypedFirstOrderFunction<RETURN_T extends Value, PARAM_T extends Value> extends FirstOrderFunction<RETURN_T>
 {
-	protected SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, PARAM_T> functionSignature;
+	protected final SingleParameterTypedFirstOrderFunctionSignature<RETURN_T, PARAM_T> functionSignature;
 
 	/**
 	 * Constructor that creates a function from its signature definition

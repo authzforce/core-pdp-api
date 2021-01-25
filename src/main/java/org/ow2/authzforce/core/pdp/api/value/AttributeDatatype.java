@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -46,7 +46,7 @@ public final class AttributeDatatype<AV extends AttributeValue> extends Primitiv
 	{
 		super(instanceClass, id, functionIdPrefix);
 		this.emptyBag = Bags.empty(this, null);
-		this.bagDatatype = new BagDatatype<>(new TypeToken<Bag<AV>>()
+		this.bagDatatype = new BagDatatype<>(new TypeToken<>()
 		{
 			private static final long serialVersionUID = 1L;
 		}, this);

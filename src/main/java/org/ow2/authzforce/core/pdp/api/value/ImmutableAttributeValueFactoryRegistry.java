@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -118,7 +118,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 			return Bags.emptyAttributeBag(elementDatatype, null, attValSrc);
 		}
 
-		return Bags.newAttributeBag(elementDatatype, rawValues.stream().map(rawValue -> attributeValueFactory.getInstance(rawValue)).collect(Collectors.toList()), attValSrc);
+		return Bags.newAttributeBag(elementDatatype, rawValues.stream().map(attributeValueFactory::getInstance).collect(Collectors.toList()), attValSrc);
 	}
 
 	private final Map<Class<? extends Serializable>, StringParseableValue.Factory<?>> inputClassToAttValFactory;

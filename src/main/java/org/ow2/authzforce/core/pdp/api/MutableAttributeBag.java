@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -28,7 +28,7 @@ import org.ow2.authzforce.core.pdp.api.value.Bags;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
- * Growable/udpatable attribute bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the total number of values for a given attribute - typically in
+ * Growable/updatable attribute bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the total number of values for a given attribute - typically in
  * a XACML request - is not known in advance. For example, for the same AttributeId (e.g. with Issuer = null), there might be multiple <Attribute> elements, in which case values must be merged for
  * later matching <AttributeDesignator> evaluation. Indeed, as discussed on the xacml-dev mailing list (see https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html), the following excerpt
  * from the XACML 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same <Attribute> with same meta-data but different values should be considered equivalent to a single <Attribute>

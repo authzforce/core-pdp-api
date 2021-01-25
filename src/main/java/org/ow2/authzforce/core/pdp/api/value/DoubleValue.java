@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -53,7 +53,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 */
 	public DoubleValue(final String val) throws NumberFormatException
 	{
-		this(Double.valueOf(DatatypeConverter.parseDouble(val)));
+		this(DatatypeConverter.parseDouble(val));
 	}
 
 	/**
@@ -72,8 +72,8 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	@Override
 	public DoubleValue abs()
 	{
-		final double result = Math.abs(this.value.doubleValue());
-		return new DoubleValue(Double.valueOf(result));
+		final double result = Math.abs(this.value);
+		return new DoubleValue(result);
 	}
 
 	/** {@inheritDoc} */
@@ -81,26 +81,26 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	public DoubleValue add(final Deque<? extends DoubleValue> others)
 	{
 
-		double sum = value.doubleValue();
+		double sum = value;
 		while (!others.isEmpty())
 		{
-			sum += others.poll().value.doubleValue();
+			sum += others.poll().value;
 		}
 
-		return new DoubleValue(Double.valueOf(sum));
+		return new DoubleValue(sum);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DoubleValue multiply(final Deque<? extends DoubleValue> others)
 	{
-		double product = value.doubleValue();
+		double product = value;
 		while (!others.isEmpty())
 		{
-			product *= others.poll().value.doubleValue();
+			product *= others.poll().value;
 		}
 
-		return new DoubleValue(Double.valueOf(product));
+		return new DoubleValue(product);
 	}
 
 	/** {@inheritDoc} */
@@ -114,13 +114,13 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 		 * return the result of division by zero as it is (JAXB will convert it properly).
 		 */
 
-		final double result = value.doubleValue() / divisor.value.doubleValue();
+		final double result = value / divisor.value;
 		if (Double.isInfinite(result) || Double.isNaN(result))
 		{
 			throw ILLEGAL_DIV_BY_ZERO_EXCEPTION;
 		}
 
-		return new DoubleValue(Double.valueOf(result));
+		return new DoubleValue(result);
 	}
 
 	/**
@@ -133,8 +133,8 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 */
 	public DoubleValue floor()
 	{
-		final double result = Math.floor(value.doubleValue());
-		return new DoubleValue(Double.valueOf(result));
+		final double result = Math.floor(value);
+		return new DoubleValue(result);
 	}
 
 	/**
@@ -145,8 +145,8 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	 */
 	public DoubleValue roundIEEE754Default()
 	{
-		final double result = Math.rint(value.doubleValue());
-		return new DoubleValue(Double.valueOf(result));
+		final double result = Math.rint(value);
+		return new DoubleValue(result);
 	}
 
 	// For quick testing
@@ -171,8 +171,8 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	@Override
 	public DoubleValue subtract(final DoubleValue subtractedVal)
 	{
-		final double result = this.value.doubleValue() - subtractedVal.value.doubleValue();
-		return new DoubleValue(Double.valueOf(result));
+		final double result = this.value - subtractedVal.value;
+		return new DoubleValue(result);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	@Override
 	public String printXML()
 	{
-		return DatatypeConverter.printDouble(this.value.doubleValue());
+		return DatatypeConverter.printDouble(this.value);
 	}
 
 }

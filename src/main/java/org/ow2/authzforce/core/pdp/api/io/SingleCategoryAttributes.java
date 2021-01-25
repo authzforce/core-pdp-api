@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -45,9 +45,6 @@ import org.ow2.authzforce.core.pdp.api.value.PrimitiveValue;
 public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends AttributeValue>, RETURNED_ATTRIBUTE_CATEGORY> implements Iterable<Entry<AttributeFqn, AttributeBag<?>>>
 {
 
-	private static final UnsupportedOperationException UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION = new UnsupportedOperationException(
-			"SingleCategoryAttributes - named attributes iterator may be called only once.");
-
 	/**
 	 * Named Attribute Iterator converter
 	 *
@@ -59,7 +56,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		/**
 		 * convert the iterator over named attributes
 		 * 
-		 * @param namedAttributeIterator
+		 * @param namedAttributeIterator named attribute iterator
 		 * @return new named attribute iterator
 		 */
 		Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(Iterator<Entry<AttributeFqn, V_BAG>> namedAttributeIterator);
@@ -100,46 +97,19 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	/**
 	 * Attribute Iterator Converter for {@link MutableAttributeBag}
 	 */
-	public static final NamedAttributeIteratorConverter<MutableAttributeBag<?>> MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<MutableAttributeBag<?>>()
-	{
-
-		@Override
-		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFqn, MutableAttributeBag<?>>> namedAttributeIterator)
-		{
-			return new MutableBagBasedImmutableIterator(namedAttributeIterator);
-		}
-
-	};
+	public static final NamedAttributeIteratorConverter<MutableAttributeBag<?>> MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER = MutableBagBasedImmutableIterator::new;
 
 	/**
 	 * "Identity" Attribute Iterator Converter, i.e. returns the iterator in argument as is ("identity" as in mathematical definition of identity function/transformation)
 	 */
-	public static final NamedAttributeIteratorConverter<AttributeBag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = new NamedAttributeIteratorConverter<AttributeBag<?>>()
-	{
-
-		@Override
-		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> convert(final Iterator<Entry<AttributeFqn, AttributeBag<?>>> namedAttributeIterator)
-		{
-			return namedAttributeIterator;
-		}
-
-	};
+	public static final NamedAttributeIteratorConverter<AttributeBag<?>> IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER = namedAttributeIterator -> namedAttributeIterator;
 
 	private interface IteratorProvider<AV_BAG extends Iterable<? extends PrimitiveValue>>
 	{
 		Iterator<Entry<AttributeFqn, AttributeBag<?>>> get(Set<Entry<AttributeFqn, AV_BAG>> namedAttributes);
 	}
 
-	private static final IteratorProvider<Bag<? extends AttributeValue>> EMPTY_ITERATOR_PROVIDER = new IteratorProvider<Bag<? extends AttributeValue>>()
-	{
-
-		@Override
-		public Iterator<Entry<AttributeFqn, AttributeBag<?>>> get(final Set<Entry<AttributeFqn, Bag<? extends AttributeValue>>> namedAttributeIterator)
-		{
-			return Collections.<Entry<AttributeFqn, AttributeBag<?>>> emptyIterator();
-		}
-
-	};
+	private static final IteratorProvider<Bag<? extends AttributeValue>> EMPTY_ITERATOR_PROVIDER = namedAttributeIterator -> Collections.emptyIterator();
 
 	private static final class ConvertingIteratorProvider<AV_BAG extends Iterable<? extends AttributeValue>> implements IteratorProvider<AV_BAG>
 	{
@@ -169,8 +139,6 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 * feature using XPath evaluation against Content is enabled.
 	 */
 	private final XdmNode extraContent;
-
-	private volatile boolean iteratorCalled = false;
 
 	/**
 	 * Instantiates this class
@@ -248,11 +216,6 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	@Override
 	public Iterator<Entry<AttributeFqn, AttributeBag<?>>> iterator()
 	{
-		if (iteratorCalled)
-		{
-			throw UNSUPPORTED_ITERATOR_OPERATION_EXCEPTION;
-		}
-
 		return this.iteratorProvider.get(namedAttributes);
 	}
 }

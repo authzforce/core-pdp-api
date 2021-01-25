@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,13 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * (Immutable) ExtendedDecision factory
@@ -168,7 +166,7 @@ public final class ExtendedDecisions
 		{
 			if (hashCode == 0)
 			{
-				hashCode = Objects.hash(this.extIndeterminate, this.cause.get());
+				hashCode = Objects.hash(this.extIndeterminate, this.cause.orElse(null));
 			}
 
 			return hashCode;
@@ -190,11 +188,12 @@ public final class ExtendedDecisions
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
 			final Optional<IndeterminateEvaluationException> otherCause = other.getCauseForIndeterminate();
-			if (!otherCause.isPresent())
+			if (otherCause.isEmpty())
 			{
 				return false;
 			}
 
+			// cause initialized != null
 			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.get().equals(otherCause.get());
 		}
 
@@ -204,6 +203,7 @@ public final class ExtendedDecisions
 		{
 			if (toString == null)
 			{
+				// cause initialized != null
 				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + cause.get().getTopLevelStatus() + " )";
 			}
 			return toString;
@@ -406,7 +406,8 @@ public final class ExtendedDecisions
 	 */
 	public static ExtendedDecision newIndeterminate(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause) throws IllegalArgumentException
 	{
-		Preconditions.checkNotNull(cause, "No cause provided for Indeterminate result");
+		assert cause != null;
+		// cause must be present
 		return new IndeterminateExtendedDecision(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
 	}
 

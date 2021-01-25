@@ -1,5 +1,5 @@
 /**
- * Copyright 2012-2020 THALES.
+ * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -51,7 +51,7 @@ public final class Bags
 
 		private Empty(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty)
 		{
-			super(elementDatatype, ImmutableMultiset.<AV>of());
+			super(elementDatatype, ImmutableMultiset.of());
 			this.causeForEmpty = causeForEmpty;
 		}
 
@@ -81,7 +81,7 @@ public final class Bags
 
 		private EmptyAttributeBag(final Datatype<AV> elementDatatype, final IndeterminateEvaluationException causeForEmpty, AttributeSource attValSrc)
 		{
-			super(elementDatatype, ImmutableMultiset.<AV>of(), Optional.of(attValSrc));
+			super(elementDatatype, ImmutableMultiset.of(), Optional.of(attValSrc));
 			this.causeForEmpty = causeForEmpty;
 		}
 
@@ -166,15 +166,13 @@ public final class Bags
 	private static final class Multi<AV extends AttributeValue> extends Bag<AV>
 	{
 		/**
-		 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
+		 * Constructor specifying bag datatype. On the contrary to {@link Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
 		 * 
 		 * @param elementDatatype
 		 *            element datatype
 		 * 
 		 * @param values
 		 *            bag values (content).
-		 * @param causeForEmpty
-		 *            reason why this bag is empty if it is; null if it isn't
 		 * @throws IllegalArgumentException
 		 *             if {@code elementDatatype == null}
 		 */
@@ -207,15 +205,13 @@ public final class Bags
 	private static final class MultiAttributeBag<AV extends AttributeValue> extends AttributeBag<AV>
 	{
 		/**
-		 * Constructor specifying bag datatype. On the contrary to {@link #Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
+		 * Constructor specifying bag datatype. On the contrary to {@link Bag(Datatype)}, this constructor allows to reuse an existing bag Datatype object, saving the allocation of such object.
 		 * 
 		 * @param elementDatatype
 		 *            element datatype
 		 * 
 		 * @param values
 		 *            bag values (content).
-		 * @param causeForEmpty
-		 *            reason why this bag is empty if it is; null if it isn't
 		 * @throws IllegalArgumentException
 		 *             if {@code elementDatatype == null}
 		 */
@@ -286,8 +282,8 @@ public final class Bags
 	}
 
 	/**
-	 * Creates instance of immutable empty attribute bag with given exception as reason for bag being empty (no attribute value), with {@value AttributeSources#REQUEST} as attribute source
-	 * 
+	 * Creates instance of immutable empty attribute bag with given exception as reason for bag being empty (no attribute value), with {@link AttributeSources#REQUEST} as attribute source
+	 *
 	 * @param causeForEmpty
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
 	 * @param elementDatatype
@@ -363,7 +359,7 @@ public final class Bags
 	}
 
 	/**
-	 * Creates instance of immutable attribute bag containing val and only val value with {@value AttributeSources#REQUEST} as attribute source
+	 * Creates instance of immutable attribute bag containing val and only val value with {@link AttributeSources#REQUEST} as attribute source
 	 * 
 	 * @param elementDatatype
 	 *            bag element datatype
@@ -505,7 +501,7 @@ public final class Bags
 		@Override
 		public void validate(final Bag<?> bag) throws IndeterminateEvaluationException
 		{
-			if (bag == null || bag.isEmpty())
+			if (bag == null)
 			{
 				throw new IndeterminateEvaluationException(messageIfEmpty, XacmlStatusCode.MISSING_ATTRIBUTE.value());
 			}
