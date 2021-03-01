@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
@@ -40,7 +40,6 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 
-import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils;
 import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -82,7 +81,7 @@ public final class XmlUtils
 	public static final Processor SAXON_PROCESSOR;
 	static
 	{
-		final ClassLoader classLoader = XacmlJaxbParsingUtils.class.getClassLoader();
+		final ClassLoader classLoader = XmlUtils.class.getClassLoader();
 		final URL saxonConfURL = classLoader.getResource(SAXON_CONFIGURATION_CLASSPATH_LOCATION);
 		if (saxonConfURL == null)
 		{
@@ -101,7 +100,7 @@ public final class XmlUtils
 		final Boolean isXincludeAware = SAXON_PROCESSOR.getConfigurationProperty(Feature.XINCLUDE);
 		if (isXincludeAware)
 		{
-			/**
+			/*
 			 * xInclude=true is not compatible with FullJaxbXACMLAttributesParser#parseContent(), causes error:
 			 * <p>
 			 * net.sf.saxon.s9api.SaxonApiException: Selected XML parser javax.xml.bind.util.JAXBSource$1 does not recognize request for XInclude processing
