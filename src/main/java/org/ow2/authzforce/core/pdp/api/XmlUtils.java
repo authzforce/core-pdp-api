@@ -304,7 +304,7 @@ public final class XmlUtils
                     final String alreadyMappedNs = nsPrefixUriMap.putIfAbsent(prefix, uri);
                     if (alreadyMappedNs != null && alreadyMappedNs.equals(uri))
                     {
-                        throw new RuntimeException("Duplicate declaration of namespace prefix '" + prefix + "' for two different namespaces is not supported (empty prefix refers to default namespace): '" + alreadyMappedNs + "', '" + uri + "'");
+                        throw new IllegalArgumentException("Duplicate declaration of namespace prefix '" + prefix + "' for two different namespaces is not supported (empty prefix refers to default namespace): '" + alreadyMappedNs + "', '" + uri + "'");
                     }
 
                     super.startPrefixMapping(prefix, uri);
