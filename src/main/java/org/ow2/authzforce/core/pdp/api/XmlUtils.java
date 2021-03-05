@@ -302,7 +302,7 @@ public final class XmlUtils
                 public void startPrefixMapping(final String prefix, final String uri) throws SAXException
                 {
                     final String alreadyMappedNs = nsPrefixUriMap.putIfAbsent(prefix, uri);
-                    if (alreadyMappedNs != null && alreadyMappedNs.equals(uri))
+                    if (alreadyMappedNs != null && !alreadyMappedNs.equals(uri))
                     {
                         throw new IllegalArgumentException("Duplicate declaration of namespace prefix '" + prefix + "' for two different namespaces is not supported (empty prefix refers to default namespace): '" + alreadyMappedNs + "', '" + uri + "'");
                     }
