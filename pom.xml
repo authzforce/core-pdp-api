@@ -111,6 +111,9 @@
             <configuration>
                <header>license/alv2-header.txt</header>
                <!-- <skipExistingHeaders>true</skipExistingHeaders> -->
+               <headerDefinitions>
+                  <headerDefinition>license/header-defs.xml</headerDefinition>
+               </headerDefinitions>
                <includes>
                   <include>src/**</include>
                </includes>

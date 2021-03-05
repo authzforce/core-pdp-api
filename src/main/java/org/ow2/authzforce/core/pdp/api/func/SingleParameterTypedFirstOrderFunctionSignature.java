@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
@@ -79,7 +79,7 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 
 		if (parameterTypes.isEmpty())
 		{
-			throw new IllegalArgumentException("Invalid number of function parameters (" + parameterTypes.size() + ") for first-order function (" + name + "). Required: >= 1.");
+			throw new IllegalArgumentException("Invalid number of function parameters (0) for first-order function (" + name + "). Required: >= 1.");
 		}
 
 		this.paramTypes = Collections.unmodifiableList(parameterTypes);

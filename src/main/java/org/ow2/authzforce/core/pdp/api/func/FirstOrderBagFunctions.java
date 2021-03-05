@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
@@ -541,7 +541,7 @@ public final class FirstOrderBagFunctions
 		final BagDatatype<AV> paramBagType = paramType.getBagDatatype();
 		final Class<AV[]> paramArrayClass = paramType.getArrayClass();
 		return HashCollections.newImmutableSet(new Function[] {
-				/**
+				/*
 				 * 
 				 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set
 				 * functions that takes multiple bags as parameters.
@@ -549,7 +549,7 @@ public final class FirstOrderBagFunctions
 				 */
 				new SingletonBagToPrimitive<>(paramType, paramBagType), new BagSize<>(paramBagType), new BagContains<>(paramType, paramBagType, paramArrayClass),
 				new PrimitiveToBag<>(paramType, paramBagType),
-				/**
+				/*
 				 * 
 				 * Add bag functions that takes multiple bags as parameters. Defined in section A.3.11.
 				 * 
