@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
@@ -158,7 +158,7 @@ public final class XacmlJaxbParsingUtils
 
 			final AttributeFqn attName = AttributeFqns.newInstance(attributeCategoryId, Optional.ofNullable(inputXacmlAttribute.getIssuer()), inputXacmlAttribute.getAttributeId());
 
-			/**
+			/*
 			 * Determine the attribute datatype to make sure it is supported and all values are of the same datatype. Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a
 			 * bag containing bags, or a bag containing values of differing types; i.e., a bag in XACML SHALL contain only values that are of the same data-type."
 			 * <p>
