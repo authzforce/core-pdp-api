@@ -1,6 +1,10 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## 18.0.1
+### Fixed
+- Issue raised on AuthzForce Server project: authzforce/server#62
+
 
 ## 18.0.0
 ### Changed

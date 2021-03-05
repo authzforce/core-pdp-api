@@ -6,7 +6,7 @@
       <version>8.0.0</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>18.0.0</version>
+   <version>18.0.1</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthzForce - Core PDP API</description>
    <url>${project.url}</url>
@@ -111,6 +111,9 @@
             <configuration>
                <header>license/alv2-header.txt</header>
                <!-- <skipExistingHeaders>true</skipExistingHeaders> -->
+               <headerDefinitions>
+                  <headerDefinition>license/header-defs.xml</headerDefinition>
+               </headerDefinitions>
                <includes>
                   <include>src/**</include>
                </includes>

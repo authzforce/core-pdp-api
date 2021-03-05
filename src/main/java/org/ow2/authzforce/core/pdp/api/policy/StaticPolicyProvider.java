@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2021 THALES.
  *
  * This file is part of AuthzForce CE.
@@ -66,7 +66,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 	 *            </p>
 	 * 
 	 * @return the policy matching the policy reference; or null if no match
-	 * @throws IndeterminateEvaluationException
+	 * @throws IndeterminateEvaluationException error resolving the policy
 	 * 
 	 */
 	StaticTopLevelPolicyElementEvaluator get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> versionConstraints, Deque<String> policySetRefChain)
