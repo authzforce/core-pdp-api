@@ -3,10 +3,10 @@
    <parent>
       <groupId>org.ow2.authzforce</groupId>
       <artifactId>authzforce-ce-parent</artifactId>
-      <version>8.0.0</version>
+      <version>8.0.2</version>
    </parent>
    <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>18.0.1</version>
+   <version>18.0.2</version>
    <name>${project.groupId}:${project.artifactId}</name>
    <description>AuthzForce - Core PDP API</description>
    <url>${project.url}</url>
@@ -34,7 +34,7 @@
          <!-- For validation of XACML RFC822Name (email address) -->
          <groupId>javax.mail</groupId>
          <artifactId>javax.mail-api</artifactId>
-         <version>1.6.0</version>
+         <version>1.6.2</version>
          <!-- Must be replaced with actual implementation at runtime (to be provided), e.g. com.sun.mail:javax.mail -->
          <scope>provided</scope>
       </dependency>
