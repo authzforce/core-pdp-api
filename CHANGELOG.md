@@ -1,6 +1,13 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+
+## 18.0.2
+### Fixed
+- CVE-2021-22118: updated parent version to 8.0.2 -> Spring to 5.2.15
+- Upgraded javax.mailapi to 1.6.2
+
+
 ## 18.0.1
 ### Fixed
 - Issue raised on AuthzForce Server project: authzforce/server#62
