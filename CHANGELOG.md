@@ -2,6 +2,23 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 19.0.0
+### Changed
+- `authzforce-ce-parent` version: 8.1.0
+- Improved support of Multiple Decision Profile in the `PdpEngine` interface and the following types of PDP extensions:  Combining Algorithm, Function, Attribute Provider, Policy Provider. The corresponding interfaces (`CombiningAlg`...) have changed: certain of their methods - called during request evaluation - now take a new `Optional<EvaluationContext>` parameter which is used to pass the MDP evaluation context (MDP = Multiple Decision Profile) which is an evaluation context shared across all the Individual Decision Requests within the same Multiple Decision Request whenever MDP is used in the input request to the PDP. This enables all PDP extensions to be aware / provide better support of the Multiple Decision Profile. This may be used in particular by an Attribute Provider providing the standard current-time/current-date/current-dateTime attributes which should have the same values for all Individual Decision Requests corresponding to the same Multiple Decision Request.
+- `DecisionRequest` and `EvaluationContext` interfaces changed:
+  - New method `getCreationTimestamp()`: provides the date/time of the request/context creation. Used typically for the standard current-* attributes.
+  - `putNamedAttributeValueIfAbsent(AttributeFqn, AttributeBag)` replaced with more generic `putNamedAttributeValue(AttributeFqn, AttributeBag, boolean override)`
+
+### Added
+- Attribute Provider (`NamedAttributeProvider`) interface: added 2 new methods for better support of the Multiple Decision Profile (all implemented by default to do nothing):
+
+    - `beginMultipleDecisionRequest(EvaluationContext mdpContext)`: for special processing in the context of the MDP request (before corresponding Individual Decision requests are evaluated)
+    - `supportsBeginMultipleDecisionRequest()`: indicates whether the Attribute Provider implements `beginMultipleDecisionRequest()` method and therefore needs the PDP engine to call it when a new MDP request is evaluated
+    - `beginIndividualDecisionRequest(EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext)`: for special processing in the context of an Individual Decision request, before it is evaluated against policies (before the `get(attribute)` method is ever called for the individual decision request).
+    - `supportsBeginIndividualDecisionRequest()`: indicates whether the Attribute Provider implements `beginIndividualDecisionRequest()` method and therefore needs the PDP engine to call it when a new individual decision request is evaluated.
+  
+
 ## 18.0.2
 ### Fixed
 - CVE-2021-22118: updated parent version to 8.0.2 -> Spring to 5.2.15
