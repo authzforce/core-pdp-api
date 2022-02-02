@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -23,7 +23,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
- * Representation of an xs:time value. This class supports parsing xs:time values. All objects of this class are immutable and thread-safe.
+ * Representation of a xs:time value. This class supports parsing xs:time values. All objects of this class are immutable and thread-safe.
  * <p>
  * The {@link XMLGregorianCalendar} returned by {@link #getUnderlyingValue()} have the following characteristics:
  * <ul>
@@ -69,8 +69,8 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	 * Creates a new instance from a Calendar
 	 *
 	 * @param timeCalendar
-	 *            a <code>XMLGregorianCalendar</code> object representing the specified time; beware that this method modifies {@code calendar} by unsetting all date fields (year, month, day): e.g.
-	 *            for the year, {@code calendar.setYear(DatatypeConstants.FIELD_UNDEFINED)}
+	 *            a <code>XMLGregorianCalendar</code> object representing the specified time; beware that this method creates an internal copy of {@code timeCalendar} (to prevent modification of {@code timeCalendar} and any external modification of the created instance's internal copy) before unsetting all date fields (year, month, day): e.g.
+	 *            for the year, {@code calendarCopy.setYear(DatatypeConstants.FIELD_UNDEFINED)}
 	 * @return new instance
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code calendar == null}
@@ -78,10 +78,12 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	public static TimeValue getInstance(final XMLGregorianCalendar timeCalendar)
 	{
 		// we only want the time, so unset all non-time fields
-		timeCalendar.setYear(DatatypeConstants.FIELD_UNDEFINED);
-		timeCalendar.setMonth(DatatypeConstants.FIELD_UNDEFINED);
-		timeCalendar.setDay(DatatypeConstants.FIELD_UNDEFINED);
-		return new TimeValue(timeCalendar);
+		// Make a defensive copy first to avoid modifying the original argument and being modified externally
+		final XMLGregorianCalendar copy = (XMLGregorianCalendar) timeCalendar.clone();
+		copy.setYear(DatatypeConstants.FIELD_UNDEFINED);
+		copy.setMonth(DatatypeConstants.FIELD_UNDEFINED);
+		copy.setDay(DatatypeConstants.FIELD_UNDEFINED);
+		return new TimeValue(copy);
 	}
 
 	/** {@inheritDoc} */

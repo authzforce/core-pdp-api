@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -46,6 +46,31 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	private transient volatile String toString = null; // Effective Java - Item 71
 
 	/**
+	 * Creates instance from scratch
+	 *
+	 * @param category
+	 *            AttributeSelector's Category
+	 * @param xpath
+	 * 	 *            AttributeSelector's Path
+	 */
+	public AttributeSelectorId(final String category, final String xpath, final Optional<String> contextSelectorId)
+	{
+		if (category == null)
+		{
+			throw NULL_CATEGORY_ARGUMENT_EXCEPTION;
+		}
+
+		if (xpath == null)
+		{
+			throw NULL_PATH_ARGUMENT_EXCEPTION;
+		}
+
+		this.category = category;
+		this.path = xpath;
+		this.contextSelectorId = contextSelectorId;
+	}
+
+	/**
 	 * Creates instance from XACML AttributeSelector
 	 * 
 	 * @param attrSelector
@@ -53,20 +78,7 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	 */
 	public AttributeSelectorId(final AttributeSelectorType attrSelector)
 	{
-
-		category = attrSelector.getCategory();
-		path = attrSelector.getPath();
-		if (category == null)
-		{
-			throw NULL_CATEGORY_ARGUMENT_EXCEPTION;
-		}
-
-		if (path == null)
-		{
-			throw NULL_PATH_ARGUMENT_EXCEPTION;
-		}
-
-		contextSelectorId = Optional.ofNullable(attrSelector.getContextSelectorId());
+		this(attrSelector.getCategory(), attrSelector.getPath(), Optional.of(attrSelector.getContextSelectorId()));
 	}
 
 	/**
@@ -166,12 +178,6 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 			return thisPathComparedToOtherPath;
 		}
 
-		if (this.contextSelectorId.isPresent())
-		{
-			return other.contextSelectorId.isPresent() ? this.contextSelectorId.get().compareTo(other.contextSelectorId.get()) : 1;
-		}
-
-		// this.contextSelectorId is not present
-		return other.contextSelectorId.isPresent() ? -1 : 0;
+		return this.contextSelectorId.map(value -> other.contextSelectorId.map(value::compareTo).orElse(1)).orElseGet(() -> other.contextSelectorId.isPresent() ? -1 : 0);
 	}
 }

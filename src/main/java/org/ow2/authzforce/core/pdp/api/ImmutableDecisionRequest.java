@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -31,13 +29,14 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import com.google.common.collect.ImmutableSortedMap;
 
 /**
- * Immutable implementation of {@link DecisionRequest} to be used as input to {@link PdpEngine#evaluate(DecisionRequest)}. Typically used as output request instances by PDP {@link DecisionRequestPreprocessor}
+ * Immutable implementation of {@link DecisionRequest} to be used as input to {@link PdpEngine#evaluate(DecisionRequest)}. Typically, it is used as output request instances by PDP {@link DecisionRequestPreprocessor}
  * extensions, based on JAXB/XACML input requests
  */
 public final class ImmutableDecisionRequest implements DecisionRequest
 {
 
 	// initialized not null by constructors
+	private final Instant creationTimestamp;
 	private final Map<AttributeFqn, AttributeBag<?>> namedAttributes;
 	private final Map<String, XdmNode> extraContentByCategory;
 	private final boolean isApplicablePolicyListReturned;
@@ -50,6 +49,7 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 	{
 		assert immutableNamedAttributes != null && immutableContentNodesByCategory != null;
 
+		this.creationTimestamp = Instant.now();
 		this.namedAttributes = immutableNamedAttributes;
 		this.extraContentByCategory = immutableContentNodesByCategory;
 		this.isApplicablePolicyListReturned = returnApplicablePolicies;
@@ -90,6 +90,12 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 	{
 		return new ImmutableDecisionRequest(namedAttributes == null ? ImmutableSortedMap.of() : ImmutableSortedMap.copyOf(namedAttributes), contentNodesByCategory == null ? ImmutableSortedMap.of()
 				: ImmutableSortedMap.copyOf(contentNodesByCategory), returnApplicablePolicies);
+	}
+
+	@Override
+	public Instant getCreationTimestamp()
+	{
+		return this.creationTimestamp;
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,7 +32,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
  * a XACML request - is not known in advance. For example, for the same AttributeId (e.g. with Issuer = null), there might be multiple <Attribute> elements, in which case values must be merged for
  * later matching <AttributeDesignator> evaluation. Indeed, as discussed on the xacml-dev mailing list (see https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html), the following excerpt
  * from the XACML 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same <Attribute> with same meta-data but different values should be considered equivalent to a single <Attribute>
- * element with same meta-data and merged values (multi-valued Attribute). Moreover, the conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in
+ * element with same meta-data and merged values (multivalued Attribute). Moreover, the conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in
  * a multi-value bag during evaluation of the AttributeDesignator.
  * <p>
  * To be instantiated only in a given evaluation request context (handled by a single thread), otherwise not guaranteed thread-safe.
@@ -164,7 +164,7 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 	}
 
 	/**
-	 * Appends all of the elements in the specified collection to the end of this bag, in the order that they are returned by the specified collection's iterator (optional operation). The behavior of
+	 * Appends all the elements in the specified collection to the end of this bag, in the order that they are returned by the specified collection's iterator (optional operation). The behavior of
 	 * this operation is undefined if the specified collection is modified while the operation is in progress. (Note that this will occur if the specified collection is this list, and it's nonempty.)
 	 * 
 	 * @param list

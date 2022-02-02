@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -56,7 +56,7 @@ import net.sf.saxon.s9api.XdmNode;
 public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionRequest, VALIDATOR_INPUT_ATTRIBUTE_CATEGORY_OBJECT, VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT>
 {
 	/**
-	 * (Mutable) {@link IndividualXacmlJaxbRequest} builder. Allows to update attribute categories and rebuild (immutable) Individual Decision Requests over and over again. Useful especially for
+	 * (Mutable) {@link IndividualXacmlJaxbRequest} builder. Allows updating attribute categories and rebuild (immutable) Individual Decision Requests over and over again. Useful especially for
 	 * {@link DecisionRequestPreprocessor} implementations supporting the Multiple Decision Profile.
 	 *
 	 * @version $Id: $

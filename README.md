@@ -6,7 +6,7 @@ High-level API for using AuthzForce PDP engine and implementing PDP engine exten
 
 ## Support
 
-If you are experiencing any problem with this project, you may report it on the github Issues.
+If you are experiencing any problem with this project, you may report it on the GitHub Issues.
 Please include as much information as possible; the more we know, the better the chance of a quicker resolution:
 
 * Software version

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -312,7 +312,7 @@ public final class DecisionResults
 	}
 
 	/**
-	 * Instantiates a Indeterminate Decision result with a given error status
+	 * Instantiates an Indeterminate Decision result with a given error status
 	 *
 	 * @param extendedIndeterminate
 	 *            Extended Indeterminate value (XACML 3.0 Core, section 7.10). We use the following convention:

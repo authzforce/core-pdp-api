@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -26,7 +26,7 @@ import org.ow2.authzforce.xmlns.pdp.ext.AbstractAttributeProvider;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 
 /**
- * {@link NamedAttributeProvider} that extends {@link Closeable} because it may may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
+ * {@link NamedAttributeProvider} that extends {@link Closeable} because it may use resources external to the JVM such as a cache, a disk, a connection to a remote server, etc. for retrieving the
  * attribute values. Therefore, these resources must be released by calling {@link #close()} when it is no longer needed.
  * <p>
  * PDP extensions of this type (to support new ways of providing attributes) must implement the {@link FactoryBuilder} class.
@@ -34,9 +34,9 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
 public interface CloseableNamedAttributeProvider extends NamedAttributeProvider, Closeable
 {
 	/**
-	 * Intermediate dependency-aware {@link CloseableNamedAttributeProvider} factory that can create instances of Attribute Providers from a XML/JAXB configuration, and also provides the dependencies
+	 * Intermediate dependency-aware {@link CloseableNamedAttributeProvider} factory that can create instances of Attribute Providers from an XML/JAXB configuration, and also provides the dependencies
 	 * (required attributes) (based on this configuration), that any such instance (created by it) will need. Providing the dependencies helps to optimize the {@code depAttrProvider} argument to
-	 * {@link #getInstance(AttributeValueFactoryRegistry, AttributeProvider)} and therefore optimize the created provider's job of finding its own supported attribute values based on other attributes
+	 * {@link #getInstance(AttributeValueFactoryRegistry, NamedAttributeProvider)} and therefore optimize the created provider's job of finding its own supported attribute values based on other attributes
 	 * in the evaluation context.
 	 * 
 	 */
@@ -45,10 +45,13 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 
 		/**
 		 * Returns non-null <code>Set</code> of <code>AttributeDesignator</code> s required as runtime inputs to the Attribute Provider instance created by this builder. The PDP framework calls this
-		 * method to know what input attributes the Provider will require (dependencies) before {@link #getInstance(AttributeValueFactoryRegistry, AttributeProvider)} , and based on this, creates a
+		 * method to know what input attributes the Provider will require (dependencies) before {@link #getInstance(AttributeValueFactoryRegistry, NamedAttributeProvider)} , and based on this, creates a
 		 * specific dependency Attribute Provider that will enable the providers created by this factory to find their dependency attributes. So when the PDP framework calls
-		 * {@link #getInstance(AttributeValueFactoryRegistry, AttributeProvider)} subsequently to instantiate one those Providers, the last argument is this the special dependency Attribute Provider.
-		 * 
+		 * {@link #getInstance(AttributeValueFactoryRegistry, NamedAttributeProvider)} subsequently to instantiate one those Providers, the last argument is this the special dependency Attribute Provider.
+		 * <p>
+		 *     WARNING: do not provide a default implementation here (e.g. returning empty set), because we want to force the implementer to think about whatever dependency attribute his/her implementation may have.
+		 * </p>
+		 *
 		 * @return a <code>Set</code> of required <code>AttributeDesignatorType</code>s. Null or empty if none required.
 		 */
 		Set<AttributeDesignatorType> getDependencies();
@@ -63,7 +66,7 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 		 * 
 		 * @return attribute value in internal model
 		 */
-		CloseableNamedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactories, AttributeProvider dependencyAttributeProvider);
+		CloseableNamedAttributeProvider getInstance(AttributeValueFactoryRegistry attributeValueFactories, NamedAttributeProvider dependencyAttributeProvider);
 	}
 
 	/**

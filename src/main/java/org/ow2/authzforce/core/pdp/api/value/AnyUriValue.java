@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -38,7 +38,7 @@ import net.sf.saxon.lib.StandardURIChecker;
  * described in Section 7.9".
  * </p>
  * <p>
- * Last but not least, we now refer to the definition of anyURI datatype given in XSD 1.1, which has the same value space as the string datatype. More info in the XSD 1.1 datatypes document and SAXON
+ * Last but not least, we now refer to the definition of anyURI datatype given in XSD 1.1, which has the same value space as the string datatype. More info in the XSD 1.1 data-types document and SAXON
  * documentation: http://www.saxonica.com/html/documentation9.4/changes/intro93/xsd11-93.html. Also confirmed on the mailing list:
  * https://sourceforge.net/p/saxon/mailman/saxon-help/thread/4F9E683E.8060001@saxonica.com/. Although XACML 3.0 still refers to XSD 1.0 and its stricter definition of anyURI, we prefer to anticipate
  * and use the definition from XSD 1.1 for XACML AttributeValues of datatype anyURI. However, this does not affect XACML schema validation of Policy/PolicySet/Request documents, where the XSD 1.0

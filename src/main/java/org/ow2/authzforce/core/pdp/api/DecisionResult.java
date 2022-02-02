@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package org.ow2.authzforce.core.pdp.api;
 
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
@@ -32,7 +29,7 @@ public interface DecisionResult extends ExtendedDecision
 {
 
 	/**
-	 * Get PEP actions (Obligations/Advices), may be empty - but <b>not null</b> - if the decision is neither Permit or Deny
+	 * Get PEP actions (Obligations/Advices), may be empty - but <b>not null</b> - if the decision is neither Permit nor Deny
 	 * 
 	 * @return PEP actions
 	 */

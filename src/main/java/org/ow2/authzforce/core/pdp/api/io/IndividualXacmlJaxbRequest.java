@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package org.ow2.authzforce.core.pdp.api.io;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +57,12 @@ public final class IndividualXacmlJaxbRequest implements DecisionRequest
 
 		this.baseRequest = baseRequest;
 		this.attributesToBeReturned = attributesToBeReturned == null ? Collections.emptyList() : attributesToBeReturned;
+	}
+
+	@Override
+	public Instant getCreationTimestamp()
+	{
+		return this.baseRequest.getCreationTimestamp();
 	}
 
 	@Override

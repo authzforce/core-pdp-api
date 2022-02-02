@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -172,7 +172,7 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 
 		if (maybePartialRfc822Name.charAt(0) == '.')
 		{
-			// this is case #3 : a sub-domain of this domain (ignore case)
+			// this is case #3 : a subdomain of this domain (ignore case)
 			/*
 			 * Either the arg without the dot is equal to this domain-part (ignore case), or the arg is a suffix of this domain-part (with the dot! if you removed the dot, it could be a suffix without
 			 * being a valid subdomain; e.g. ".east.sun.com" matches domain-part "isrg.east.sun.com" but must not match "northeast.sun.com" although it is a valid suffix without the dot)

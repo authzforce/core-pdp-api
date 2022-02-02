@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -23,7 +23,7 @@ import java.util.Set;
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 
 /**
- * Datatype-specific Attribute Value Factory that supports values only based on string content, without any XML attributes, and independent from the context, i.e. constant values.
+ * Datatype-specific Attribute Value Factory that supports values only based on string content, without any XML attributes, and independent of the context, i.e. constant values.
  * 
  * @param <AV>
  *            type of attribute values created by this factory

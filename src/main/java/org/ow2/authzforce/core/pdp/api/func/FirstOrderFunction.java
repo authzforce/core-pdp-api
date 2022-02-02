@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.func;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
@@ -55,7 +56,7 @@ public abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunct
 	 * @param remainingArgTypes
 	 *            types of remaining inputs to be passed only at request evaluation time, if not all arguments are specified in <code>argExpressions</code>. Therefore, only their type is checked at
 	 *            this point. The actual argument values will be passed as last parameters when calling
-	 *            {@link BaseFirstOrderFunctionCall#evaluate(org.ow2.authzforce.core.pdp.api.EvaluationContext, boolean, org.ow2.authzforce.core.pdp.api.value.AttributeValue...)} at request evaluation
+	 *            {@link BaseFirstOrderFunctionCall#evaluate(org.ow2.authzforce.core.pdp.api.EvaluationContext, Optional, boolean, org.ow2.authzforce.core.pdp.api.value.AttributeValue...)} at request evaluation
 	 *            time, via the returned <code>FunctionCall</code>.
 	 * @return Function call handle for calling this function which such inputs (with possible changes from original inputs due to optimizations for instance)
 	 * 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -21,7 +21,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.util.Locale;
 
 /**
- * Representation of an xs:string value. This class supports parsing xs:string values. All objects of this class are immutable and all methods of the class are thread-safe.
+ * Representation of a xs:string value. This class supports parsing xs:string values. All objects of this class are immutable and all methods of the class are thread-safe.
  *
  * 
  * @version $Id: $
@@ -74,7 +74,7 @@ public final class StringValue extends StringParseableValue<String> implements C
 	 *
 	 * @param other
 	 *            other value to be compared against
-	 * @return true if the other attribute value is not null and it represents an equivalent String ignoring case; false otherwise
+	 * @return true if the other attribute value is not null, and it represents an equivalent String ignoring case; false otherwise
 	 */
 	public boolean equalsIgnoreCase(final StringValue other)
 	{

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.base.Preconditions;
 import org.w3c.dom.Element;
 
 import com.google.common.collect.ImmutableList;
@@ -95,7 +96,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 * @param input
 		 *            input raw value, null if original content is empty (e.g. list of JAXB (mixed) content elements is empty)
 		 * @param otherXmlAttributes
-		 *            other XML attributes (mandatory); if always empty, use {@link StringContentOnlyValueFactory} instead)
+		 *            other XML attributes (mandatory); if always empty, use {@link StringContentOnlyValueFactory} instead
 		 * @param xPathCompiler
 		 *            (optional) XPath compiler for compiling any XPath expression in the value, e.g. xpathExpression datatype
 		 * @return instance of {@code F_AV}
@@ -108,7 +109,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 * 
 		 * @param content
 		 *            XACML AttributeValue content, e.g. if original input is XML/JAXB, a singleton list with an item of one of the following types: {@link String}, {@link Element} (see
-		 *            {@link javax.xml.bind.annotation.XmlMixed}); or if input is JSON, an single JSONObject, Number, Boolean, or String.
+		 *            {@link javax.xml.bind.annotation.XmlMixed}); or if input is JSON, a single JSONObject, Number, Boolean, or String.
 		 * @throws IllegalArgumentException
 		 *             if {@code datatype == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation for this datatype
 		 */
@@ -116,7 +117,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		public final AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
 		{
 			/*
-			 * content may be null in case of XML/JAXB when the tag is empty although it represents the empty string! E.g. <AttributeValue .../>.
+			 * content may be null in case of XML/JAXB when the tag is empty, although it represents the empty string! E.g. <AttributeValue .../>.
 			 */
 			final Serializable content0;
 			if (content == null)
@@ -147,7 +148,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 	}
 
 	/*
-	 * Make it final to prevent unexpected value change resulting from some function side-effects
+	 * Make it final to prevent unexpected value change resulting from some function side effects
 	 */
 	protected final V value;
 
@@ -158,18 +159,16 @@ public abstract class SimpleValue<V> implements AttributeValue
 
 	/**
 	 * Constructor from Java type of value. A Serializable JAXB-compatible form of the value must be provided to be used directly as first value in {@link #getContent()} The super field 'content' is
-	 * set to an empty list but it does not matter, since {@link #getContent()} is overridden here to return a singleton list with {@code rawVal} as single value.
+	 * set to an empty list, but it does not matter, since {@link #getContent()} is overridden here to return a singleton list with {@code rawVal} as single value.
 	 *
 	 * @param rawVal
 	 *            internal Java native value. MUST NOT be null.
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code rawVal == null}
-	 * @throws NullPointerException
-	 *             if {@code datatypeId == null}
 	 */
-	protected SimpleValue(final V rawVal) throws IllegalArgumentException, NullPointerException
+	protected SimpleValue(final V rawVal) throws IllegalArgumentException
 	{
-		assert rawVal != null;
+		Preconditions.checkArgument(rawVal != null, "Undefined raw value");
 		value = rawVal;
 	}
 
@@ -185,7 +184,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 	}
 
 	/**
-	 * Converts the internal value (accessible via {@link #getUnderlyingValue()} to a valid lexical representation for XML marshalling. Equivalent to the 'printMethod' in JAXB 'javaType' binding
+	 * Converts the internal value (accessible via {@link #getUnderlyingValue()}) to a valid lexical representation for XML marshalling. Equivalent to the 'printMethod' in JAXB 'javaType' binding
 	 * customizations. Implementations of this typically call {@link javax.xml.bind.DatatypeConverter}. This method is called by {@link #getContent()} and its result cached by the same method for later use.
 	 * Therefore, no need to cache the result in the implementation.
 	 *

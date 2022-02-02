@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -59,7 +59,7 @@ public interface UpdatableMap<K, V>
 	V putIfAbsent(K key, V value);
 
 	/**
-	 * Copies all of the mappings from the specified map to this map (optional operation). The effect of this call is equivalent to that of calling {@link #put(Object,Object) put(k, v)} on this map
+	 * Copies all the mappings from the specified map to this map (optional operation). The effect of this call is equivalent to that of calling {@link #put(Object,Object) put(k, v)} on this map
 	 * once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified map. The behavior of this operation is undefined if the specified map is modified while the operation is in
 	 * progress.
 	 *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -31,7 +31,7 @@ import org.ow2.authzforce.core.pdp.api.PdpExtension;
  * Datatype-specific Attribute Value Factory/Parser.
  * <p>
  * Note: In XACML, AttributeValues may be parsed from various sources: XACML Policy(Set), XACML Request, etc. Besides, there may be more than one possible factory/parser for a given datatype, e.g. if
- * there are different input data formats. For example, an XACML integer is represented as a XML text in XACML/XML core specification, and therefore results in a Java {@link String} with JAXB
+ * there are different input data formats. For example, an XACML integer is represented as an XML text in XACML/XML core specification, and therefore results in a Java {@link String} with JAXB
  * framework; whereas in JSON Profile, it would be a JSON number and would result in Java {@link Number} with most JSON frameworks.
  * 
  * @param <AV>

@@ -104,7 +104,7 @@ All notable changes to this project are documented in this file following the [K
 
 ### Fixed
 - IllegalArgumentException for empty XACML anyURI, i.e. `<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI" />`. XACML 3.0 spec's anyURI datatype (annex B.3) is defined by W3C XML schema specification (2004)'s anyURI datatype, itself defined by RFC 2396 and 2732 at IETF. An empty URI is valid according to RFC 2396 (section 4.2), therefore an empty AttributeValue with anyURI datatype must be parsed successfully into an empty value. (Fix to `SimpleValue` class.)  
-- AuthzForce `IntegerValue`s wrongly considered not equal if created from different Java integer types (for the same value), e.g. `1` (Integer) and `1L` (Long). (Fix to equals() implementations in `GenericInteger` subclasses.)
+- AuthzForce `IntegerValue`s wrongly considered not equal if created from different Java integer types (for the same value), e.g. `1` (Integer) and `1L` (Long). (Fix to `equals()` implementations in `GenericInteger` subclasses.)
 
 
 ## 14.0.0
@@ -120,7 +120,7 @@ All notable changes to this project are documented in this file following the [K
 - Updated authzforce-ce-parent version: 7.1.0 -> 7.2.0:
   - Changes dependency version: slf4j: 1.7.22 --> 1.7.25
   - Changes build plugin versions:
-    - OWASP dependency-check plugin: 3.0.1 -> 3.0.2 (fix blocking bug #978 on their github) 
+    - OWASP dependency-check plugin: 3.0.1 -> 3.0.2 (fix blocking bug #978 on their GitHub) 
 - Copyright end year (2018) in license headers
 - API interface/abstract class:
   - `SimpleValue.BaseFactory` abstract class: new `getSupportedInputTypes()`
@@ -129,7 +129,7 @@ they support, i.e. that they can parse to AttributeValue, in order to help imple
 `AttributeValueFactoryRegistry#newAttributeValue/AttributeBag(...)` methods
   - `AttributeValueFactoryRegistry` interface: new `newAttributeValue(Serializable)` and
 `newAttributeBag(Collection<? extends Serializable>)` methods for creating `AttributeValue`/`AttributeBag` from raw Java
-types without specifying a XACML datatype argument explicitly, but based on the input types supported by the simple AttributeValueFactories (of subtype `SimpleValue.BaseFactory`) in the registry, which info is provided by the `getSupportedInputTypes()` mentioned previously. This change contributes to the implementation of [authzforce-ce-core issue #10 on github](https://github.com/authzforce/core/issues/10).
+types without specifying a XACML datatype argument explicitly, but based on the input types supported by the simple AttributeValueFactories (of subtype `SimpleValue.BaseFactory`) in the registry, which info is provided by the `getSupportedInputTypes()` mentioned previously. This change contributes to the implementation of [authzforce-ce-core issue #10 on GitHub](https://github.com/authzforce/core/issues/10).
 - `X500NameValue` class: added constructor from X500Principal
 
 
@@ -267,7 +267,7 @@ by logback configuration (see Layout pattern 'replace' keyword in logback docume
 
 ### Removed
 - ValueExpression interface, replaced by ConstantExpression
-- Dependency on Koloboke, replaced by extension mechanism mentioned in *Added* section that would allow to switch from the default HashMap/HashSet implementation to Koloboke-based.
+- Dependency on Koloboke, replaced by extension mechanism mentioned in *Added* section that would allow switching from the default HashMap/HashSet implementation to Koloboke-based.
 
 
 ## 7.1.1
@@ -296,11 +296,11 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
 - CombiningAlg.Evaluator (Combining Algorithm evaluator interface): 
   - Return type changed to ExtendedDecision (Decision, Status, Extended Indeterminate if Decision is Indeterminate), simpler than formerly DecisionResult
   - evaluate() takes 2 extra "out" parameters: UpdatablePepActions and UpdatableApplicablePolicies used to add/return PEP actions and applicable policies collected during evaluation
-- DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow to handle 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
+- DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow handling 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
 - EvaluationContext interface: addApplicablePolicy(...) replaced by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
 - Deprecated Expression#getJAXBElement() usually used to get the original XACML from which the Expression was parsed (no longer considered useful)
 - Bag#equals() re-implemented like XACML function set-equals
-- Change implementation of unmodifidable lists to Guava ImmutableList
+- Change implementation of unmodifiable lists to Guava ImmutableList
 - Made all implementations of DecisionResult immutable
 
 
@@ -358,7 +358,7 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
 
 ## 3.6.1
 ### Added
-- Initial release on Github
+- Initial release on GitHub
 
 
 

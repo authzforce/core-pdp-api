@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -104,7 +104,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 			return new EagerMultiPrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
-				protected final BooleanValue evaluate(final Deque<AttributeValue> args) throws IndeterminateEvaluationException
+				protected BooleanValue evaluate(final Deque<AttributeValue> args) throws IndeterminateEvaluationException
 				{
 					final AttributeValue rawArg0 = args.poll();
 					final AttributeValue rawArg1 = args.poll();

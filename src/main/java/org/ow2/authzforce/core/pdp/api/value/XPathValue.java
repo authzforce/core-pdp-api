@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -86,7 +86,7 @@ public final class XPathValue extends SimpleValue<String>
 
 	/*
 	 * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType) but XPathEvaluator is not natively Serializable, therefore must be deserialized
-	 * with readObject() which cannot assign final variable. Therefore developers must make sure this is only assigned by readObject() or constructors once and for all.
+	 * with readObject() which cannot assign final variable. Therefore, developers must make sure this is only assigned by readObject() or constructors once and for all.
 	 */
 	private final transient XPathEvaluator xpathEvaluator;
 

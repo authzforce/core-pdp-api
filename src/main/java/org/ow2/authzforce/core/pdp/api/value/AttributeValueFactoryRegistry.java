@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -81,7 +81,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 *            raw value to be converted to {@link AttributeValue}
 	 * @return corresponding {@link AttributeValue} in internal model for (XACML) policy evaluation
 	 * @throws IllegalArgumentException
-	 *             if {@code rawValue} is of the right type but actual value content is not valid for the selected (best compatible available) {@link AttributeValueFactory}. For example, some
+	 *             if {@code rawValue} is of the right type but actual value content is not valid for the selected (the best compatible available) {@link AttributeValueFactory}. For example, some
 	 *             factories for numeric (e.g. integer, double) input may not support all kinds of integer (from -Infinity to +Infinity) but only in a limited range.
 	 * @throws UnsupportedOperationException
 	 *             if {@code rawValue.getClass()} is not an input type supported by any {@link AttributeValueFactory} in this registry
@@ -92,7 +92,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 * Creates an {@link AttributeBag} (bag of {@link AttributeValue}s) from collection of raw values using best compatible {@link AttributeValueFactory} available in this registry; <i>compatible</i>
 	 * means that it supports the raw value types as input types. Beware that a bag has a single (XACML) datatype, so all value types must correspond to a single (XACML) datatype. Therefore, to
 	 * prevent unexpected behavior, {@code rawVals} should all have the same concrete type. In other words, mixing different concrete Java types may cause {@code IllegalArgumentException}. For
-	 * example, do not mix Integer (likely to be mapped to XACML integer) and Double (likely to be map to XACML double).
+	 * example, do not mix Integer (likely to be mapped to XACML integer) and Double (likely to be mapped to XACML double).
 	 * 
 	 * @param rawValues
 	 *            raw values to be converted to {@link AttributeBag}
@@ -100,7 +100,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 *            attribute value source
 	 * @return corresponding {@link AttributeBag} in internal model for (XACML) policy evaluation
 	 * @throws IllegalArgumentException
-	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (best compatible available) {@link AttributeValueFactory} (for example,
+	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (the best compatible available) {@link AttributeValueFactory} (for example,
 	 *             some factories for numeric input, e.g. integer or double, may not support all kinds of integer (from -Infinity to +Infinity) but only in a limited range); or {@code rawValues} do
 	 *             not have a common type that can be mapped to a common (XACML) AttributeValue datatype, i.e. the input type mixing is not allowed by the factory.
 	 * @throws UnsupportedOperationException
@@ -115,7 +115,7 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 *            raw values to be converted to {@link AttributeBag}
 	 * @return corresponding {@link AttributeBag} in internal model for (XACML) policy evaluation
 	 * @throws IllegalArgumentException
-	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (best compatible available) {@link AttributeValueFactory} (for example,
+	 *             if one of the {@code rawValues} is of the right type but actual value content is not valid for the selected (the best compatible available) {@link AttributeValueFactory} (for example,
 	 *             some factories for numeric input, e.g. integer or double, may not support all kinds of integer (from -Infinity to +Infinity) but only in a limited range); or {@code rawValues} do
 	 *             not have a common type that can be mapped to a common (XACML) AttributeValue datatype, i.e. the input type mixing is not allowed by the factory.
 	 * @throws UnsupportedOperationException

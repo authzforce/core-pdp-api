@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -69,16 +69,19 @@ public interface PdpEngine
 	 * 
 	 * @param requests
 	 *            Individual Decision Requests (see Multiple Decision Profile of XACML for the concept of "Individual Decision Request")
+	 * @param mdpContext
+	 * 	 the context of the Multiple Decision request that the {@code requests} belong to, i.e. may be used to reuse common variables/attributes to all its individual decision requests.
+	 * 	for any request in {code requests}, {@code request.getCreationTimestamp()} must match {@code mdpContext.getCreationTimestamp()}
 	 * @return decision request-result pairs
 	 * @throws IndeterminateEvaluationException
-	 *             error occurred preventing any request evaluation. (This error is not specific to a particular decision request. Such request-specific error results in a Indeterminate decision
+	 *             error occurred preventing any request evaluation. (This error is not specific to a particular decision request. Such request-specific error results in an Indeterminate decision
 	 *             result with error cause available via {@link DecisionResult#getCauseForIndeterminate()})
 	 */
-	<INDIVIDUAL_DECISION_REQ_T extends DecisionRequest> Collection<Entry<INDIVIDUAL_DECISION_REQ_T, ? extends DecisionResult>> evaluate(List<INDIVIDUAL_DECISION_REQ_T> requests)
+	<INDIVIDUAL_DECISION_REQ_T extends DecisionRequest> Collection<Entry<INDIVIDUAL_DECISION_REQ_T, ? extends DecisionResult>> evaluate(List<INDIVIDUAL_DECISION_REQ_T> requests, EvaluationContext mdpContext)
 			throws IndeterminateEvaluationException;
 
 	/**
-	 * Get the PDP engine's root policy and policies referenced - directly or indirectly - from the root policy, independent from the evaluation context, i.e. assuming all are statically resolved
+	 * Get the PDP engine's root policy and policies referenced - directly or indirectly - from the root policy, independent of the evaluation context, i.e. assuming all are statically resolved
 	 *
 	 * @return the root - always in first position - and referenced policies; null if any of these policies is not statically resolved (once and for all)
 	 */

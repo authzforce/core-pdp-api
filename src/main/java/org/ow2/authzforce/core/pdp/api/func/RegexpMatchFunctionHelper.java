@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -84,7 +84,7 @@ public final class RegexpMatchFunctionHelper
 		}
 
 		@Override
-		public BooleanValue evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public BooleanValue evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final SimpleValue<String> arg1;
 			if (argExpressionsAfterRegex.isEmpty())
@@ -103,7 +103,7 @@ public final class RegexpMatchFunctionHelper
 			{
 				try
 				{
-					arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, matchedValType);
+					arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, mdpContext, matchedValType);
 				}
 				catch (final IndeterminateEvaluationException e)
 				{

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -18,18 +18,16 @@
 package org.ow2.authzforce.core.pdp.api.io;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 import java.util.Map.Entry;
 
-import org.ow2.authzforce.core.pdp.api.CloseablePdpEngine;
-import org.ow2.authzforce.core.pdp.api.DecisionRequest;
-import org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor;
-import org.ow2.authzforce.core.pdp.api.DecisionResult;
-import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import net.sf.saxon.s9api.XdmNode;
+import org.ow2.authzforce.core.pdp.api.*;
+import org.ow2.authzforce.core.pdp.api.expression.AttributeSelectorExpression;
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
+import org.ow2.authzforce.core.pdp.api.value.*;
+import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +52,35 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BasePdpEngineAdapter.class);
 	private static final IllegalArgumentException ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException("No input Decision Request");
+
+	private static final class MdpEvaluationContext extends BaseEvaluationContext {
+
+		private static final UnsupportedOperationException UNSUPPORTED_OPERATION_EXCEPTION = new UnsupportedOperationException("Operation not supported on this MDP EvaluationContext");
+
+		private MdpEvaluationContext(Instant creationTimestamp, boolean isApplicablePolicyIdListRequested)
+		{
+			super(Map.of(), isApplicablePolicyIdListRequested, Optional.of(creationTimestamp));
+		}
+
+		@Override
+		public <AV extends AttributeValue> Bag<AV> getAttributeSelectorResult(AttributeSelectorExpression<AV> attributeSelector) throws IndeterminateEvaluationException
+		{
+			throw UNSUPPORTED_OPERATION_EXCEPTION;
+		}
+
+		@Override
+		public <AV extends AttributeValue> boolean putAttributeSelectorResultIfAbsent(AttributeSelectorExpression<AV> attributeSelector, Bag<AV> result) throws IndeterminateEvaluationException
+		{
+			throw UNSUPPORTED_OPERATION_EXCEPTION;
+		}
+
+		@Override
+		public XdmNode getAttributesContent(String category)
+		{
+			throw UNSUPPORTED_OPERATION_EXCEPTION;
+		}
+	}
+
 	private final CloseablePdpEngine adaptee;
 	private final DecisionRequestPreprocessor<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_INPUT_DECISION_REQUEST> reqPreproc;
 	private final DecisionResultPostprocessor<ADAPTEE_INPUT_DECISION_REQUEST, ADAPTER_OUTPUT_DECISION_RESULT> resultPostproc;
@@ -89,9 +116,9 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 	}
 
 	/**
-	 * Evaluates a XML/JAXB-based XACML decision request
+	 * Evaluates an XML/JAXB-based XACML decision request
 	 * <p>
-	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc), then the result will be a decision of INDETERMINATE.
+	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc.), then the result will be a decision of INDETERMINATE.
 	 * 
 	 * @param request
 	 *            the request to evaluate
@@ -122,15 +149,31 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 			return this.resultPostproc.processClientError(e);
 		}
 
-		final Collection<Entry<ADAPTEE_INPUT_DECISION_REQUEST, ? extends DecisionResult>> resultsByRequest;
-		try
-		{
-			resultsByRequest = this.adaptee.evaluate(individualDecisionRequests);
+		if(individualDecisionRequests.isEmpty()) {
+			LOGGER.info("No Individual Decision request returned by the request preprocessor {}", this.reqPreproc);
+			return this.resultPostproc.processInternalError(new IndeterminateEvaluationException("No Individual Decision request to process", XacmlStatusCode.PROCESSING_ERROR.value()));
 		}
-		catch (final IndeterminateEvaluationException e)
+
+		// individualDecisionRequests non empty
+		final ADAPTEE_INPUT_DECISION_REQUEST req0 = individualDecisionRequests.get(0);
+		final Collection<Entry<ADAPTEE_INPUT_DECISION_REQUEST, ? extends DecisionResult>> resultsByRequest;
+		if(individualDecisionRequests.size() == 1) {
+			final DecisionResult result = this.adaptee.evaluate(req0);
+			final Entry<ADAPTEE_INPUT_DECISION_REQUEST, ? extends DecisionResult> entry = new AbstractMap.SimpleImmutableEntry<>(req0, result);
+			resultsByRequest = Collections.singleton(entry);
+		} else
 		{
-			LOGGER.info("Error preventing any individual decision request evaluation", e);
-			return this.resultPostproc.processInternalError(e);
+			// Multiple Decision Profile
+			// All individualDecisionRequests expected to have same creation timestamp for consistency with the Multiple Decision request
+			final EvaluationContext mdpCtx = new MdpEvaluationContext(req0.getCreationTimestamp(), req0.isApplicablePolicyIdListReturned());
+			try
+			{
+				resultsByRequest = this.adaptee.evaluate(individualDecisionRequests, mdpCtx);
+			} catch (final IndeterminateEvaluationException e)
+			{
+				LOGGER.info("Individual decision request evaluation error", e);
+				return this.resultPostproc.processInternalError(e);
+			}
 		}
 
 		return this.resultPostproc.process(resultsByRequest);

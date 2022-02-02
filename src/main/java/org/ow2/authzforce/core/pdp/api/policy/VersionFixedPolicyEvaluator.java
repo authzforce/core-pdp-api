@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package org.ow2.authzforce.core.pdp.api.policy;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+
+import java.util.Optional;
 
 /**
  * Common interface to {@link StaticPolicyEvaluator} and {@link TopLevelPolicyElementEvaluator} for evaluators of policies with a fixed version (e.g. not dynamic policy references with version match
@@ -38,7 +37,7 @@ public interface VersionFixedPolicyEvaluator extends PolicyEvaluator
 	PolicyVersion getPolicyVersion();
 
 	@Override
-	default PolicyVersion getPolicyVersion(final EvaluationContext evaluationCtx) throws IndeterminateEvaluationException
+	default PolicyVersion getPolicyVersion(final EvaluationContext evaluationCtx, final Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException
 	{
 		return getPolicyVersion();
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -149,7 +149,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 		inputClassToAttValFactory = HashCollections.newImmutableMap(mutableJavaClassToAttValFactory);
 		/*
 		 * Using inputClassToAttValFactory.get(instanceClass) to get the corresponding factory is faster that doing many instanceOf checks but only works for equal match. For non-final classes, we
-		 * still have to do the instanceOf check because the instance class might not be equal (i.e same class) but a subclass. So we gather the non-final classes for which instanceOf check is
+		 * still have to do the instanceOf check because the instance class might not be equal (i.e. same class) but a subclass. So we gather the non-final classes for which instanceOf check is
 		 * necessary iff no equal match.
 		 */
 		final Set<Entry<Class<? extends Serializable>, StringParseableValue.Factory<?>>> mutableSet = inputClassToAttValFactory.entrySet().stream()
@@ -183,7 +183,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 		if (attValFactoryFromMap == null)
 		{
 			/*
-			 * This may look like the collection is fully filtered before findfirst() is called but it is not the case. "All intermediate operations e.g. filter(), map() etc are lazy and they are only
+			 * This may look like the collection is fully filtered before findfirst() is called, but it is not the case. "All intermediate operations e.g. filter(), map(), etc. are lazy, and they are only
 			 * executed when a terminal operation like findFirst() or forEach() is called.
 			 * 
 			 * This also means, a lot of opportunity for optimization depending upon the size of the original list." (Quote from:

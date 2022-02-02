@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -67,7 +67,6 @@ public abstract class BasePdpExtensionRegistry<T extends PdpExtension> implement
 		return HashCollections.newImmutableSet(extensionsById.values());
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <E extends PdpExtension> Map<String, E> newImmutableMap(final Set<E> extensions)
 	{
 		return extensions.stream().collect(Collectors.toUnmodifiableMap(ext -> {assert ext != null; return Preconditions.checkNotNull(ext, "One of the input extensions is invalid (null)").getId();}, Function.identity()));

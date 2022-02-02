@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -34,7 +35,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Manages context for the policy evaluation of a given authorization decision request. Typically, an instance of this is instantiated whenever the PDP gets a request and needs to perform an
- * evaluation to a authorization decision. Such a context is used and possibly updated all along the evaluation of the request.
+ * evaluation to an authorization decision. Such a context is used and possibly updated all along the evaluation of the request.
  * 
  */
 public interface EvaluationContext
@@ -48,7 +49,7 @@ public interface EvaluationContext
 	{
 
 		/**
-		 * To be called when {@link EvaluationContext#putNamedAttributeValueIfAbsent(AttributeFqn, AttributeBag)} is called iff the value was not available in the context yet (i.e. first time it is
+		 * To be called when {@link EvaluationContext#putNamedAttributeValue(AttributeFqn, AttributeBag, boolean)} is called iff the value was not available in the context yet (i.e. first time it is
 		 * produced in the request context)
 		 * 
 		 * @param attributeFQN
@@ -93,6 +94,13 @@ public interface EvaluationContext
 	}
 
 	/**
+	 * Returns the date/time when this evaluation context was created. May be used to set one of XACML current-* attributes.
+	 *
+	 * @return the context creation timestamp
+	 */
+	Instant getCreationTimestamp();
+
+	/**
 	 * Returns the value of a named attribute available in the request context. Used to evaluate {@link AttributeDesignatorExpression}, ContextSelectorId of {@link AttributeSelectorExpression}, or to
 	 * get values of attributes on which {@link NamedAttributeProvider}s depends to resolve their own attributes (e.g. some module may need attribute X, such as a subject ID, as input to resolve
 	 * attribute Y from an external source, such as subject role from a user database).
@@ -127,9 +135,11 @@ public interface EvaluationContext
 	 *            attribute's global ID
 	 * @param result
 	 *            attribute values
-	 * @return false iff there is already a matching value in this context (this operation did NOT succeed)
+	 * @param override
+	 *  if and only if true, override the existing value if there is any (e.g. current-date/time attribute provider may be allowed to override any value from the request context)
+	 * @return false iff there is already a matching value in this context
 	 */
-	boolean putNamedAttributeValueIfAbsent(AttributeFqn attributeFQN, AttributeBag<?> result);
+	boolean putNamedAttributeValue(AttributeFqn attributeFQN, AttributeBag<?> result, boolean override);
 
 	/**
 	 * Returns available context evaluation result for a given AttributeSelector. This feature is optional. Any implementation that does not implement this method may throw
@@ -163,7 +173,7 @@ public interface EvaluationContext
 	 * Returns the {@literal <Content>} of the {@literal <Attributes>} identified by a given category, to be used for AttributeSelector evaluation.
 	 * 
 	 * @param category
-	 *            category of the Attributes element from which to get the Content.
+	 *            category of the {@literal <Attributes>} element from which to get the Content.
 	 * 
 	 * @return the resulting Content node, or null if none in the request Attributes category
 	 */
@@ -271,5 +281,4 @@ public interface EvaluationContext
 	 * @return the listener associated with this class, or null if no entry for this class is present
 	 */
 	<L extends Listener> L getListener(Class<L> listenerType);
-
 }

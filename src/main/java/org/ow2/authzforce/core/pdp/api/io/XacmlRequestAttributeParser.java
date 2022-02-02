@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,7 +32,7 @@ import org.ow2.authzforce.xacml.identifiers.XacmlAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XacmlResourceScope;
 
 /**
- * XACML Request Attribute parser that is aware of all named attributes parsed in the request. This kind of parser has side-effect as it modifies/updates a map of attributes that can be passed to the
+ * XACML Request Attribute parser that is aware of all named attributes parsed in the request. This kind of parser has side effects as it modifies/updates a map of attributes that can be passed to the
  * parser from one call to another, for parsing a whole set of request attributes.
  * 
  * @param <INPUT_ATTRIBUTE>

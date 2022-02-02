@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -14,9 +14,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/**
- * 
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
@@ -45,7 +42,7 @@ public interface PolicyRefsMetadata
 	Set<PrimaryPolicyMetadata> getRefPolicies();
 
 	/**
-	 * Get longest chain of Policy reference (via Policy(Set)IdReference) starting from the policy which these are metadata of, in order to limit the length of such chain. Note that in the current
+	 * Get the longest chain of Policy reference (via Policy(Set)IdReference) starting from the policy which these are metadata of, in order to limit the length of such chain. Note that in the current
 	 * XACML 3.0 model, it is safe to ignore Policy elements; since they cannot have references. However, we consider that Policy and PolicySet types could be merged into one Policy type on the
 	 * long-term. That's why we define this method at the interface level on top of both Policy and PolicySet evaluator classes. Indeed, this interface represents the common behavior of the two.
 	 * 
