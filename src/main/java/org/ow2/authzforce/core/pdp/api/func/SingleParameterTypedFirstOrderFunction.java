@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -24,7 +24,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * Superclass of "first-order" functions of single-type parameters, i.e. whose all parameters have the same datatype. Supplies several useful methods, making it easier to implement such "first-order"
+ * Superclass of "first-order" functions of single-type parameters, i.e. all parameters have the same datatype. Supplies several useful methods, making it easier to implement such "first-order"
  * function.
  * 
  * @param <RETURN_T>
@@ -46,7 +46,7 @@ public abstract class SingleParameterTypedFirstOrderFunction<RETURN_T extends Va
 	 * @param varargs
 	 *            true iff the function takes a variable number of arguments (like Java {@link Method#isVarArgs()}
 	 * @param parameterTypes
-	 *            function parameter types. Note: the "? extends" allows to use {@link org.ow2.authzforce.core.pdp.api.value.BagDatatype}.
+	 *            function parameter types. Note: the "? extends" allows using {@link org.ow2.authzforce.core.pdp.api.value.BagDatatype}.
 	 * @throws IllegalArgumentException
 	 *             if ( {@code name == null || returnType == null || parameterTypes == null || parameterTypes.size() < 1 })
 	 * 

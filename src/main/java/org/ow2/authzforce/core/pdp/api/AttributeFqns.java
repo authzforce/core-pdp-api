@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -30,7 +30,6 @@ public final class AttributeFqns
 {
 	private static final IllegalArgumentException NULL_ID_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined AttributeId");
 	private static final IllegalArgumentException NULL_CATEGORY_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute category");
-	private static final IllegalArgumentException NULL_ISSUER_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined Attribute Issuer argument (as Optional)");
 
 	private AttributeFqns()
 	{
@@ -223,6 +222,7 @@ public final class AttributeFqns
 		@Override
 		protected int compareIssuers(final Optional<String> otherIssuer)
 		{
+			assert this.alwaysPresentIssuer.isPresent();
 			return otherIssuer.map(s -> this.alwaysPresentIssuer.get().compareTo(s)).orElse(1);
 		}
 
@@ -248,10 +248,7 @@ public final class AttributeFqns
 			throw NULL_CATEGORY_ARGUMENT_EXCEPTION;
 		}
 
-		if (attributeIssuer == null)
-		{
-			throw NULL_ISSUER_ARGUMENT_EXCEPTION;
-		}
+		assert attributeIssuer != null;
 
 		if (attributeId == null)
 		{

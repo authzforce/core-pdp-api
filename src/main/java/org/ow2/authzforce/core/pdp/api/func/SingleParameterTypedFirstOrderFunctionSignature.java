@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -27,7 +27,7 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
- * First-order function signature whose every parameters has the same datatype
+ * First-order function signature having every parameter of the same datatype
  * 
  * @param <RETURN>
  *            function's return type
@@ -49,7 +49,7 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 	 * @param returnType
 	 *            function's return type
 	 * @param parameterTypes
-	 *            function parameter types. Note: the "? extends" allows to use {@link BagDatatype} as parameterType
+	 *            function parameter types. Note: the "? extends" allows using {@link BagDatatype} as parameterType
 	 * @param varArgs
 	 *            true iff the function takes a variable number of arguments (like Java {@link Method#isVarArgs()}, i.e. the final type in <code>paramTypes</code> can be repeated 0 or more times to
 	 *            match a variable-length argument

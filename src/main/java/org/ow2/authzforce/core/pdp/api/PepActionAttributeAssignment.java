@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -66,7 +66,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
-	 * @return the attribute Id
+	 * @return the attribute ID
 	 */
 	public String getAttributeId()
 	{

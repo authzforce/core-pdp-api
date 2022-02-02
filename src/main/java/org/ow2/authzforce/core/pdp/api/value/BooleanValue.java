@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -21,7 +21,7 @@ package org.ow2.authzforce.core.pdp.api.value;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * Representation of an xs:boolean value. This class supports parsing xs:boolean values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java
+ * Representation of a xs:boolean value. This class supports parsing xs:boolean values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java
  * type boolean is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
  *
  * 
@@ -111,7 +111,7 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	}
 
 	/**
-	 * Get BooleanAttributeValue.TRUE (resp. FALSE) instance if <code>b</code> (resp. if ! <code>b</code>)
+	 * Get {@link #TRUE} (resp. {@link #FALSE} ) instance if <code>b</code> (resp. if ! <code>b</code>)
 	 *
 	 * @param b
 	 *            boolean input

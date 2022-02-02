@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -22,7 +22,7 @@ import java.util.Deque;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * Representation of an xs:double value. This class supports parsing xs:double values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java type
+ * Representation of a xs:double value. This class supports parsing xs:double values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java type
  * Double is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
  *
  * 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -59,7 +59,7 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue>
 			return new EagerSinglePrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)
 			{
 				@Override
-				protected final BooleanValue evaluate(final Deque<PARAM_T> args)
+				protected BooleanValue evaluate(final Deque<PARAM_T> args)
 				{
 					return BooleanValue.valueOf(matcher.match(args.poll(), args.poll()));
 				}

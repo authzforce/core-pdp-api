@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -23,7 +23,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
- * Representation of an xs:date value. This class supports parsing xs:date values. All objects of this class are immutable and thread-safe.
+ * Representation of a xs:date value. This class supports parsing xs:date values. All objects of this class are immutable and thread-safe.
  *
  * 
  * @version $Id: $
@@ -47,7 +47,7 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 * Creates instance from Calendar
 	 * 
 	 * @param date
-	 *            date (all time fields assumed unset)
+	 *            date (all time fields assumed unset).
 	 * @throws IllegalArgumentException
 	 *             if {@code date == null}
 	 */
@@ -60,8 +60,8 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	 * Creates a new <code>DateAttributeValue</code> from a Calendar
 	 *
 	 * @param calendar
-	 *            a <code>XMLGregorianCalendar</code> object representing the specified date; beware that this method modifies {@code calendar} by unsetting all time fields:
-	 *            {@code calendar.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED)}
+	 *            a <code>XMLGregorianCalendar</code> object representing the specified date; beware this method creates an internal copy of {@code calendar} (to prevent modification of {@code calendar} and any external modification of the created instance's internal copy) before unsetting all time fields:
+	 *            {@code calendarCopy.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED)}
 	 * @return new instance
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code calendar == null}
@@ -69,8 +69,10 @@ public final class DateValue extends BaseTimeValue<DateValue>
 	public static DateValue getInstance(final XMLGregorianCalendar calendar) throws IllegalArgumentException
 	{
 		// we only want the date, so unset time fields
-		calendar.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
-		return new DateValue(calendar);
+		// Make a defensive copy first to avoid modifying the original argument and being modified externally
+		final XMLGregorianCalendar copy = (XMLGregorianCalendar) calendar.clone();
+		copy.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
+		return new DateValue(copy);
 	}
 
 	/** {@inheritDoc} */

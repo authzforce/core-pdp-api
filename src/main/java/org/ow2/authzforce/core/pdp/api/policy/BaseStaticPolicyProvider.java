@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -63,7 +63,7 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 	protected abstract StaticTopLevelPolicyElementEvaluator getPolicy(String policyIdRef, Optional<PolicyVersionPatterns> constraints) throws IndeterminateEvaluationException;
 
 	/**
-	 * Resolve reference to PolicySet, e.g. PolicySetIdReference. This may involve using the reference as indexing data to lookup a policy.
+	 * Resolve reference to PolicySet, e.g. PolicySetIdReference. This may involve using the reference as indexing data to look up a policy.
 	 * 
 	 * @param policyIdRef
 	 *            the target PolicySetId
@@ -80,7 +80,7 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
 	 *            </p>
 	 *            <p>
-	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
+	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".
 	 * @param constraints
 	 *            any optional constraints on the version of the target policy, matched against its Version attribute
 	 * @param policySetRefChainWithPolicyIdRef
@@ -115,7 +115,7 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 
 	@Override
 	public final StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
-	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx, final Optional<EvaluationContext> mdpCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
 	}

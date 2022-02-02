@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -97,7 +97,10 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 		final Function<?> inputFunc;
 		if (input0 instanceof FunctionExpression)
 		{
-			inputFunc = ((FunctionExpression) input0).getValue().get();
+			final Optional<Function> optFunc = ((FunctionExpression) input0).getValue();
+			// the Value in FunctionExpression should always be set to the actual Function
+			assert optFunc.isPresent();
+			inputFunc = optFunc.get();
 		}
 		else if (input0 instanceof VariableReference)
 		{
@@ -161,7 +164,7 @@ public abstract class HigherOrderBagFunction<RETURN_T extends Value, SUB_RETURN_
 	 * </p>
 	 *
 	 * @param numInputs
-	 *            a int.
+	 *            an int.
 	 */
 	protected abstract void checkNumberOfArgs(int numInputs);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,25 +17,20 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import java.io.Closeable;
-import java.util.Deque;
-
-import org.ow2.authzforce.core.pdp.api.NamedAttributeProvider;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
-
 import net.sf.saxon.s9api.XPathCompiler;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.VariableDefinition;
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.core.pdp.api.value.Datatype;
+
+import java.util.Deque;
 
 /**
  * Expression factory for parsing XACML {@link ExpressionType}s in policies: AttributeDesignator, AttributeSelector, Apply, etc.
- * <p>
- * Extends {@link Closeable} because it may use {@link NamedAttributeProvider}s (implement {@link Closeable}) to resolve AttributeDesignators for attributes not provided in the request.
  */
-public interface ExpressionFactory extends Closeable
+public interface ExpressionFactory
 {
 
 	/**

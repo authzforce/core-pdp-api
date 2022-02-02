@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -117,7 +117,7 @@ public interface DecisionRequestPreprocessor<INPUT_DECISION_REQUEST, OUTPUT_INDI
 		 * @param xmlProcessor
 		 *            XML processor for parsing Attributes/Content prior to XPATH evaluation (e.g. AttributeSelectors). May be null if {@code requireContentForXPath} is false.
 		 * @param extraPdpEngineFeatures
-		 *            extra - not mandatory per XACML 3.0 core specification - features supported by the PDP engine. If a decision request requests any such non-mandatory feature (e.g.
+		 *            extra - not mandatory per XACML 3.0 core specification - features supported by the PDP engine. If a decision request uses any such non-mandatory feature (e.g.
 		 *            CombinedDecision=true in XACML), the request preprocessor should use this argument to check whether it is supported by the PDP before processing the request further. See
 		 *            {@link org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor.Features} for example.
 		 * @return instance of Request preprocessor

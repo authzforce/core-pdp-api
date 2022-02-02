@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 
 /**
  * The base type for all primitive/non-bag attribute values used in a policy or request/response. It is similar to {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType} except it is
- * turned into an interface for more flexibility and it is not JAXB-annotated. Yet, it is designed to be mappable to an {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType}. Values
- * of all standard XACML primitive datatypes extend this. Contrary to {@link PrimitiveValue}, this does not represent Functions which are not attribute values. If you want to provide a new type of
+ * turned into an interface for more flexibility, and it is not JAXB-annotated. Yet, it is designed to be mappable to an {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType}. Values
+ * of all standard XACML primitive data-types extend this. Contrary to {@link PrimitiveValue}, this does not represent Functions which are not attribute values. If you want to provide a new type of
  * AttributeValue, i.e. new datatype, extend {@link AttributeValueFactory} to provide a factory for it.
  * 
  * <b>All implementations must implement/override {@link #equals(Object)} and {@link #hashCode()} properly.</b>
@@ -35,7 +35,7 @@ public interface AttributeValue extends PrimitiveValue
 {
 
 	/**
-	 * Get the value content as specified by {@link javax.xml.bind.annotation.XmlMixed}, i.e. a list, each item of which may be a String, a {@link javax.xml.bind.JAXBElement}, a instance of a class
+	 * Get the value content as specified by {@link javax.xml.bind.annotation.XmlMixed}, i.e. a list, each item of which may be a String, a {@link javax.xml.bind.JAXBElement}, an instance of a class
 	 * annotated with @XmlRootElement, or a {@link org.w3c.dom.Element}. In addition, in the two latter cases, the item must also be {@link Serializable}.
 	 * 
 	 * @return (possibly mixed) content; <b>not null</b> (must be empty if no content)

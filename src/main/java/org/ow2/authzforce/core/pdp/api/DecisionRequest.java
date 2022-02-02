@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.time.Instant;
 import java.util.Map;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -38,6 +39,12 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
  */
 public interface DecisionRequest
 {
+	/**
+	 * Returns the request object creation timestamp. May be used to set one of XACML current-* attributes.
+	 *
+	 * @return this object creation timestamp
+	 */
+	Instant getCreationTimestamp();
 
 	/**
 	 * Get named attributes by name

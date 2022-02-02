@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -258,7 +258,7 @@ public final class Bags
 
 	/**
 	 * Creates instance of immutable empty attribute bag containing val and only val value with given exception as reason for bag being empty (no attribute value), e.g. error occurred during
-	 * evaluation,
+	 * evaluation
 	 * 
 	 * @param elementDatatype
 	 *            bag element datatype

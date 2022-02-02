@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -187,14 +187,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			final Optional<IndeterminateEvaluationException> otherCause = other.getCauseForIndeterminate();
-			if (otherCause.isEmpty())
-			{
-				return false;
-			}
-
-			// cause initialized != null
-			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.get().equals(otherCause.get());
+			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.equals(other.getCauseForIndeterminate());
 		}
 
 		/** {@inheritDoc} */
@@ -204,7 +197,7 @@ public final class ExtendedDecisions
 			if (toString == null)
 			{
 				// cause initialized != null
-				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + cause.get().getTopLevelStatus() + " )";
+				toString = "ExtendedDecision( decision= Indeterminate, extendedIndeterminate= " + extIndeterminate + ", status= " + cause.map(IndeterminateEvaluationException::getTopLevelStatus).orElse(null) + " )";
 			}
 			return toString;
 		}
@@ -218,7 +211,7 @@ public final class ExtendedDecisions
 		@Override
 		public Status getStatus()
 		{
-			return this.cause.get().getTopLevelStatus();
+			return this.cause.map(IndeterminateEvaluationException::getTopLevelStatus).orElse(null);
 		}
 
 		@Override
@@ -388,7 +381,7 @@ public final class ExtendedDecisions
 	}
 
 	/**
-	 * Instantiates a Indeterminate Decision result with a given summary error info (status) and optional stacktrace (cause
+	 * Instantiates an Indeterminate Decision result with a given summary error info (status) and optional stacktrace (cause
 	 *
 	 * @param extendedIndeterminate
 	 *            (required) Extended Indeterminate value (XACML 3.0 Core, section 7.10). We use the following convention:

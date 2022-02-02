@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,7 +32,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 {
 
 	/**
-	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to look up a policy.
 	 * 
 	 * @param policyId
 	 *            the requested Policy(Set)Id
@@ -49,7 +49,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
 	 *            </p>
 	 *            <p>
-	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
+	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".
 	 * @param policyType
 	 *            type of requested policy element (Policy or PolicySet)
 	 * @param versionConstraints
@@ -74,7 +74,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 
 	@Override
 	default StaticTopLevelPolicyElementEvaluator get(final TopLevelPolicyElementType policyType, final String policyId, final Optional<PolicyVersionPatterns> policyVersionConstraints,
-	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx) throws IllegalArgumentException, IndeterminateEvaluationException
+	        final Deque<String> policySetRefChain, final EvaluationContext evaluationCtx, final Optional<EvaluationContext> mdpCtx) throws IllegalArgumentException, IndeterminateEvaluationException
 	{
 		return get(policyType, policyId, policyVersionConstraints, policySetRefChain);
 	}

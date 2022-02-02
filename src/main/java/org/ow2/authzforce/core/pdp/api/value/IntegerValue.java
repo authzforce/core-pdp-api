@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * Representation of an xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.
+ * Representation of a xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.
  *
  * 
  * @version $Id: $
@@ -207,11 +207,10 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	 *
 	 * Converts this value to an int, checking for lost information. If the value of this BigInteger is out of the range of the int type, then an ArithmeticException is thrown.
 	 * 
-	 * @see <a href="https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow">The CERT Oracle Secure Coding Standard for Java - NUM00-J. Detect or prevent
-	 *      integer overflow</a>
+	 * @see <a href="https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow">The CERT Oracle Secure Coding Standard for Java - NUM00-J. Detect or prevent integer overflow</a>
 	 * @return this converted to an int
 	 * @throws java.lang.ArithmeticException
-	 *             if the value of this will not exactly fit in a int.
+	 *             if the value of this will not exactly fit in an int.
 	 */
 	public int intValueExact() throws ArithmeticException
 	{

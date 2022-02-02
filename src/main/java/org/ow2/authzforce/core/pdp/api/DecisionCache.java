@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -88,7 +88,7 @@ public interface DecisionCache extends Closeable
 	 * 
 	 * @param requests
 	 *            individual decision request(s)
-	 * @return a map where each entry key is an request from {@code requests}, and the value is the corresponding decision result from cache. If there is no such result in cache, the key must not be
+	 * @return a map where each entry key is a request from {@code requests}, and the value is the corresponding decision result from cache. If there is no such result in cache, the key must not be
 	 *         present in the map. In other words, each request in {@code requests} must be a key in the Map returned, except if there is no corresponding result in cache. Therefore, there must not be
 	 *         any null key/value in the map.
 	 */

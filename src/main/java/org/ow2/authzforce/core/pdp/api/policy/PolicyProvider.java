@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -58,7 +58,7 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 * @param policyRefChain1
 	 *            mandatory/non-null first part of the joined chain
 	 * @param policyRefChain2
-	 *            chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getPolicyRefsMetadata(EvaluationContext)}
+	 *            chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getPolicyRefsMetadata(EvaluationContext, Optional)}
 	 *            (#getLongestPolicyRefChain) to create the joined chain
 	 * @return new joined chain that is {@code policyRefChain1} if {@code policyRefChain2 == null || policyRefChain2.isEmpty()}, else {@code policyRefChain2} appended to {@code policyRefChain1}
 	 * @param maxPolicyRefDepth
@@ -121,7 +121,7 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 * @param policyRefChain1
 	 *            mandatory/non-null first part of the joined chain
 	 * @param policyRefChain2
-	 *            chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getPolicyRefsMetadata(EvaluationContext)}
+	 *            chain (list of policy identifiers) to append to {@code policyRefChain1} (typically a result of {@link PolicyEvaluator#getPolicyRefsMetadata(EvaluationContext, Optional)}
 	 *            (#getLongestPolicyRefChain) to create the joined chain
 	 * @return new joined chain that is {@code policyRefChain1} if {@code policyRefChain2 == null || policyRefChain2.isEmpty()}, else {@code policyRefChain2} appended to {@code policyRefChain1}
 	 * @throws IllegalArgumentException
@@ -131,7 +131,7 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	Deque<String> joinPolicyRefChains(final Deque<String> policyRefChain1, final List<String> policyRefChain2) throws IllegalArgumentException;
 
 	/**
-	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to lookup a policy.
+	 * Finds a policy based on an ID reference. This may involve using the reference as indexing data to look up a policy.
 	 * 
 	 * @param policyId
 	 *            the identifier used to resolve the policy by its Policy(Set)Id
@@ -148,7 +148,7 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
 	 *            </p>
 	 *            <p>
-	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor.
+	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".
 	 * @param policyType
 	 *            type of policy element requested (policy or policySet)
 	 * @param policyVersionConstraints
@@ -164,26 +164,27 @@ public interface PolicyProvider<PE extends TopLevelPolicyElementEvaluator>
 	 *            (Do not use a Queue for {@code policySetRefChain} as it is FIFO, and we need LIFO and iteration in order of insertion, so different from Collections.asLifoQueue(Deque) as well.)
 	 *            </p>
 	 * @param evaluationCtx
-	 *            evaluation context; the policy may be resolved dynamically for each evaluation request. Still, the implementation must guarantee that the same reference (same {@code refPolicyType},
+	 *            Individual Decision evaluation context; the policy may be resolved dynamically for each evaluation request. Still, the implementation must guarantee that the same reference (same {@code refPolicyType},
 	 *            {@code policyIdRef}, {@code constraints} arguments) always resolves to the same policy in the same evaluation context (for the same request) to preserve evaluation consistency.
 	 *            Therefore, it is recommended that the implementation caches the resolved policy matching given Policy(Set)IdReference parameters (policy type, ID, version constraints) in the request
 	 *            context {@code evaluationCtx} once and for all using {@link EvaluationContext#putOther(String, Object)}, and retrieves it in the same context using
 	 *            {@link EvaluationContext#getOther(String)} if necessary.
-	 * 
+	 * @param mdpContext
+	 * 	 the context of the Multiple Decision request that the {@code evaluationCtx} belongs to if the Multiple Decision Profile is used.
 	 * @return the policy matching the policy reference; or null if no match
 	 * @throws IllegalArgumentException
 	 *             The resolved policy is invalid. The policy Provider module may parse policies lazily or on the fly, i.e. only when the policy is requested/looked for.
 	 * @throws IndeterminateEvaluationException
 	 *             if error determining a matching policy of type {@code policyType}
 	 */
-	PE get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx)
+	PE get(TopLevelPolicyElementType policyType, String policyId, Optional<PolicyVersionPatterns> policyVersionConstraints, Deque<String> policySetRefChain, EvaluationContext evaluationCtx, Optional<EvaluationContext> mdpContext)
 	        throws IllegalArgumentException, IndeterminateEvaluationException;
 
 	/**
 	 * Returns the policy that may be used by the PDP as root of evaluation, if any defined/identified by this Policy Provider. For example, if the policy repository is made of one and only one static
 	 * policy document, this is obviously the one possible candidate for root policy to be returned by this method.
 	 * 
-	 * @return (metadata of) the candidate root policy. The {@link #get(TopLevelPolicyElementType, String, Optional, Deque, EvaluationContext)} method can then be used to retrieve the actual policy
+	 * @return (metadata of) the candidate root policy. The {@link #get(TopLevelPolicyElementType, String, Optional, Deque, EvaluationContext, Optional)} method can then be used to retrieve the actual policy
 	 *         evaluator for evaluation.
 	 */
 	default Optional<PrimaryPolicyMetadata> getCandidateRootPolicy()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -51,7 +51,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	// cached hashCode() result
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
-	protected PolicyVersion(final String version, final List<Integer> numbers)
+	PolicyVersion(final String version, final List<Integer> numbers)
 	{
 		assert version != null;
 		this.numbers = Collections.unmodifiableList(numbers);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -137,7 +137,7 @@ public final class XmlUtils
 
     /**
      * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
-     * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI so we need this map to map the URI to the XPath compiler
+     * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
      *
      * @param xpathVersionURI       XPath version URI, e.g. "http://www.w3.org/TR/1999/REC-xpath-19991116"
      * @param namespaceURIsByPrefix namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
@@ -355,7 +355,7 @@ public final class XmlUtils
     }
 
     /**
-     * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix mappings is returned). Therefore it can be
+     * This is a bare implementation of namespace-filtering parser, i.e. the result {@link #getNamespacePrefixUriMap()} is always empty (no namespace-prefix mappings is returned). Therefore, it can be
      * used as a convenient replacement for {@link SAXBasedXmlnsFilteringParser} when no namespace-filtering is actually required but still a parser compliant with {@link XmlnsFilteringParser} for
      * polymorphism purposes.
      */

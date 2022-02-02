@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -30,15 +30,15 @@ import org.ow2.authzforce.core.pdp.api.value.Bags;
 
 /**
  * On the contrary to {@link IssuedToNonIssuedCopyingLaxXacmlAttributeParser}, this XACML Attribute parser does not copy the values of Attributes having an Issuer to the corresponding Attributes
- * without Issuer (same Category, AttributeId...) in the resulting attribute map. Therefore it does not comply with what XACML 3.0, §5.29 says on &lt;AttributeDesignator&gt; evaluation. However, it is
+ * without Issuer (same Category, AttributeId...) in the resulting attribute map. Therefore, it does not comply with what XACML 3.0, §5.29 says on &lt;AttributeDesignator&gt; evaluation. However, it is
  * more performant. In this implementation, an Attribute with no Issuer is handled like an attribute with an Issuer, except the Issuer has the special value "null". Therefore, an AttributeDesignator
  * with "null" Issuer (undefined) will still match any attribute in the request with "null" Issuer (but not any other Attribute with same AttributeId but a defined/non-null Issuer, for which a
  * different AttributeDesignator with a defined Issuer must be used).
  * <p>
- * "Strict" means it does not allow defining multi-valued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category). This is not fully
+ * "Strict" means it does not allow defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category). This is not fully
  * compliant with the XACML spec according to a discussion on the xacml-dev mailing list (see {@linkplain "https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html"}), referring to the
  * XACML 3.0 core spec, §7.3.3, that indicates that multiple occurrences of the same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single
- * &lt;Attribute&gt; element with same meta-data and merged values (multi-valued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id
+ * &lt;Attribute&gt; element with same meta-data and merged values (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id
  * Attributes are expected to result in a multi-value bag during evaluation of the &lt;AttributeDesignator&gt;.
  * <p>
  * In a nutshell, this type of attribute parser does not comply fully with XACML 3.0. However, to benefit fully from the XACML capabilities, it is strongly recommended to avoid such Attribute

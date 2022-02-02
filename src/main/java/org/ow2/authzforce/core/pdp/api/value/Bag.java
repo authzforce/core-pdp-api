@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -112,7 +112,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
 	}
 
 	/**
-	 * Compares the element datatypes, and calls equals() on the {@link #elements()}, therefore {@link Multiset#equals(Object)}, which complies with
+	 * Compares the element data-types, and calls equals() on the {@link #elements()}, therefore {@link Multiset#equals(Object)}, which complies with
 	 * the mathematical definition of multisets and XACML spec for bags. Note that this is different from XACML set-equals function which does not consider the multiplicity of elements like multisets.
 	 */
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -38,9 +38,9 @@ public interface PdpEngineInoutAdapter<INPUT_DECISION_REQUEST, OUTPUT_DECISION_R
 {
 
 	/**
-	 * Evaluates a XML/JAXB-based XACML decision request
+	 * Evaluates an XML/JAXB-based XACML decision request
 	 * <p>
-	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc), then the result will be a decision of INDETERMINATE.
+	 * Note that if the request is somehow invalid (it was missing a required attribute, it was using an unsupported scope, etc.), then the result will be a decision of INDETERMINATE.
 	 * 
 	 * @param request
 	 *            the request to evaluate
@@ -60,7 +60,7 @@ public interface PdpEngineInoutAdapter<INPUT_DECISION_REQUEST, OUTPUT_DECISION_R
 	OUTPUT_DECISION_RESULT evaluate(final INPUT_DECISION_REQUEST request);
 
 	/**
-	 * Get the PDP engine's evaluated root policy and policies referenced - directly or indirectly - from the root policy, independent from the evaluation context, i.e. assuming all are statically
+	 * Get the PDP engine's evaluated root policy and policies referenced - directly or indirectly - from the root policy, independent of the evaluation context, i.e. assuming all are statically
 	 * resolved
 	 *
 	 * @return the root - always in first position - and referenced policies; null if any of these policies is not statically resolved (once and for all)

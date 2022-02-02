@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -443,7 +443,10 @@ public final class XacmlJaxbParsingUtils
 	private static <AV extends AttributeValue> PepActionAttributeAssignment<AV> newPepActionAttributeAssignment(final String attributeId, final Optional<String> category,
 	        final Optional<String> issuer, final ConstantExpression<AV> constantExp)
 	{
-		return new PepActionAttributeAssignment<>(attributeId, category, issuer, constantExp.getReturnType(), constantExp.getValue().get());
+		final Optional<AV> optConst = constantExp.getValue();
+		// The value in constantExp should always be set to the actual constant
+		assert optConst.isPresent();
+		return new PepActionAttributeAssignment<>(attributeId, category, issuer, constantExp.getReturnType(), optConst.get());
 	}
 
 	private static ImmutableList<PepActionAttributeAssignment<?>> xacmlToAuthzForceAttributeAssignments(final List<AttributeAssignment> xacmlAttributeAssignments,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -20,7 +20,7 @@ package org.ow2.authzforce.core.pdp.api.value;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
- * Representation of an xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and thread-safe.
+ * Representation of a xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and thread-safe.
  *
  * 
  * @version $Id: $

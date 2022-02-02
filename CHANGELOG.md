@@ -2,6 +2,23 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 19.0.0
+### Changed
+- `authzforce-ce-parent` version: 8.1.0
+- Improved support of Multiple Decision Profile in the `PdpEngine` interface and the following types of PDP extensions:  Combining Algorithm, Function, Attribute Provider, Policy Provider. The corresponding interfaces (`CombiningAlg`...) have changed: certain of their methods - called during request evaluation - now take a new `Optional<EvaluationContext>` parameter which is used to pass the MDP evaluation context (MDP = Multiple Decision Profile) which is an evaluation context shared across all the Individual Decision Requests within the same Multiple Decision Request whenever MDP is used in the input request to the PDP. This enables all PDP extensions to be aware / provide better support of the Multiple Decision Profile. This may be used in particular by an Attribute Provider providing the standard current-time/current-date/current-dateTime attributes which should have the same values for all Individual Decision Requests corresponding to the same Multiple Decision Request.
+- `DecisionRequest` and `EvaluationContext` interfaces changed:
+  - New method `getCreationTimestamp()`: provides the date/time of the request/context creation. Used typically for the standard current-* attributes.
+  - `putNamedAttributeValueIfAbsent(AttributeFqn, AttributeBag)` replaced with more generic `putNamedAttributeValue(AttributeFqn, AttributeBag, boolean override)`
+
+### Added
+- Attribute Provider (`NamedAttributeProvider`) interface: added 2 new methods for better support of the Multiple Decision Profile (all implemented by default to do nothing):
+
+    - `beginMultipleDecisionRequest(EvaluationContext mdpContext)`: for special processing in the context of the MDP request (before corresponding Individual Decision requests are evaluated)
+    - `supportsBeginMultipleDecisionRequest()`: indicates whether the Attribute Provider implements `beginMultipleDecisionRequest()` method and therefore needs the PDP engine to call it when a new MDP request is evaluated
+    - `beginIndividualDecisionRequest(EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext)`: for special processing in the context of an Individual Decision request, before it is evaluated against policies (before the `get(attribute)` method is ever called for the individual decision request).
+    - `supportsBeginIndividualDecisionRequest()`: indicates whether the Attribute Provider implements `beginIndividualDecisionRequest()` method and therefore needs the PDP engine to call it when a new individual decision request is evaluated.
+  
+
 ## 18.0.2
 ### Fixed
 - CVE-2021-22118: updated parent version to 8.0.2 -> Spring to 5.2.15
@@ -104,7 +121,7 @@ All notable changes to this project are documented in this file following the [K
 
 ### Fixed
 - IllegalArgumentException for empty XACML anyURI, i.e. `<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI" />`. XACML 3.0 spec's anyURI datatype (annex B.3) is defined by W3C XML schema specification (2004)'s anyURI datatype, itself defined by RFC 2396 and 2732 at IETF. An empty URI is valid according to RFC 2396 (section 4.2), therefore an empty AttributeValue with anyURI datatype must be parsed successfully into an empty value. (Fix to `SimpleValue` class.)  
-- AuthzForce `IntegerValue`s wrongly considered not equal if created from different Java integer types (for the same value), e.g. `1` (Integer) and `1L` (Long). (Fix to equals() implementations in `GenericInteger` subclasses.)
+- AuthzForce `IntegerValue`s wrongly considered not equal if created from different Java integer types (for the same value), e.g. `1` (Integer) and `1L` (Long). (Fix to `equals()` implementations in `GenericInteger` subclasses.)
 
 
 ## 14.0.0
@@ -120,7 +137,7 @@ All notable changes to this project are documented in this file following the [K
 - Updated authzforce-ce-parent version: 7.1.0 -> 7.2.0:
   - Changes dependency version: slf4j: 1.7.22 --> 1.7.25
   - Changes build plugin versions:
-    - OWASP dependency-check plugin: 3.0.1 -> 3.0.2 (fix blocking bug #978 on their github) 
+    - OWASP dependency-check plugin: 3.0.1 -> 3.0.2 (fix blocking bug #978 on their GitHub) 
 - Copyright end year (2018) in license headers
 - API interface/abstract class:
   - `SimpleValue.BaseFactory` abstract class: new `getSupportedInputTypes()`
@@ -129,7 +146,7 @@ they support, i.e. that they can parse to AttributeValue, in order to help imple
 `AttributeValueFactoryRegistry#newAttributeValue/AttributeBag(...)` methods
   - `AttributeValueFactoryRegistry` interface: new `newAttributeValue(Serializable)` and
 `newAttributeBag(Collection<? extends Serializable>)` methods for creating `AttributeValue`/`AttributeBag` from raw Java
-types without specifying a XACML datatype argument explicitly, but based on the input types supported by the simple AttributeValueFactories (of subtype `SimpleValue.BaseFactory`) in the registry, which info is provided by the `getSupportedInputTypes()` mentioned previously. This change contributes to the implementation of [authzforce-ce-core issue #10 on github](https://github.com/authzforce/core/issues/10).
+types without specifying a XACML datatype argument explicitly, but based on the input types supported by the simple AttributeValueFactories (of subtype `SimpleValue.BaseFactory`) in the registry, which info is provided by the `getSupportedInputTypes()` mentioned previously. This change contributes to the implementation of [authzforce-ce-core issue #10 on GitHub](https://github.com/authzforce/core/issues/10).
 - `X500NameValue` class: added constructor from X500Principal
 
 
@@ -267,7 +284,7 @@ by logback configuration (see Layout pattern 'replace' keyword in logback docume
 
 ### Removed
 - ValueExpression interface, replaced by ConstantExpression
-- Dependency on Koloboke, replaced by extension mechanism mentioned in *Added* section that would allow to switch from the default HashMap/HashSet implementation to Koloboke-based.
+- Dependency on Koloboke, replaced by extension mechanism mentioned in *Added* section that would allow switching from the default HashMap/HashSet implementation to Koloboke-based.
 
 
 ## 7.1.1
@@ -296,11 +313,11 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
 - CombiningAlg.Evaluator (Combining Algorithm evaluator interface): 
   - Return type changed to ExtendedDecision (Decision, Status, Extended Indeterminate if Decision is Indeterminate), simpler than formerly DecisionResult
   - evaluate() takes 2 extra "out" parameters: UpdatablePepActions and UpdatableApplicablePolicies used to add/return PEP actions and applicable policies collected during evaluation
-- DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow to handle 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
+- DecisionCache interface: input PdpDecisionInput and output PdpDecisionResult allow handling 2 new fields: named attributes and extra Content nodes used during evaluation; thus enabling smarter caching possibilities
 - EvaluationContext interface: addApplicablePolicy(...) replaced by isApplicablePolicyIdListRequested() because applicable policies are now collected in the new "out" parameter above and in the evaluation results (DecisionResult) returned by Policy evaluators
 - Deprecated Expression#getJAXBElement() usually used to get the original XACML from which the Expression was parsed (no longer considered useful)
 - Bag#equals() re-implemented like XACML function set-equals
-- Change implementation of unmodifidable lists to Guava ImmutableList
+- Change implementation of unmodifiable lists to Guava ImmutableList
 - Made all implementations of DecisionResult immutable
 
 
@@ -358,7 +375,7 @@ http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-ko
 
 ## 3.6.1
 ### Added
-- Initial release on Github
+- Initial release on GitHub
 
 
 

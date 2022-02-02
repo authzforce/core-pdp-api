@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,25 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import java.util.Optional;
-
-import org.ow2.authzforce.core.pdp.api.AttributeFqn;
-import org.ow2.authzforce.core.pdp.api.AttributeFqns;
-import org.ow2.authzforce.core.pdp.api.AttributeProvider;
-import org.ow2.authzforce.core.pdp.api.EvaluationContext;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
-import org.ow2.authzforce.core.pdp.api.value.Bags;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
+import org.ow2.authzforce.core.pdp.api.*;
+import org.ow2.authzforce.core.pdp.api.value.*;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
+import java.util.Optional;
 
 /**
- * AttributeDesignator evaluator initialized with and using an {@link AttributeProvider} to retrieve the attribute value not only from the request but also possibly from extra Attribute Provider
- * modules (so-called XACML PIPs) (PDP extensions)
+ * AttributeDesignator evaluator initialized with and using an {@link NamedAttributeProvider} to retrieve the attribute value
  *
  * @param <AV>
  *            AttributeDesignator evaluation result value's primitive datatype
@@ -44,13 +33,14 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType;
  */
 public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV extends AttributeValue> implements AttributeDesignatorExpression<AV>
 {
-	private static final IllegalArgumentException NULL_ATTRIBUTE_PROVIDER_EXCEPTION = new IllegalArgumentException("Undefined attribute Provider");
+	private static final IllegalArgumentException NULL_ATTRIBUTE_PROVIDER_EXCEPTION = new IllegalArgumentException("Undefined Attribute Provider");
 
 	private final AttributeFqn attrGUID;
 	private final BagDatatype<AV> returnType;
 	private final boolean mustBePresent;
+
 	private final transient Bag.Validator mustBePresentEnforcer;
-	private final transient AttributeProvider attrProvider;
+	private final transient SingleNamedAttributeProvider<AV> attrProvider;
 	private final transient IndeterminateEvaluationException missingAttributeForUnknownReasonException;
 	private final transient IndeterminateEvaluationException missingAttributeBecauseNullContextException;
 
@@ -71,29 +61,32 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 	/**
 	 * Return an instance of an AttributeDesignator based on an AttributeDesignatorType
 	 *
-	 * @param attrDesignator
+	 * @param attributeName
 	 *            the AttributeDesignatorType we want to convert
+	 * @param mustBePresent
+	 * 		AttributeDesignator's MustBePresent
 	 * @param resultDatatype
-	 *            expected datatype of the result of evaluating this AttributeDesignator ( {@code AV is the expected type of every element in the bag})
-	 * @param attrProvider
-	 *            Attribute Provider responsible for finding the attribute designated by this in a given evaluation context at runtime
+	 *            expected datatype of the result attribute value ( {@code AV is the expected type of every element in the bag})
+	 * @param attributeProvider
+	 *            Attribute Provider responsible for finding the values of the attribute designated by {@code attributeName} in a given evaluation context at runtime.
+	 *            When {@link #evaluate(EvaluationContext, Optional)} is called, all AttributeProvider(s) are called in the list order
 	 * @throws IllegalArgumentException
 	 *             if {@code attrDesignator.getCategory() == null || attrDesignator.getAttributeId() == null}
 	 */
-	public GenericAttributeProviderBasedAttributeDesignatorExpression(final AttributeDesignatorType attrDesignator, final BagDatatype<AV> resultDatatype, final AttributeProvider attrProvider)
+	public GenericAttributeProviderBasedAttributeDesignatorExpression(final AttributeFqn attributeName, boolean mustBePresent, final BagDatatype<AV> resultDatatype, final SingleNamedAttributeProvider<AV> attributeProvider)
 	{
-		if (attrProvider == null)
+		if (attributeProvider == null)
 		{
 			throw NULL_ATTRIBUTE_PROVIDER_EXCEPTION;
 		}
 
-		this.attrProvider = attrProvider;
-		this.attrGUID = AttributeFqns.newInstance(attrDesignator);
+		this.attrProvider = attributeProvider;
+		this.attrGUID = attributeName;
 		this.returnType = resultDatatype;
 
 		// error messages/exceptions
 		final String missingAttributeMessage = this + " not found in context";
-		this.mustBePresent = attrDesignator.isMustBePresent();
+		this.mustBePresent = mustBePresent;
 		this.mustBePresentEnforcer = mustBePresent ? new Bags.NonEmptinessValidator(missingAttributeMessage) : Bags.DUMB_VALIDATOR;
 
 		this.missingAttributeForUnknownReasonException = new IndeterminateEvaluationException(missingAttributeMessage + " for unknown reason", XacmlStatusCode.MISSING_ATTRIBUTE.value());
@@ -113,20 +106,15 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 		return this.mustBePresent;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * Evaluates the pre-assigned meta-data against the given context, trying to find some matching values.
-	 */
 	@Override
-	public Bag<AV> evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
+	public Bag<AV> evaluate(final EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException
 	{
-		if (context == null)
+		if (individualDecisionContext == null)
 		{
 			throw missingAttributeBecauseNullContextException;
 		}
 
-		final Bag<AV> bag = attrProvider.get(attrGUID, this.returnType.getElementType(), context);
+		final Bag<AV> bag = this.attrProvider.get(individualDecisionContext, mdpContext);
 		if (bag == null)
 		{
 			throw this.missingAttributeForUnknownReasonException;
@@ -159,7 +147,7 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 		if (toString == null)
 		{
 			toString = "AttributeDesignator [" + this.attrGUID + ", dataType= " + this.returnType.getElementType() + ", mustBePresent= "
-			        + (mustBePresentEnforcer == Bags.DUMB_VALIDATOR ? "false" : "true") + "]";
+			        + this.mustBePresent + "]";
 		}
 
 		return toString;

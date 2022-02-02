@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -76,8 +76,9 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 	 * Returns the value itself
 	 */
 	@Override
-	public final V evaluate(final EvaluationContext context)
+	public final V evaluate(final EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext)
 	{
+		assert alwaysPresentValue.isPresent();
 		return this.alwaysPresentValue.get();
 	}
 

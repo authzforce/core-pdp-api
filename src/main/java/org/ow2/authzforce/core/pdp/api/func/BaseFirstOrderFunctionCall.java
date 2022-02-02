@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,10 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
@@ -37,13 +34,13 @@ import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
  * This class provides a skeletal implementation of the {@link FirstOrderFunctionCall} interface, to minimize the effort required to implement this interface. It requires a function definition and
  * given arguments to be passed to the function, and based on this information, enforces type checking. It is the recommended way of calling any {@link FirstOrderFunction} instance.
  * <p>
- * Some of the arguments (expressions) may not be known in advance, but only at evaluation time (when calling {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}). For example, when using
+ * Some of the arguments (expressions) may not be known in advance, but only at evaluation time (when calling {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}). For example, when using
  * a FirstOrderFunction as a sub-function of the Higher-Order function 'any-of', the last arguments of the sub-function are determined during evaluation, after evaluating the expression of the last
  * input in the context, and getting the various values in the result bag.
  * <p>
  * In the case of such evaluation-time args, you must pass their types (the datatype of the last input bag in the previous example) as the <code>remainingArgTypes</code> parameters to the
  * {@link BaseFirstOrderFunctionCall} subclass (e.g. {@link EagerEval} implementation) constructor, and correspond to the types of the <code>remainingArgs</code> passed later as parameters to
- * {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}.
+ * {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}.
  * 
  * @param <RETURN>
  *            function return type
@@ -60,7 +57,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @param args
 	 *            (mandatory) function arguments
 	 * @param context
-	 *            evaluation context
+	 *           Individual Decision evaluation context
+	 * @param mdpContext
+	 * 	 the context of the Multiple Decision request that the {@code context} belongs to if the Multiple Decision Profile is used
 	 * @param argReturnType
 	 *            return type of argument expression evaluation
 	 * @param resultsToUpdate
@@ -72,7 +71,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Datatype<AV> argReturnType,
+	private static <AV extends AttributeValue> Deque<AV> evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final Datatype<AV> argReturnType,
 																		   final Deque<AV> resultsToUpdate) throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -87,7 +86,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final AV argVal;
 			try
 			{
-				argVal = Expressions.eval(arg, context, argReturnType);
+				argVal = Expressions.eval(arg, context, mdpContext, argReturnType);
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
@@ -106,6 +105,8 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 *            (mandatory) function arguments
 	 * @param context
 	 *            evaluation context
+	 * @param mdpContext
+	 * 	 the context of the Multiple Decision request that the {@code context} belongs to if the Multiple Decision Profile is used.
 	 * @param resultsToUpdate
 	 *            attribute values to be updated with results from evaluating all <code>args</code> in <code>context</code>. Used as the method result if not null; If null, a new instance is created.
 	 * @throws IndeterminateEvaluationException
@@ -113,7 +114,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @throws IllegalArgumentException
 	 *             if <code>resultsToUpdate != null && resultsToUpdate < args.size()</code>
 	 */
-	private static void evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Deque<AttributeValue> resultsToUpdate)
+	private static void evalPrimitiveArgs(final List<? extends Expression<?>> args, final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final Deque<AttributeValue> resultsToUpdate)
 	        throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -128,7 +129,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final AttributeValue argVal;
 			try
 			{
-				argVal = Expressions.evalPrimitive(arg, context);
+				argVal = Expressions.evalPrimitive(arg, context, mdpContext);
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
@@ -138,7 +139,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		}
 	}
 
-	private static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Datatype<Bag<AV>> argReturnType,
+	private static <AV extends AttributeValue> Bag<AV>[] evalBagArgs(final List<Expression<?>> args, final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final Datatype<Bag<AV>> argReturnType,
 	        final Bag<AV>[] results) throws IndeterminateEvaluationException
 	{
 		assert args != null;
@@ -164,7 +165,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final Bag<AV> argResult;
 			try
 			{
-				argResult = Expressions.eval(arg, context, argReturnType);
+				argResult = Expressions.eval(arg, context, mdpContext, argReturnType);
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, e.getStatusCode(), e);
@@ -244,8 +245,8 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * 
 	 * @param remainingArgTypes
 	 *            types of arguments of which the actual Expressions are unknown at this point, but will be known and passed at evaluation time as <code>remainingArgs</code> parameter to
-	 *            {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, AttributeValue...)}. Only non-bag/primitive values are valid
-	 *            <code>remainingArgs</code> to prevent varargs warning in {@link #evaluate(EvaluationContext, AttributeValue...)} (potential heap pollution via varargs parameter) that would be caused
+	 *            {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, Optional, AttributeValue...)}. Only non-bag/primitive values are valid
+	 *            <code>remainingArgs</code> to prevent varargs warning in {@link #evaluate(EvaluationContext, Optional, AttributeValue...)} (potential heap pollution via varargs parameter) that would be caused
 	 *            by using a parameterized type such as Value/Collection to represent both bags and primitives.
 	 * @throws IllegalArgumentException
 	 *             if inputs are invalid for this function or one of <code>remainingArgTypes</code> is a bag type.
@@ -338,9 +339,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	}
 
 	@Override
-	public final RETURN evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
+	public final RETURN evaluate(final EvaluationContext context, Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException
 	{
-		return evaluate(context, (AttributeValue[]) null);
+		return evaluate(context, mdpContext, (AttributeValue[]) null);
 	}
 
 	/*
@@ -349,7 +350,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @see org.ow2.authzforce.core.pdp.api.func.FirstOrderFunctionCall#evaluate(org.ow2.authzforce.core.pdp.api.EvaluationContext, boolean, org.ow2.authzforce.core.pdp.api.value.AttributeValue)
 	 */
 	@Override
-	public final RETURN evaluate(final EvaluationContext context, final boolean checkRemainingArgTypes, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+	public final RETURN evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final boolean checkRemainingArgTypes, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 	{
 		if (checkRemainingArgTypes)
 		{
@@ -373,7 +374,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 
 		}
 
-		return evaluate(context, remainingArgs);
+		return evaluate(context, mdpContext, remainingArgs);
 	}
 
 	@Override
@@ -408,7 +409,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		 *            arguments' Expressions
 		 * @param remainingArgTypes
 		 *            types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as
-		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, AttributeValue...)}.
+		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, Optional, AttributeValue...)}.
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
@@ -516,7 +517,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		 *            arguments' Expressions
 		 * @param remainingArgTypes
 		 *            types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as
-		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, AttributeValue...)}.
+		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, Optional, AttributeValue...)}.
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
@@ -538,14 +539,14 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		protected abstract RETURN_T evaluate(Deque<AttributeValue> args) throws IndeterminateEvaluationException;
 
 		@Override
-		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final Deque<AttributeValue> finalArgs = new ArrayDeque<>(totalArgCount);
 			if (argExpressions != null)
 			{
 				try
 				{
-					evalPrimitiveArgs(argExpressions, context, finalArgs);
+					evalPrimitiveArgs(argExpressions, context, mdpContext, finalArgs);
 				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
@@ -575,7 +576,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 *            function return type
 	 * 
 	 * @param <PARAM_T>
-	 *            arg values' common (super)type. If argument expressions return different datatypes, the common concrete supertype of all may be specified; or if no such concrete supertype, .
+	 *            arg values' common (super)type. If argument expressions return different data-types, the common concrete supertype of all may be specified.
 	 * 
 	 * 
 	 */
@@ -593,7 +594,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		 *            arguments' Expressions
 		 * @param remainingArgTypes
 		 *            types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as
-		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, AttributeValue...)}.
+		 *            <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, Optional, AttributeValue...)}.
 		 * @throws IllegalArgumentException
 		 *             if one of <code>remainingArgTypes</code> is a bag type.
 		 */
@@ -617,14 +618,14 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		protected abstract RETURN_T evaluate(Deque<PARAM_T> argStack) throws IndeterminateEvaluationException;
 
 		@Override
-		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			final Deque<PARAM_T> finalArgs = new ArrayDeque<>(totalArgCount);
 			if (argExpressions != null)
 			{
 				try
 				{
-					evalPrimitiveArgs(argExpressions, context, parameterType, finalArgs);
+					evalPrimitiveArgs(argExpressions, context, mdpContext, parameterType, finalArgs);
 				} catch (final IndeterminateEvaluationException e)
 				{
 					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
@@ -708,11 +709,11 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		protected abstract RETURN_T evaluate(Bag<PARAM_BAG_ELEMENT_T>[] bagArgs) throws IndeterminateEvaluationException;
 
 		@Override
-		public RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public RETURN_T evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 
 			/*
-			 * No support for remainingArgs which would be primitive values, where as all arguments for EagerBagEval are supposed to be bags. Otherwise use EagerPartlyBagEval.
+			 * No support for remainingArgs which would be primitive values, whereas all arguments for EagerBagEval are supposed to be bags. Else use EagerPartlyBagEval.
 			 */
 			assert remainingArgs == null;
 
@@ -722,7 +723,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final Bag<PARAM_BAG_ELEMENT_T>[] bagArgs;
 			try
 			{
-				bagArgs = evalBagArgs(argExpressions, context, paramBagType, paramBagType.newArray(argExpressions.size()));
+				bagArgs = evalBagArgs(argExpressions, context, mdpContext, paramBagType, paramBagType.newArray(argExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
@@ -779,7 +780,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		protected abstract RETURN_T evaluate(Deque<PRIMITIVE_PARAM_T> primArgsBeforeBag, Bag<PRIMITIVE_PARAM_T>[] bagArgs, PRIMITIVE_PARAM_T[] remainingArgs) throws IndeterminateEvaluationException;
 
 		@Override
-		public final RETURN_T evaluate(final EvaluationContext context, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+		public final RETURN_T evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
 		{
 			/*
 			 * We checked in constructor that argExpressions.size > numOfSameTypePrimitiveParamsBeforeBag
@@ -788,9 +789,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			final Bag<PRIMITIVE_PARAM_T>[] bagArgs;
 			try
 			{
-				primArgsBeforeBag = evalPrimitiveArgs(argExpressions.subList(0, numOfSameTypePrimitiveParamsBeforeBag), context, primitiveParamType, null);
+				primArgsBeforeBag = evalPrimitiveArgs(argExpressions.subList(0, numOfSameTypePrimitiveParamsBeforeBag), context, mdpContext, primitiveParamType, null);
 				final List<Expression<?>> bagArgExpressions = argExpressions.subList(numOfSameTypePrimitiveParamsBeforeBag, numOfArgExpressions);
-				bagArgs = evalBagArgs(bagArgExpressions, context, bagParamType, bagParamType.newArray(bagArgExpressions.size()));
+				bagArgs = evalBagArgs(bagArgExpressions, context, mdpContext, bagParamType, bagParamType.newArray(bagArgExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
 				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);

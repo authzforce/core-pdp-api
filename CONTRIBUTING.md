@@ -3,12 +3,12 @@
 1. No SNAPSHOT dependencies on "develop" and obviously "master" branches
 
 ### Releasing
-1. From the develop branch, prepare a release (example using a HTTP proxy):
+1. From the develop branch, prepare a release (example using an HTTP proxy):
 <pre><code>
     $ mvn -Dhttps.proxyHost=proxyhostname -Dhttps.proxyPort=80 jgitflow:release-start
 </code></pre>
 1. Update the CHANGELOG according to keepachangelog.com.
-1. To perform the release (example using a HTTP proxy):
+1. To perform the release (example using an HTTP proxy):
 <pre><code>
     $ mvn -Dhttps.proxyHost=proxyhostname -Dhttps.proxyPort=80 jgitflow:release-finish
 </code></pre>

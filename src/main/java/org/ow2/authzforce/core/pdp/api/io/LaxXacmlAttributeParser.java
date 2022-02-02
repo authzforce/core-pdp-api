@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,10 +32,10 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
  * 
- * "Lax" XACML Attribute parser. "Lax" means it allows defining multi-valued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category)
+ * "Lax" XACML Attribute parser. "Lax" means it allows defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category)
  * but with possibly different AttributeValues. As discussed on the xacml-dev mailing list (see {@linkplain "https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html"}), the XACML 3.0
  * core spec, §7.3.3, indicates that multiple occurrences of the same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single &lt;Attribute&gt;
- * element with same meta-data and merged values (multi-valued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected
+ * element with same meta-data and merged values (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected
  * to result in a multi-value bag during evaluation of the &lt;AttributeDesignator&gt;.
  * <p>
  * It is strongly recommended for better performance to avoid such Attribute repetitions and group all the values of the same Attribute in the same Attribute element with multiple AttributeValues,

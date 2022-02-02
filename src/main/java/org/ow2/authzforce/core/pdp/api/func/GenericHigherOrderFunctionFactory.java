@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -36,7 +36,7 @@ public abstract class GenericHigherOrderFunctionFactory implements PdpExtension
 	 *
 	 * @param subFunctionReturnType
 	 *            sub-function's return datatype
-	 * @return higher-order function instance (non-null, throw exceptions below if cannot return instance)
+	 * @return higher-order function instance (non-null, throw exceptions below if no instance may be returned for this argument)
 	 * @throws IllegalArgumentException
 	 *             iff {@code subFunctionReturnType == null} or {@code subFunctionReturnType} is not compatible with this factory (i.e. map function only accepts primitive datatype as subfunction's
 	 *             return type

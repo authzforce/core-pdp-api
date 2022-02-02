@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -86,7 +86,7 @@ public final class FirstOrderBagFunctions
 			{
 
 				@Override
-				protected final AV evaluate(final Bag<AV>[] bagArgs) throws IndeterminateEvaluationException
+				protected AV evaluate(final Bag<AV>[] bagArgs) throws IndeterminateEvaluationException
 				{
 					if (bagArgs[0].size() != 1)
 					{
@@ -131,7 +131,7 @@ public final class FirstOrderBagFunctions
 			{
 
 				@Override
-				protected final IntegerValue evaluate(final Bag<AV>[] bagArgs)
+				protected IntegerValue evaluate(final Bag<AV>[] bagArgs)
 				{
 					return IntegerValue.valueOf(bagArgs[0].size());
 				}
@@ -182,7 +182,7 @@ public final class FirstOrderBagFunctions
 			{
 
 				@Override
-				protected final BooleanValue evaluate(final Deque<AV> primArgsBeforeBag, final Bag<AV>[] bagArgs, final AV[] remainingArgs)
+				protected BooleanValue evaluate(final Deque<AV> primArgsBeforeBag, final Bag<AV>[] bagArgs, final AV[] remainingArgs)
 				{
 					return BooleanValue.valueOf(eval(primArgsBeforeBag.getFirst(), bagArgs[0]));
 				}
@@ -543,7 +543,7 @@ public final class FirstOrderBagFunctions
 		return HashCollections.newImmutableSet(new Function[] {
 				/*
 				 * 
-				 * Single-bag function group, i.e. group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set
+				 * Single-bag function group, i.e. a group of bag functions that takes only one bag as parameter, or no bag parameter but returns a bag. Defined in section A.3.10. As opposed to Set
 				 * functions that takes multiple bags as parameters.
 				 * 
 				 */
@@ -551,7 +551,7 @@ public final class FirstOrderBagFunctions
 				new PrimitiveToBag<>(paramType, paramBagType),
 				/*
 				 * 
-				 * Add bag functions that takes multiple bags as parameters. Defined in section A.3.11.
+				 * Add bag functions that take multiple bags as parameters. Defined in section A.3.11.
 				 * 
 				 */
 				new Intersection<>(paramType, paramBagType), new AtLeastOneMemberOf<>(paramBagType), new Union<>(paramType, paramBagType), new Subset<>(paramBagType), new SetEquals<>(paramBagType) });

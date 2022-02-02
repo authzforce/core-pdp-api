@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -21,7 +21,7 @@ import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 
 /**
  * On the contrary to {@link IssuedToNonIssuedCopyingLaxXacmlAttributeParser}, this XACML Attribute parser does not copy the values of Attributes having an Issuer to the corresponding Attributes
- * without Issuer (same Category, AttributeId...) in the resulting attribute map. Therefore it does not comply with what XACML 3.0, §5.29 says on &lt;AttributeDesignator&gt; evaluation. However,
+ * without Issuer (same Category, AttributeId...) in the resulting attribute map. Therefore, it does not comply with what XACML 3.0, §5.29 says on &lt;AttributeDesignator&gt; evaluation. However,
  * it is more performant. In this implementation, an Attribute with no Issuer is handled like an attribute with an Issuer, except the Issuer has the special value "null". Therefore, an
  * AttributeDesignator with "null" Issuer (undefined) will still match any attribute in the request with "null" Issuer (but not any other Attribute with same AttributeId but a defined/non-null
  * Issuer, for which a different AttributeDesignator with a defined Issuer must be used).

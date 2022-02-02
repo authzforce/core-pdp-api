@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -56,6 +56,7 @@ public class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 	@Override
 	public boolean isInstance(final Value val)
 	{
+		assert alwaysPresentElementDatatype.isPresent();
 		return val instanceof Bag && alwaysPresentElementDatatype.get().equals(((Bag<?>) val).getElementDatatype());
 	}
 
@@ -89,6 +90,7 @@ public class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 	 */
 	public Datatype<AV> getElementType()
 	{
+		assert alwaysPresentElementDatatype.isPresent();
 		return this.alwaysPresentElementDatatype.get();
 	}
 

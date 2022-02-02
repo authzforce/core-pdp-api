@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 THALES.
+ * Copyright 2012-2022 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -44,7 +44,7 @@ public abstract class FirstOrderFunctionSignature<RETURN_T extends Value>
 
 	/**
 	 * Is the last parameter specified in <code>paramTypes</code> considered as variable-length (like Java {@link Method#isVarArgs()}), i.e. taking a variable number of arguments (0 or more) of the
-	 * specified paramTypes[n-1] with n the size of paramTypes). In the following examples, '...' means varargs like in Java:
+	 * specified paramTypes[n-1] with n the size of paramTypes. In the following examples, '...' means varargs like in Java:
 	 * <p>
 	 * Example 1: string-concat(string, string, string...) -> paramTypes={string, string, string}, isVarargs=true
 	 * </p>
