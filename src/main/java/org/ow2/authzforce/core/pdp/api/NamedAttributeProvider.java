@@ -38,7 +38,11 @@ public interface NamedAttributeProvider
 	UnsupportedOperationException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException("Not implemented");
 
 	/**
-	 * Returns a non-null non-empty <code>Set</code> of <code>AttributeDesignator</code>s provided/supported by this module.
+	 * Returns the non-null non-empty <code>Set</code> of <code>AttributeDesignator</code>s provided/supported by this Attribute provider.
+	 *
+	 * Each {@link AttributeDesignatorType#getCategory() } must return a non-null/non-empty value
+	 *
+	 * If any AttributeDesignator in the set does not specify an AttributeId (getAttributeId() = null), the Attribute provider is considered a category-wide attribute provider for the category (returned by {@link AttributeDesignatorType#getCategory()} ), i.e. may provide any attribute in this category.
 	 * 
 	 * @return a non-null non-empty <code>Set</code> of supported <code>AttributeDesignatorType</code>s
 	 */
