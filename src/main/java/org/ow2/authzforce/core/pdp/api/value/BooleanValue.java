@@ -92,7 +92,7 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 			default:
 		}
 
-		throw new IllegalArgumentException("The string '" + (s.length() > 5 ? (s.substring(0, 5) + "... (content omitted)") : s) + "' is not a valid xs:boolean value.");
+		throw new IllegalArgumentException("The string '" + (s.length() > 5 ? s.substring(0, 5) + "... (content omitted)" : s) + "' is not a valid xs:boolean value.");
 	}
 
 	/**

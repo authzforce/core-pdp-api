@@ -17,11 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.collect.ImmutableMap;
+import net.sf.saxon.lib.Feature;
+import net.sf.saxon.s9api.*;
+import org.ow2.authzforce.xacml.identifiers.XPathVersion;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -31,20 +34,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
-
-import net.sf.saxon.lib.Feature;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathExecutable;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XdmItem;
-
-import org.ow2.authzforce.xacml.identifiers.XPathVersion;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLFilterImpl;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utilities for XML-to-JAXB binding
@@ -256,7 +249,7 @@ public final class XmlUtils
          *
          * @return namespace prefix-URI mappings; empty if {@link #parse(InputSource)} not called yet, or namespace prefix-URI collecting is not supported
          */
-        Map<String, String> getNamespacePrefixUriMap();
+        ImmutableMap<String, String> getNamespacePrefixUriMap();
 
     }
 
@@ -348,10 +341,17 @@ public final class XmlUtils
         }
 
         @Override
-        public Map<String, String> getNamespacePrefixUriMap()
+        public ImmutableMap<String, String> getNamespacePrefixUriMap()
         {
-            return HashCollections.newImmutableMap(this.nsPrefixUriMap);
+            return ImmutableMap.copyOf(this.nsPrefixUriMap);
         }
+    }
+
+    /**
+     * Supplies unmarshallers
+     */
+    public interface UnmarshallerFactory {
+        Unmarshaller newInstance() throws JAXBException;
     }
 
     /**
@@ -366,11 +366,11 @@ public final class XmlUtils
         /**
          * Creates instance from JAXB unmarshaller used for parsing XML documents
          *
-         * @param unmarshaller JAXB unmarshaller
+         * @param xmlUnmarshallerFactory JAXB unmarshaller factory
          */
-        public NoXmlnsFilteringParser(final Unmarshaller unmarshaller)
+        public NoXmlnsFilteringParser(final UnmarshallerFactory xmlUnmarshallerFactory) throws JAXBException
         {
-            this.unmarshaller = unmarshaller;
+            this.unmarshaller = xmlUnmarshallerFactory.newInstance();
         }
 
         /*
@@ -396,9 +396,9 @@ public final class XmlUtils
          * @see org.ow2.authzforce.core.NamespaceFilteringParser#getNamespacePrefixUriMap()
          */
         @Override
-        public Map<String, String> getNamespacePrefixUriMap()
+        public ImmutableMap<String, String> getNamespacePrefixUriMap()
         {
-            return Collections.emptyMap();
+            return ImmutableMap.of();
         }
     }
 

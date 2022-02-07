@@ -19,10 +19,12 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
@@ -92,7 +94,7 @@ public final class XPathValue extends SimpleValue<String>
 
 	private final IndeterminateEvaluationException missingAttributesContentException;
 
-	private final String xpathEvalExceptionMessage;
+	private final ImmutableXacmlStatus xpathEvalExceptionStatus;
 
 	private final IndeterminateEvaluationException missingContextException;
 
@@ -136,10 +138,9 @@ public final class XPathValue extends SimpleValue<String>
 			throw new IllegalArgumentException("Invalid value for XPathCategory (xs:anyURI): " + xpathCategory);
 		}
 
-		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory,
-		        XacmlStatusCode.SYNTAX_ERROR.value());
-		this.xpathEvalExceptionMessage = this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'";
-		this.missingContextException = new IndeterminateEvaluationException(this + ":  undefined evaluation context: XPath value cannot be evaluated", XacmlStatusCode.PROCESSING_ERROR.value());
+		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory, XacmlStatusCode.SYNTAX_ERROR.value());
+		this.xpathEvalExceptionStatus = new ImmutableXacmlStatus(XacmlStatusCode.SYNTAX_ERROR.value(), Optional.of(this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'"));
+		this.missingContextException = new IndeterminateEvaluationException(new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of(this + ":  undefined evaluation context: XPath value cannot be evaluated")));
 	}
 
 	/**
@@ -177,7 +178,7 @@ public final class XPathValue extends SimpleValue<String>
 			return xpathSelector.evaluate();
 		} catch (final SaxonApiException e)
 		{
-			throw new IndeterminateEvaluationException(this.xpathEvalExceptionMessage, XacmlStatusCode.SYNTAX_ERROR.value(), e);
+			throw new IndeterminateEvaluationException(this.xpathEvalExceptionStatus, e);
 		}
 	}
 

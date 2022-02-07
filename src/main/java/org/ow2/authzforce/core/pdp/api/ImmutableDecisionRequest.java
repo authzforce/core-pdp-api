@@ -17,16 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import net.sf.saxon.s9api.XdmNode;
-
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 
-import com.google.common.collect.ImmutableSortedMap;
+import java.time.Instant;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Immutable implementation of {@link DecisionRequest} to be used as input to {@link PdpEngine#evaluate(DecisionRequest)}. Typically, it is used as output request instances by PDP {@link DecisionRequestPreprocessor}
@@ -37,15 +35,15 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 
 	// initialized not null by constructors
 	private final Instant creationTimestamp;
-	private final Map<AttributeFqn, AttributeBag<?>> namedAttributes;
-	private final Map<String, XdmNode> extraContentByCategory;
+	private final ImmutableMap<AttributeFqn, AttributeBag<?>> namedAttributes;
+	private final ImmutableMap<String, XdmNode> extraContentByCategory;
 	private final boolean isApplicablePolicyListReturned;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 	private transient volatile String toString = null;
 
-	private ImmutableDecisionRequest(final Map<AttributeFqn, AttributeBag<?>> immutableNamedAttributes, final Map<String, XdmNode> immutableContentNodesByCategory,
-			final boolean returnApplicablePolicies)
+	private ImmutableDecisionRequest(final ImmutableMap<AttributeFqn, AttributeBag<?>> immutableNamedAttributes, final ImmutableMap<String, XdmNode> immutableContentNodesByCategory,
+									 final boolean returnApplicablePolicies)
 	{
 		assert immutableNamedAttributes != null && immutableContentNodesByCategory != null;
 
@@ -69,8 +67,8 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 	public static ImmutableDecisionRequest getInstance(final Map<AttributeFqn, AttributeBag<?>> namedAttributes, final Map<String, XdmNode> contentNodesByCategory,
 			final boolean returnApplicablePolicies)
 	{
-		return new ImmutableDecisionRequest(namedAttributes == null ? Collections.emptyMap() : HashCollections.newImmutableMap(namedAttributes),
-				contentNodesByCategory == null ? Collections.emptyMap() : HashCollections.newImmutableMap(contentNodesByCategory), returnApplicablePolicies);
+		return new ImmutableDecisionRequest(namedAttributes == null ? ImmutableMap.of() : ImmutableMap.copyOf(namedAttributes),
+				contentNodesByCategory == null ? ImmutableMap.of() : ImmutableMap.copyOf(contentNodesByCategory), returnApplicablePolicies);
 	}
 
 	/**
@@ -104,7 +102,7 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 	 * @see org.ow2.authzforce.core.IndividualDecisionRequest#getNamedAttributes()
 	 */
 	@Override
-	public Map<AttributeFqn, AttributeBag<?>> getNamedAttributes()
+	public ImmutableMap<AttributeFqn, AttributeBag<?>> getNamedAttributes()
 	{
 		return this.namedAttributes;
 	}
@@ -115,7 +113,7 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 	 * @see org.ow2.authzforce.core.IndividualDecisionRequest#getExtraContentsByCategory()
 	 */
 	@Override
-	public Map<String, XdmNode> getExtraContentsByCategory()
+	public ImmutableMap<String, XdmNode> getExtraContentsByCategory()
 	{
 		return this.extraContentByCategory;
 	}

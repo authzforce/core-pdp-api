@@ -17,10 +17,9 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.Optional;
-
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+
+import java.util.Optional;
 
 /**
  * Extended decision, i.e. XACML Decision with optional ExtendedIndeterminate and Status if Indeterminate. This is mostly used as return type of combining algorithms.
@@ -41,7 +40,7 @@ public interface ExtendedDecision
 	 * 
 	 * @return status
 	 */
-	Status getStatus();
+	Optional<ImmutableXacmlStatus> getStatus();
 
 	/**
 	 * Provides the Extended Indeterminate value, iff {@code #getDecision() == DecisionType.INDETERMINATE}, else it should be ignored, as defined in section 7.10 of XACML 3.0 core: <i>potential effect

@@ -3,6 +3,9 @@ All notable changes to this project are documented in this file following the [K
 
 
 ## 19.0.0
+### Fixed
+- CVE-2021-22060: Spring upgraded to 5.2.19
+
 ### Changed
 - `authzforce-ce-parent` version: 8.1.0
 - Improved support of Multiple Decision Profile in the `PdpEngine` interface and the following types of PDP extensions:  Combining Algorithm, Function, Attribute Provider, Policy Provider. The corresponding interfaces (`CombiningAlg`...) have changed: certain of their methods - called during request evaluation - now take a new `Optional<EvaluationContext>` parameter which is used to pass the MDP evaluation context (MDP = Multiple Decision Profile) which is an evaluation context shared across all the Individual Decision Requests within the same Multiple Decision Request whenever MDP is used in the input request to the PDP. This enables all PDP extensions to be aware / provide better support of the Multiple Decision Profile. This may be used in particular by an Attribute Provider providing the standard current-time/current-date/current-dateTime attributes which should have the same values for all Individual Decision Requests corresponding to the same Multiple Decision Request.
@@ -11,6 +14,7 @@ All notable changes to this project are documented in this file following the [K
   - `putNamedAttributeValueIfAbsent(AttributeFqn, AttributeBag)` replaced with more generic `putNamedAttributeValue(AttributeFqn, AttributeBag, boolean override)`
 
 ### Added
+- XacmlAttributeId enum: added standard attribute `urn:oasis:names:tc:xacml:2.0:resource:target-namespace`
 - Attribute Provider (`NamedAttributeProvider`) interface: added 2 new methods for better support of the Multiple Decision Profile (all implemented by default to do nothing):
 
     - `beginMultipleDecisionRequest(EvaluationContext mdpContext)`: for special processing in the context of the MDP request (before corresponding Individual Decision requests are evaluated)

@@ -52,6 +52,7 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BasePdpEngineAdapter.class);
 	private static final IllegalArgumentException ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException("No input Decision Request");
+	private static final IndeterminateEvaluationException MISSING_INDIVIDUAL_DECISION_REQ_EXCEPTION = new IndeterminateEvaluationException("No Individual Decision request to process", XacmlStatusCode.PROCESSING_ERROR.value());
 
 	private static final class MdpEvaluationContext extends BaseEvaluationContext {
 
@@ -63,13 +64,13 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 		}
 
 		@Override
-		public <AV extends AttributeValue> Bag<AV> getAttributeSelectorResult(AttributeSelectorExpression<AV> attributeSelector) throws IndeterminateEvaluationException
+		public <AV extends AttributeValue> Bag<AV> getAttributeSelectorResult(AttributeSelectorExpression<AV> attributeSelector)
 		{
 			throw UNSUPPORTED_OPERATION_EXCEPTION;
 		}
 
 		@Override
-		public <AV extends AttributeValue> boolean putAttributeSelectorResultIfAbsent(AttributeSelectorExpression<AV> attributeSelector, Bag<AV> result) throws IndeterminateEvaluationException
+		public <AV extends AttributeValue> boolean putAttributeSelectorResultIfAbsent(AttributeSelectorExpression<AV> attributeSelector, Bag<AV> result)
 		{
 			throw UNSUPPORTED_OPERATION_EXCEPTION;
 		}
@@ -151,7 +152,7 @@ public final class BasePdpEngineAdapter<ADAPTER_INPUT_DECISION_REQUEST, ADAPTEE_
 
 		if(individualDecisionRequests.isEmpty()) {
 			LOGGER.info("No Individual Decision request returned by the request preprocessor {}", this.reqPreproc);
-			return this.resultPostproc.processInternalError(new IndeterminateEvaluationException("No Individual Decision request to process", XacmlStatusCode.PROCESSING_ERROR.value()));
+			return this.resultPostproc.processInternalError(MISSING_INDIVIDUAL_DECISION_REQ_EXCEPTION);
 		}
 
 		// individualDecisionRequests non empty

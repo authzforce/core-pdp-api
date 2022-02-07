@@ -20,7 +20,7 @@ package org.ow2.authzforce.core.pdp.api.value;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.ow2.authzforce.core.pdp.api.HashCollections;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Datatype-specific Attribute Value Factory that supports values only based on string content, without any XML attributes, and independent of the context, i.e. constant values.
@@ -30,7 +30,7 @@ import org.ow2.authzforce.core.pdp.api.HashCollections;
  */
 public abstract class StringContentOnlyValueFactory<AV extends AttributeValue> extends StringParseableValue.Factory<AV>
 {
-	private static final Set<Class<? extends Serializable>> SUPPORTED_STRING_FACTORY_INPUT_TYPES = HashCollections.newImmutableSet(String.class);
+	private static final ImmutableSet<Class<? extends Serializable>> SUPPORTED_STRING_FACTORY_INPUT_TYPES = ImmutableSet.of(String.class);
 
 	/**
 	 * Creates a datatype factory from the Java datatype implementation class and datatype identifier

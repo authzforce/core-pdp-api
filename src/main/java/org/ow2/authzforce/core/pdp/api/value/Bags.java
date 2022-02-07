@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
+import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Bag.Validator;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
@@ -485,7 +486,8 @@ public final class Bags
 	public static final class NonEmptinessValidator implements Validator
 	{
 
-		private final String messageIfEmpty;
+		private final ImmutableXacmlStatus messageIfEmptyStatus;
+		private final IndeterminateEvaluationException messageIfEmptyException;
 
 		/**
 		 * Creates validator
@@ -495,7 +497,8 @@ public final class Bags
 		 */
 		public NonEmptinessValidator(final String messageIfEmpty)
 		{
-			this.messageIfEmpty = messageIfEmpty;
+			this.messageIfEmptyStatus = new ImmutableXacmlStatus(XacmlStatusCode.MISSING_ATTRIBUTE.value(),  Optional.of(messageIfEmpty));
+			this.messageIfEmptyException = new IndeterminateEvaluationException(messageIfEmptyStatus);
 		}
 
 		@Override
@@ -503,12 +506,12 @@ public final class Bags
 		{
 			if (bag == null)
 			{
-				throw new IndeterminateEvaluationException(messageIfEmpty, XacmlStatusCode.MISSING_ATTRIBUTE.value());
+				throw messageIfEmptyException;
 			}
 
 			if (bag.isEmpty())
 			{
-				throw new IndeterminateEvaluationException(messageIfEmpty, XacmlStatusCode.MISSING_ATTRIBUTE.value(), bag.getReasonWhyEmpty());
+				throw new IndeterminateEvaluationException(messageIfEmptyStatus, bag.getReasonWhyEmpty());
 			}
 
 		}

@@ -89,7 +89,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				argVal = Expressions.eval(arg, context, mdpContext, argReturnType);
 			} catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e);
 			}
 
 			results.add(argVal);
@@ -132,7 +132,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				argVal = Expressions.evalPrimitive(arg, context, mdpContext);
 			} catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e.getStatusCode(), e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + results.size(), e);
 			}
 
 			results.add(argVal);
@@ -168,7 +168,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				argResult = Expressions.eval(arg, context, mdpContext, argReturnType);
 			} catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, e.getStatusCode(), e);
+				throw new IndeterminateEvaluationException("Indeterminate arg #" + resultIndex, e);
 			}
 
 			results[resultIndex] = argResult;
@@ -230,7 +230,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		}
 	}
 
-	private final String funcId;
+	protected final String funcId;
 	private final List<? extends Datatype<?>> expectedParamTypesForRemainingArgs;
 	private final RequestTimeArgCountChecker requestTimeArgCountChecker;
 	private final Datatype<RETURN> returnType;
@@ -397,7 +397,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		protected final String indeterminateArgMessage;
 		protected final int totalArgCount;
 		protected final int numOfSameTypePrimitiveParamsBeforeBag;
-		protected final String functionId;
 
 		/**
 		 * Instantiates Function FirstOrderFunctionCall
@@ -417,7 +416,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		{
 			super(functionSignature, args, remainingArgTypes);
 			final List<? extends Datatype<?>> paramTypes = functionSignature.getParameterTypes();
-			final String funcId = functionSignature.getName();
 
 			/*
 			 * Determine compatible eager-eval function call if any, depending on number of primitive parameters against total number of parameters. (We do not check here whether all parameters have
@@ -491,7 +489,6 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			// END OF determining type of eager-eval function call
 			this.numOfSameTypePrimitiveParamsBeforeBag = primParamCount;
 			this.argExpressions = args;
-			this.functionId = funcId;
 			this.indeterminateArgMessage = "Function " + funcId + ": indeterminate arg";
 			// total number of arguments to the function
 			this.totalArgCount = args.size() + remainingArgTypes.length;
@@ -549,7 +546,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 					evalPrimitiveArgs(argExpressions, context, mdpContext, finalArgs);
 				} catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
+					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e);
 				}
 			}
 
@@ -628,7 +625,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 					evalPrimitiveArgs(argExpressions, context, mdpContext, parameterType, finalArgs);
 				} catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
+					throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e);
 				}
 			}
 
@@ -644,7 +641,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 						finalArgs.add(parameterType.cast(remainingArg));
 					} catch (final ClassCastException e)
 					{
-						throw new IndeterminateEvaluationException("Function " + this.functionId + ": Type of arg #" + finalArgs.size() + " not valid. Expected: " + parameterType + ".",
+						throw new IndeterminateEvaluationException("Function " + this.funcId + ": Type of arg #" + finalArgs.size() + " not valid. Expected: " + parameterType + ".",
 						        XacmlStatusCode.PROCESSING_ERROR.value());
 					}
 				}
@@ -726,7 +723,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				bagArgs = evalBagArgs(argExpressions, context, mdpContext, paramBagType, paramBagType.newArray(argExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
+				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e);
 			}
 
 			return evaluate(bagArgs);
@@ -762,7 +759,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			{
 				// all arg expressions are primitive
 				throw new IllegalArgumentException(
-				        "Function " + functionId + ": no bag expression in arguments. At least one bag expression is required to use this type of FunctionCall: " + this.getClass());
+				        "Function " + BaseFirstOrderFunctionCall.EVAL_ARGS_NULL_INPUT_STACK_EXCEPTION + ": no bag expression in arguments. At least one bag expression is required to use this type of FunctionCall: " + this.getClass());
 			}
 
 			this.bagParamType = bagParamType;
@@ -794,7 +791,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				bagArgs = evalBagArgs(bagArgExpressions, context, mdpContext, bagParamType, bagParamType.newArray(bagArgExpressions.size()));
 			} catch (final IndeterminateEvaluationException e)
 			{
-				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e.getStatusCode(), e);
+				throw new IndeterminateEvaluationException(this.indeterminateArgMessage, e);
 			}
 
 			final PRIMITIVE_PARAM_T[] castRemainingArgs;
@@ -808,7 +805,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 					castRemainingArgs = primitiveParamArrayClass.cast(remainingArgs);
 				} catch (final ClassCastException e)
 				{
-					throw new IndeterminateEvaluationException("Function " + functionId + ": Type of request-time args (# >= " + argExpressions.size() + ") not valid: "
+					throw new IndeterminateEvaluationException("Function " + funcId + ": Type of request-time args (# >= " + argExpressions.size() + ") not valid: "
 					        + remainingArgs.getClass().getComponentType() + ". Required: " + primitiveParamType + ".", XacmlStatusCode.PROCESSING_ERROR.value());
 				}
 			}

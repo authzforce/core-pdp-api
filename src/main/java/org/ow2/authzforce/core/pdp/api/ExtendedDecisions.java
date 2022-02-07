@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -56,9 +55,9 @@ public final class ExtendedDecisions
 		}
 
 		@Override
-		public Status getStatus()
+		public Optional<ImmutableXacmlStatus> getStatus()
 		{
-			return null;
+			return Optional.empty();
 		}
 
 		@Override
@@ -89,7 +88,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null && other.getStatus() == null;
+			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && other.getStatus().isEmpty();
 		}
 
 		/** {@inheritDoc} */
@@ -141,6 +140,8 @@ public final class ExtendedDecisions
 
 		private final Optional<IndeterminateEvaluationException> cause;
 
+		private final transient Optional<ImmutableXacmlStatus> xacmlStatus;
+
 		private transient volatile int hashCode = 0;
 
 		private transient volatile String toString = null;
@@ -158,6 +159,7 @@ public final class ExtendedDecisions
 			this.extIndeterminate = extendedIndeterminate;
 			// Create Optional to #getCauseForIndeterminate()
 			this.cause = Optional.of(cause);
+			this.xacmlStatus = Optional.of(cause.getTopLevelStatus());
 		}
 
 		/** {@inheritDoc} */
@@ -166,7 +168,8 @@ public final class ExtendedDecisions
 		{
 			if (hashCode == 0)
 			{
-				hashCode = Objects.hash(this.extIndeterminate, this.cause.orElse(null));
+				assert cause.isPresent();
+				hashCode = Objects.hash(this.extIndeterminate, this.cause.get());
 			}
 
 			return hashCode;
@@ -187,7 +190,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			return other.getDecision() == DecisionType.INDETERMINATE && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.equals(other.getCauseForIndeterminate());
+			return DecisionType.INDETERMINATE == other.getDecision() && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.equals(other.getCauseForIndeterminate());
 		}
 
 		/** {@inheritDoc} */
@@ -209,9 +212,9 @@ public final class ExtendedDecisions
 		}
 
 		@Override
-		public Status getStatus()
+		public Optional<ImmutableXacmlStatus> getStatus()
 		{
-			return this.cause.map(IndeterminateEvaluationException::getTopLevelStatus).orElse(null);
+			return xacmlStatus;
 		}
 
 		@Override
@@ -235,13 +238,13 @@ public final class ExtendedDecisions
 
 		private final DecisionType decision;
 
-		private final Status status;
+		private final Optional<ImmutableXacmlStatus> status;
 
 		private transient volatile int hashCode = 0;
 
 		private transient volatile String toString = null;
 
-		private ImmutableDeterminateExtendedDecision(final DecisionType decision, final Status status)
+		private ImmutableDeterminateExtendedDecision(final DecisionType decision, final ImmutableXacmlStatus status)
 		{
 			/*
 			 * For cases when status == null, use one of the SIMPLE_* constants
@@ -249,7 +252,7 @@ public final class ExtendedDecisions
 			assert decision != null && decision != DecisionType.INDETERMINATE && status != null;
 
 			this.decision = decision;
-			this.status = status;
+			this.status = Optional.of(status);
 		}
 
 		/** {@inheritDoc} */
@@ -279,7 +282,7 @@ public final class ExtendedDecisions
 			}
 
 			final ExtendedDecision other = (ExtendedDecision) obj;
-			return this.decision == other.getDecision() && other.getExtendedIndeterminate() == null && Objects.equals(status, other.getStatus());
+			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && Objects.equals(status, other.getStatus());
 		}
 
 		@Override
@@ -295,7 +298,7 @@ public final class ExtendedDecisions
 		}
 
 		@Override
-		public Status getStatus()
+		public Optional<ImmutableXacmlStatus> getStatus()
 		{
 			return this.status;
 		}
@@ -332,7 +335,7 @@ public final class ExtendedDecisions
 	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return permit result, more particularly {@link #SIMPLE_PERMIT} iff {@code status  == null}.
 	 */
-	public static ExtendedDecision getPermit(final Status status)
+	public static ExtendedDecision getPermit(final ImmutableXacmlStatus status)
 	{
 		if (status == null)
 		{
@@ -351,7 +354,7 @@ public final class ExtendedDecisions
 	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return deny result, more particularly {@link #SIMPLE_DENY} iff {@code status  == null}.
 	 */
-	public static ExtendedDecision getDeny(final Status status)
+	public static ExtendedDecision getDeny(final ImmutableXacmlStatus status)
 	{
 		if (status == null)
 		{
@@ -370,7 +373,7 @@ public final class ExtendedDecisions
 	 *            because of special combining algorithm ignoring such results (like deny-unless-permit) or MustBePresent="false"
 	 * @return deny result, more particularly {@link #SIMPLE_NOT_APPLICABLE} iff {@code status  == null}.
 	 */
-	public static ExtendedDecision getNotApplicable(final Status status)
+	public static ExtendedDecision getNotApplicable(final ImmutableXacmlStatus status)
 	{
 		if (status == null)
 		{

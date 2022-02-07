@@ -17,22 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Queue;
 
-import org.ow2.authzforce.core.pdp.api.AttributeFqn;
-import org.ow2.authzforce.core.pdp.api.DecisionRequest;
-import org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor;
-import org.ow2.authzforce.core.pdp.api.HashCollections;
-import org.ow2.authzforce.core.pdp.api.ImmutableDecisionRequest;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
@@ -55,6 +43,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionRequest, VALIDATOR_INPUT_ATTRIBUTE_CATEGORY_OBJECT, VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT>
 {
+
 	/**
 	 * (Mutable) {@link IndividualXacmlJaxbRequest} builder. Allows updating attribute categories and rebuild (immutable) Individual Decision Requests over and over again. Useful especially for
 	 * {@link DecisionRequestPreprocessor} implementations supporting the Multiple Decision Profile.
@@ -181,6 +170,8 @@ public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionReques
 
 	}
 
+	private static final ImmutableXacmlStatus INVALID_XPATH_VERSION_ERROR_STATUS = new ImmutableXacmlStatus(XacmlStatusCode.SYNTAX_ERROR.value(), Optional.of("Invalid RequestDefaults/XPathVersion"));
+
 	private final IndividualXacmlRequestFactory<R, VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT> individualXacmlReqFactory;
 
 	/**
@@ -271,7 +262,7 @@ public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionReques
 		}
 		catch (final IllegalArgumentException e)
 		{
-			throw new IndeterminateEvaluationException("Invalid RequestDefaults/XPathVersion", XacmlStatusCode.SYNTAX_ERROR.value(), e);
+			throw new IndeterminateEvaluationException(INVALID_XPATH_VERSION_ERROR_STATUS, e);
 		}
 		/*
 		 * Generate the Multiple Individual Decision Requests starting with initialIndividualReq and cloning/adding new attributes/content for each new attribute category's Attributes alternative in
