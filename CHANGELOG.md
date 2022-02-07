@@ -2,6 +2,26 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 19.1.0
+### Fixed
+- PMD/Spotbugs error fix: new classes `ImmutableXacmlStatus`, `ImmutableXacmlStatusCode` used as immutable replacements for XACML-schema-derived (JAXB-annotated) `Status` and `StatusCode`.
+
+### Changed
+- Upgraded parent project `authzforce-ce-parent` version to 8.2.0:
+  - Upgraded SLF4j to 1.7.32
+  - Upgraded Saxon-HE to 10.6
+  - Upgraded Guava to 31.0
+  - Upgraded Maven plugins:
+    - license-maven-plugin to 4.1
+    - maven-pmd-plugin to 3.15.0 and PMD to 6.42.0
+    - dependency-check-maven to 6.5.3
+    - maven-compiler-plugin to 3.9.0
+    - maven-source-plugin to 3.2.1
+    - maven-javadoc-plugin to 3.3.1
+    - maven-jar-plugin to 3.2.2
+    - maven-gpg-plugin to 3.0.1
+
+
 ## 19.0.0
 ### Fixed
 - CVE-2021-22060: Spring upgraded to 5.2.19
