@@ -2,6 +2,11 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 20.0.0
+### Changed
+- Request pre-processor extension interface changed: `DecisionRequestPreprocessor.Factory#getInstance(...)` method changed: `xmlProcessor` arg removed
+
+
 ## 19.1.0
 ### Fixed
 - PMD/Spotbugs error fix: new classes `ImmutableXacmlStatus`, `ImmutableXacmlStatusCode` used as immutable replacements for XACML-schema-derived (JAXB-annotated) `Status` and `StatusCode`.
