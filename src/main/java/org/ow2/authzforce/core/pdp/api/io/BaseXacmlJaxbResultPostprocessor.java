@@ -17,46 +17,21 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.google.common.collect.ImmutableList;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.*;
+import org.ow2.authzforce.core.pdp.api.*;
+import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
+import org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType;
+import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
+import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.dom.DOMResult;
-
-import org.ow2.authzforce.core.pdp.api.DecisionResult;
-import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.PepAction;
-import org.ow2.authzforce.core.pdp.api.PepActionAttributeAssignment;
-import org.ow2.authzforce.core.pdp.api.StatusHelper;
-import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
-import org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.google.common.collect.ImmutableList;
-
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Advice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AssociatedAdvice;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeAssignment;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.IdReferenceType;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligation;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Obligations;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIdentifierList;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Response;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Result;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Convenient base class for {@link DecisionResultPostprocessor} implementations supporting core XACML-schema-defined XML output handled by JAXB framework
@@ -141,11 +116,11 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			jaxbPolicyIdentifiers = new PolicyIdentifierList(jaxbPolicyIdRefs);
 		}
 
-		return new Result(result.getDecision(), result.getStatus(), xacmlObligations == null || xacmlObligations.isEmpty() ? null : new Obligations(xacmlObligations),
+		return new Result(result.getDecision(), result.getStatus().orElse(null), xacmlObligations == null || xacmlObligations.isEmpty() ? null : new Obligations(xacmlObligations),
 		        xacmlAdvices == null || xacmlAdvices.isEmpty() ? null : new AssociatedAdvice(xacmlAdvices), request == null ? null : request.getAttributesToBeReturned(), jaxbPolicyIdentifiers);
 	}
 
-	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth, final List<Element> statusDetailElements,
+	private static void addStatusMessageForEachCause(final Throwable cause, final int currentCauseDepth, final int maxIncludedCauseDepth/*, final List<Element> statusDetailElements*/,
 	        final Marshaller xacml3Marshaller) throws JAXBException
 	{
 		if (cause == null)
@@ -153,19 +128,22 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			return;
 		}
 
-		assert statusDetailElements != null;
+		//assert statusDetailElements != null;
 
 		// create JAXBElement: StatusMessage(cause.getMessage) and convert it to DOM Element
 		final DOMResult domResult = new DOMResult();
 		xacml3Marshaller.marshal(Xacml3JaxbHelper.XACML_3_0_OBJECT_FACTORY.createStatusMessage(cause.getMessage()), domResult);
-		statusDetailElements.add(((Document) domResult.getNode()).getDocumentElement());
+		/*
+		 TODO: do we need to support StatusDetail (not used so far in errors returned by the PDP)?
+		 */
+		//statusDetailElements.add(((Document) domResult.getNode()).getDocumentElement());
 
 		if (currentCauseDepth == maxIncludedCauseDepth)
 		{
 			return;
 		}
 
-		addStatusMessageForEachCause(cause.getCause(), currentCauseDepth + 1, maxIncludedCauseDepth, statusDetailElements, xacml3Marshaller);
+		addStatusMessageForEachCause(cause.getCause(), currentCauseDepth + 1, maxIncludedCauseDepth/*, statusDetailElements*/, xacml3Marshaller);
 	}
 
 	private final int maxDepthOfErrorCauseIncludedInResult;
@@ -237,7 +215,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 			 * Therefore, maxDepthOfErrorCauseIncludedInResult represents the max depth of the cause to be included in the result Status, i.e. any deeper cause is not included. If {@code
 			 * maxIncludedCauseDepth == 0}, the result is the same as {@link #getTopLevelStatus()}.
 			 */
-			final List<Element> statusDetailElements = new ArrayList<>(maxDepthOfErrorCauseIncludedInResult);
+			//final List<Element> statusDetailElements = new ArrayList<>(maxDepthOfErrorCauseIncludedInResult);
 			final Marshaller marshaller;
 			try
 			{
@@ -251,7 +229,7 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 
 			try
 			{
-				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult, statusDetailElements, marshaller);
+				addStatusMessageForEachCause(error.getCause(), 1, maxDepthOfErrorCauseIncludedInResult/*, statusDetailElements*/, marshaller);
 			}
 			catch (final JAXBException e)
 			{
@@ -259,7 +237,8 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 				throw new RuntimeException("Failed to marshall IndeterminateEvaluationException causes into StatusDetail/StatusMessages of Indeterminate Result", e);
 			}
 
-			finalStatus = new StatusHelper(Collections.singletonList(error.getStatusCode()), Optional.ofNullable(error.getMessage()), Optional.of(new StatusDetail(statusDetailElements)));
+
+			finalStatus = new ImmutableXacmlStatus(Collections.singletonList(error.getTopLevelStatus().getStatusCode().getValue()), Optional.ofNullable(error.getMessage()));
 		}
 
 		final Result result = new Result(DecisionType.INDETERMINATE, finalStatus, null, null, null, null);

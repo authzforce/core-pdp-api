@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.s9api.XdmNode;
 
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
@@ -130,7 +132,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	private final String categoryId;
-	private final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes;
+	private final ImmutableSet<Entry<AttributeFqn, AV_BAG>> namedAttributes;
 	private final IteratorProvider<AV_BAG> iteratorProvider;
 	private final RETURNED_ATTRIBUTE_CATEGORY attrsToIncludeInResult;
 
@@ -158,6 +160,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 *             iff {@code namedAttributes != null && !namedAttributes.isEmpty() && namedAttributeIteratorConverter == null} (namedAttributeIteratorConverter required if namedAttributes not
 	 *             null/empty)
 	 */
+	@SuppressFBWarnings(value="EI_EXPOSE_REP2", justification="XdmNode considered immutable")
 	public SingleCategoryAttributes(final String categoryId, final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
 			final RETURNED_ATTRIBUTE_CATEGORY returnedAttributeCategory, final XdmNode extraContent) throws IllegalArgumentException
 	{
@@ -165,7 +168,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 		// Reminder: XACML <Attribute> element is not mandatory in XACML <Attributes>
 		if (namedAttributes == null || namedAttributes.isEmpty())
 		{
-			this.namedAttributes = Collections.emptySet();
+			this.namedAttributes = ImmutableSet.of();
 			this.iteratorProvider = (IteratorProvider<AV_BAG>) EMPTY_ITERATOR_PROVIDER;
 		}
 		else
@@ -175,7 +178,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 				throw new IllegalArgumentException("Null input namedAttributeIteratorConverter but required because namedAttributes not null/empty: " + namedAttributes);
 			}
 
-			this.namedAttributes = namedAttributes;
+			this.namedAttributes = ImmutableSet.copyOf(namedAttributes);
 			this.iteratorProvider = new ConvertingIteratorProvider<>(namedAttributeIteratorConverter);
 		}
 
@@ -198,6 +201,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 * 
 	 * @return the Content in XPath data model
 	 */
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="XdmNode considered immutable")
 	public XdmNode getExtraContent()
 	{
 		return extraContent;

@@ -17,11 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.Objects;
-
 import com.google.common.collect.ImmutableList;
 
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * This class provides a skeletal implementation of the {@link DecisionResult} interface to minimize the effort required to implement this interface. Note that this class only overrides/implements
@@ -29,17 +28,18 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
  */
 public abstract class BaseDecisionResult implements DecisionResult
 {
-	private final Status status;
+	private final Optional<ImmutableXacmlStatus> status;
 
 	private transient volatile int hashCode = 0;
 
-	protected BaseDecisionResult(final Status status)
+	protected BaseDecisionResult(final Optional<ImmutableXacmlStatus> status)
 	{
+		assert status != null;
 		this.status = status;
 	}
 
 	@Override
-	public final Status getStatus()
+	public final Optional<ImmutableXacmlStatus> getStatus()
 	{
 		return this.status;
 	}

@@ -1,140 +1,144 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-   <parent>
-      <groupId>org.ow2.authzforce</groupId>
-      <artifactId>authzforce-ce-parent</artifactId>
-      <version>8.1.0</version>
-   </parent>
-   <artifactId>authzforce-ce-core-pdp-api</artifactId>
-   <version>19.0.0</version>
-   <name>${project.groupId}:${project.artifactId}</name>
-   <description>AuthzForce - Core PDP API</description>
-   <url>${project.url}</url>
-   <scm>
-      <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
-      <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
-      <tag>HEAD</tag>
-      <!-- Public browsable repository URL. For example, via Gitlab web UI. -->
-      <url>${git.url.base}/core-pdp-api</url>
-   </scm>
-   <dependencies>
-      <!-- Third-party dependencies -->
-      <dependency>
-         <!-- For logging -->
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-      </dependency>
-      <dependency>
-         <!-- For representing Attributes/Content (free form XML) in XML Data Model (XDM). This is used for XPath evaluation required by XACML AttributeSelector and XPath-based functions (making reference 
-            to [XF]). -->
-         <groupId>net.sf.saxon</groupId>
-         <artifactId>Saxon-HE</artifactId>
-      </dependency>
-      <dependency>
-         <!-- For validation of XACML RFC822Name (email address) -->
-         <groupId>javax.mail</groupId>
-         <artifactId>javax.mail-api</artifactId>
-         <version>1.6.2</version>
-         <!-- Must be replaced with actual implementation at runtime (to be provided), e.g. com.sun.mail:javax.mail -->
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAddress datatype), Domain names (XACML
-            DNSName datatype), etc. without any DNS resolution -->
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-      </dependency>
-
-      <!-- AuthZForce dependencies -->
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>${artifactId.prefix}-xacml-model</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>${artifactId.prefix}-pdp-ext-model</artifactId>
-      </dependency>
-   </dependencies>
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <configuration>
-               <verbose>true</verbose>
-            </configuration>
-            <executions>
-               <execution>
-                  <phase>verify</phase>
-                  <goals>
-                     <goal>check</goal>
-                     <goal>cpd-check</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ow2.authzforce</groupId>
+        <artifactId>authzforce-ce-parent</artifactId>
+        <version>8.2.0</version>
+    </parent>
+    <artifactId>authzforce-ce-core-pdp-api</artifactId>
+    <version>19.1.0</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>AuthzForce - Core PDP API</description>
+    <url>${project.url}</url>
+    <scm>
+        <connection>scm:git:${git.url.base}/core-pdp-api.git</connection>
+        <developerConnection>scm:git:${git.url.base}/core-pdp-api.git</developerConnection>
+        <tag>HEAD</tag>
+        <!-- Public browsable repository URL. For example, via Gitlab web UI. -->
+        <url>${git.url.base}/core-pdp-api</url>
+    </scm>
+    <dependencies>
+        <!-- Third-party dependencies -->
+        <dependency>
+            <!-- For logging -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <!-- For representing Attributes/Content (free form XML) in XML Data Model (XDM). This is used for XPath evaluation required by XACML AttributeSelector and XPath-based functions (making reference
+               to [XF]). -->
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+        </dependency>
+        <dependency>
+            <!-- For validation of XACML RFC822Name (email address) -->
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.6.2</version>
+            <!-- Must be replaced with actual implementation at runtime (to be provided), e.g. com.sun.mail:javax.mail -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAddress datatype), Domain names (XACML
+               DNSName datatype), etc. without any DNS resolution -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.spotbugs</groupId>
-               <artifactId>spotbugs-maven-plugin</artifactId>
-            <configuration>
-               <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
-            </configuration>
-            <executions>
-               <execution>
-                  <phase>verify</phase>
-                  <goals>
-                     <goal>check</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <configuration>
-              <cveValidForHours>24</cveValidForHours>
-               <!-- The plugin has numerous issues with version matching, which triggers false positives, so we need a "suppression" file for those. More info: https://github.com/jeremylong/DependencyCheck/issues -->
-               <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
-               <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
-            </configuration>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>check</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>com.mycila</groupId>
-            <artifactId>license-maven-plugin</artifactId>
-            <configuration>
-               <header>license/alv2-header.txt</header>
-               <!-- <skipExistingHeaders>true</skipExistingHeaders> -->
-               <headerDefinitions>
-                  <headerDefinition>license/header-defs.xml</headerDefinition>
-               </headerDefinitions>
-               <includes>
-                  <include>src/**</include>
-               </includes>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>format-sources-license</id>
-                  <phase>process-sources</phase>
-                  <goals>
-                     <goal>format</goal>
-                  </goals>
-               </execution>
-               <execution>
-                  <id>format-test-sources-license</id>
-                  <phase>process-test-sources</phase>
-                  <goals>
-                     <goal>format</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
+            <artifactId>spotbugs-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- AuthZForce dependencies -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${artifactId.prefix}-xacml-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${artifactId.prefix}-pdp-ext-model</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <configuration>
+                    <cveValidForHours>24</cveValidForHours>
+                    <!-- The plugin has numerous issues with version matching, which triggers false positives, so we need a "suppression" file for those. More info: https://github.com/jeremylong/DependencyCheck/issues -->
+                    <suppressionFile>owasp-dependency-check-suppression.xml</suppressionFile>
+                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <header>license/alv2-header.txt</header>
+                    <!-- <skipExistingHeaders>true</skipExistingHeaders> -->
+                    <headerDefinitions>
+                        <headerDefinition>license/header-defs.xml</headerDefinition>
+                    </headerDefinitions>
+                    <includes>
+                        <include>src/**</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>format-sources-license</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>format-test-sources-license</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -19,6 +19,7 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 import javax.security.auth.x500.X500Principal;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -37,10 +38,11 @@ public final class X500NameValue extends StringParseableValue<String>
 	 * Creates a new <code>X500NameValue</code> from an {@link X500Principal}.
 	 *
 	 * @param value
-	 *            a string representing the X500 name
+	 *            a string representing the X500 name (considered immutable, therefore suppress Spotbugs warning)
 	 * @throws java.lang.IllegalArgumentException
 	 *             if value is not a valid XACML X500Name
 	 */
+	@SuppressFBWarnings(value="EI_EXPOSE_REP2", justification="X500Principal is immutable")
 	public X500NameValue(final X500Principal value) throws IllegalArgumentException
 	{
 		super(value.getName());

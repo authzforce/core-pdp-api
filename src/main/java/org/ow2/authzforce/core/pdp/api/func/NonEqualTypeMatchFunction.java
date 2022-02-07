@@ -20,8 +20,10 @@ package org.ow2.authzforce.core.pdp.api.func;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.PatternSyntaxException;
 
+import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerMultiPrimitiveTypeEval;
@@ -81,8 +83,8 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 */
 	public static class CallFactory<T0 extends AttributeValue, T1 extends AttributeValue>
 	{
-		private final String invalidArgTypesErrorMsg;
-		private final String invalidRegexErrorMsg;
+		private final ImmutableXacmlStatus invalidArgTypesErrorStatus;
+		private final ImmutableXacmlStatus invalidRegexErrorStatus;
 		private final Datatype<T0> paramType0;
 		private final Datatype<T1> paramType1;
 		private final Matcher<T0, T1> matcher;
@@ -91,8 +93,8 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 		private CallFactory(final FirstOrderFunctionSignature<BooleanValue> functionSig, final Datatype<T0> paramType0, final Datatype<T1> paramType1, final Matcher<T0, T1> matcher)
 		{
 
-			this.invalidArgTypesErrorMsg = "Function " + functionSig.getName() + ": Invalid arg types. Expected: " + paramType0 + "," + paramType1;
-			this.invalidRegexErrorMsg = "Function " + functionSig.getName() + ": Invalid regular expression in arg#0";
+			this.invalidArgTypesErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of("Function " + functionSig.getName() + ": Invalid arg types. Expected: " + paramType0 + "," + paramType1));
+			this.invalidRegexErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of("Function " + functionSig.getName() + ": Invalid regular expression in arg#0"));
 			this.paramType0 = paramType0;
 			this.paramType1 = paramType1;
 			this.matcher = matcher;
@@ -117,7 +119,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 						arg1 = paramType1.cast(rawArg1);
 					} catch (final ClassCastException e)
 					{
-						throw new IndeterminateEvaluationException(invalidArgTypesErrorMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
+						throw new IndeterminateEvaluationException(invalidArgTypesErrorStatus, e);
 					}
 
 					final boolean isMatched;
@@ -126,7 +128,7 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 						isMatched = matcher.match(arg0, arg1);
 					} catch (final PatternSyntaxException e)
 					{
-						throw new IndeterminateEvaluationException(invalidRegexErrorMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
+						throw new IndeterminateEvaluationException(invalidRegexErrorStatus, e);
 					}
 
 					return BooleanValue.valueOf(isMatched);

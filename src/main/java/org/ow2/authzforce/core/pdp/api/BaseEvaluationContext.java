@@ -88,8 +88,7 @@ public abstract class BaseEvaluationContext implements EvaluationContext
         {
             throw new IndeterminateEvaluationException("Datatype (" + bagResult.getElementDatatype() + ") of AttributeDesignator " + attributeFqn + " in context is different from expected/requested ("
                     + datatype
-                    + "). May be caused by refering to the same Attribute Category/Id/Issuer with different Datatypes in different policy elements and/or attribute providers, which is not allowed.",
-                    XacmlStatusCode.SYNTAX_ERROR.value());
+                    + "). May be caused by refering to the same Attribute Category/Id/Issuer with different Datatypes in different policy elements and/or attribute providers, which is not allowed.", XacmlStatusCode.SYNTAX_ERROR.value());
         }
 
         /*
@@ -141,8 +140,7 @@ public abstract class BaseEvaluationContext implements EvaluationContext
             return expectedDatatype.cast(val);
         } catch (final ClassCastException e)
         {
-            throw new IndeterminateEvaluationException("Datatype of variable '" + variableId + "' in context does not match expected datatype: " + expectedDatatype,
-                    XacmlStatusCode.PROCESSING_ERROR.value(), e);
+            throw new IndeterminateEvaluationException("Datatype of variable '" + variableId + "' in context does not match expected datatype: " + expectedDatatype, XacmlStatusCode.PROCESSING_ERROR.value(), e);
         }
     }
 

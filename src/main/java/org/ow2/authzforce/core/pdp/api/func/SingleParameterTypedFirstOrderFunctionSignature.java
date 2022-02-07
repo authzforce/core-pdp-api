@@ -17,14 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
+import com.google.common.collect.ImmutableList;
 import org.ow2.authzforce.core.pdp.api.value.BagDatatype;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * First-order function signature having every parameter of the same datatype
@@ -38,7 +38,7 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 {
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
-	private final List<? extends Datatype<PARAM>> paramTypes;
+	private final ImmutableList<? extends Datatype<PARAM>> paramTypes;
 
 	/**
 	 * Creates function signature
@@ -82,7 +82,7 @@ public class SingleParameterTypedFirstOrderFunctionSignature<RETURN extends Valu
 			throw new IllegalArgumentException("Invalid number of function parameters (0) for first-order function (" + name + "). Required: >= 1.");
 		}
 
-		this.paramTypes = Collections.unmodifiableList(parameterTypes);
+		this.paramTypes = ImmutableList.copyOf(parameterTypes);
 	}
 
 	/**

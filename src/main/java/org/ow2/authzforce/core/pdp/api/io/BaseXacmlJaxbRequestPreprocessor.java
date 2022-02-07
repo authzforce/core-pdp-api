@@ -17,15 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor;
-import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.MutableAttributeBag;
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
+import net.sf.saxon.s9api.XPathCompiler;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
+import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.ContentSkippingXacmlJaxbAttributesParserFactory;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.FullXacmlJaxbAttributesParserFactory;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.NamedXacmlJaxbAttributeParser;
@@ -33,12 +30,9 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Convenient base class for {@link DecisionRequestPreprocessor} implementations supporting core XACML-schema-defined XML input handled by JAXB framework
@@ -52,12 +46,6 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 	 * Indeterminate exception to be thrown iff CombinedDecision element is not supported
 	 */
 	private static final IndeterminateEvaluationException UNSUPPORTED_COMBINED_DECISION_EXCEPTION = new IndeterminateEvaluationException("Unsupported CombinedDecision value in Request: 'true'",
-			XacmlStatusCode.SYNTAX_ERROR.value());
-
-	/**
-	 * Indeterminate exception to be thrown iff RequestDefaults element not supported by the request preprocessor
-	 */
-	protected static final IndeterminateEvaluationException UNSUPPORTED_REQUEST_DEFAULTS_EXCEPTION = new IndeterminateEvaluationException("Unsupported element in Request: <RequestDefaults>",
 			XacmlStatusCode.SYNTAX_ERROR.value());
 
 	/**
@@ -93,9 +81,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 	 *            not fully compliant).
 	 * @param requireContentForXPath
 	 *            true iff Attributes/Content parsing (into XDM) for XPath evaluation is required
-	 * 
-	 * @param xmlProcessor
-	 *            XML processor for parsing Attributes/Content elements into XDM for XPath evaluation. May be null if {@code requireContentForXPath} is false.
+	 *
 	 * @param extraPdpFeatures
 	 *            extra - non-mandatory per XACML 3.0 core specification - features supported by PDP engine. Any feature requested by any request is checked against this before processing the request
 	 *            further. If some feature is not supported, an Indeterminate Result is returned.
@@ -103,7 +89,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 	 *             if {@code strictAttributeIssuerMatch == false && allowAttributeDuplicates == false} which is not supported
 	 */
 	protected BaseXacmlJaxbRequestPreprocessor(final AttributeValueFactoryRegistry attributeValueFactoryRegistry, final boolean strictAttributeIssuerMatch, final boolean allowAttributeDuplicates,
-			final boolean requireContentForXPath, final Processor xmlProcessor, final Set<String> extraPdpFeatures) throws UnsupportedOperationException
+			final boolean requireContentForXPath, final Set<String> extraPdpFeatures) throws UnsupportedOperationException
 	{
 
 		final NamedXacmlAttributeParser<Attribute> namedXacmlAttParser = new NamedXacmlJaxbAttributeParser(attributeValueFactoryRegistry);
@@ -113,7 +99,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 					? new NonIssuedLikeIssuedLaxXacmlAttributeParser<>(namedXacmlAttParser)
 					: new IssuedToNonIssuedCopyingLaxXacmlAttributeParser<>(namedXacmlAttParser);
 			this.xacmlAttrsParserFactory = requireContentForXPath
-					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor)
+					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER)
 					: new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.MUTABLE_TO_CONSTANT_ATTRIBUTE_ITERATOR_CONVERTER);
 		}
 		else // allowAttributeDuplicates == false
@@ -121,7 +107,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 		{
 			final XacmlRequestAttributeParser<Attribute, AttributeBag<?>> xacmlAttributeParser = new NonIssuedLikeIssuedStrictXacmlAttributeParser<>(namedXacmlAttParser);
 			this.xacmlAttrsParserFactory = requireContentForXPath
-					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER, xmlProcessor)
+					? new FullXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER)
 					: new ContentSkippingXacmlJaxbAttributesParserFactory<>(xacmlAttributeParser, SingleCategoryAttributes.IDENTITY_ATTRIBUTE_ITERATOR_CONVERTER);
 		}
 		else

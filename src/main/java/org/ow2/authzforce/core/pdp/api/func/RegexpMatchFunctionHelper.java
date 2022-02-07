@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
+import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
@@ -66,21 +67,22 @@ public final class RegexpMatchFunctionHelper
 		private final RegularExpression compiledRegex;
 		private final List<Expression<?>> argExpressionsAfterRegex;
 		private final Datatype<? extends SimpleValue<String>> matchedValType;
-		private final String invalidRemainingArg1TypeMsg;
-		private final String funcId;
+		private final ImmutableXacmlStatus invalidRemainingArg1TypeErrorStatus;
+		private final ImmutableXacmlStatus invalidArg1ErrorStatus;
 
 		private CompiledRegexMatchFunctionCall(final FirstOrderFunctionSignature<BooleanValue> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes,
 		        final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
 		{
 			super(functionSig, argExpressions, remainingArgTypes);
-			this.funcId = functionSig.getName();
+			assert invalidRemainingArg1TypeMsg != null;
 			this.compiledRegex = compiledRegex;
 			/*
 			 * We can remove the first arg from argExpressions since it is already the compiledRegex.
 			 */
 			this.argExpressionsAfterRegex = argExpressions.subList(1, argExpressions.size());
 			this.matchedValType = matchedValueType;
-			this.invalidRemainingArg1TypeMsg = invalidRemainingArg1TypeMsg;
+			this.invalidRemainingArg1TypeErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(),Optional.of(invalidRemainingArg1TypeMsg));
+			this.invalidArg1ErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of("Function " + functionSig.getName() + ": Indeterminate arg #1"));
 		}
 
 		@Override
@@ -96,7 +98,7 @@ public final class RegexpMatchFunctionHelper
 				}
 				catch (final ClassCastException e)
 				{
-					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeMsg, XacmlStatusCode.PROCESSING_ERROR.value(), e);
+					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeErrorStatus, e);
 				}
 			}
 			else
@@ -107,7 +109,7 @@ public final class RegexpMatchFunctionHelper
 				}
 				catch (final IndeterminateEvaluationException e)
 				{
-					throw new IndeterminateEvaluationException("Function " + this.funcId + ": Indeterminate arg #1", XacmlStatusCode.PROCESSING_ERROR.value(), e);
+					throw new IndeterminateEvaluationException(invalidArg1ErrorStatus, e);
 				}
 			}
 

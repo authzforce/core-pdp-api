@@ -17,13 +17,13 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
+import com.google.common.collect.ImmutableList;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 import org.ow2.authzforce.core.pdp.api.value.Value;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * First-order function signature whose parameters have (at least two) different datatypes
@@ -36,7 +36,7 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 
-	private final List<? extends Datatype<?>> paramTypes;
+	private final ImmutableList<? extends Datatype<?>> paramTypes;
 
 	/**
 	 * 
@@ -73,7 +73,7 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 		{
 			throw new IllegalArgumentException("Invalid number of function parameters (" + parameterTypes.size() + ") for multi-parameter-typed function (" + name + "). Required: >= " + 2 + ".");
 		}
-		this.paramTypes = Collections.unmodifiableList(parameterTypes);
+		this.paramTypes = ImmutableList.copyOf(parameterTypes);
 	}
 
 	/**

@@ -17,11 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
-import java.util.Optional;
-
+import com.google.common.base.Preconditions;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 
-import com.google.common.base.Preconditions;
+import java.util.Optional;
 
 /**
  * Exception wrapper for XACML Indeterminate/error caused by evaluation
@@ -33,67 +32,99 @@ import com.google.common.base.Preconditions;
  */
 public class IndeterminateEvaluationException extends Exception
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	private final String xacmlStatusCode;
 
-	private transient volatile Status topLevelStatus = null;
 
-	/**
-	 * Creates exception with message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR})
-	 * 
-	 * @param message
-	 *            exception message
-	 * @param statusCode
-	 *            XACML StatusCode value, must be a valid xs:anyURI (used as XACML StatusCode Value)
-	 */
-	public IndeterminateEvaluationException(final String message, final String statusCode)
+	private static Status validateArg(ImmutableXacmlStatus status)
 	{
-		this(message, statusCode, null);
+		Preconditions.checkArgument(status != null && status.getStatusCode() != null, "Undefined status arg or status code from status arg");
+		return status;
 	}
+
+	private static String validateArg(String errorMessage)
+	{
+		Preconditions.checkArgument(errorMessage != null && !errorMessage.isEmpty(), "Undefined/empty error message arg");
+		return errorMessage;
+	}
+
+
+	private static Throwable validateArg(Throwable cause)
+	{
+		Preconditions.checkArgument(cause != null && cause.getMessage() != null && !cause.getMessage().isEmpty(), "Undefined/empty error message arg");
+		return cause;
+	}
+
+	private final ImmutableXacmlStatus xacmlStatus;
 
 	/**
 	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR}), and internal cause for error
-	 * 
-	 * @param message
-	 *            exception message
-	 * @param statusCode
-	 *            XACML StatusCode value, must be a Valid xs:anyURI (used as XACML StatusCode Value)
+	 *
+	 * @param status XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
 	 * @param cause
 	 *            internal cause of error
 	 */
-	public IndeterminateEvaluationException(final String message, final String statusCode, final Throwable cause)
+	public IndeterminateEvaluationException(final ImmutableXacmlStatus status, final Throwable cause)
 	{
-		super(message, cause);
-		Preconditions.checkNotNull(statusCode, "Undefined status code (statusCode arg)");
-		this.xacmlStatusCode = statusCode;
+		super(validateArg(status).getStatusMessage(), cause);
+		this.xacmlStatus = status;
 	}
 
 	/**
-	 * Get XACML status code for this "Indeterminate"
-	 * 
-	 * @return StatusCode value
+	 * Creates exception with message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR})
+	 *
+	 * @param status XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
 	 */
-	public String getStatusCode()
+	public IndeterminateEvaluationException(final ImmutableXacmlStatus status)
 	{
-		return xacmlStatusCode;
+		this(status, null);
+	}
+
+	/**
+	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR})
+	 *
+	 * @param message error message XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 * @param xacmlStatusCode
+	 *            XACML StatusCode value
+	 * @param cause
+	 * 	           internal cause of error
+	 */
+	public IndeterminateEvaluationException(final String message, String xacmlStatusCode, Throwable cause)
+	{
+		this(new ImmutableXacmlStatus(xacmlStatusCode, Optional.of(validateArg(message))), validateArg(cause));
+	}
+
+	/**
+	 * Instantiates with error message and cause
+	 *
+	 * @param message error message XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 * @param cause
+	 * 	           internal cause of error
+	 */
+	public IndeterminateEvaluationException(final String message, IndeterminateEvaluationException cause)
+	{
+		this(new ImmutableXacmlStatus(cause.getTopLevelStatus().getStatusCode().getValue(), Optional.of(validateArg(message))), validateArg(cause));
+	}
+
+	/**
+	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR})
+	 *
+	 * @param message error message XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 * @param xacmlStatusCode
+	 *            XACML StatusCode value
+	 */
+	public IndeterminateEvaluationException(final String message, String xacmlStatusCode)
+	{
+		this(new ImmutableXacmlStatus(xacmlStatusCode, Optional.of(validateArg(message))));
 	}
 
 	/**
 	 * Get status corresponding to the top-level exception (last occurred) in the stacktrace
 	 * 
-	 * @return status
+	 * @return status (always non-null)
 	 */
-	public Status getTopLevelStatus()
+	public ImmutableXacmlStatus getTopLevelStatus()
 	{
-		if (topLevelStatus == null)
-		{
-			topLevelStatus = new StatusHelper(xacmlStatusCode, Optional.ofNullable(this.getMessage()));
-		}
-
-		return topLevelStatus;
+		return this.xacmlStatus;
 	}
 
 }

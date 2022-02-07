@@ -17,8 +17,9 @@
  */
 package org.ow2.authzforce.core.pdp.api.policy;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 			"Other Policy(Set) Version for comparison is undefined");
 
 	private final String version;
-	private final List<Integer> numbers;
+	private final ImmutableList<Integer> numbers;
 
 	// cached hashCode() result
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
@@ -54,7 +55,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	PolicyVersion(final String version, final List<Integer> numbers)
 	{
 		assert version != null;
-		this.numbers = Collections.unmodifiableList(numbers);
+		this.numbers = ImmutableList.copyOf(numbers);
 		this.version = version;
 	}
 
@@ -101,7 +102,7 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 			intTokens.add(number);
 		}
 
-		this.numbers = Collections.unmodifiableList(intTokens);
+		this.numbers = ImmutableList.copyOf(intTokens);
 		this.version = version;
 	}
 
