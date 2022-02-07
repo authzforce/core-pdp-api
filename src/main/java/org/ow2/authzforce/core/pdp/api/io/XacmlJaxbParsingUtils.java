@@ -371,7 +371,7 @@ public final class XacmlJaxbParsingUtils
 		 * @param namedAttributeIteratorConverter
 		 *            converts iterator over attributes with values produced by {@code jaxbAttributeParser}, into constant-valued/immutable attribute iterator
 		 * @throws IllegalArgumentException error
-		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null || xmlProcessor == null)}
+		 *             {@code if(jaxbAttributeParser == null || namedAttributeIteratorConverter == null)}
 		 */
 		public FullXacmlJaxbAttributesParserFactory(final XacmlRequestAttributeParser<Attribute, BAG> xacmlReqAttributeParser,
 		        final NamedAttributeIteratorConverter<BAG> namedAttributeIteratorConverter)

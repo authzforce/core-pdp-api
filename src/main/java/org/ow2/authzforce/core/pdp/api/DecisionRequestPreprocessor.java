@@ -17,13 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import net.sf.saxon.s9api.Processor;
-
-import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
 
 /**
  * XACML Decision Request pre-processor; applies some validation and processing of the input request prior to the policy evaluation. For example, a request preprocessor may transform an XACML Request
@@ -114,8 +112,6 @@ public interface DecisionRequestPreprocessor<INPUT_DECISION_REQUEST, OUTPUT_INDI
 		 *            true iff XPath evaluation against Attributes/Content element is required (e.g. for AttributeSelector or xpathExpression evaluation). A preprocessor may skip Content parsing for
 		 *            XPath evaluation, if and only if this is false. (Be aware that a preprocessor may support the MultipleDecision Profile or Hierarchical Profile and therefore require Content
 		 *            parsing for other purposes defined by these profiles.)
-		 * @param xmlProcessor
-		 *            XML processor for parsing Attributes/Content prior to XPATH evaluation (e.g. AttributeSelectors). May be null if {@code requireContentForXPath} is false.
 		 * @param extraPdpEngineFeatures
 		 *            extra - not mandatory per XACML 3.0 core specification - features supported by the PDP engine. If a decision request uses any such non-mandatory feature (e.g.
 		 *            CombinedDecision=true in XACML), the request preprocessor should use this argument to check whether it is supported by the PDP before processing the request further. See
@@ -123,7 +119,7 @@ public interface DecisionRequestPreprocessor<INPUT_DECISION_REQUEST, OUTPUT_INDI
 		 * @return instance of Request preprocessor
 		 */
 		DecisionRequestPreprocessor<IDR, OIDR> getInstance(AttributeValueFactoryRegistry datatypeFactoryRegistry, boolean strictAttributeIssuerMatch, boolean requireContentForXPath,
-				Processor xmlProcessor, Set<String> extraPdpEngineFeatures);
+				Set<String> extraPdpEngineFeatures);
 	}
 
 }
