@@ -17,15 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import org.ow2.authzforce.core.pdp.api.PdpExtension;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
+
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import net.sf.saxon.s9api.XPathCompiler;
-
-import org.ow2.authzforce.core.pdp.api.PdpExtension;
+import java.util.Optional;
 
 /**
  * Datatype-specific Attribute Value Factory/Parser.
@@ -62,10 +61,10 @@ public interface AttributeValueFactory<AV extends AttributeValue> extends PdpExt
 	 * @param otherAttributes
 	 *            non-null/mandatory list of other XML attributes of the value node; may be empty if none
 	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating XPath expressions in values, e.g. XACML xpathExpression
+	 *            XPath compiler for compiling/evaluating XPath expressions in values, e.g. XACML xpathExpression. Undefined if XPath support disabled.
 	 * @return attribute value in internal model suitable for Expression evaluators
 	 * @throws IllegalArgumentException
 	 *             if content/otherAttributes are not valid for the datatype handled by this factory
 	 */
-	AV getInstance(final List<Serializable> content, Map<QName, String> otherAttributes, XPathCompiler xPathCompiler) throws IllegalArgumentException;
+	AV getInstance(final List<Serializable> content, Map<QName, String> otherAttributes, Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException;
 }

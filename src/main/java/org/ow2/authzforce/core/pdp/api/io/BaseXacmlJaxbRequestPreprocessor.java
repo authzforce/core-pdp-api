@@ -17,21 +17,27 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import net.sf.saxon.s9api.XPathCompiler;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attribute;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Attributes;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Request;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestDefaults;
-import org.ow2.authzforce.core.pdp.api.*;
+import org.ow2.authzforce.core.pdp.api.DecisionRequestPreprocessor;
+import org.ow2.authzforce.core.pdp.api.DecisionResultPostprocessor;
+import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.MutableAttributeBag;
+import org.ow2.authzforce.core.pdp.api.expression.BaseXPathCompilerProxy;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.ContentSkippingXacmlJaxbAttributesParserFactory;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.FullXacmlJaxbAttributesParserFactory;
 import org.ow2.authzforce.core.pdp.api.io.XacmlJaxbParsingUtils.NamedXacmlJaxbAttributeParser;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
+import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,6 +46,7 @@ import java.util.Set;
  */
 public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionRequestPreprocessor<Request, IndividualXacmlJaxbRequest>
 {
+
 	private static final UnsupportedOperationException UNSUPPORTED_MODE_EXCEPTION = new UnsupportedOperationException(
 			"Unsupported BaseXacmlJaxbRequestPreprocessor mode: allowAttributeDuplicates == false && strictAttributeIssuerMatch == false");
 	/**
@@ -159,10 +166,10 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 	 * @param combinedDecision
 	 *            XACML Request's property {@code isCombinedDecision}
 	 * @param xPathCompiler
-	 *            xpathExpression compiler, corresponding to the XACML RequestDefaults element, or null if no RequestDefaults element.
+	 *            xpathExpression compiler, corresponding to the XACML RequestDefaults element, or null if no RequestDefaults element or XPath support disabled globally by PDP configuration.
 	 * 
 	 * @param namespaceURIsByPrefix
-	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation
+	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation. If {@code xPathCompiler.isPresent()}, {@code xPathCompiler.get().getDeclaredNamespacePrefixToUriMap()} provides the mappings instead and namespaceURIsByPrefix shall be empty
 	 * 
 	 * @return individual decision requests, as defined in Multiple Decision Profile, e.g. a singleton list if no multiple decision requested or supported by the pre-processor
 	 *         <p>
@@ -172,7 +179,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 	 *             if some feature requested in the Request is not supported by this pre-processor
 	 */
 	public abstract List<IndividualXacmlJaxbRequest> process(List<Attributes> attributesList, SingleCategoryXacmlAttributesParser<Attributes> xacmlAttrsParser,
-			boolean isApplicablePolicyIdListReturned, boolean combinedDecision, XPathCompiler xPathCompiler, Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException;
+															 boolean isApplicablePolicyIdListReturned, boolean combinedDecision, Optional<XPathCompilerProxy> xPathCompiler, Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException;
 
 	@Override
 	public final List<IndividualXacmlJaxbRequest> process(final Request jaxbRequest, final Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException
@@ -206,9 +213,27 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
 		}
 
 		final RequestDefaults jaxbReqDefaults = jaxbRequest.getRequestDefaults();
-		final XPathCompiler xPathCompiler = jaxbReqDefaults == null ? null : XmlUtils.newXPathCompiler(jaxbReqDefaults.getXPathVersion(), namespaceURIsByPrefix);
+		final Optional<XPathCompilerProxy> xPathCompiler;
+		final Map<String, String> newNsPrefixToUriMap;
+		if(jaxbReqDefaults == null) {
+			xPathCompiler = Optional.empty();
+			newNsPrefixToUriMap = namespaceURIsByPrefix;
+		} else {
+			try
+			{
+				final XPathVersion xPathVersion = XPathVersion.fromURI(jaxbReqDefaults.getXPathVersion());
+				xPathCompiler = Optional.of(new BaseXPathCompilerProxy(xPathVersion, namespaceURIsByPrefix));
+				/*
+				namespaceURIsByPrefix already held by xPathCompiler and retrievable from it with getDeclaredNamespacePrefixToUriMap().
+				 */
+				newNsPrefixToUriMap = Map.of();
+			} catch(IllegalArgumentException e) {
+				throw new IllegalArgumentException("Invalid/unsupported XPathVersion in Request/RequestDefaults", e);
+			}
+		}
+
 		final SingleCategoryXacmlAttributesParser<Attributes> xacmlAttrsParser = xacmlAttrsParserFactory.getInstance();
-		return process(jaxbRequest.getAttributes(), xacmlAttrsParser, jaxbRequest.isReturnPolicyIdList(), jaxbRequest.isCombinedDecision(), xPathCompiler, namespaceURIsByPrefix);
+		return process(jaxbRequest.getAttributes(), xacmlAttrsParser, jaxbRequest.isReturnPolicyIdList(), jaxbRequest.isCombinedDecision(), xPathCompiler, newNsPrefixToUriMap);
 	}
 
 	/**

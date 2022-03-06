@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.reflect.TypeToken;
+import net.sf.saxon.s9api.ItemType;
 
 /**
  * Primitive datatype
@@ -48,9 +49,9 @@ public class PrimitiveDatatype<AV extends PrimitiveValue> extends Datatype<AV>
 	 * @throws NullPointerException
 	 *             if {@code instanceClass == null || id == null || functionIdPrefix == null}.
 	 */
-	public PrimitiveDatatype(final Class<AV> instanceClass, final String id, final String functionIdPrefix) throws NullPointerException
+	public PrimitiveDatatype(final Class<AV> instanceClass, final String id, final String functionIdPrefix, final ItemType xpathDatatype) throws NullPointerException
 	{
-		super(TypeToken.of(Objects.requireNonNull(instanceClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix);
+		super(TypeToken.of(Objects.requireNonNull(instanceClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix, xpathDatatype);
 		this.valueClass = instanceClass;
 		this.arrayClass = (Class<AV[]>) Array.newInstance(this.valueClass, 0).getClass();
 	}

@@ -17,7 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
+
+import javax.xml.datatype.Duration;
 
 /**
  * Representation of a xs:dayTimeDuration value. This class supports parsing xs:dayTimeDuration values. All objects of this class are immutable and thread-safe.
@@ -27,6 +32,15 @@ import org.ow2.authzforce.core.pdp.api.XmlUtils;
  */
 public final class DayTimeDurationValue extends DurationValue<DayTimeDurationValue>
 {
+	private static final class XdmDayTimeDurationValue extends XdmAtomicValue
+	{
+		private XdmDayTimeDurationValue(final Duration duration) {
+			super(net.sf.saxon.value.DayTimeDurationValue.fromJavaDuration(java.time.Duration.parse(duration.toString())), true);
+		}
+	}
+
+	private transient volatile XdmItem xdmItem = null;
+
 	/**
 	 * Creates instance from string representation
 	 *
@@ -38,5 +52,17 @@ public final class DayTimeDurationValue extends DurationValue<DayTimeDurationVal
 	public DayTimeDurationValue(final String val) throws IllegalArgumentException
 	{
 		super(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationDayTime(val));
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmDayTimeDurationValue(value);
+		}
+
+		return xdmItem;
 	}
 }

@@ -17,21 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import com.google.common.collect.ImmutableCollection;
+import net.sf.saxon.s9api.XdmNode;
+import org.ow2.authzforce.core.pdp.api.expression.AttributeDesignatorExpression;
+import org.ow2.authzforce.core.pdp.api.expression.AttributeSelectorExpression;
+import org.ow2.authzforce.core.pdp.api.expression.VariableReference;
+import org.ow2.authzforce.core.pdp.api.value.*;
+
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
-
-import org.ow2.authzforce.core.pdp.api.expression.AttributeDesignatorExpression;
-import org.ow2.authzforce.core.pdp.api.expression.AttributeSelectorExpression;
-import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.Bag;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
-import org.ow2.authzforce.core.pdp.api.value.Value;
-import org.ow2.authzforce.core.pdp.api.value.XPathValue;
-
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Manages context for the policy evaluation of a given authorization decision request. Typically, an instance of this is instantiated whenever the PDP gets a request and needs to perform an
@@ -181,9 +177,9 @@ public interface EvaluationContext
 	XdmNode getAttributesContent(String category);
 
 	/**
-	 * Get value of a VariableDefinition's expression evaluated in this context and whose value has been cached with {@link #putVariableIfAbsent(String, Value)} . To be used when evaluating
+	 * Get value of a VariableDefinition's expression evaluated in this context and whose value has been cached with {@link #putVariableIfAbsent(VariableReference, Value)} . To be used when evaluating
 	 * VariableReferences.
-	 * 
+	 *
 	 * @param variableId
 	 *            identifies the VariableDefinition
 	 * @param datatype
@@ -195,6 +191,13 @@ public interface EvaluationContext
 	<V extends Value> V getVariableValue(String variableId, Datatype<V> datatype) throws IndeterminateEvaluationException;
 
 	/**
+	 * Get snapshot of all Variable values in this context
+	 *
+	 * @return Variable values in this context
+	 */
+	ImmutableCollection<Entry<VariableReference<?>, Value>> getVariables();
+
+	/**
 	 * Caches the value of a VariableDefinition's expression evaluated in this context only if variable is not already set in this context, for later retrieval by
 	 * {@link #getVariableValue(String, Datatype)} when evaluating ValueReferences to the same VariableId.
 	 * <p>
@@ -202,13 +205,13 @@ public interface EvaluationContext
 	 * VariableReference evaluation: "the value of an Expression element remains the same for the entire policy evaluation."
 	 * </p>
 	 * 
-	 * @param variableId
-	 *            identifies the VariableDefinition
+	 * @param variableRef
+	 *            references the VariableDefinition
 	 * @param value
 	 *            value of the VariableDefinition's expression evaluated in this context
 	 * @return false iff there is already a value for this variable in context (this operation could NOT succeed).
 	 */
-	boolean putVariableIfAbsent(String variableId, Value value);
+	boolean putVariableIfAbsent(VariableReference<?> variableRef, Value value);
 
 	/**
 	 * Removes a variable (defined by VariableDefinition) from this context.
@@ -217,7 +220,7 @@ public interface EvaluationContext
 	 *            identifies the Variable to remove
 	 * @return the value of the variable before removal, or null if there was no such variable set in this context.
 	 */
-	Value removeVariable(String variableId);
+	Entry<VariableReference<?>, Value> removeVariable(String variableId);
 
 	/**
 	 * Get custom property

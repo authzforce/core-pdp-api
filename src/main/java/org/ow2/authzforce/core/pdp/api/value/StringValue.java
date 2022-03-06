@@ -17,6 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+
 import javax.xml.bind.DatatypeConverter;
 import java.util.Locale;
 
@@ -49,6 +53,8 @@ public final class StringValue extends StringParseableValue<String> implements C
 	{
 		return new StringValue(DatatypeConverter.parseString(val));
 	}
+
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Convert string argument - assumed a valid xsd:string into a String value. Use with caution as no xsd:string format validation is done here. For internal purposes only. If you need proper input
@@ -132,4 +138,14 @@ public final class StringValue extends StringParseableValue<String> implements C
 		return this.value;
 	}
 
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null) {
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
+	}
 }

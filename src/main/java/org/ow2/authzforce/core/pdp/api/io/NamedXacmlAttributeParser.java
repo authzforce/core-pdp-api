@@ -17,11 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import net.sf.saxon.s9api.XPathCompiler;
-
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactory;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValueFactoryRegistry;
+
+import java.util.Optional;
 
 /**
  * Parser that parses named attributes in XACML
@@ -56,6 +57,6 @@ public abstract class NamedXacmlAttributeParser<INPUT_ATTRIBUTE>
 		return datatypeFactory;
 	}
 
-	protected abstract NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final XPathCompiler xPathCompiler)
+	protected abstract NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler)
 			throws IllegalArgumentException;
 }

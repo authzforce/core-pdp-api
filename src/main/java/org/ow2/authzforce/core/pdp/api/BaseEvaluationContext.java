@@ -18,8 +18,8 @@ package org.ow2.authzforce.core.pdp.api;
  * limitations under the License.
  */
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.common.collect.*;
+import org.ow2.authzforce.core.pdp.api.expression.VariableReference;
 import org.ow2.authzforce.core.pdp.api.value.*;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public abstract class BaseEvaluationContext implements EvaluationContext
 
     private final Map<AttributeFqn, AttributeBag<?>> namedAttributes;
 
-    private final Map<String, Value> varValsById = HashCollections.newMutableMap();
+    private final Map<String, Entry<VariableReference<?>, Value>> varValsById = HashCollections.newMutableMap();
 
     private final Map<String, Object> mutableProperties = HashCollections.newMutableMap();
 
@@ -129,28 +129,35 @@ public abstract class BaseEvaluationContext implements EvaluationContext
     @Override
     public final <V extends Value> V getVariableValue(final String variableId, final Datatype<V> expectedDatatype) throws IndeterminateEvaluationException
     {
-        final Value val = varValsById.get(variableId);
-        if (val == null)
+        final Entry<VariableReference<?>, Value> entry = varValsById.get(variableId);
+        if (entry == null)
         {
             return null;
         }
 
         try
         {
-            return expectedDatatype.cast(val);
+            return expectedDatatype.cast(entry.getValue());
         } catch (final ClassCastException e)
         {
             throw new IndeterminateEvaluationException("Datatype of variable '" + variableId + "' in context does not match expected datatype: " + expectedDatatype, XacmlStatusCode.PROCESSING_ERROR.value(), e);
         }
     }
 
+
+    @Override
+    public final ImmutableList<Entry<VariableReference<?>, Value>> getVariables()
+    {
+        return ImmutableList.copyOf(this.varValsById.values());
+    }
+
     /** {@inheritDoc} */
     @Override
-    public final boolean putVariableIfAbsent(final String variableId, final Value value)
+    public final boolean putVariableIfAbsent(final VariableReference<?> variableRef, final Value value)
     {
-        if (varValsById.putIfAbsent(variableId, value) != null)
+        if (varValsById.putIfAbsent(variableRef.getVariableId(), new AbstractMap.SimpleImmutableEntry<>(variableRef, value)) != null)
         {
-            LOGGER.error("Attempt to override value of Variable '{}' already set in evaluation context. Overriding value: {}", variableId, value);
+            LOGGER.error("Attempt to override value of Variable '{}' already set in evaluation context. Overriding value: {}", variableRef.getVariableId(), value);
             return false;
         }
 
@@ -159,7 +166,7 @@ public abstract class BaseEvaluationContext implements EvaluationContext
 
     /** {@inheritDoc} */
     @Override
-    public final Value removeVariable(final String variableId)
+    public final Entry<VariableReference<?>, Value> removeVariable(final String variableId)
     {
         return varValsById.remove(variableId);
     }

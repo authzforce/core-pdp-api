@@ -17,19 +17,18 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 
-import net.sf.saxon.s9api.XPathCompiler;
+import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Registry of AttributeValue Factories supporting multiple datatypes. Any implementation of this must guarantee that there is a one-to-one relationship between AttributeValue (sub)classes and
@@ -56,13 +55,13 @@ public interface AttributeValueFactoryRegistry extends PdpExtensionRegistry<Attr
 	 * @param otherAttributes
 	 *            (mandatory) other XML attributes of the value node, may be empty if none (but not null)
 	 * @param xPathCompiler
-	 *            XPath compiler for evaluating/compiling any XPath expression in {@code value}
+	 *            XPath compiler for evaluating/compiling any XPath expression in {@code value}. Undefined if XPath support disabled.
 	 * @return expression, e.g. {@link org.ow2.authzforce.core.pdp.api.expression.ConstantExpression} for constant AttributeValues, or something like XPathExpression for context-dependent
 	 *         xpathExpression-type of AttributeValues (quite similar to AttributeSelector)
 	 * @throws IllegalArgumentException
 	 *             value datatype unknown/not supported, or if value cannot be parsed into the value's defined datatype
 	 */
-	ConstantExpression<? extends AttributeValue> newExpression(String datatypeId, List<Serializable> content, Map<QName, String> otherAttributes, XPathCompiler xPathCompiler)
+	ConstantExpression<? extends AttributeValue> newExpression(String datatypeId, List<Serializable> content, Map<QName, String> otherAttributes, Optional<XPathCompilerProxy> xPathCompiler)
 	        throws IllegalArgumentException;
 
 	/**

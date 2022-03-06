@@ -19,6 +19,8 @@ package org.ow2.authzforce.core.pdp.api.func;
 
 import java.util.List;
 
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.value.PrimitiveValue;
@@ -61,6 +63,11 @@ public interface Function<RETURN_T extends Value> extends PrimitiveValue, PdpExt
 	 * @return function return type
 	 */
 	Datatype<RETURN_T> getReturnType();
+
+	default XdmItem getXdmItem()
+	{
+		return new XdmAtomicValue(this.getId());
+	}
 
 	/**
 	 * Creates new function call with given arguments (Expressions). Any implementation of this method should first validate inputs according to the function signature/definition.

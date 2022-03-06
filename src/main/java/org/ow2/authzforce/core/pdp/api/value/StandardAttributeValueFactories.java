@@ -17,39 +17,24 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.google.common.collect.ImmutableList;
+import org.ow2.authzforce.core.pdp.api.HashCollections;
+import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry.PdpExtensionComparator;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
-
-import org.ow2.authzforce.core.pdp.api.HashCollections;
-import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry.PdpExtensionComparator;
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-
-import net.sf.saxon.s9api.XPathCompiler;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.time.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * XACML standard datatypes
@@ -749,6 +734,8 @@ public final class StandardAttributeValueFactories
 	/**
 	 * xpathExpression
 	 */
+	private static final RuntimeException UNEXPECTED_XPATH_EXPRESSION_INTERNAL_ERROR = new RuntimeException("Unexpected XPath expression although XPath support disabled");
+
 	public static final SimpleValue.BaseFactory<XPathValue> XPATH = new SimpleValue.BaseFactory<>(StandardDatatypes.XPATH)
 	{
 
@@ -759,14 +746,21 @@ public final class StandardAttributeValueFactories
 		}
 
 		@Override
-		public XPathValue getInstance(final Serializable value, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public XPathValue getInstance(final Serializable value, final Map<QName, String> otherXmlAttributes, final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 		{
+			if(xPathCompiler.isEmpty()) {
+				/*
+				Considered an internal error because it means XPath support is disabled (by PDP configuration or absence of Policy(Set)Defaults/XPathVersion in enclosing/ancestor Policy(Set)), in which case XPath expression not allowed and therefore the Policy(Set) should have been rejected as invalid in a first place!
+				 */
+				throw UNEXPECTED_XPATH_EXPRESSION_INTERNAL_ERROR;
+			}
+
 			if (!(value instanceof String))
 			{
 				throw new IllegalArgumentException("Invalid primitive AttributeValueType: content contains instance of " + value.getClass().getName() + ". Expected: " + String.class);
 			}
 
-			return new XPathValue((String) value, otherXmlAttributes, xPathCompiler);
+			return new XPathValue((String) value, otherXmlAttributes, xPathCompiler.get());
 		}
 	};
 

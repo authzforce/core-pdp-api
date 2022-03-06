@@ -17,10 +17,13 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
+
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
  * Representation of a xs:time value. This class supports parsing xs:time values. All objects of this class are immutable and thread-safe.
@@ -39,6 +42,14 @@ import org.ow2.authzforce.core.pdp.api.XmlUtils;
  */
 public final class TimeValue extends BaseTimeValue<TimeValue>
 {
+	private static final class XdmTimeValue extends XdmAtomicValue {
+		private XdmTimeValue(final XMLGregorianCalendar calendar) {
+			super(new net.sf.saxon.value.TimeValue(calendar.toGregorianCalendar(), calendar.getTimezone()), true);
+		}
+	}
+
+	private transient volatile XdmItem xdmItem = null;
+
 	/**
 	 * Creates a new <code>TimeAttributeValue</code> from a string representation of time
 	 *
@@ -63,6 +74,17 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 	private TimeValue(final XMLGregorianCalendar time) throws IllegalArgumentException
 	{
 		super(time, DatatypeConstants.TIME);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null) {
+			xdmItem = new XdmTimeValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/**

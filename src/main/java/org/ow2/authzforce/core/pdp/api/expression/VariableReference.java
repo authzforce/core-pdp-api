@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
+import net.sf.saxon.s9api.QName;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
 /**
@@ -29,10 +30,16 @@ public interface VariableReference<V extends Value> extends Expression<V>
 {
 
 	/**
-	 * Returns referenced variable ID
+	 * Returns referenced XACML Variable ID (declared in VariableDefinition)
 	 * 
-	 * @return referenced variable ID
+	 * @return referenced XACML Variable ID (declared in VariableDefinition)
 	 */
 	String getVariableId();
+
+	/**
+	 * Returns the XPath-compatible variable name, using {@link #getVariableId()} as localName. Therefore, the XACML VariableId must not contain a colon.
+	 * @return XPath variable name (XACML VariableId used as localName in the QName)
+	 */
+	QName getXPathVariableName();
 
 }

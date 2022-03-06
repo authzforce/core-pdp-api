@@ -21,6 +21,9 @@ import java.net.InetAddress;
 import java.util.Objects;
 
 import com.google.common.net.InetAddresses;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 
 /**
  * Represents the IPAddress datatype introduced in XACML 2.0. All objects of
@@ -156,6 +159,7 @@ public final class IpAddressValue extends StringParseableValue<String> {
 	private final NetworkPortRange portRange;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Instantiates from string representation
@@ -180,6 +184,19 @@ public final class IpAddressValue extends StringParseableValue<String> {
 		this.address = address;
 		this.mask = mask;
 		this.portRange = portRange;
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			// Mapped to String to match ItemType declared in StandardDatatypes class
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

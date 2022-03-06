@@ -17,11 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import com.google.common.reflect.TypeToken;
+
 import java.lang.reflect.Array;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.google.common.reflect.TypeToken;
 
 /**
  * Bag datatype for bags of primitive datatypes
@@ -49,7 +49,10 @@ public class BagDatatype<AV extends AttributeValue> extends Datatype<Bag<AV>>
 	 */
 	BagDatatype(final TypeToken<Bag<AV>> genericBagType, final Datatype<AV> elementDatatype) throws NullPointerException
 	{
-		super(genericBagType, Optional.of(Objects.requireNonNull(elementDatatype)), ID_PREFIX + "<" + elementDatatype + ">", elementDatatype.getFunctionIdPrefix() + "-" + ID_PREFIX);
+		/*
+		 The XPath ItemType is the type of the item in the XPath sequence, so equivalent to the element type in this bag (the XPath equivalent will be a sequence by default)
+		 */
+		super(genericBagType, Optional.of(Objects.requireNonNull(elementDatatype)), ID_PREFIX + "<" + elementDatatype + ">", elementDatatype.getFunctionIdPrefix() + "-" + ID_PREFIX, elementDatatype.getXPathItemType());
 		this.alwaysPresentElementDatatype = Optional.of(Objects.requireNonNull(elementDatatype, "Undefined typeParam"));
 	}
 

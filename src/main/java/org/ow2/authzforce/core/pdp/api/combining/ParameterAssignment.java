@@ -17,16 +17,16 @@
  */
 package org.ow2.authzforce.core.pdp.api.combining;
 
-import java.util.Objects;
-
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.CombinerParameter;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
 import org.ow2.authzforce.core.pdp.api.expression.ExpressionFactory;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Value;
 
-import net.sf.saxon.s9api.XPathCompiler;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.CombinerParameter;
-import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Parameter assignment, may be used to represent an XACML CombinerParameter for example.
@@ -56,7 +56,7 @@ public final class ParameterAssignment
 	 * @throws IllegalArgumentException
 	 *             if {@code param} value is not valid
 	 */
-	public ParameterAssignment(final CombinerParameter param, final ExpressionFactory expFactory, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	public ParameterAssignment(final CombinerParameter param, final ExpressionFactory expFactory, final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 	{
 		// set JAXB AttributeValueType.attributeValue = null, and override
 		// getAttributeValue() to return an instance of AttributeValue instead

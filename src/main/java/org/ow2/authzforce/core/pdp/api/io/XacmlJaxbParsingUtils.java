@@ -19,7 +19,6 @@ package org.ow2.authzforce.core.pdp.api.io;
 
 import com.google.common.collect.ImmutableList;
 import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.*;
 import org.ow2.authzforce.core.pdp.api.*;
@@ -27,6 +26,7 @@ import org.ow2.authzforce.core.pdp.api.XmlUtils.NoXmlnsFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.SAXBasedXmlnsFilteringParser;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.XmlnsFilteringParserFactory;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.io.SingleCategoryAttributes.NamedAttributeIteratorConverter;
 import org.ow2.authzforce.core.pdp.api.policy.BasePrimaryPolicyMetadata;
 import org.ow2.authzforce.core.pdp.api.policy.PolicyVersion;
@@ -81,7 +81,7 @@ public final class XacmlJaxbParsingUtils
 	public static final class NamedXacmlJaxbAttributeParser extends NamedXacmlAttributeParser<Attribute>
 	{
 		private static <AV extends AttributeValue> NamedXacmlAttributeParsingResult<AV> parseNamedAttribute(final AttributeFqn attName, final List<AttributeValueType> nonEmptyInputXacmlAttValues,
-		        final AttributeValueFactory<AV> attValFactory, final XPathCompiler xPathCompiler)
+		        final AttributeValueFactory<AV> attValFactory, final Optional<XPathCompilerProxy> xPathCompiler)
 		{
 			assert attName != null && nonEmptyInputXacmlAttValues != null && !nonEmptyInputXacmlAttValues.isEmpty() && attValFactory != null;
 
@@ -107,7 +107,7 @@ public final class XacmlJaxbParsingUtils
 		}
 
 		@Override
-		protected NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final Attribute inputXacmlAttribute, final XPathCompiler xPathCompiler)
+		protected NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final Attribute inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler)
 		{
 			if (attributeCategoryId == null)
 			{
@@ -172,7 +172,7 @@ public final class XacmlJaxbParsingUtils
 		protected abstract XdmNode parseContent(String categoryName, Content jaxbContent) throws IndeterminateEvaluationException;
 
 		@Override
-		public SingleCategoryAttributes<BAG, Attributes> parseAttributes(final Attributes xacmlAttributes, final XPathCompiler xPathCompiler) throws IndeterminateEvaluationException
+		public SingleCategoryAttributes<BAG, Attributes> parseAttributes(final Attributes xacmlAttributes, final Optional<XPathCompilerProxy> xPathCompiler) throws IndeterminateEvaluationException
 		{
 			assert xacmlAttributes != null;
 			final String categoryId = xacmlAttributes.getCategory();
@@ -414,7 +414,7 @@ public final class XacmlJaxbParsingUtils
 		for (final AttributeAssignment xacmlAttAssig : xacmlAttributeAssignments)
 		{
 			final ConstantExpression<? extends AttributeValue> constantExp = attributeValueFactories.newExpression(xacmlAttAssig.getDataType(), xacmlAttAssig.getContent(),
-			        xacmlAttAssig.getOtherAttributes(), null);
+			        xacmlAttAssig.getOtherAttributes(), Optional.empty());
 			final PepActionAttributeAssignment<?> attAssignment = newPepActionAttributeAssignment(xacmlAttAssig.getAttributeId(), Optional.ofNullable(xacmlAttAssig.getCategory()),
 			        Optional.ofNullable(xacmlAttAssig.getIssuer()), constantExp);
 			attAssignments.add(attAssignment);

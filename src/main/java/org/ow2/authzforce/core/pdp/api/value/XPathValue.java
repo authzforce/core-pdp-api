@@ -17,26 +17,24 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.xml.namespace.QName;
-
+import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.lib.StandardURIChecker;
+import net.sf.saxon.om.NoNamespaceName;
+import net.sf.saxon.s9api.*;
+import net.sf.saxon.tree.linked.ElementImpl;
+import net.sf.saxon.type.BuiltInAtomicType;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import com.google.common.collect.ImmutableMap;
-
-import net.sf.saxon.lib.StandardURIChecker;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmValue;
+import javax.xml.namespace.QName;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -56,7 +54,7 @@ import net.sf.saxon.s9api.XdmValue;
  * if we need to evaluate a 'xpathExpression', in standard XACML, xpathExpressions are used only as parameters of XPath-based functions (A.3.15), and such functions just need to cast input values to
  * this {@link XPathValue} class and call {@link #evaluate(EvaluationContext)} for evaluation. Outside the context of XPath-based functions, we may consider xpathExpressions as simple literal
  * constants like other AttributeValues.
- * 
+ *
  * @version $Id: $
  */
 public final class XPathValue extends SimpleValue<String>
@@ -68,13 +66,13 @@ public final class XPathValue extends SimpleValue<String>
 
 	/**
 	 * QName of XPathCategory attribute in xpathExpression, using {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} as local name. This is allowed by XACML schema as part of:
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * <xs:anyAttribute namespace="##any" processContents="lax"/>
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * ... therefore namespace returned by JAXB is empty "". More info: https://jaxb.java.net/tutorial/section_6_2_7_5 -Collecting-Unspecified-Attributes-XmlAnyAttribute
 	 * .html#Collecting%20Unspecified%20Attributes:%20XmlAnyAttribute
 	 */
@@ -101,6 +99,8 @@ public final class XPathValue extends SimpleValue<String>
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 	private transient volatile ImmutableMap<QName, String> extraXmlAtts = null;
 
+	private transient volatile XdmNode xdmValue;
+
 	/**
 	 * Instantiates from XPath expression.
 	 *
@@ -114,7 +114,7 @@ public final class XPathValue extends SimpleValue<String>
 	 *             if {@code value} is not a valid string representation for this value datatype or {code otherXmlAttributes == null} or {code otherXmlAttributes} does not contain any
 	 *             {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} attribute
 	 */
-	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompilerProxy xPathCompiler) throws IllegalArgumentException
 	{
 		super(xpath);
 		Objects.requireNonNull(otherXmlAttributes, "Undefined XML attributes (expected: " + XPATH_CATEGORY_ATTRIBUTE_QNAME + ")");
@@ -145,7 +145,7 @@ public final class XPathValue extends SimpleValue<String>
 
 	/**
 	 * Convenient method to get the XML nodes ("node-set") matching the XPath expression from the Content node of the XACML Attributes element with category <i>XPathCategory</i> in this
-	 * {@code context}. <i>XPathCategory</i> is extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to {@link #XPathValue(String, Map, XPathCompiler)} when
+	 * {@code context}. <i>XPathCategory</i> is extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to {@link #XPathValue(String, Map, XPathCompilerProxy)} when
 	 * creating this instance. To be used by XPath-based functions defined in section A.3.15 of XACML 3.0 Core specification.
 	 *
 	 * @param context
@@ -197,7 +197,7 @@ public final class XPathValue extends SimpleValue<String>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	/** {@inheritDoc} */
@@ -235,5 +235,18 @@ public final class XPathValue extends SimpleValue<String>
 		}
 
 		return this.extraXmlAtts;
+	}
+
+    @SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmValue == null ) {
+			final ElementImpl node = new ElementImpl();
+			node.addAttribute(new NoNamespaceName(XPATH_CATEGORY_ATTRIBUTE_LOCALNAME), BuiltInAtomicType.STRING, xpathCategory, 0);
+			node.replaceStringValue(value);
+			xdmValue = new XdmNode(node);
+		}
+		return xdmValue;
 	}
 }

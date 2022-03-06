@@ -17,21 +17,25 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.GregorianCalendar;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
+import java.util.GregorianCalendar;
 
 /**
  * Representation of a xs:dateTime value. This class supports parsing xs:dateTime values. All objects of this class are immutable and thread-safe.
  *
- * 
+ *
  * @version $Id: $
  */
 public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 {
+	private transient volatile XdmItem xdmItem = null;
+
 	/**
 	 * Creates a new <code>DateTimeAttributeValue</code> from a string representation of date/time
 	 *
@@ -69,6 +73,18 @@ public final class DateTimeValue extends BaseTimeValue<DateTimeValue>
 	public DateTimeValue(final GregorianCalendar dateTime)
 	{
 		this(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendar(dateTime));
+	}
+
+    @SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmAtomicValue(value.toGregorianCalendar().toZonedDateTime());
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

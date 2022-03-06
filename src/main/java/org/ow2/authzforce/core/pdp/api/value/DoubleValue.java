@@ -17,9 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Deque;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Deque;
 
 /**
  * Representation of a xs:double value. This class supports parsing xs:double values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java type
@@ -31,6 +34,8 @@ import javax.xml.bind.DatatypeConverter;
 public final class DoubleValue extends NumericValue<Double, DoubleValue> implements Comparable<DoubleValue>
 {
 	private static final ArithmeticException ILLEGAL_DIV_BY_ZERO_EXCEPTION = new ArithmeticException("Illegal division by zero");
+
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Creates a new <code>DoubleAttributeValue</code> that represents the double value supplied.
@@ -54,6 +59,17 @@ public final class DoubleValue extends NumericValue<Double, DoubleValue> impleme
 	public DoubleValue(final String val) throws NumberFormatException
 	{
 		this(DatatypeConverter.parseDouble(val));
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null) {
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/**

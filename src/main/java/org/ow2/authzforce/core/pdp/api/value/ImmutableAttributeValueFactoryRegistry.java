@@ -17,29 +17,22 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.BasePdpExtensionRegistry;
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantExpression;
 import org.ow2.authzforce.core.pdp.api.expression.ConstantPrimitiveAttributeValueExpression;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-
-import net.sf.saxon.s9api.XPathCompiler;
+import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Immutable <code>AttributeValueFactoryRegistry</code>.
@@ -53,7 +46,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 
 	/**
 	 * <p>
-	 * createValue
+	 * Create AttributeValue
 	 * </p>
 	 *
 	 * @param attValFactory
@@ -69,7 +62,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 	 *             if any.
 	 */
 	private static <V extends AttributeValue> V newAttributeValue(final AttributeValueFactory<V> attValFactory, final List<Serializable> content, final Map<QName, String> otherAttributes,
-	        final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	        final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 	{
 		assert attValFactory != null;
 		final V attrVal;
@@ -85,7 +78,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 	}
 
 	private static <V extends AttributeValue> ConstantExpression<V> newExpression(final AttributeValueFactory<V> attValFactory, final List<Serializable> content,
-	        final Map<QName, String> otherAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	        final Map<QName, String> otherAttributes, final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 	{
 		assert attValFactory != null;
 		final V rawValue = newAttributeValue(attValFactory, content, otherAttributes, xPathCompiler);
@@ -160,7 +153,7 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 	/** {@inheritDoc} */
 	@Override
 	public ConstantExpression<? extends AttributeValue> newExpression(final String datatypeId, final List<Serializable> content, final Map<QName, String> otherAttributes,
-	        final XPathCompiler xPathCompiler) throws IllegalArgumentException
+	        final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 	{
 		if (datatypeId == null)
 		{

@@ -17,6 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+
 import java.util.Locale;
 import java.util.Objects;
 
@@ -42,6 +46,7 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 	private final String domainPartLowerCase;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Creates instance from InternetAddress
@@ -94,6 +99,19 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 
 		this.localPart = parts[0];
 		this.domainPartLowerCase = parts[1].toLowerCase(Locale.US);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			// Mapped to String to match ItemType declared in StandardDatatypes class
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/*

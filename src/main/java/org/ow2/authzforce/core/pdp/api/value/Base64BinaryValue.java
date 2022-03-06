@@ -17,9 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Arrays;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Arrays;
 
 /**
  * Representation of a xs:base64Binary value. This class supports parsing xs:base64Binary values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of
@@ -30,8 +33,16 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class Base64BinaryValue extends StringParseableValue<byte[]>
 {
+	private static final class XdmBase64BinaryValue extends XdmAtomicValue
+	{
+		private XdmBase64BinaryValue(final byte[] bytes) {
+			super(new net.sf.saxon.value.Base64BinaryValue(bytes), true);
+		}
+	}
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Creates instance from lexical representation of xs:base64Binary
@@ -79,6 +90,18 @@ public final class Base64BinaryValue extends StringParseableValue<byte[]>
 		 * if (value == null) { if (other.value != null) { return false; } } else
 		 */
 		return Arrays.equals(value, other.value);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmBase64BinaryValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

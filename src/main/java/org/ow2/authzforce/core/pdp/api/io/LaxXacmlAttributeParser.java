@@ -17,18 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-
-import net.sf.saxon.s9api.XPathCompiler;
-
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.AttributeFqns;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.MutableAttributeBag;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 
@@ -148,7 +147,7 @@ abstract class LaxXacmlAttributeParser<INPUT_ATTRIBUTE> extends XacmlRequestAttr
 	 * @see org.ow2.authzforce.core.pdp.api.io.XacmlParsingUtils.XacmlAttributeParser#parseNamedAttribute(java.lang.String, java.lang.Object, net.sf.saxon.s9api.XPathCompiler, java.util.Map)
 	 */
 	@Override
-	public final void parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final XPathCompiler xPathCompiler,
+	public final void parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler,
 			final Map<AttributeFqn, MutableAttributeBag<?>> attributeMap) throws IllegalArgumentException
 	{
 		final NamedXacmlAttributeParsingResult<?> attributeParsingResult = parseNamedAttribute(attributeCategoryId, inputXacmlAttribute, xPathCompiler);

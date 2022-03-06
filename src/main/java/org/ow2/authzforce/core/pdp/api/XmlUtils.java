@@ -18,8 +18,10 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.*;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -122,35 +124,34 @@ public final class XmlUtils
     }
 
     // Default XPath compilers by XPathVersion outside any namespace context
-    private static final Map<String, XPathCompiler> XPATH_COMPILERS_BY_VERSION = HashCollections.newImmutableMap(
+    private static final Map<XPathVersion, XPathCompiler> XPATH_COMPILERS_BY_VERSION = Maps.immutableEnumMap(Map.of(
             // XPATH 1.0 compiler
-            XPathVersion.V1_0.getURI(), newXPathCompiler(XPathVersion.V1_0),
+            XPathVersion.V1_0, newXPathCompiler(XPathVersion.V1_0),
             // XPATH 2.0 compiler
-            XPathVersion.V2_0.getURI(), newXPathCompiler(XPathVersion.V2_0));
+            XPathVersion.V2_0, newXPathCompiler(XPathVersion.V2_0)));
 
     /**
      * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
      * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
      *
-     * @param xpathVersionURI       XPath version URI, e.g. "http://www.w3.org/TR/1999/REC-xpath-19991116"
+     * @param xpathVersion       XPath version
      * @param namespaceURIsByPrefix namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
      * @return XPath compiler instance
      * @throws IllegalArgumentException if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null
      */
-    public static XPathCompiler newXPathCompiler(final String xpathVersionURI, final Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
+    public static XPathCompiler newXPathCompiler(final XPathVersion xpathVersion, final Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
     {
         if (namespaceURIsByPrefix == null || namespaceURIsByPrefix.isEmpty())
         {
-            final XPathCompiler xpathCompiler = XPATH_COMPILERS_BY_VERSION.get(xpathVersionURI);
+            final XPathCompiler xpathCompiler = XPATH_COMPILERS_BY_VERSION.get(xpathVersion);
             if (xpathCompiler == null)
             {
-                throw new IllegalArgumentException("Invalid or unsupported XPathVersion: " + xpathVersionURI);
+                throw new IllegalArgumentException("Invalid or unsupported XPathVersion: " + xpathVersion);
             }
 
             return xpathCompiler;
         }
 
-        final XPathVersion xpathVersion = XPathVersion.fromURI(xpathVersionURI);
         final XPathCompiler xpathCompiler = newXPathCompiler(xpathVersion);
         for (final Entry<String, String> nsPrefixToURI : namespaceURIsByPrefix.entrySet())
         {
@@ -173,6 +174,20 @@ public final class XmlUtils
     }
 
     /**
+     * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
+     * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
+     *
+     * @param xpathVersionURI       XPath version URI, e.g. "http://www.w3.org/TR/1999/REC-xpath-19991116"
+     * @param namespaceURIsByPrefix namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
+     * @return XPath compiler instance
+     * @throws IllegalArgumentException if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null
+     */
+    public static XPathCompiler newXPathCompiler(final String xpathVersionURI, final Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
+    {
+        return newXPathCompiler(XPathVersion.fromURI(xpathVersionURI), namespaceURIsByPrefix);
+    }
+
+    /**
      * Wrapper around XPathExecutable that provides the original XPath expression from which the XPathExecutable was compiled, via toString() method. To be used for XPath-based Expression evaluations,
      * e.g. AttributeSelector, xpathExpression, etc.
      */
@@ -188,7 +203,7 @@ public final class XmlUtils
          * @param xPathCompiler XPath compiler
          * @throws IllegalArgumentException in case of invalid XPath
          */
-        public XPathEvaluator(final String path, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+        public XPathEvaluator(final String path, final XPathCompilerProxy xPathCompiler) throws IllegalArgumentException
         {
             try
             {
