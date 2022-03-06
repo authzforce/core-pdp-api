@@ -17,7 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.lib.StandardURIChecker;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.value.AnyURIValue;
 
 /**
  * Represent the URI value that this class represents
@@ -55,6 +59,13 @@ import net.sf.saxon.lib.StandardURIChecker;
  */
 public final class AnyUriValue extends StringParseableValue<String>
 {
+	private static final class XdmAnyUriValue extends XdmAtomicValue {
+		private XdmAnyUriValue(final String uri) {
+			super(new AnyURIValue(uri), true);
+		}
+	}
+
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Creates a new <code>AnyURIAttributeValue</code> that represents the URI value supplied.
@@ -71,6 +82,18 @@ public final class AnyUriValue extends StringParseableValue<String>
 	public AnyUriValue(final String value) throws IllegalArgumentException
 	{
 		super(value);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmAnyUriValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

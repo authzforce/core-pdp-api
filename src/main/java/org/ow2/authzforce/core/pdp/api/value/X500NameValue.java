@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 import javax.security.auth.x500.X500Principal;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 import org.ow2.authzforce.xacml.identifiers.XacmlDatatypeId;
 
 /**
@@ -33,6 +35,9 @@ public final class X500NameValue extends StringParseableValue<String>
 	private final X500Principal x500Name;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
+	private transient volatile XdmItem xdmItem = null;
+
 
 	/**
 	 * Creates a new <code>X500NameValue</code> from an {@link X500Principal}.
@@ -67,6 +72,19 @@ public final class X500NameValue extends StringParseableValue<String>
 		{
 			throw new IllegalArgumentException("Invalid value (X.500 Distinguished Name) for datatype: " + XacmlDatatypeId.X500_NAME.value(), e);
 		}
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			// Mapped to String to match ItemType declared in StandardDatatypes class
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/**

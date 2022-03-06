@@ -17,22 +17,14 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-
-import javax.xml.namespace.QName;
-
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.w3c.dom.Element;
 
-import com.google.common.collect.ImmutableList;
-
-import net.sf.saxon.s9api.XPathCompiler;
+import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Superclass of all "simple" Attribute Values, including values of any XACML standard datatype; "simple" as in "simple type" or "simple content" of XML schema. This means the value can be represented
@@ -101,7 +93,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 *            (optional) XPath compiler for compiling any XPath expression in the value, e.g. xpathExpression datatype
 		 * @return instance of {@code F_AV}
 		 */
-		public abstract AV getInstance(Serializable input, Map<QName, String> otherXmlAttributes, XPathCompiler xPathCompiler);
+		public abstract AV getInstance(Serializable input, Map<QName, String> otherXmlAttributes, Optional<XPathCompilerProxy> xPathCompiler);
 
 		/**
 		 * Creates an instance of {@code F_AV} from a XACML AttributeValue-originating content (e.g. {@code jaxbAttrVal.getContent()}) expected to be a singleton value (valid for this factory's
@@ -114,7 +106,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 *             if {@code datatype == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation for this datatype
 		 */
 		@Override
-		public final AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public final AV getInstance(final List<Serializable> content, final Map<QName, String> otherXmlAttributes, final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 		{
 			/*
 			 * content may be null in case of XML/JAXB when the tag is empty, although it represents the empty string! E.g. <AttributeValue .../>.

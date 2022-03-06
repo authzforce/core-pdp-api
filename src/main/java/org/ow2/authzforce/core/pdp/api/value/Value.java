@@ -17,11 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import net.sf.saxon.s9api.XdmValue;
+
 /**
  * Value (literal constant) that can be used directly as function argument and result from Expression evaluation. It may be atomic/primitive or a bag of values.
  *
  */
 public interface Value
 {
-	// marker interface
+    /**
+     * Get XDM (XPath Data Model) value equivalent for using it as XPath variable value in XPath expressions
+     * @return value converted to XDM value
+     */
+	XdmValue getXdmValue();
 }

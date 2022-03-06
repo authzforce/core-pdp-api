@@ -20,6 +20,11 @@ package org.ow2.authzforce.core.pdp.api.value;
 import java.math.BigInteger;
 import java.util.Deque;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.value.BigIntegerValue;
+import net.sf.saxon.value.Int64Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +41,14 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	private static final IllegalArgumentException TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException(
 	        "BigInteger argument outside the range which can be represented by a double");
 
+	private transient volatile XdmItem xdmItem = null;
+
+	private static final class XdmIntegerValue extends XdmAtomicValue {
+		private XdmIntegerValue(final GenericInteger integer) {
+			super(integer instanceof ArbitrarilyBigInteger? new BigIntegerValue(integer.bigIntegerValue()): new Int64Value(integer.longValueExact()), true);
+		}
+	}
+
 	/**
 	 * Creates instance from integer argument
 	 *
@@ -45,6 +58,17 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	public IntegerValue(final GenericInteger val)
 	{
 		super(val);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null) {
+			xdmItem = new XdmIntegerValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	private static final IntBasedValueFactory.CachingHelper<IntegerValue> INSTANCE_FACTORY = new IntBasedValueFactory.CachingHelper<>(new IntBasedValueFactory<>()

@@ -18,6 +18,10 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+
 import javax.xml.bind.DatatypeConverter;
 
 /**
@@ -95,6 +99,21 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 		throw new IllegalArgumentException("The string '" + (s.length() > 5 ? s.substring(0, 5) + "... (content omitted)" : s) + "' is not a valid xs:boolean value.");
 	}
 
+
+	/**
+	 * Get {@link #TRUE} (resp. {@link #FALSE} ) instance if <code>b</code> (resp. if ! <code>b</code>)
+	 *
+	 * @param b
+	 *            boolean input
+	 * @return instance
+	 */
+	public static BooleanValue valueOf(final boolean b)
+	{
+		return b ? TRUE : FALSE;
+	}
+
+	private transient volatile XdmItem xdmItem = null;
+
 	/**
 	 * Creates a new <code>BooleanAttributeValue</code> that represents the boolean value supplied.
 	 * <p>
@@ -108,18 +127,6 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	{
 		super(value);
 		hashCode = this.value.hashCode();
-	}
-
-	/**
-	 * Get {@link #TRUE} (resp. {@link #FALSE} ) instance if <code>b</code> (resp. if ! <code>b</code>)
-	 *
-	 * @param b
-	 *            boolean input
-	 * @return instance
-	 */
-	public static BooleanValue valueOf(final boolean b)
-	{
-		return b ? TRUE : FALSE;
 	}
 
 	/**
@@ -172,5 +179,16 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	public String printXML()
 	{
 		return DatatypeConverter.printBoolean(this.value);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null) {
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 }

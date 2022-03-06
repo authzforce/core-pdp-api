@@ -17,13 +17,13 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
+
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import net.sf.saxon.s9api.XPathCompiler;
+import java.util.Optional;
 
 /**
  * Attribute Value based on string or possibly other type of {@link Serializable} content, without any extra XML attributes.
@@ -87,7 +87,7 @@ public abstract class StringParseableValue<V> extends SimpleValue<V>
 		public abstract AV getInstance(Serializable value) throws IllegalArgumentException;
 
 		@Override
-		public final AV getInstance(final Serializable content, final Map<QName, String> otherXmlAttributes, final XPathCompiler xPathCompiler) throws IllegalArgumentException
+		public final AV getInstance(final Serializable content, final Map<QName, String> otherXmlAttributes, final Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException
 		{
 			if (otherXmlAttributes != null && !otherXmlAttributes.isEmpty())
 			{

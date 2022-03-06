@@ -17,17 +17,15 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.*;
-import java.util.Map.Entry;
-
+import com.google.common.collect.ImmutableList;
+import net.sf.saxon.s9api.XdmNode;
 import org.ow2.authzforce.core.pdp.api.*;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import com.google.common.collect.ImmutableList;
-
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XdmNode;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Multiple Decision Request preprocessing helper, for supporting the Multiple Decision Profile scheme "Repeated attribute categories".
@@ -196,13 +194,8 @@ public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionReques
 	 *            XACML Attributes element Parser instance, used to parse each Attributes in {@code attributesList}.
 	 * @param isApplicablePolicyIdListReturned
 	 *            XACML Request's property {@code returnPolicyIdList}.
-	 * @param combinedDecision
-	 *            XACML Request's property {@code isCombinedDecision}
 	 * @param xPathCompiler
-	 *            xpathExpression compiler, corresponding to the XACML RequestDefaults element, or null if no RequestDefaults element.
-	 * 
-	 * @param namespaceURIsByPrefix
-	 *            namespace prefix-URI mappings (e.g. "... xmlns:prefix=uri") in the original XACML Request bound to {@code req}, used as part of the context for XPath evaluation
+	 *            xpathExpression compiler, corresponding to the XACML RequestDefaults element, or undefined if no RequestDefaults element or XPath support disabled by PDP configuration.
 	 * 
 	 * @return individual decision requests, as defined in Multiple Decision Profile, e.g. a singleton list if no multiple decision requested or supported by the pre-processor
 	 *         <p>
@@ -212,8 +205,8 @@ public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionReques
 	 *             if some feature requested in the Request is not supported by this pre-processor
 	 */
 	public final List<R> process(final Iterable<VALIDATOR_INPUT_ATTRIBUTE_CATEGORY_OBJECT> inputRequestAttributeCategoryObjects,
-	        final SingleCategoryXacmlAttributesParser<VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT> xacmlAttrsParser, final boolean isApplicablePolicyIdListReturned, final boolean combinedDecision,
-	        final XPathCompiler xPathCompiler, final Map<String, String> namespaceURIsByPrefix) throws IndeterminateEvaluationException
+								 final SingleCategoryXacmlAttributesParser<VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT> xacmlAttrsParser, final boolean isApplicablePolicyIdListReturned,
+								 final Optional<XPathCompilerProxy> xPathCompiler) throws IndeterminateEvaluationException
 	{
 		/*
 		 * Parse Request attributes and group possibly repeated categories to implement Multiple Decision Profile, §2.3.

@@ -17,11 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 /**
  * The base type for all primitive/non-bag attribute values used in a policy or request/response. It is similar to {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType} except it is
@@ -50,5 +49,4 @@ public interface AttributeValue extends PrimitiveValue
 	 * @return (possibly mixed) content ; <b>not null</b> (must be empty if no attribute)
 	 */
 	Map<QName, String> getXmlAttributes();
-
 }

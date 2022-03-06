@@ -17,10 +17,13 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import org.ow2.authzforce.core.pdp.api.XmlUtils;
+
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.ow2.authzforce.core.pdp.api.XmlUtils;
 
 /**
  * Representation of a xs:date value. This class supports parsing xs:date values. All objects of this class are immutable and thread-safe.
@@ -30,6 +33,8 @@ import org.ow2.authzforce.core.pdp.api.XmlUtils;
  */
 public final class DateValue extends BaseTimeValue<DateValue>
 {
+	private transient volatile XdmItem xdmItem = null;
+
 	/**
 	 * Creates a new <code>DateAttributeValue</code> from a string representation of date
 	 *
@@ -73,6 +78,18 @@ public final class DateValue extends BaseTimeValue<DateValue>
 		final XMLGregorianCalendar copy = (XMLGregorianCalendar) calendar.clone();
 		copy.setTime(DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
 		return new DateValue(copy);
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmAtomicValue(value.toGregorianCalendar().toZonedDateTime().toLocalDate());
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

@@ -17,16 +17,16 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.Map;
-
-import net.sf.saxon.s9api.XPathCompiler;
-
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
+
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * On the contrary to {@link IssuedToNonIssuedCopyingLaxXacmlAttributeParser}, this XACML Attribute parser does not copy the values of Attributes having an Issuer to the corresponding Attributes
@@ -78,14 +78,14 @@ public final class NonIssuedLikeIssuedStrictXacmlAttributeParser<INPUT_ATTRIBUTE
 	 * @param inputXacmlAttribute
 	 *            input attribute object (not yet parsed into AuthzForce internal model), typically from original XACML request
 	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions
+	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions. Undefined if XPath support disabled.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             if parsing of the {@code inputXacmlAttribute} because of invalid datatype or mixing of different datatypes; or if there are already existing values for the same attribute
 	 *             (repetition of same attribute is not allowed in strict mode)
 	 */
 	@Override
-	public void parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final XPathCompiler xPathCompiler,
+	public void parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler,
 			final Map<AttributeFqn, AttributeBag<?>> attributeMap) throws IllegalArgumentException
 	{
 		final NamedXacmlAttributeParsingResult<?> attParsingResult = parseNamedAttribute(attributeCategoryId, inputXacmlAttribute, xPathCompiler);

@@ -17,6 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -72,6 +76,7 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 	private final NetworkPortRange portRange;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+	private transient volatile XdmItem xdmItem = null;
 
 	/*
 	 * true if the hostname starts with a '*', therefore this field is derived from hostname
@@ -136,6 +141,19 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 
 		// see if hostname started with a '*' character
 		// this.isAnySubdomain = hostname.charAt(0) == '*' ? true : false;
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			// Mapped to String to match ItemType declared in StandardDatatypes class
+			xdmItem = new XdmAtomicValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

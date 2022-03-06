@@ -2,6 +2,26 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 21.0.0
+### Added
+- Feature: XPath variables in `AttributeSelector`/`xPathExpression` `AttributeValues`' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables.
+
+### Fixed
+- Spotbugs issues: public API methods' `XPathCompiler` (Saxon API) parameter now replaced with new immutable class `XPathCompilerProxy` instead of SAXON  for safer code.
+
+### Changed
+- Changed Datatype extension interface (`AttributeValueFactory`):
+  
+  - `getInstance(...)` `XPathCompiler` parameter replaced with `Optional<XPathCompilerProxy>`, where XPathCompilerProxy is a immutable version of `XPathCompiler` class with extra methods; the parameter is optional because XPath support may be disabled by PDP configuration or missing Policy(Set)Defaults/XPathVersion in XACML Policy(Set)
+  - `Datatype` interface: added `ItemType getXPathItemType()` method used to declare Variable types on Saxon XPath evaluator when compiling XPath expressions with variables
+  - `AttributeValue` must now implement `getXdmItem()` to return a XPath-compatible (XDM) value to be used as variables in XPath expressions, in order to support the new Feature mentioned above.
+- Changed `EvaluationContext` interface to better handle XACML Variables in XPath expressions (support the new Feature mentioned above):
+  - Added `getVariables()` to get the list of all VariableReferences/Values in context for evaluation of XPath expression
+  - `putVariableIfAbsent(...)` `String variableId` parameter changed to `VariableReference variableRef`
+- Changed `ExpressionFactory` interface: added `isXpathEnabled()` and `getVariableExpressions()` to get list of VariableExpressions for declaring all Variable names/types on XPath expression in order to support the new Feature mentioned in previous section
+- Changed `VariableReference` interface: added `QName getXPathVariableName()` method used to declare and assign variables when compiling and evaluating XPath expressions (with SAXON API).
+
+
 ## 20.0.0
 ### Changed
 - Request pre-processor extension interface changed: `DecisionRequestPreprocessor.Factory#getInstance(...)` method changed: `xmlProcessor` arg removed

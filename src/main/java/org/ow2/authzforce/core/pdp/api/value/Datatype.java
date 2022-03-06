@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.google.common.base.Preconditions;
+import net.sf.saxon.s9api.ItemType;
 import org.ow2.authzforce.core.pdp.api.PdpExtension;
 
 import com.google.common.reflect.TypeToken;
@@ -40,6 +42,7 @@ public abstract class Datatype<V extends Value>
 	private final String id;
 	private final String funcIdPrefix;
 	private final TypeToken<V> typeToken;
+	private final ItemType xpathDatatype;
 
 	// derived member fields
 	private final transient int hashCode;
@@ -56,14 +59,20 @@ public abstract class Datatype<V extends Value>
 	 *            datatype ID
 	 * @param functionIdPrefix
 	 *            prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 * @param xpathDatatype equivalent XPath Item Type to be used in XPath expressions (especially when using XACML Variables as XPath variables)
 	 * @throws NullPointerException
 	 *             if {@code genericJavaType == null ||  typeParam == null || id == null || functionIdPrefix == null}.
 	 */
-	Datatype(final TypeToken<V> genericJavaType, final Optional<Datatype<?>> typeParam, final String id, final String functionIdPrefix) throws NullPointerException
+	Datatype(final TypeToken<V> genericJavaType, final Optional<Datatype<?>> typeParam, final String id, final String functionIdPrefix, final ItemType xpathDatatype) throws IllegalArgumentException
 	{
-		this.typeToken = Objects.requireNonNull(genericJavaType, "Undefined genericJavaType arg (value class of this expression datatype)");
-		this.id = Objects.requireNonNull(id, "Undefined datatype ID arg");
-		this.funcIdPrefix = Objects.requireNonNull(functionIdPrefix, "Undefined datatype-based function ID prefix arg");
+		Preconditions.checkArgument(genericJavaType != null, "Undefined genericJavaType arg (value class of this expression datatype)");
+		Preconditions.checkArgument(id != null && !id.isBlank(), "Undefined/invalid id (datatype ID) arg");
+		Preconditions.checkArgument(functionIdPrefix != null && !functionIdPrefix.isBlank(), "Undefined/invalid functionIdPrefix (datatype-based function ID prefix) arg");
+		Preconditions.checkArgument(xpathDatatype != null, "Undefined xpathDatatype (equivalent XPath Item Type) arg");
+		this.typeToken = genericJavaType;
+		this.id = id;
+		this.funcIdPrefix = functionIdPrefix;
+		this.xpathDatatype = xpathDatatype;
 
 		// derived member fields
 		this.hashCode = Objects.hash(genericJavaType, typeParam);
@@ -128,6 +137,14 @@ public abstract class Datatype<V extends Value>
 	}
 
 	/**
+	 * Equivalent data-type to be used in XPath expressions (AttributeSelectors, etc.), especially for XPath variables
+	 * @return XPath Item Type equivalent
+	 */
+	public final ItemType getXPathItemType() {
+		return this.xpathDatatype;
+	}
+
+	/**
 	 * Return type parameter e.g. the bag element datatype (datatype of every element in a bag of this datatype); null if this is a primitive type (no sub-elements)
 	 * 
 	 * @return datatype parameter, null for primitive datatypes
@@ -162,6 +179,7 @@ public abstract class Datatype<V extends Value>
 	 * @return the new array
 	 */
 	public abstract V[] newArray(final int length);
+
 
 	// public static void main(final String[] args)
 	// {

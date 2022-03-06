@@ -17,9 +17,12 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Arrays;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Arrays;
 
 /**
  * Representation of a xs:hexBinary value. This class supports parsing xs:hexBinary values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the
@@ -30,7 +33,15 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class HexBinaryValue extends StringParseableValue<byte[]>
 {
+	private static final class XdmHexBinaryValue extends XdmAtomicValue {
+		private XdmHexBinaryValue(final byte[] bytes) {
+			super(new net.sf.saxon.value.HexBinaryValue(bytes), true);
+		}
+	}
+
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
+
+	private transient volatile XdmItem xdmItem = null;
 
 	/**
 	 * Creates a new <code>HexBinaryAttributeValue</code> that represents the byte [] value supplied.
@@ -54,6 +65,18 @@ public final class HexBinaryValue extends StringParseableValue<byte[]>
 	public HexBinaryValue(final String val) throws IllegalArgumentException
 	{
 		this(DatatypeConverter.parseHexBinary(val));
+	}
+
+	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	@Override
+	public XdmItem getXdmItem()
+	{
+		if(xdmItem == null)
+		{
+			xdmItem = new XdmHexBinaryValue(value);
+		}
+
+		return xdmItem;
 	}
 
 	/** {@inheritDoc} */

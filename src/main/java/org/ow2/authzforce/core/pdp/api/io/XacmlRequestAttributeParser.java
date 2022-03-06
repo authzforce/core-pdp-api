@@ -17,19 +17,18 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-
-import net.sf.saxon.s9api.XPathCompiler;
-
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.AttributeFqns;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.StringValue;
 import org.ow2.authzforce.xacml.identifiers.XacmlAttributeCategory;
 import org.ow2.authzforce.xacml.identifiers.XacmlAttributeId;
 import org.ow2.authzforce.xacml.identifiers.XacmlResourceScope;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * XACML Request Attribute parser that is aware of all named attributes parsed in the request. This kind of parser has side effects as it modifies/updates a map of attributes that can be passed to the
@@ -114,12 +113,12 @@ public abstract class XacmlRequestAttributeParser<INPUT_ATTRIBUTE, BAG extends I
 	 * @param inputXacmlAttribute
 	 *            input attribute object (not yet parsed into AuthzForce internal model), typically from original XACML request
 	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions
+	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions. Undefined if XPath support disabled (by PDP configuration of RequestDefaults/XPathVersion undefined).
 	 * 
 	 * @throws IllegalArgumentException
 	 *             if parsing of the {@code inputXacmlAttribute} failed because of invalid syntax, e.g. invalid datatype or mixing different datatypes
 	 */
-	protected final NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final XPathCompiler xPathCompiler)
+	protected final NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler)
 			throws IllegalArgumentException
 	{
 		return this.namedAttParser.parseNamedAttribute(attributeCategoryId, inputXacmlAttribute, xPathCompiler);
@@ -141,6 +140,6 @@ public abstract class XacmlRequestAttributeParser<INPUT_ATTRIBUTE, BAG extends I
 	 * @throws IllegalArgumentException
 	 *             if parsing of the {@code inputXacmlAttribute} failed because of invalid syntax, e.g. invalid datatype or mixing different datatypes
 	 */
-	public abstract void parseNamedAttribute(String attributeCategoryId, INPUT_ATTRIBUTE inputXacmlAttribute, XPathCompiler xPathCompiler, Map<AttributeFqn, BAG> attributeMap)
+	public abstract void parseNamedAttribute(String attributeCategoryId, INPUT_ATTRIBUTE inputXacmlAttribute, Optional<XPathCompilerProxy> xPathCompiler, Map<AttributeFqn, BAG> attributeMap)
 			throws IllegalArgumentException;
 }

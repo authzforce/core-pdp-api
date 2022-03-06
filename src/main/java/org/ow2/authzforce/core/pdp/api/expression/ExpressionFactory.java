@@ -17,7 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
-import net.sf.saxon.s9api.XPathCompiler;
+import com.google.common.collect.ImmutableList;
+import net.sf.saxon.s9api.ItemType;
+import net.sf.saxon.s9api.OccurrenceIndicator;
+import net.sf.saxon.s9api.QName;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DefaultsType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ExpressionType;
@@ -26,12 +29,18 @@ import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 import java.util.Deque;
+import java.util.Optional;
 
 /**
  * Expression factory for parsing XACML {@link ExpressionType}s in policies: AttributeDesignator, AttributeSelector, Apply, etc.
  */
 public interface ExpressionFactory
 {
+	/**
+	 * XPath support status
+	 * @return true iff XPath support enabled, else it is disabled
+	 */
+	boolean isXPathEnabled();
 
 	/**
 	 * Parses an XACML Expression into internal model of expression (evaluable).
@@ -39,7 +48,7 @@ public interface ExpressionFactory
 	 * @param expr
 	 *            the JAXB ExpressionType derived from XACML model
 	 * @param xPathCompiler
-	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element; null if none specified
+	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element. Undefined if no such XPath version defined or XPath support disabled ({@link #isXPathEnabled()} returns false).
 	 * @param longestVarRefChain
 	 *            Longest chain of VariableReference references in the VariableDefinition's expression that is <code>expr</code> or contains <code>expr</code>, or null if <code>expr</code> is not in a
 	 *            VariableDefinition. A VariableReference reference chain is a list of VariableIds, such that V1-> V2 ->... -> Vn -> <code>expr</code> , where "V1 -> V2" means: the expression in
@@ -49,7 +58,7 @@ public interface ExpressionFactory
 	 * @throws IllegalArgumentException
 	 *             invalid ExpressionType
 	 */
-	Expression<?> getInstance(ExpressionType expr, XPathCompiler xPathCompiler, Deque<String> longestVarRefChain) throws IllegalArgumentException;
+	Expression<?> getInstance(ExpressionType expr, Deque<String> longestVarRefChain, Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException;
 
 	/**
 	 * Parse/create an attribute value expression from XACML-schema-derived JAXB model
@@ -57,12 +66,12 @@ public interface ExpressionFactory
 	 * @param jaxbAttrVal
 	 *            XACML-schema-derived JAXB AttributeValue
 	 * @param xPathCompiler
-	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element; null if none specified
+	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element. Undefined if no such XPath version defined or XPath support disabled ({@link #isXPathEnabled()} returns false).
 	 * @return attribute value Expression
 	 * @throws IllegalArgumentException
 	 *             if value cannot be parsed into the value's defined datatype
 	 */
-	ConstantExpression<? extends AttributeValue> getInstance(AttributeValueType jaxbAttrVal, XPathCompiler xPathCompiler) throws IllegalArgumentException;
+	ConstantExpression<? extends AttributeValue> getInstance(AttributeValueType jaxbAttrVal, Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException;
 
 	/**
 	 * Add VariableDefinition (variable assignment expression)
@@ -70,7 +79,7 @@ public interface ExpressionFactory
 	 * @param varDef
 	 *            VariableDefinition
 	 * @param xPathCompiler
-	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element.
+	 *            Policy(Set) default XPath compiler, corresponding to the Policy(Set)'s default XPath version specified in {@link DefaultsType} element. Undefined if no such XPath version defined or XPath support disabled ({@link #isXPathEnabled()} returns false).
 	 * @param longestVarRefChain
 	 *            Ignored if null else used as inout parameter to be filled by this method with the longest chain of VariableReference references in <code>varDef</code>. A VariableReference reference
 	 *            chain is a list of VariableIds, such that V1-> V2 ->... -> Vn -> <code>expr</code> , where "V1 -> V2" means: the expression in VariableDefinition of V1 has a VariableReference to V2.
@@ -80,7 +89,7 @@ public interface ExpressionFactory
 	 * @throws IllegalArgumentException
 	 *             invalid expression in {@code varDef}
 	 */
-	VariableReference<?> addVariable(VariableDefinition varDef, XPathCompiler xPathCompiler, Deque<String> longestVarRefChain) throws IllegalArgumentException;
+	VariableReference<?> addVariable(VariableDefinition varDef, Deque<String> longestVarRefChain, Optional<XPathCompilerProxy> xPathCompiler) throws IllegalArgumentException;
 
 	/**
 	 * Get a given variable's assignment expression (definition)
@@ -89,6 +98,15 @@ public interface ExpressionFactory
 	 * @return the VariableReference identified by <code>varId</code> , or null if there is no such variable.
 	 */
 	VariableReference<?> getVariableExpression(String varId);
+
+	/**
+	 * Get a snapshot list of current Variable definitions. Order matters as a variable X must be declared in the list after any variable that it depends on.
+	 *
+	 * One use for this is to be able to declare all possible variables that may occur in a AttributeSelector's XPath expression, therefore all need to be declared on the XPath compiler with {@link net.sf.saxon.s9api.XPathCompiler#declareVariable(QName, ItemType, OccurrenceIndicator)}.
+	 *
+	 * @return a new copy of the current list of Variable definitions, empty if there is no such declared variable.
+	 */
+	ImmutableList<VariableReference<?>> getVariableExpressions();
 
 	/**
 	 * Removes the VariableReference(Definition) from the manager

@@ -17,12 +17,26 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmValue;
+
 /**
  * The base type for all primitive/non-bag values that may be used as function arguments (e.g. in XACML policy) or result. In particular, AttributeValues as well as Functions ("special" datatype
  * because they can be used as arguments to higher-order functions) are considered such primitive values, as opposed to bags/sets.
+ *
+ * {@link #getXdmValue()} must return the same as {@link #getXdmItem()}
  * 
  */
 public interface PrimitiveValue extends Value
 {
-	// marker interface
+    /**
+     *
+     * @return corresponding XPath (XDM) value
+     */
+    XdmItem getXdmItem();
+
+    @Override
+    default XdmValue getXdmValue() {
+        return getXdmItem();
+    }
 }

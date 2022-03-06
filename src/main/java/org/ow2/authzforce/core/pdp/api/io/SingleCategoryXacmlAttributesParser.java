@@ -17,9 +17,10 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import net.sf.saxon.s9api.XPathCompiler;
-
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
+
+import java.util.Optional;
 
 /**
  * Parser for XACML request attribute categories, i.e. group of attributes in a specific category, e.g. XACML/XML (JAXB) Attributes element, XACML/JSON (JSON Profile) Category object.
@@ -35,12 +36,12 @@ public interface SingleCategoryXacmlAttributesParser<INPUT_ATTRIBUTE_CATEGORY>
 	 * @param inputXacmlAttributeCategory
 	 *            category of attributes from original XACML request, ie. XACML Attributes element.
 	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions, typically derived from XACML RequestDefaults/XPathVersion
+	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions, typically derived from XACML RequestDefaults/XPathVersion; or undefined if RequestDefaults/XPathVersion undefined or XPath support disabled by PDP configuration
 	 * @return Attributes parsing result; null if nothing to parse, i.e. no Attribute and (no Content or Content parsing disabled);
 	 * @throws IndeterminateEvaluationException
 	 *             if any parsing error occurs
 	 */
-	SingleCategoryAttributes<?, INPUT_ATTRIBUTE_CATEGORY> parseAttributes(INPUT_ATTRIBUTE_CATEGORY inputXacmlAttributeCategory, XPathCompiler xPathCompiler) throws IndeterminateEvaluationException;
+	SingleCategoryAttributes<?, INPUT_ATTRIBUTE_CATEGORY> parseAttributes(INPUT_ATTRIBUTE_CATEGORY inputXacmlAttributeCategory, Optional<XPathCompilerProxy> xPathCompiler) throws IndeterminateEvaluationException;
 
 	/**
 	 * Factory of XACML attribute category parser
