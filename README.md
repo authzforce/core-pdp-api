@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2804cd619dde437a883da48ad5c283bc)](https://www.codacy.com/app/coder103/authzforce-ce-core-pdp-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=authzforce/core-pdp-api&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1796d90c53b540238c86c77402b3a639)](https://www.codacy.com/gh/authzforce/core-pdp-api/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=authzforce/core-pdp-api&amp;utm_campaign=Badge_Grade)
 [![Javadocs](http://javadoc.io/badge/org.ow2.authzforce/authzforce-ce-core-pdp-api.svg)](http://javadoc.io/doc/org.ow2.authzforce/authzforce-ce-core-pdp-api)
 
 # AuthzForce Core PDP API
