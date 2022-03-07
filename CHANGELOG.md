@@ -2,9 +2,15 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 21.1.0
+### Added
+- Feature: XPath variables in `xPathExpression` `AttributeValues`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
+- Added immutable implementation of `BaseXPathCompilerProxy`: `BasixImmutableXPathCompilerProxy` class.
+
+
 ## 21.0.0
 ### Added
-- Feature: XPath variables in `AttributeSelector`/`xPathExpression` `AttributeValues`' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables.
+- Feature: XPath variables in `AttributeSelector`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
 
 ### Fixed
 - Spotbugs issues: public API methods' `XPathCompiler` (Saxon API) parameter now replaced with new immutable class `XPathCompilerProxy` instead of SAXON  for safer code.
