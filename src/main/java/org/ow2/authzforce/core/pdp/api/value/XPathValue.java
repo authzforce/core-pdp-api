@@ -27,14 +27,12 @@ import net.sf.saxon.type.BuiltInAtomicType;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-import org.ow2.authzforce.core.pdp.api.XmlUtils.XPathEvaluator;
+import org.ow2.authzforce.core.pdp.api.expression.VariableReference;
 import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import javax.xml.namespace.QName;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Representation of XACML xpathExpression datatype. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -88,13 +86,14 @@ public final class XPathValue extends SimpleValue<String>
 	 * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType) but XPathEvaluator is not natively Serializable, therefore must be deserialized
 	 * with readObject() which cannot assign final variable. Therefore, developers must make sure this is only assigned by readObject() or constructors once and for all.
 	 */
-	private final transient XPathEvaluator xpathEvaluator;
+	private final transient XPathExecutable xPathEvaluator;
+	private final transient List<VariableReference<?>> xpathVariables;
 
-	private final IndeterminateEvaluationException missingAttributesContentException;
+	private final transient IndeterminateEvaluationException missingAttributesContentException;
 
-	private final ImmutableXacmlStatus xpathEvalExceptionStatus;
+	private final transient ImmutableXacmlStatus xpathEvalExceptionStatus;
 
-	private final IndeterminateEvaluationException missingContextException;
+	private final transient IndeterminateEvaluationException missingContextException;
 
 	private transient volatile int hashCode = 0; // Effective Java - Item 9
 	private transient volatile ImmutableMap<QName, String> extraXmlAtts = null;
@@ -129,13 +128,33 @@ public final class XPathValue extends SimpleValue<String>
 			throw NULL_XPATH_COMPILER_EXCEPTION;
 		}
 
-		this.xpathEvaluator = new XPathEvaluator(xpath, xPathCompiler);
 		/*
 		 * Please note that StandardURIChecker maintains a thread-local cache of validated URIs (cache size is 50 and eviction policy is LRU)
 		 */
 		if (!StandardURIChecker.getInstance().isValidURI(xpathCategory))
 		{
 			throw new IllegalArgumentException("Invalid value for XPathCategory (xs:anyURI): " + xpathCategory);
+		}
+
+		//this.xpathEvaluator = new XPathEvaluator(xpath, xPathCompiler);
+		try
+		{
+			this.xPathEvaluator = xPathCompiler.compile(xpath);
+		} catch (final SaxonApiException e)
+		{
+			throw new IllegalArgumentException("Invalid xpathExpression AttributeValue: not a valid XPath " + xPathCompiler.getXPathVersion().getVersionNumber() + " expression: '" + xpath + "'", e);
+		}
+
+		final List<VariableReference<?>> allowedVars = xPathCompiler.getAllowedVariables();
+		this.xpathVariables = new ArrayList<>(allowedVars.size());
+		for(final Iterator<net.sf.saxon.s9api.QName> varNames = xPathEvaluator.iterateExternalVariables(); varNames.hasNext();) {
+			final net.sf.saxon.s9api.QName xpathVarName = varNames.next();
+			final Optional<VariableReference<?>> varRef = allowedVars.stream().filter(allowedVar -> allowedVar.getXPathVariableName().equals(xpathVarName)).findAny();
+			if(varRef.isEmpty()) {
+				throw new IllegalArgumentException("Unexpected variable '"+xpathVarName+"' in XPath expression. Not matching any (XACML) Policy VariableDefinition in: " + allowedVars);
+			}
+
+			xpathVariables.add(varRef.get());
 		}
 
 		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory, XacmlStatusCode.SYNTAX_ERROR.value());
@@ -171,9 +190,13 @@ public final class XPathValue extends SimpleValue<String>
 		 * An XPathExecutable is immutable, and therefore thread-safe. It is simpler to load a new XPathSelector each time the expression is to be evaluated. However, the XPathSelector is serially
 		 * reusable within a single thread. See Saxon Javadoc.
 		 */
-		final XPathSelector xpathSelector = xpathEvaluator.load();
+		final XPathSelector xpathSelector = xPathEvaluator.load();
 		try
 		{
+			for(final VariableReference<?> xpathVar: xpathVariables) {
+				final Value val = context.getVariableValue(xpathVar.getVariableId(), xpathVar.getReturnType());
+				xpathSelector.setVariable(xpathVar.getXPathVariableName(), val.getXdmValue());
+			}
 			xpathSelector.setContextItem(contentNode);
 			return xpathSelector.evaluate();
 		} catch (final SaxonApiException e)
