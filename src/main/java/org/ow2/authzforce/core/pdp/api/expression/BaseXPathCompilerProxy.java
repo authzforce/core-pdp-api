@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Base implementation of {@link XPathCompilerProxy}
  */
-public class BaseXPathCompilerProxy implements XPathCompilerProxy
+public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
 {
     private final ImmutableMap<String, String> nsPrefixToUriMap;
     protected final XPathCompiler delegate;

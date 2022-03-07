@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api.expression;
 import net.sf.saxon.s9api.*;
 import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +40,11 @@ public interface XPathCompilerProxy
      * @return namespace prefix-URI bindings declared for this XPathCompiler
      */
     Map<String, String> getDeclaredNamespacePrefixToUriMap();
+
+    /**
+     * Get the list of XACML Policy Variables allowed as XPath variables in compiled XPath expressions
+     */
+    List<VariableReference<?>> getAllowedVariables();
 
     /**
      * @see XPathCompiler#compile(String)
