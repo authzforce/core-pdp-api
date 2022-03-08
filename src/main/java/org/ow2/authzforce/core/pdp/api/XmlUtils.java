@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.*;
 import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
@@ -123,13 +122,6 @@ public final class XmlUtils
         return xpathCompiler;
     }
 
-    // Default XPath compilers by XPathVersion outside any namespace context
-    private static final Map<XPathVersion, XPathCompiler> XPATH_COMPILERS_BY_VERSION = Maps.immutableEnumMap(Map.of(
-            // XPATH 1.0 compiler
-            XPathVersion.V1_0, newXPathCompiler(XPathVersion.V1_0),
-            // XPATH 2.0 compiler
-            XPathVersion.V2_0, newXPathCompiler(XPathVersion.V2_0)));
-
     /**
      * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
      * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
@@ -141,16 +133,9 @@ public final class XmlUtils
      */
     public static XPathCompiler newXPathCompiler(final XPathVersion xpathVersion, final Map<String, String> namespaceURIsByPrefix) throws IllegalArgumentException
     {
-        if (namespaceURIsByPrefix == null || namespaceURIsByPrefix.isEmpty())
-        {
-            final XPathCompiler xpathCompiler = XPATH_COMPILERS_BY_VERSION.get(xpathVersion);
-            if (xpathCompiler == null)
-            {
-                throw new IllegalArgumentException("Invalid or unsupported XPathVersion: " + xpathVersion);
-            }
-
-            return xpathCompiler;
-        }
+        /*
+         * Why not reuse the same XPathCompiler over and over if the namespaceURIsByPrefix is empty? Because it is not immutable, calling XPathCompiler#compile(String) may change the internal state each time, e.g. if there are XPath variables in multiple sources, it is like calling XPathCompiler#declareVariables(...) without reinitializing, i.e. variables add up.
+         */
 
         final XPathCompiler xpathCompiler = newXPathCompiler(xpathVersion);
         for (final Entry<String, String> nsPrefixToURI : namespaceURIsByPrefix.entrySet())
