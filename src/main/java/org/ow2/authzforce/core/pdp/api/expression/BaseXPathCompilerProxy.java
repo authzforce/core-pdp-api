@@ -29,10 +29,13 @@ import java.util.Map;
  */
 public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
 {
-    private final ImmutableMap<String, String> nsPrefixToUriMap;
-    protected final XPathCompiler delegate;
+    private static final UnsupportedOperationException UNSUPPORTED_EVALUATE_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#evaluate(String, XdmItem) not supported");
+    private static final UnsupportedOperationException UNSUPPORTED_EVALUATE_SINGLE_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#evaluateSingle(String, XdmItem) not supported");
+    private static final UnsupportedOperationException UNSUPPORTED_COMPILE_PATTERN_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#compilePattern(String) not supported");
 
-    private final transient XPathVersion xPathVersion;
+    protected final ImmutableMap<String, String> nsPrefixToUriMap;
+
+    protected final transient XPathVersion xPathVersion;
 
     /**
      * Creates namespace-aware XPathCompiler for a given XPath version
@@ -45,8 +48,6 @@ public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
         assert xpathVersion != null;
         this.xPathVersion = xpathVersion;
         this.nsPrefixToUriMap = namespacePrefixToUriMap == null ? ImmutableMap.of() : ImmutableMap.copyOf(namespacePrefixToUriMap);
-        this.delegate = XmlUtils.newXPathCompiler(xPathVersion, namespacePrefixToUriMap);
-        this.delegate.setCaching(true);
     }
 
     @Override
@@ -64,24 +65,28 @@ public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
     @Override
     public XPathExecutable compile(String source) throws SaxonApiException
     {
-        return delegate.compile(source);
+        /*
+         * Why not reuse the same XPathCompiler over and over (make it a class member)? Because it is not immutable, calling XPathCompiler#compile(String) may change the internal state each time, e.g. if there are XPath variables in multiple sources, it is like calling XPathCompiler#declareVariables(...) without reinitializing, i.e. variables add up.
+         */
+        final XPathCompiler compiler = XmlUtils.newXPathCompiler(xPathVersion, nsPrefixToUriMap);
+        return compiler.compile(source);
     }
 
     @Override
-    public XdmValue evaluate(String expression, XdmItem contextItem) throws SaxonApiException
+    public final XdmValue evaluate(String expression, XdmItem contextItem) throws SaxonApiException
     {
-        return delegate.evaluate(expression, contextItem);
+        throw UNSUPPORTED_EVALUATE_OPERATION_EXCEPTION;
     }
 
     @Override
-    public XdmItem evaluateSingle(String expression, XdmItem contextItem) throws SaxonApiException
+    public final XdmItem evaluateSingle(String expression, XdmItem contextItem)
     {
-        return delegate.evaluateSingle(expression, contextItem);
+        throw UNSUPPORTED_EVALUATE_SINGLE_OPERATION_EXCEPTION;
     }
 
     @Override
-    public XPathExecutable compilePattern(String source) throws SaxonApiException
+    public final XPathExecutable compilePattern(String source)
     {
-        return delegate.compilePattern(source);
+        throw UNSUPPORTED_COMPILE_PATTERN_OPERATION_EXCEPTION;
     }
 }
