@@ -2,6 +2,11 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 21.2.0
+### Added
+- New `XMLUtils.SAXBasedXmlnsFilteringParser` class constructor parameter - XML namespace prefix-to-URI mappings - to help fix the issue authzforce/server#66 .
+
+
 ## 21.1.1
 ### Fixed
 - Error when having multiple XPath expressions (e.g. AttributeSelectors) with XPath variables in the same Policy (the list of declared variables on Saxon XPathCompiler is internally saved and not reinitialized after each call to `XPathCompiler#compile(String)` having side effects when reusing the same XPathCompiler instance).
