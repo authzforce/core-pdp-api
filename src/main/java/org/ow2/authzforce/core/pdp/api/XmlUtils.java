@@ -256,8 +256,8 @@ public final class XmlUtils
     /**
      * SAX-based namespace-filtering XML-to-JAXB parser.
      */
-    public static final class SAXBasedXmlnsFilteringParser implements XmlnsFilteringParser
-    {
+    public static final class SAXBasedXmlnsFilteringParser implements XmlnsFilteringParser {
+
         private static final IllegalArgumentException NULL_ARG_EXCEPTION = new IllegalArgumentException("Undefined input XML");
 
         private static final SAXParserFactory NS_AWARE_SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
@@ -267,17 +267,21 @@ public final class XmlUtils
             NS_AWARE_SAX_PARSER_FACTORY.setNamespaceAware(true);
         }
 
+
         private final UnmarshallerHandler unmarshallerHandler;
-        private final Map<String, String> nsPrefixUriMap = HashCollections.newUpdatableMap();
+        private final Map<String, String> nsPrefixUriMap;
         private final XMLFilterImpl xmlFilter;
 
+
         /**
-         * Creates instance from JAXB unmarshaller used for parsing XML documents
+         * Creates instance from JAXB unmarshaller used for parsing XML documents using default namespace prefix-to-URI mappings
          *
          * @param unmarshaller JAXB unmarshaller
+         * @param xmlnsPrefixToUriMap optional (possibly empty) XML namespace prefix-to-URI map, used for example when one needs to reuse namespace prefix/URIs previously retrieved through another XML parser interface, but needs to wrap it under the same {@link XmlnsFilteringParser} interface for later purposes.
          */
-        public SAXBasedXmlnsFilteringParser(final Unmarshaller unmarshaller)
+        public SAXBasedXmlnsFilteringParser(final Unmarshaller unmarshaller, Map<String, String> xmlnsPrefixToUriMap)
         {
+            this.nsPrefixUriMap = HashCollections.newUpdatableMap(xmlnsPrefixToUriMap);
             final XMLReader xmlReader;
             try
             {
@@ -307,6 +311,16 @@ public final class XmlUtils
 
             this.unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
             this.xmlFilter.setContentHandler(unmarshallerHandler);
+        }
+
+        /**
+         * Creates instance from JAXB unmarshaller used for parsing XML documents
+         *
+         * @param unmarshaller JAXB unmarshaller
+         */
+        public SAXBasedXmlnsFilteringParser(final Unmarshaller unmarshaller)
+        {
+            this(unmarshaller, Map.of());
         }
 
         @Override
@@ -346,6 +360,7 @@ public final class XmlUtils
             return ImmutableMap.copyOf(this.nsPrefixUriMap);
         }
     }
+
 
     /**
      * Supplies unmarshallers
