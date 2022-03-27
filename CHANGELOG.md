@@ -14,8 +14,8 @@ All notable changes to this project are documented in this file following the [K
 
 ## 21.1.0
 ### Added
-- Feature: XPath variables in `xPathExpression` `AttributeValues`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
-- Added immutable implementation of `BaseXPathCompilerProxy`: `BasixImmutableXPathCompilerProxy` class.
+- Feature: XPath variables in `xPathExpression` `AttributeValue`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
+- Added immutable implementation of `BaseXPathCompilerProxy`: `BasicImmutableXPathCompilerProxy` class.
 
 
 ## 21.0.0
