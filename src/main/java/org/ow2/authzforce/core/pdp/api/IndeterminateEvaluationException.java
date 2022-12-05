@@ -18,7 +18,10 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.MissingAttributeDetail;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
 
 import java.util.Optional;
 
@@ -27,15 +30,14 @@ import java.util.Optional;
  * <p>
  * TODO: although we consider Exceptions as a good solution (from a Java standpoint) to propagate error information with a full traceable stacktrace, from a functional/logical point of view, we could
  * improve performance by using return codes instead, whenever possible, especially where we don't lose any useful error info by doing so: cf.
- * http://java-performance.info/throwing-an-exception-in-java-is-very-slow/
+ * <a href="https://www.baeldung.com/java-exceptions-performance">Performance Effects of Exceptions in Java</a>
  * </p>
  */
 public class IndeterminateEvaluationException extends Exception
 {
 	private static final long serialVersionUID = 1L;
 
-
-	private static Status validateArg(ImmutableXacmlStatus status)
+	private static Status validateArg(final ImmutableXacmlStatus status)
 	{
 		Preconditions.checkArgument(status != null && status.getStatusCode() != null, "Undefined status arg or status code from status arg");
 		return status;
@@ -48,7 +50,7 @@ public class IndeterminateEvaluationException extends Exception
 	}
 
 
-	private static Throwable validateArg(Throwable cause)
+	private static Throwable validateArg(final Throwable cause)
 	{
 		Preconditions.checkArgument(cause != null && cause.getMessage() != null && !cause.getMessage().isEmpty(), "Undefined/empty error message arg");
 		return cause;
@@ -56,8 +58,40 @@ public class IndeterminateEvaluationException extends Exception
 
 	private final ImmutableXacmlStatus xacmlStatus;
 
+	// Top-level Status for the final XACML Result, may be different from xacmlStatus, in which case it overrides
+	@SuppressFBWarnings(value="SE_BAD_FIELD", justification = "only used internally")
+	private final Optional<ImmutableXacmlStatus> overridingTopLevelStatusInFinalResult;
+
 	/**
-	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR}), and internal cause for error
+	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR}), and internal cause for error.
+	 *
+	 * @param status XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 * @param cause
+	 *            internal cause of error
+	 * @param topLevelStatusInFinalResult status is to be set as the top-level status in the final XACML Result, overrides any other error (status) in the stack trace
+	 */
+	private IndeterminateEvaluationException(final ImmutableXacmlStatus status, final Throwable cause, final Optional<ImmutableXacmlStatus> topLevelStatusInFinalResult)
+	{
+		super(validateArg(status).getStatusMessage(), cause);
+		this.xacmlStatus = status;
+		this.overridingTopLevelStatusInFinalResult = topLevelStatusInFinalResult;
+	}
+
+	// Any Status with a defined StatusDetail content be override the top-level Status
+	private static boolean isTopLevelStatusInFinalResult(Status status) {
+		final StatusDetail detail = status.getStatusDetail();
+		if(detail == null) {
+			return false;
+		}
+
+		return !detail.getAnies().isEmpty();
+	}
+
+	/**
+	 * Instantiates with error message and XACML StatusCode (e.g. {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#PROCESSING_ERROR}), and internal cause for error.
+	 * <p>
+	 *     When the {@code cause} is itself an {@link IndeterminateEvaluationException}, use the {@link IndeterminateEvaluationException#IndeterminateEvaluationException(String, IndeterminateEvaluationException)}.
+	 * </p>
 	 *
 	 * @param status XACML status, StatusCode value must be a valid xs:anyURI (used as XACML StatusCode Value)
 	 * @param cause
@@ -65,8 +99,7 @@ public class IndeterminateEvaluationException extends Exception
 	 */
 	public IndeterminateEvaluationException(final ImmutableXacmlStatus status, final Throwable cause)
 	{
-		super(validateArg(status).getStatusMessage(), cause);
-		this.xacmlStatus = status;
+		this(status, cause, isTopLevelStatusInFinalResult(status)? Optional.of(status): Optional.empty());
 	}
 
 	/**
@@ -88,7 +121,7 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param cause
 	 * 	           internal cause of error
 	 */
-	public IndeterminateEvaluationException(final String message, String xacmlStatusCode, Throwable cause)
+	public IndeterminateEvaluationException(final String message, final String xacmlStatusCode, final Throwable cause)
 	{
 		this(new ImmutableXacmlStatus(xacmlStatusCode, Optional.of(validateArg(message))), validateArg(cause));
 	}
@@ -100,9 +133,9 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param cause
 	 * 	           internal cause of error
 	 */
-	public IndeterminateEvaluationException(final String message, IndeterminateEvaluationException cause)
+	public IndeterminateEvaluationException(final String message, final IndeterminateEvaluationException cause)
 	{
-		this(new ImmutableXacmlStatus(cause.getTopLevelStatus().getStatusCode().getValue(), Optional.of(validateArg(message))), validateArg(cause));
+		this(new ImmutableXacmlStatus(cause.getStatus().getStatusCode().getValue(), Optional.of(validateArg(message))), validateArg(cause), cause.getOverridingTopLevelStatus());
 	}
 
 	/**
@@ -112,19 +145,52 @@ public class IndeterminateEvaluationException extends Exception
 	 * @param xacmlStatusCode
 	 *            XACML StatusCode value
 	 */
-	public IndeterminateEvaluationException(final String message, String xacmlStatusCode)
+	public IndeterminateEvaluationException(final String message, final String xacmlStatusCode)
 	{
 		this(new ImmutableXacmlStatus(xacmlStatusCode, Optional.of(validateArg(message))));
 	}
 
 	/**
-	 * Get status corresponding to the top-level exception (last occurred) in the stacktrace
-	 * 
+	 * Instantiates with a missing-attribute error status with standard status code - unless a custom status code is defined - and a XACML {@link MissingAttributeDetail}
+	 *
+	 * @param message error message XACML status
+	 * @param missingAttributeDetail
+	 *            missing attribute detail
+	 * @param customStatusCode overrides standard missing-attribute status code {@link org.ow2.authzforce.xacml.identifiers.XacmlStatusCode#MISSING_ATTRIBUTE}, must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 */
+	public IndeterminateEvaluationException(final String message, final MissingAttributeDetail missingAttributeDetail, Optional<String> customStatusCode)
+	{
+		this(new ImmutableXacmlStatus(missingAttributeDetail, customStatusCode, Optional.of(message)));
+	}
+
+	/**
+	 * Get status corresponding to this exception (last occurred)
+	 *
 	 * @return status (always non-null)
+	 */
+	public ImmutableXacmlStatus getStatus()
+	{
+		return this.xacmlStatus;
+	}
+
+	/**
+	 * Get Status to be returned as top-level Status in the final Result regardless of any other Status in the error stack trace.
+	 * 
+	 * @return status
+	 */
+	public Optional<ImmutableXacmlStatus> getOverridingTopLevelStatus()
+	{
+		return this.overridingTopLevelStatusInFinalResult;
+	}
+
+	/**
+	 * Get top-level status, i.e. {@link #getOverridingTopLevelStatus()} if present, else {@link #getStatus()}
+	 *
+	 * @return status top-level status for final result
 	 */
 	public ImmutableXacmlStatus getTopLevelStatus()
 	{
-		return this.xacmlStatus;
+		return this.overridingTopLevelStatusInFinalResult.orElse(xacmlStatus);
 	}
 
 }

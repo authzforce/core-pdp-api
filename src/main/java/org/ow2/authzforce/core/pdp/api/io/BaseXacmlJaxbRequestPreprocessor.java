@@ -74,7 +74,7 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
      *                                      AttributeId and DataType attributes alone."
      * @param allowAttributeDuplicates      true iff the pre-processor should allow defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category).
      *                                      Indeed, not allowing this is not fully compliant with the XACML spec according to a discussion on the xacml-dev mailing list (see
-     *                                      {@linkplain "https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html"}), referring to the XACML 3.0 core spec, §7.3.3, that indicates that multiple occurrences of the
+     *                                      <a href="https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html">Handling repetitions of Attribute Category/Id/Issuer/DataType in XACML Request</a>), referring to the XACML 3.0 core spec, §7.3.3, that indicates that multiple occurrences of the
      *                                      same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single &lt;Attribute&gt; element with same meta-data and merged values
      *                                      (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in a multi-value bag
      *                                      during evaluation of the &lt;AttributeDesignator&gt;.
@@ -85,13 +85,15 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
      * @param requireContentForXPath        true iff Attributes/Content parsing (into XDM) for XPath evaluation is required
      * @param extraPdpFeatures              extra - non-mandatory per XACML 3.0 core specification - features supported by PDP engine. Any feature requested by any request is checked against this before processing the request
      *                                      further. If some feature is not supported, an Indeterminate Result is returned.
+     * @param customNamedAttributeParser custom parser of named Attributes, to customize how XACML Attributes are converted into instance of AuthzForce internal Attribute class
      * @throws UnsupportedOperationException if {@code strictAttributeIssuerMatch == false && allowAttributeDuplicates == false} which is not supported
+     *
      */
     protected BaseXacmlJaxbRequestPreprocessor(final AttributeValueFactoryRegistry attributeValueFactoryRegistry, final boolean strictAttributeIssuerMatch, final boolean allowAttributeDuplicates,
-                                               final boolean requireContentForXPath, final Set<String> extraPdpFeatures) throws UnsupportedOperationException
+                                               final boolean requireContentForXPath, final Set<String> extraPdpFeatures, Optional<NamedXacmlAttributeParser<Attribute>> customNamedAttributeParser) throws UnsupportedOperationException
     {
 
-        final NamedXacmlAttributeParser<Attribute> namedXacmlAttParser = new NamedXacmlJaxbAttributeParser(attributeValueFactoryRegistry);
+        final NamedXacmlAttributeParser<Attribute> namedXacmlAttParser = customNamedAttributeParser.orElse(new NamedXacmlJaxbAttributeParser(attributeValueFactoryRegistry));
         if (allowAttributeDuplicates)
         {
             final XacmlRequestAttributeParser<Attribute, MutableAttributeBag<?>> xacmlAttributeParser = strictAttributeIssuerMatch
@@ -119,6 +121,35 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
             }
 
         this.isCombinedDecisionSupported = extraPdpFeatures.contains(DecisionResultPostprocessor.Features.XACML_MULTIPLE_DECISION_PROFILE_COMBINED_DECISION);
+    }
+
+    /**
+     * Creates instance of request pre-processor.
+     *
+     * @param attributeValueFactoryRegistry registry of datatype-specific attribute value parsers
+     * @param strictAttributeIssuerMatch    true iff it is required that AttributeDesignator without Issuer only match request Attributes without Issuer. This mode is not fully compliant with XACML 3.0, §5.29, in the case that
+     *                                      the Issuer is not present; but it performs better and is recommended when all AttributeDesignators have an Issuer (best practice). Set it to false, if you want full compliance with
+     *                                      the XACML 3.0 Attribute Evaluation: "If the Issuer is not present in the attribute designator, then the matching of the attribute to the named attribute SHALL be governed by
+     *                                      AttributeId and DataType attributes alone."
+     * @param allowAttributeDuplicates      true iff the pre-processor should allow defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category).
+     *                                      Indeed, not allowing this is not fully compliant with the XACML spec according to a discussion on the xacml-dev mailing list (see
+     *                                      <a href="https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html">Handling repetitions of Attribute Category/Id/Issuer/DataType in XACML Request</a>), referring to the XACML 3.0 core spec, §7.3.3, that indicates that multiple occurrences of the
+     *                                      same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single &lt;Attribute&gt; element with same meta-data and merged values
+     *                                      (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in a multi-value bag
+     *                                      during evaluation of the &lt;AttributeDesignator&gt;.
+     *                                      <p>
+     *                                      Setting this parameter to {@code false} is not fully compliant, but provides better performance, especially if you know the Requests to be well-formed, i.e. all AttributeValues of a
+     *                                      given Attribute are grouped together in the same &lt;Attribute&gt; element. Combined with {@code strictAttributeIssuerMatch == true}, this is the most efficient alternative (although
+     *                                      not fully compliant).
+     * @param requireContentForXPath        true iff Attributes/Content parsing (into XDM) for XPath evaluation is required
+     * @param extraPdpFeatures              extra - non-mandatory per XACML 3.0 core specification - features supported by PDP engine. Any feature requested by any request is checked against this before processing the request
+     *                                      further. If some feature is not supported, an Indeterminate Result is returned.
+     * @throws UnsupportedOperationException if {@code strictAttributeIssuerMatch == false && allowAttributeDuplicates == false} which is not supported
+     */
+    protected BaseXacmlJaxbRequestPreprocessor(final AttributeValueFactoryRegistry attributeValueFactoryRegistry, final boolean strictAttributeIssuerMatch, final boolean allowAttributeDuplicates,
+                                               final boolean requireContentForXPath, final Set<String> extraPdpFeatures) throws UnsupportedOperationException
+    {
+        this(attributeValueFactoryRegistry, strictAttributeIssuerMatch, allowAttributeDuplicates, requireContentForXPath, extraPdpFeatures, Optional.empty());
     }
 
     /*

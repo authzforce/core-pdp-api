@@ -18,10 +18,18 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import com.google.common.base.Preconditions;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.MissingAttributeDetail;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
+import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.annotation.concurrent.Immutable;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.dom.DOMResult;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -41,11 +49,19 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 	 */
 	public static final ImmutableXacmlStatus OK = new ImmutableXacmlStatus(XacmlStatusCode.OK.value(), Optional.empty());
 
+	private static final StatusCode MISSING_ATTRIBUTE_STATUS_CODE = new StatusCode(null, XacmlStatusCode.MISSING_ATTRIBUTE.value());
+
 	/**
 	 * Max depth of status code. StatusCode in XACML schema is a recursive structure like an error stacktrace that allows chaining status codes endlessly unless the implementation enforces a maximum
 	 * depth as done here.
 	 */
 	public static final int MAX_STATUS_CODE_DEPTH = 10;
+
+	/**
+	 * Default StatusMessage for missing-attribute errors. Cf. §5.57 of XACML 3.0.
+	 */
+	public static final String DEFAULT_MISSING_ATTRIBUTE_STATUS_MESSAGE = "Missing named Attribute";
+
 
 	/**
 	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note that the specification explicitly says that a status code of OK, SyntaxError or
@@ -102,6 +118,34 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 	 */
 	public ImmutableXacmlStatus(StatusCode statusCode, String statusMessage) {
 		super(newImmutableXacmlStatusCode(statusCode, MAX_STATUS_CODE_DEPTH), statusMessage, null);
+	}
+
+	/**
+	 * Constructor for missing (named) attribute error status.
+	 *
+	 * @param missingAttributeDetail the missing attribute detail
+	 * @param code optional custom status code, else the default is used: {@link XacmlStatusCode#MISSING_ATTRIBUTE}; must be a valid xs:anyURI (used as XACML StatusCode Value)
+	 * @param message
+	 *            optional status message, else the default is used: {@link #DEFAULT_MISSING_ATTRIBUTE_STATUS_MESSAGE};
+	 */
+	public ImmutableXacmlStatus(final MissingAttributeDetail missingAttributeDetail, Optional<String> code, Optional<String> message)
+	{
+		final DOMResult domResult = new DOMResult();
+		final Marshaller marshaller;
+		try
+		{
+			marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
+
+			marshaller.marshal(missingAttributeDetail, domResult);
+		} catch (JAXBException e)
+		{
+			throw new RuntimeException("Error marshalling a XACML <MissingAttributeDetail>", e);
+		}
+
+		this.statusCode = code.map(s -> new StatusCode(null, s)).orElse(MISSING_ATTRIBUTE_STATUS_CODE);
+		this.statusMessage = message.orElse(DEFAULT_MISSING_ATTRIBUTE_STATUS_MESSAGE);
+		final Element domElement = ((Document)domResult.getNode()).getDocumentElement();
+		this.statusDetail = new StatusDetail(List.of(domElement));
 	}
 
 	/**

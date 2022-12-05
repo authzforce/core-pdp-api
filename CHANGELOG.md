@@ -1,6 +1,13 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+## 21.3.0
+### Added
+- Support for XACML `<StatusDetail>` / `<MissingAttributeDetail>` (requested by AuthzForce Core issue authzforce/core#69 ): 
+  - Returned by AttributeDesignator expression evaluator when missing named attribute(s)
+  - `ImmutableXacmlStatus` and `IndeterminateEvaluationException` classes improved: new constructors supporting XACML `MissingAttributeDetail` element
+- `BaseXacmlJaxbRequestPreprocessor` class: new constructor arg: `Optional<NamedXacmlAttributeParser<Attribute>> customNamedAttributeParser` (custom parser of named Attributes, to customize how XACML Attributes are converted into instance of AuthzForce internal Attribute class)
+
 
 ## 21.2.0
 ### Added
@@ -14,8 +21,8 @@ All notable changes to this project are documented in this file following the [K
 
 ## 21.1.0
 ### Added
-- Feature: XPath variables in `xPathExpression` `AttributeValues`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
-- Added immutable implementation of `BaseXPathCompilerProxy`: `BasixImmutableXPathCompilerProxy` class.
+- Feature: XPath variables in `xPathExpression` `AttributeValue`s' XPath expressions can now be defined by XACML VariableDefinitions (variable name used as XACML VariableId), which means XACML Variables can be used as XPath variables there.
+- Added immutable implementation of `BaseXPathCompilerProxy`: `BasicImmutableXPathCompilerProxy` class.
 
 
 ## 21.0.0

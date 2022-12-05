@@ -17,18 +17,16 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Optional;
-
+import com.google.common.collect.ImmutableMultiset;
 import org.ow2.authzforce.core.pdp.api.AttributeSource;
 import org.ow2.authzforce.core.pdp.api.AttributeSources;
 import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.value.Bag.Validator;
-import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import com.google.common.collect.ImmutableMultiset;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * This class consists exclusively of static methods that operate on or return {@link Bag}s. NOTE: do not merge this into {@link Bag} at risk of violating the Acyclic Dependencies principle.
@@ -486,19 +484,19 @@ public final class Bags
 	public static final class NonEmptinessValidator implements Validator
 	{
 
-		private final ImmutableXacmlStatus messageIfEmptyStatus;
-		private final IndeterminateEvaluationException messageIfEmptyException;
+		private final ImmutableXacmlStatus xacmlStatusIfNullOrEmptyBag;
+		private final IndeterminateEvaluationException exceptionIfNullBag;
 
 		/**
 		 * Creates validator
 		 * 
-		 * @param messageIfEmpty
-		 *            message used as exception message if bag is empty
+		 * @param errorStatus
+		 *            error status if validation fails (message and optional detail such as MissingAttributeDetail)
 		 */
-		public NonEmptinessValidator(final String messageIfEmpty)
+		public NonEmptinessValidator(final ImmutableXacmlStatus errorStatus)
 		{
-			this.messageIfEmptyStatus = new ImmutableXacmlStatus(XacmlStatusCode.MISSING_ATTRIBUTE.value(),  Optional.of(messageIfEmpty));
-			this.messageIfEmptyException = new IndeterminateEvaluationException(messageIfEmptyStatus);
+			this.xacmlStatusIfNullOrEmptyBag = errorStatus;
+			this.exceptionIfNullBag = new IndeterminateEvaluationException(xacmlStatusIfNullOrEmptyBag);
 		}
 
 		@Override
@@ -506,12 +504,12 @@ public final class Bags
 		{
 			if (bag == null)
 			{
-				throw messageIfEmptyException;
+				throw exceptionIfNullBag;
 			}
 
 			if (bag.isEmpty())
 			{
-				throw new IndeterminateEvaluationException(messageIfEmptyStatus, bag.getReasonWhyEmpty());
+				throw new IndeterminateEvaluationException(xacmlStatusIfNullOrEmptyBag, bag.getReasonWhyEmpty());
 			}
 
 		}
