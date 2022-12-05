@@ -17,10 +17,11 @@
  */
 package org.ow2.authzforce.core.pdp.api.expression;
 
+import oasis.names.tc.xacml._3_0.core.schema.wd_17.MissingAttributeDetail;
 import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.value.*;
-import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -85,13 +86,13 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 		this.returnType = resultDatatype;
 
 		// error messages/exceptions
-		final String missingAttributeMessage = this + " not found in context";
+		final MissingAttributeDetail missingAttributeDetail = new MissingAttributeDetail(List.of(), attrGUID.getCategory(), attrGUID.getId(), returnType.getElementType().getId(), attrGUID.getIssuer().orElse(null));
 		this.mustBePresent = mustBePresent;
-		this.mustBePresentEnforcer = mustBePresent ? new Bags.NonEmptinessValidator(missingAttributeMessage) : Bags.DUMB_VALIDATOR;
+		final ImmutableXacmlStatus errorStatusIfMissingAtt = new ImmutableXacmlStatus(missingAttributeDetail, Optional.empty(), Optional.empty());
+		this.mustBePresentEnforcer = mustBePresent ? new Bags.NonEmptinessValidator(errorStatusIfMissingAtt) : Bags.DUMB_VALIDATOR;
 
-		this.missingAttributeForUnknownReasonException = new IndeterminateEvaluationException(missingAttributeMessage + " for unknown reason", XacmlStatusCode.MISSING_ATTRIBUTE.value());
-		this.missingAttributeBecauseNullContextException = new IndeterminateEvaluationException(
-		        "Missing Attributes/Attribute for evaluation of AttributeDesignator '" + this.attrGUID + "' because request context undefined", XacmlStatusCode.MISSING_ATTRIBUTE.value());
+		this.missingAttributeForUnknownReasonException = new IndeterminateEvaluationException("Missing named Attribute for unknown reason", missingAttributeDetail, Optional.empty());
+		this.missingAttributeBecauseNullContextException = new IndeterminateEvaluationException("Missing named Attribute because request context undefined", missingAttributeDetail, Optional.empty());
 	}
 
 	@Override
