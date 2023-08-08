@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -35,7 +35,7 @@ public final class DayTimeDurationValue extends DurationValue<DayTimeDurationVal
 	private static final class XdmDayTimeDurationValue extends XdmAtomicValue
 	{
 		private XdmDayTimeDurationValue(final Duration duration) {
-			super(net.sf.saxon.value.DayTimeDurationValue.fromJavaDuration(java.time.Duration.parse(duration.toString())), true);
+			super(net.sf.saxon.value.DayTimeDurationValue.fromJavaDuration(java.time.Duration.parse(duration.toString())));
 		}
 	}
 

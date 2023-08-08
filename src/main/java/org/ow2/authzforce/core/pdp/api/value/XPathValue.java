@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -22,6 +22,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.lib.StandardURIChecker;
 import net.sf.saxon.om.NoNamespaceName;
 import net.sf.saxon.s9api.*;
+import net.sf.saxon.str.BMPString;
 import net.sf.saxon.tree.linked.ElementImpl;
 import net.sf.saxon.type.BuiltInAtomicType;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
@@ -57,219 +58,224 @@ import java.util.*;
  */
 public final class XPathValue extends SimpleValue<String>
 {
-	/**
-	 * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
-	 */
-	public static final String XPATH_CATEGORY_ATTRIBUTE_LOCALNAME = "XPathCategory";
+    /**
+     * XML attribute local name that indicate the XACML attribute category of the Content to which the xpathExpression is applied: {@value} .
+     */
+    public static final String XPATH_CATEGORY_ATTRIBUTE_LOCALNAME = "XPathCategory";
 
-	/**
-	 * QName of XPathCategory attribute in xpathExpression, using {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} as local name. This is allowed by XACML schema as part of:
-	 *
-	 * <pre>
-	 * {@code
-	 * <xs:anyAttribute namespace="##any" processContents="lax"/>
-	 * }
-	 * </pre>
-	 *
-	 * ... therefore namespace returned by JAXB is empty "". More info: https://jaxb.java.net/tutorial/section_6_2_7_5 -Collecting-Unspecified-Attributes-XmlAnyAttribute
-	 * .html#Collecting%20Unspecified%20Attributes:%20XmlAnyAttribute
-	 */
-	public static final QName XPATH_CATEGORY_ATTRIBUTE_QNAME = new QName("", XPATH_CATEGORY_ATTRIBUTE_LOCALNAME);
+    /**
+     * QName of XPathCategory attribute in xpathExpression, using {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} as local name. This is allowed by XACML schema as part of:
+     *
+     * <pre>
+     * {@code
+     * <xs:anyAttribute namespace="##any" processContents="lax"/>
+     * }
+     * </pre>
+     * <p>
+     * ... therefore namespace returned by JAXB is empty "". More info: https://jaxb.java.net/tutorial/section_6_2_7_5 -Collecting-Unspecified-Attributes-XmlAnyAttribute
+     * .html#Collecting%20Unspecified%20Attributes:%20XmlAnyAttribute
+     */
+    public static final QName XPATH_CATEGORY_ATTRIBUTE_QNAME = new QName("", XPATH_CATEGORY_ATTRIBUTE_LOCALNAME);
 
-	private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
-	private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
-	        "Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
+    private static final IllegalArgumentException NULL_XPATH_CATEGORY_EXCEPTION = new IllegalArgumentException("Undefined XPathCategory for XPath expression value");
+    private static final IllegalArgumentException NULL_XPATH_COMPILER_EXCEPTION = new IllegalArgumentException(
+            "Undefined XPath version/compiler (possibly missing RequestDefaults/PolicyDefaults element)");
 
-	private final String xpathCategory;
+    private final String xpathCategory;
 
-	/*
-	 * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType) but XPathEvaluator is not natively Serializable, therefore must be deserialized
-	 * with readObject() which cannot assign final variable. Therefore, developers must make sure this is only assigned by readObject() or constructors once and for all.
-	 */
-	private final transient XPathExecutable xPathEvaluator;
-	private final transient List<VariableReference<?>> xpathVariables;
+    /*
+     * Forced to be transient and non-final to comply with Serializable contract (inherits from JAXB AttributeValueType) but XPathEvaluator is not natively Serializable, therefore must be deserialized
+     * with readObject() which cannot assign final variable. Therefore, developers must make sure this is only assigned by readObject() or constructors once and for all.
+     */
+    private final transient XPathExecutable xPathEvaluator;
+    private final transient List<VariableReference<?>> xpathVariables;
 
-	private final transient IndeterminateEvaluationException missingAttributesContentException;
+    private final transient IndeterminateEvaluationException missingAttributesContentException;
 
-	private final transient ImmutableXacmlStatus xpathEvalExceptionStatus;
+    private final transient ImmutableXacmlStatus xpathEvalExceptionStatus;
 
-	private final transient IndeterminateEvaluationException missingContextException;
+    private final transient IndeterminateEvaluationException missingContextException;
 
-	private transient volatile int hashCode = 0; // Effective Java - Item 9
-	private transient volatile ImmutableMap<QName, String> extraXmlAtts = null;
+    private transient volatile int hashCode = 0; // Effective Java - Item 9
+    private transient volatile ImmutableMap<QName, String> extraXmlAtts = null;
 
-	private transient volatile XdmNode xdmValue;
+    private transient volatile XdmNode xdmValue;
 
-	/**
-	 * Instantiates from XPath expression.
-	 *
-	 * @param xpath
-	 *            XPath
-	 * @param otherXmlAttributes
-	 *            other XML attributes on the xpathExpression AttributeValue node, one of which is expected to be the attribute {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME}
-	 * @param xPathCompiler
-	 *            XPath compiler for compiling/evaluating {@code xpath}
-	 * @throws java.lang.IllegalArgumentException
-	 *             if {@code value} is not a valid string representation for this value datatype or {code otherXmlAttributes == null} or {code otherXmlAttributes} does not contain any
-	 *             {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} attribute
-	 */
-	public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompilerProxy xPathCompiler) throws IllegalArgumentException
-	{
-		super(xpath);
-		Objects.requireNonNull(otherXmlAttributes, "Undefined XML attributes (expected: " + XPATH_CATEGORY_ATTRIBUTE_QNAME + ")");
-		this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
-		if (xpathCategory == null)
-		{
-			throw NULL_XPATH_CATEGORY_EXCEPTION;
-		}
+    /**
+     * Instantiates from XPath expression.
+     *
+     * @param xpath              XPath
+     * @param otherXmlAttributes other XML attributes on the xpathExpression AttributeValue node, one of which is expected to be the attribute {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME}
+     * @param xPathCompiler      XPath compiler for compiling/evaluating {@code xpath}
+     * @throws java.lang.IllegalArgumentException if {@code value} is not a valid string representation for this value datatype or {code otherXmlAttributes == null} or {code otherXmlAttributes} does not contain any
+     *                                            {@value #XPATH_CATEGORY_ATTRIBUTE_LOCALNAME} attribute
+     */
+    public XPathValue(final String xpath, final Map<QName, String> otherXmlAttributes, final XPathCompilerProxy xPathCompiler) throws IllegalArgumentException
+    {
+        super(xpath);
+        Objects.requireNonNull(otherXmlAttributes, "Undefined XML attributes (expected: " + XPATH_CATEGORY_ATTRIBUTE_QNAME + ")");
+        this.xpathCategory = otherXmlAttributes.get(XPATH_CATEGORY_ATTRIBUTE_QNAME);
+        if (xpathCategory == null)
+        {
+            throw NULL_XPATH_CATEGORY_EXCEPTION;
+        }
 
-		if (xPathCompiler == null)
-		{
-			throw NULL_XPATH_COMPILER_EXCEPTION;
-		}
+        if (xPathCompiler == null)
+        {
+            throw NULL_XPATH_COMPILER_EXCEPTION;
+        }
 
-		/*
-		 * Please note that StandardURIChecker maintains a thread-local cache of validated URIs (cache size is 50 and eviction policy is LRU)
-		 */
-		if (!StandardURIChecker.getInstance().isValidURI(xpathCategory))
-		{
-			throw new IllegalArgumentException("Invalid value for XPathCategory (xs:anyURI): " + xpathCategory);
-		}
+        /*
+         * Please note that StandardURIChecker maintains a thread-local cache of validated URIs (cache size is 50 and eviction policy is LRU)
+         */
+        if (!StandardURIChecker.getInstance().isValidURI(xpathCategory))
+        {
+            throw new IllegalArgumentException("Invalid value for XPathCategory (xs:anyURI): " + xpathCategory);
+        }
 
-		//this.xpathEvaluator = new XPathEvaluator(xpath, xPathCompiler);
-		try
-		{
-			this.xPathEvaluator = xPathCompiler.compile(xpath);
-		} catch (final SaxonApiException e)
-		{
-			throw new IllegalArgumentException("Invalid xpathExpression AttributeValue: not a valid XPath " + xPathCompiler.getXPathVersion().getVersionNumber() + " expression: '" + xpath + "'", e);
-		}
+        //this.xpathEvaluator = new XPathEvaluator(xpath, xPathCompiler);
+        try
+        {
+            this.xPathEvaluator = xPathCompiler.compile(xpath);
+        } catch (final SaxonApiException e)
+        {
+            throw new IllegalArgumentException("Invalid xpathExpression AttributeValue: not a valid XPath " + xPathCompiler.getXPathVersion().getVersionNumber() + " expression: '" + xpath + "'", e);
+        }
 
-		final List<VariableReference<?>> allowedVars = xPathCompiler.getAllowedVariables();
-		this.xpathVariables = new ArrayList<>(allowedVars.size());
-		for(final Iterator<net.sf.saxon.s9api.QName> varNames = xPathEvaluator.iterateExternalVariables(); varNames.hasNext();) {
-			final net.sf.saxon.s9api.QName xpathVarName = varNames.next();
-			final Optional<VariableReference<?>> varRef = allowedVars.stream().filter(allowedVar -> allowedVar.getXPathVariableName().equals(xpathVarName)).findAny();
-			if(varRef.isEmpty()) {
-				throw new IllegalArgumentException("Unexpected variable '"+xpathVarName+"' in XPath expression. Not matching any (XACML) Policy VariableDefinition in: " + allowedVars);
-			}
+        final List<VariableReference<?>> allowedVars = xPathCompiler.getAllowedVariables();
+        this.xpathVariables = new ArrayList<>(allowedVars.size());
+        for (final Iterator<net.sf.saxon.s9api.QName> varNames = xPathEvaluator.iterateExternalVariables(); varNames.hasNext(); )
+        {
+            final net.sf.saxon.s9api.QName xpathVarName = varNames.next();
+            final Optional<VariableReference<?>> varRef = allowedVars.stream().filter(allowedVar -> allowedVar.getXPathVariableName().equals(xpathVarName)).findAny();
+            if (varRef.isEmpty())
+            {
+                throw new IllegalArgumentException("Unexpected variable '" + xpathVarName + "' in XPath expression. Not matching any (XACML) Policy VariableDefinition in: " + allowedVars);
+            }
 
-			xpathVariables.add(varRef.get());
-		}
+            xpathVariables.add(varRef.get());
+        }
 
-		this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory, XacmlStatusCode.SYNTAX_ERROR.value());
-		this.xpathEvalExceptionStatus = new ImmutableXacmlStatus(XacmlStatusCode.SYNTAX_ERROR.value(), Optional.of(this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'"));
-		this.missingContextException = new IndeterminateEvaluationException(new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of(this + ":  undefined evaluation context: XPath value cannot be evaluated")));
-	}
+        this.missingAttributesContentException = new IndeterminateEvaluationException(this + ": No <Content> element found in Attributes of Category=" + xpathCategory, XacmlStatusCode.SYNTAX_ERROR.value());
+        this.xpathEvalExceptionStatus = new ImmutableXacmlStatus(XacmlStatusCode.SYNTAX_ERROR.value(), Optional.of(this + ": Error evaluating XPath against XML node from Content of Attributes Category='" + xpathCategory + "'"));
+        this.missingContextException = new IndeterminateEvaluationException(new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of(this + ":  undefined evaluation context: XPath value cannot be evaluated")));
+    }
 
-	/**
-	 * Convenient method to get the XML nodes ("node-set") matching the XPath expression from the Content node of the XACML Attributes element with category <i>XPathCategory</i> in this
-	 * {@code context}. <i>XPathCategory</i> is extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to {@link #XPathValue(String, Map, XPathCompilerProxy)} when
-	 * creating this instance. To be used by XPath-based functions defined in section A.3.15 of XACML 3.0 Core specification.
-	 *
-	 * @param context
-	 *            current evaluation context
-	 * @return node-set
-	 * @throws org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException
-	 *             error evaluating the XPath expression
-	 */
-	public XdmValue evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
-	{
-		if (context == null)
-		{
-			throw this.missingContextException;
-		}
+    /**
+     * Convenient method to get the XML nodes ("node-set") matching the XPath expression from the Content node of the XACML Attributes element with category <i>XPathCategory</i> in this
+     * {@code context}. <i>XPathCategory</i> is extracted from the attribute of the same name in {@code otherXmlAttributes} argument passed to {@link #XPathValue(String, Map, XPathCompilerProxy)} when
+     * creating this instance. To be used by XPath-based functions defined in section A.3.15 of XACML 3.0 Core specification.
+     *
+     * @param context current evaluation context
+     * @return node-set
+     * @throws org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException error evaluating the XPath expression
+     */
+    public XdmValue evaluate(final EvaluationContext context) throws IndeterminateEvaluationException
+    {
+        if (context == null)
+        {
+            throw this.missingContextException;
+        }
 
-		final XdmNode contentNode = context.getAttributesContent(this.xpathCategory);
-		if (contentNode == null)
-		{
-			throw this.missingAttributesContentException;
-		}
+        final XdmNode contentNode = context.getAttributesContent(this.xpathCategory);
+        if (contentNode == null)
+        {
+            throw this.missingAttributesContentException;
+        }
 
-		/*
-		 * An XPathExecutable is immutable, and therefore thread-safe. It is simpler to load a new XPathSelector each time the expression is to be evaluated. However, the XPathSelector is serially
-		 * reusable within a single thread. See Saxon Javadoc.
-		 */
-		final XPathSelector xpathSelector = xPathEvaluator.load();
-		try
-		{
-			for(final VariableReference<?> xpathVar: xpathVariables) {
-				final Value val = context.getVariableValue(xpathVar.getVariableId(), xpathVar.getReturnType());
-				xpathSelector.setVariable(xpathVar.getXPathVariableName(), val.getXdmValue());
-			}
-			xpathSelector.setContextItem(contentNode);
-			return xpathSelector.evaluate();
-		} catch (final SaxonApiException e)
-		{
-			throw new IndeterminateEvaluationException(this.xpathEvalExceptionStatus, e);
-		}
-	}
+        /*
+         * An XPathExecutable is immutable, and therefore thread-safe. It is simpler to load a new XPathSelector each time the expression is to be evaluated. However, the XPathSelector is serially
+         * reusable within a single thread. See Saxon Javadoc.
+         */
+        final XPathSelector xpathSelector = xPathEvaluator.load();
+        try
+        {
+            for (final VariableReference<?> xpathVar : xpathVariables)
+            {
+                final Value val = context.getVariableValue(xpathVar.getVariableId(), xpathVar.getReturnType());
+                xpathSelector.setVariable(xpathVar.getXPathVariableName(), val.getXdmValue());
+            }
+            xpathSelector.setContextItem(contentNode);
+            return xpathSelector.evaluate();
+        } catch (final SaxonApiException e)
+        {
+            throw new IndeterminateEvaluationException(this.xpathEvalExceptionStatus, e);
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode()
-	{
-		if (hashCode == 0)
-		{
-			// hash regardless of letter case
-			hashCode = Objects.hash(xpathCategory, value);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        if (hashCode == 0)
+        {
+            // hash regardless of letter case
+            hashCode = Objects.hash(xpathCategory, value);
+        }
 
-		return hashCode;
-	}
+        return hashCode;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(final Object obj)
-	{
-		// Effective Java - Item 8
-		if (this == obj)
-		{
-			return true;
-		}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
 
-		if (!(obj instanceof XPathValue))
-		{
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        // Effective Java - Item 8
+        if (this == obj)
+        {
+            return true;
+        }
 
-		final XPathValue other = (XPathValue) obj;
-		return this.xpathCategory.equals(other.xpathCategory) && this.value.equals(other.value);
-	}
+        if (!(obj instanceof XPathValue))
+        {
+            return false;
+        }
 
-	/** {@inheritDoc} */
-	@Override
-	public String printXML()
-	{
-		return this.value;
-	}
+        final XPathValue other = (XPathValue) obj;
+        return this.xpathCategory.equals(other.xpathCategory) && this.value.equals(other.value);
+    }
 
-	@Override
-	public Map<QName, String> getXmlAttributes()
-	{
-		if (this.extraXmlAtts == null)
-		{
-			this.extraXmlAtts = ImmutableMap.of(XPATH_CATEGORY_ATTRIBUTE_QNAME, this.xpathCategory);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String printXML()
+    {
+        return this.value;
+    }
 
-		return this.extraXmlAtts;
-	}
+    @Override
+    public Map<QName, String> getXmlAttributes()
+    {
+        if (this.extraXmlAtts == null)
+        {
+            this.extraXmlAtts = ImmutableMap.of(XPATH_CATEGORY_ATTRIBUTE_QNAME, this.xpathCategory);
+        }
 
-    @SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
-	@Override
-	public XdmItem getXdmItem()
-	{
-		if(xdmValue == null ) {
-			final ElementImpl node = new ElementImpl();
-			node.addAttribute(new NoNamespaceName(XPATH_CATEGORY_ATTRIBUTE_LOCALNAME), BuiltInAtomicType.STRING, xpathCategory, 0);
-			node.replaceStringValue(value);
-			xdmValue = new XdmNode(node);
-		}
-		return xdmValue;
-	}
+        return this.extraXmlAtts;
+    }
+
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "According to Saxon documentation, an XdmValue is immutable.")
+    @Override
+    public XdmItem getXdmItem()
+    {
+        if (xdmValue == null)
+        {
+            final ElementImpl node = new ElementImpl();
+            node.addAttribute(new NoNamespaceName(XPATH_CATEGORY_ATTRIBUTE_LOCALNAME), BuiltInAtomicType.STRING, xpathCategory, 0, false);
+            node.replaceStringValue(BMPString.of(value));
+            xdmValue = new XdmNode(node);
+        }
+        return xdmValue;
+    }
 }

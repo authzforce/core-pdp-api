@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -61,7 +61,7 @@ public final class AnyUriValue extends StringParseableValue<String>
 {
 	private static final class XdmAnyUriValue extends XdmAtomicValue {
 		private XdmAnyUriValue(final String uri) {
-			super(new AnyURIValue(uri), true);
+			super(new AnyURIValue(uri));
 		}
 	}
 
