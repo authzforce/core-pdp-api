@@ -4,6 +4,7 @@ All notable changes to this project are documented in this file following the [K
 
 ## 21.4.0
 ### Fixed
+- Upgraded parent project (authzforce-ce-parent) version: 8.5.0
 - CVEs in dependencies by upgrading:
   - authzforce-ce-xacml-model, authzforce-ce-pdp-ext-model: 8.5.0
   - javax.mail-api to jakarta.mail-api: 1.6.7
