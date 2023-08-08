@@ -1,6 +1,17 @@
 # Change log
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
+
+## 21.4.0
+### Fixed
+- CVEs in dependencies by upgrading:
+  - authzforce-ce-xacml-model, authzforce-ce-pdp-ext-model: 8.5.0
+  - javax.mail-api to jakarta.mail-api: 1.6.7
+  - guava: 32.1.2-jre
+  - slf4j-api: 1.7.36
+  - Saxon-HE: 12.3
+
+
 ## 21.3.0
 ### Added
 - Support for XACML `<StatusDetail>` / `<MissingAttributeDetail>` (requested by AuthzForce Core issue authzforce/core#69 ): 
