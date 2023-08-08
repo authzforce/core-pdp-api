@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -36,7 +36,7 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 	private static final class XdmYearMonthDurationValue extends XdmAtomicValue
 	{
 		private XdmYearMonthDurationValue(final Duration duration) {
-			super(net.sf.saxon.value.YearMonthDurationValue.fromMonths(duration.getYears() * 12 + duration.getMonths()), true);
+			super(net.sf.saxon.value.YearMonthDurationValue.fromMonths(duration.getYears() * 12 + duration.getMonths()));
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -36,7 +36,7 @@ public final class Base64BinaryValue extends StringParseableValue<byte[]>
 	private static final class XdmBase64BinaryValue extends XdmAtomicValue
 	{
 		private XdmBase64BinaryValue(final byte[] bytes) {
-			super(new net.sf.saxon.value.Base64BinaryValue(bytes), true);
+			super(new net.sf.saxon.value.Base64BinaryValue(bytes));
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,29 +17,23 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
+import net.sf.saxon.Version;
+import net.sf.saxon.regex.RegularExpression;
+import net.sf.saxon.str.BMPString;
+import net.sf.saxon.trans.XPathException;
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.expression.Expressions;
-import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
-import org.ow2.authzforce.core.pdp.api.value.BooleanValue;
-import org.ow2.authzforce.core.pdp.api.value.Datatype;
-import org.ow2.authzforce.core.pdp.api.value.SimpleValue;
-import org.ow2.authzforce.core.pdp.api.value.StandardDatatypes;
-import org.ow2.authzforce.core.pdp.api.value.StringValue;
-import org.ow2.authzforce.core.pdp.api.value.Value;
+import org.ow2.authzforce.core.pdp.api.value.*;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
-import net.sf.saxon.Version;
-import net.sf.saxon.regex.RegularExpression;
-import net.sf.saxon.trans.XPathException;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * *-regexp-match function helper
@@ -54,181 +48,165 @@ import net.sf.saxon.trans.XPathException;
  * <li>Character classes: XML schema define categories <code>\c</code> and <code>\C</code>. {@link Pattern} does not support them.</li>
  * </ul>
  * EXAMPLE: this regex from XML schema spec uses character class substraction. It is valid for <code>xf:matches</code> but does not compile with {@link Pattern}:
- * 
+ *
  * <pre>
  * [\i-[:]][\c-[:]]*
  * </pre>
- * 
  */
 public final class RegexpMatchFunctionHelper
 {
-	private static final class CompiledRegexMatchFunctionCall extends BaseFirstOrderFunctionCall<BooleanValue>
-	{
-		private final RegularExpression compiledRegex;
-		private final List<Expression<?>> argExpressionsAfterRegex;
-		private final Datatype<? extends SimpleValue<String>> matchedValType;
-		private final ImmutableXacmlStatus invalidRemainingArg1TypeErrorStatus;
-		private final ImmutableXacmlStatus invalidArg1ErrorStatus;
+    private final String indeterminateArg1TypeMessage;
+    private final FirstOrderFunctionSignature<BooleanValue> funcSig;
+    private final Datatype<? extends SimpleValue<String>> matchedValueType;
+    private final String invalidRegexMsg;
+    /**
+     * Creates a "regex-match" (matching regular expressions) function helper
+     *
+     * @param matchFunctionSignature signature of function that {@link #getCompiledRegexMatchCall(List, Datatype...)} must create
+     * @param matchedDatatype        datatype of value to be matched against the regular expression
+     */
+    public RegexpMatchFunctionHelper(final FirstOrderFunctionSignature<BooleanValue> matchFunctionSignature, final Datatype<? extends SimpleValue<String>> matchedDatatype)
+    {
+        this.funcSig = matchFunctionSignature;
+        this.matchedValueType = matchedDatatype;
+        this.indeterminateArg1TypeMessage = "Function " + funcSig.getName() + ": Invalid type (expected = " + matchedDatatype + ") of arg #1: ";
+        this.invalidRegexMsg = "Function " + funcSig.getName() + ": Invalid regular expression in arg #0 (evaluated as static expression): '";
+    }
 
-		private CompiledRegexMatchFunctionCall(final FirstOrderFunctionSignature<BooleanValue> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes,
-		        final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
-		{
-			super(functionSig, argExpressions, remainingArgTypes);
-			assert invalidRemainingArg1TypeMsg != null;
-			this.compiledRegex = compiledRegex;
-			/*
-			 * We can remove the first arg from argExpressions since it is already the compiledRegex.
-			 */
-			this.argExpressionsAfterRegex = argExpressions.subList(1, argExpressions.size());
-			this.matchedValType = matchedValueType;
-			this.invalidRemainingArg1TypeErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(),Optional.of(invalidRemainingArg1TypeMsg));
-			this.invalidArg1ErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of("Function " + functionSig.getName() + ": Indeterminate arg #1"));
-		}
+    /**
+     * Match a string against a regular expression
+     *
+     * @param regex regular expression
+     * @param arg1  string value
+     * @return true iff {@code arg1} matches {@code regex}
+     * @throws IllegalArgumentException {@code regex} is not a valid regular expression
+     */
+    public static boolean match(final StringValue regex, final SimpleValue<String> arg1) throws IllegalArgumentException
+    {
+        /*
+         * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
+         */
+        final RegularExpression compiledRegex;
+        try
+        {
+            compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), BMPString.of(regex.getUnderlyingValue()), "", "XP20", null);
+        } catch (final XPathException e)
+        {
+            throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
+        }
 
-		@Override
-		public BooleanValue evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
-		{
-			final SimpleValue<String> arg1;
-			if (argExpressionsAfterRegex.isEmpty())
-			{
-				// no more arg in argExpressions, so next arg is in remainingArgs
-				try
-				{
-					arg1 = matchedValType.cast(remainingArgs[0]);
-				}
-				catch (final ClassCastException e)
-				{
-					throw new IndeterminateEvaluationException(invalidRemainingArg1TypeErrorStatus, e);
-				}
-			}
-			else
-			{
-				try
-				{
-					arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, mdpContext, matchedValType);
-				}
-				catch (final IndeterminateEvaluationException e)
-				{
-					throw new IndeterminateEvaluationException(invalidArg1ErrorStatus, e);
-				}
-			}
+        return compiledRegex.containsMatch(BMPString.of(arg1.getUnderlyingValue()));
+    }
 
-			return BooleanValue.valueOf(compiledRegex.containsMatch(arg1.getUnderlyingValue()));
+    /**
+     * Creates regex-match function call using pre-compiled regex
+     *
+     * @param argExpressions    input expressions
+     * @param remainingArgTypes types of remaining arguments (after input expressions)
+     * @return function call using compiled regex from first argument if constant value; or null if first argument is not constant
+     */
+    public FirstOrderFunctionCall<BooleanValue> getCompiledRegexMatchCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
+    {
+        // check if first arg = regex is constant value, in which case pre-compile the regex
+        final RegularExpression compiledRegex;
+        if (argExpressions.isEmpty())
+        {
+            compiledRegex = null;
+        } else
+        {
+            final Expression<?> input0 = argExpressions.get(0);
+            /*
+             * if first arg is constant, pre-compile the regex
+             */
+            final Optional<? extends Value> constant = input0.getValue();
+            if (constant.isPresent())
+            {
+                // actual constant
+                final Value constantValue = constant.get();
+                if (!(constantValue instanceof StringValue))
+                {
+                    throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING + ")");
+                }
 
-		}
-	}
+                final String regex = ((StringValue) constantValue).getUnderlyingValue();
+                try
+                {
+                    /*
+                     * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
+                     */
+                    compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), BMPString.of(regex), "", "XP20", null);
+                } catch (final XPathException e)
+                {
+                    throw new IllegalArgumentException(invalidRegexMsg + regex + "'", e);
+                }
+            } else
+            {
+                compiledRegex = null;
+            }
+        }
 
-	/**
-	 * Match a string against a regular expression
-	 * 
-	 * @param regex
-	 *            regular expression
-	 * @param arg1
-	 *            string value
-	 * @return true iff {@code arg1} matches {@code regex}
-	 * @throws IllegalArgumentException
-	 *             {@code regex} is not a valid regular expression
-	 */
-	public static boolean match(final StringValue regex, final SimpleValue<String> arg1) throws IllegalArgumentException
-	{
-		/*
-		 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
-		 */
-		final RegularExpression compiledRegex;
-		try
-		{
-			compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), regex.getUnderlyingValue(), "", "XP20", null);
-		}
-		catch (final XPathException e)
-		{
-			throw new PatternSyntaxException("Invalid regular expression arg", regex.getUnderlyingValue(), -1);
-		}
+        if (compiledRegex == null)
+        {
+            return null;
+        }
 
-		return compiledRegex.containsMatch(arg1.getUnderlyingValue());
-	}
+        /*
+         * Else compiledRegex != null, so we can optimize: make a new FunctionCall that reuses the compiled regex Although we could remove the first arg from argExpressions since it is already the
+         * compiledRegex, we still need to pass original argExpressions to any subclass of FirstOrderFunctionCall (like below) because it checks all arguments datatypes and so on first.
+         */
+        return new CompiledRegexMatchFunctionCall(funcSig, argExpressions, remainingArgTypes, compiledRegex, matchedValueType, indeterminateArg1TypeMessage);
+    }
 
-	private final String indeterminateArg1TypeMessage;
-	private final FirstOrderFunctionSignature<BooleanValue> funcSig;
-	private final Datatype<? extends SimpleValue<String>> matchedValueType;
-	private final String invalidRegexMsg;
+    private static final class CompiledRegexMatchFunctionCall extends BaseFirstOrderFunctionCall<BooleanValue>
+    {
+        private final RegularExpression compiledRegex;
+        private final List<Expression<?>> argExpressionsAfterRegex;
+        private final Datatype<? extends SimpleValue<String>> matchedValType;
+        private final ImmutableXacmlStatus invalidRemainingArg1TypeErrorStatus;
+        private final ImmutableXacmlStatus invalidArg1ErrorStatus;
 
-	/**
-	 * Creates a "regex-match" (matching regular expressions) function helper
-	 * 
-	 * @param matchFunctionSignature
-	 *            signature of function that {@link #getCompiledRegexMatchCall(List, Datatype...)} must create
-	 * @param matchedDatatype
-	 *            datatype of value to be matched against the regular expression
-	 */
-	public RegexpMatchFunctionHelper(final FirstOrderFunctionSignature<BooleanValue> matchFunctionSignature, final Datatype<? extends SimpleValue<String>> matchedDatatype)
-	{
-		this.funcSig = matchFunctionSignature;
-		this.matchedValueType = matchedDatatype;
-		this.indeterminateArg1TypeMessage = "Function " + funcSig.getName() + ": Invalid type (expected = " + matchedDatatype + ") of arg #1: ";
-		this.invalidRegexMsg = "Function " + funcSig.getName() + ": Invalid regular expression in arg #0 (evaluated as static expression): '";
-	}
+        private CompiledRegexMatchFunctionCall(final FirstOrderFunctionSignature<BooleanValue> functionSig, final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes,
+                                               final RegularExpression compiledRegex, final Datatype<? extends SimpleValue<String>> matchedValueType, final String invalidRemainingArg1TypeMsg) throws IllegalArgumentException
+        {
+            super(functionSig, argExpressions, remainingArgTypes);
+            assert invalidRemainingArg1TypeMsg != null;
+            this.compiledRegex = compiledRegex;
+            /*
+             * We can remove the first arg from argExpressions since it is already the compiledRegex.
+             */
+            this.argExpressionsAfterRegex = argExpressions.subList(1, argExpressions.size());
+            this.matchedValType = matchedValueType;
+            this.invalidRemainingArg1TypeErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of(invalidRemainingArg1TypeMsg));
+            this.invalidArg1ErrorStatus = new ImmutableXacmlStatus(XacmlStatusCode.PROCESSING_ERROR.value(), Optional.of("Function " + functionSig.getName() + ": Indeterminate arg #1"));
+        }
 
-	/**
-	 * Creates regex-match function call using pre-compiled regex
-	 * 
-	 * @param argExpressions
-	 *            input expressions
-	 * @param remainingArgTypes
-	 *            types of remaining arguments (after input expressions)
-	 * @return function call using compiled regex from first argument if constant value; or null if first argument is not constant
-	 */
-	public FirstOrderFunctionCall<BooleanValue> getCompiledRegexMatchCall(final List<Expression<?>> argExpressions, final Datatype<?>... remainingArgTypes)
-	{
-		// check if first arg = regex is constant value, in which case pre-compile the regex
-		final RegularExpression compiledRegex;
-		if (argExpressions.isEmpty())
-		{
-			compiledRegex = null;
-		}
-		else
-		{
-			final Expression<?> input0 = argExpressions.get(0);
-			/*
-			 * if first arg is constant, pre-compile the regex
-			 */
-			final Optional<? extends Value> constant = input0.getValue();
-			if (constant.isPresent())
-			{
-				// actual constant
-				final Value constantValue = constant.get();
-				if (!(constantValue instanceof StringValue))
-				{
-					throw new IllegalArgumentException(invalidRegexMsg + constant + "' (invalid datatype: " + input0.getReturnType() + "; expected: " + StandardDatatypes.STRING + ")");
-				}
+        @Override
+        public BooleanValue evaluate(final EvaluationContext context, final Optional<EvaluationContext> mdpContext, final AttributeValue... remainingArgs) throws IndeterminateEvaluationException
+        {
+            final SimpleValue<String> arg1;
+            if (argExpressionsAfterRegex.isEmpty())
+            {
+                // no more arg in argExpressions, so next arg is in remainingArgs
+                try
+                {
+                    arg1 = matchedValType.cast(remainingArgs[0]);
+                } catch (final ClassCastException e)
+                {
+                    throw new IndeterminateEvaluationException(invalidRemainingArg1TypeErrorStatus, e);
+                }
+            } else
+            {
+                try
+                {
+                    arg1 = Expressions.eval(argExpressionsAfterRegex.get(0), context, mdpContext, matchedValType);
+                } catch (final IndeterminateEvaluationException e)
+                {
+                    throw new IndeterminateEvaluationException(invalidArg1ErrorStatus, e);
+                }
+            }
 
-				final String regex = ((StringValue) constantValue).getUnderlyingValue();
-				try
-				{
-					/*
-					 * From Saxon xf:matches() implementation: Matches#evaluateItem() / evalMatches()
-					 */
-					compiledRegex = Version.platform.compileRegularExpression(XmlUtils.SAXON_PROCESSOR.getUnderlyingConfiguration(), regex, "", "XP20", null);
-				}
-				catch (final XPathException e)
-				{
-					throw new IllegalArgumentException(invalidRegexMsg + regex + "'", e);
-				}
-			}
-			else
-			{
-				compiledRegex = null;
-			}
-		}
+            return BooleanValue.valueOf(compiledRegex.containsMatch(BMPString.of(arg1.getUnderlyingValue())));
 
-		if (compiledRegex == null)
-		{
-			return null;
-		}
-
-		/*
-		 * Else compiledRegex != null, so we can optimize: make a new FunctionCall that reuses the compiled regex Although we could remove the first arg from argExpressions since it is already the
-		 * compiledRegex, we still need to pass original argExpressions to any subclass of FirstOrderFunctionCall (like below) because it checks all arguments datatypes and so on first.
-		 */
-		return new CompiledRegexMatchFunctionCall(funcSig, argExpressions, remainingArgTypes, compiledRegex, matchedValueType, indeterminateArg1TypeMessage);
-	}
+        }
+    }
 }

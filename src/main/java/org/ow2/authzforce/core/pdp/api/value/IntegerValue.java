@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -45,7 +45,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 
 	private static final class XdmIntegerValue extends XdmAtomicValue {
 		private XdmIntegerValue(final GenericInteger integer) {
-			super(integer instanceof ArbitrarilyBigInteger? new BigIntegerValue(integer.bigIntegerValue()): new Int64Value(integer.longValueExact()), true);
+			super(integer instanceof ArbitrarilyBigInteger? new BigIntegerValue(integer.bigIntegerValue()): new Int64Value(integer.longValueExact()));
 		}
 	}
 

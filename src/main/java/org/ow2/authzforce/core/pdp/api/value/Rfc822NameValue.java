@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -21,11 +21,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
-import java.util.Locale;
-import java.util.Objects;
-
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Representation of an RFC 822 email address. The valid syntax for such a name is described in IETF RFC 2821, Section 4.1.2, 4019 Command Argument Syntax, under the term "Mailbox". Mailbox =

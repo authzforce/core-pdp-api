@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -44,7 +44,7 @@ public final class TimeValue extends BaseTimeValue<TimeValue>
 {
 	private static final class XdmTimeValue extends XdmAtomicValue {
 		private XdmTimeValue(final XMLGregorianCalendar calendar) {
-			super(new net.sf.saxon.value.TimeValue(calendar.toGregorianCalendar(), calendar.getTimezone()), true);
+			super(new net.sf.saxon.value.TimeValue(calendar.toGregorianCalendar(), calendar.getTimezone()));
 		}
 	}
 

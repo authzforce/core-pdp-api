@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 THALES.
+ * Copyright 2012-2023 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -35,7 +35,7 @@ public final class HexBinaryValue extends StringParseableValue<byte[]>
 {
 	private static final class XdmHexBinaryValue extends XdmAtomicValue {
 		private XdmHexBinaryValue(final byte[] bytes) {
-			super(new net.sf.saxon.value.HexBinaryValue(bytes), true);
+			super(new net.sf.saxon.value.HexBinaryValue(bytes));
 		}
 	}
 
