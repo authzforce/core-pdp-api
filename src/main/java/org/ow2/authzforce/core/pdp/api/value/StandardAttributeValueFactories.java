@@ -151,9 +151,8 @@ public final class StandardAttributeValueFactories
 				return IntegerValue.valueOf((Integer) value);
 			}
 
-			if (value instanceof Long)
+			if (value instanceof Long l)
 			{
-				final Long l = (Long) value;
 				final int i;
 				try
 				{
@@ -166,9 +165,8 @@ public final class StandardAttributeValueFactories
 				return IntegerValue.valueOf(i);
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				final int i;
 				try
 				{
@@ -241,9 +239,8 @@ public final class StandardAttributeValueFactories
 				return smallIntegerValue;
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				final long i;
 				try
 				{
@@ -311,9 +308,8 @@ public final class StandardAttributeValueFactories
 				return smallIntegerValue;
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				return getInstance(bigInt);
 			}
 
@@ -445,9 +441,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public DateValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof LocalDate)
+			if (value instanceof LocalDate date)
 			{
-				final LocalDate date = (LocalDate) value;
 				// We set date in UTC, so timezone offset is 0
 				return DateValue.getInstance(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendarDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0));
 			}
@@ -514,9 +509,8 @@ public final class StandardAttributeValueFactories
 						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
-			if (value instanceof Instant)
+			if (value instanceof Instant instant)
 			{
-				final Instant instant = (Instant) value;
 				// We set time in UTC
 				final LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(), 0);
@@ -555,9 +549,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public AnyUriValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof URI)
+			if (value instanceof URI uri)
 			{
-				final URI uri = (URI) value;
 				return new AnyUriValue(uri.toString());
 			}
 
@@ -594,9 +587,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public HexBinaryValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof byte[])
+			if (value instanceof byte[] bytes)
 			{
-				final byte[] bytes = (byte[]) value;
 				return new HexBinaryValue(bytes);
 			}
 
@@ -646,9 +638,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public X500NameValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof X500Principal)
+			if (value instanceof X500Principal principal)
 			{
-				final X500Principal principal = (X500Principal) value;
 				return new X500NameValue(principal);
 			}
 
