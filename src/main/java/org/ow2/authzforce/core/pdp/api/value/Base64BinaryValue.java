@@ -18,15 +18,15 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Arrays;
 
 /**
  * Representation of a xs:base64Binary value. This class supports parsing xs:base64Binary values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of
- * the Java type byte[] is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
+ * the Java type byte[] is based on <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a>.
  *
  * 
  * @version $Id: $
@@ -79,12 +79,10 @@ public final class Base64BinaryValue extends StringParseableValue<byte[]>
 			return true;
 		}
 
-		if (!(obj instanceof Base64BinaryValue))
+		if (!(obj instanceof Base64BinaryValue other))
 		{
 			return false;
 		}
-
-		final Base64BinaryValue other = (Base64BinaryValue) obj;
 
 		/*
 		 * if (value == null) { if (other.value != null) { return false; } } else

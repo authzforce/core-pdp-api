@@ -18,6 +18,8 @@
 package org.ow2.authzforce.core.pdp.api.io;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.XdmNode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.*;
@@ -39,7 +41,6 @@ import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 import org.w3c.dom.Element;
 
-import javax.xml.bind.Unmarshaller;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,8 +57,15 @@ public final class XacmlJaxbParsingUtils
 	        "Input XACML attribute values null/empty (nonEmptyJaxbAttributeValues)");
 	private static final ImmutableXacmlStatus INVALID_ATT_ERROR_STATUS = new ImmutableXacmlStatus(XacmlStatusCode.SYNTAX_ERROR.value(), Optional.of("Invalid Attributes/Attribute element"));
 	private static final XmlnsFilteringParserFactory NS_FILTERING_XACML_PARSER_FACTORY = () -> {
-		final Unmarshaller unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
-		return new SAXBasedXmlnsFilteringParser(unmarshaller);
+		final Unmarshaller unmarshaller;
+		try
+		{
+			unmarshaller = Xacml3JaxbHelper.createXacml3Unmarshaller();
+			return new SAXBasedXmlnsFilteringParser(unmarshaller);
+		} catch (JAXBException e)
+		{
+			throw new RuntimeException("Error creating XACML/JAXB unmarshaller", e);
+		}
 	};
 
 	private static final XmlnsFilteringParserFactory NO_NS_FILTERING_XACML_PARSER_FACTORY = () -> new NoXmlnsFilteringParser(Xacml3JaxbHelper::createXacml3Unmarshaller);
@@ -498,19 +506,19 @@ public final class XacmlJaxbParsingUtils
 		 	assert status.getStatusDetail() == null;
 			optImmutableStatus = Optional.of(new ImmutableXacmlStatus(status.getStatusCode(), status.getStatusMessage()));
 		}
-		switch (xacmlResult.getDecision())
-		{
-			case DENY:
-				return DecisionResults.getDeny(optImmutableStatus, pepActions, immutableApplicablePolicyIdList);
-			case PERMIT:
-				return DecisionResults.getPermit(optImmutableStatus, pepActions, immutableApplicablePolicyIdList);
-			case NOT_APPLICABLE:
-				return DecisionResults.getNotApplicable(optImmutableStatus);
-			default:
+
+        return switch (xacmlResult.getDecision())
+        {
+            case DENY -> DecisionResults.getDeny(optImmutableStatus, pepActions, immutableApplicablePolicyIdList);
+            case PERMIT -> DecisionResults.getPermit(optImmutableStatus, pepActions, immutableApplicablePolicyIdList);
+            case NOT_APPLICABLE -> DecisionResults.getNotApplicable(optImmutableStatus);
+            default ->
+            {
+                assert optImmutableStatus.isPresent();
 				// Some XACML Status must be defined for Indeterminate Results
-				assert optImmutableStatus.isPresent();
-				return DecisionResults.newIndeterminate(null, new IndeterminateEvaluationException(optImmutableStatus.get()), immutableApplicablePolicyIdList);
-		}
+                yield DecisionResults.newIndeterminate(null, new IndeterminateEvaluationException(optImmutableStatus.get()), immutableApplicablePolicyIdList);
+            }
+        };
 	}
 
 	private XacmlJaxbParsingUtils()

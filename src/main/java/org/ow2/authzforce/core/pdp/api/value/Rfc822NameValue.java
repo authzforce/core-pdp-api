@@ -18,11 +18,11 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -145,12 +145,11 @@ public final class Rfc822NameValue extends StringParseableValue<String>
 			return true;
 		}
 
-		if (!(obj instanceof Rfc822NameValue))
+		if (!(obj instanceof Rfc822NameValue other))
 		{
 			return false;
 		}
 
-		final Rfc822NameValue other = (Rfc822NameValue) obj;
 		/*
 		 * if (domainPartLowerCase == null) { if (other.domainPartLowerCase != null) { return false; } } else
 		 */

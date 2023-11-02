@@ -21,14 +21,13 @@ import java.math.BigInteger;
 import java.util.Deque;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.Int64Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * Representation of a xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.

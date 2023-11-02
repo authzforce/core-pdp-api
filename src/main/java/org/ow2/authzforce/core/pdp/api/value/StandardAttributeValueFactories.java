@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.xml.bind.DatatypeConverter;
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry.PdpExtensionComparator;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -786,7 +786,7 @@ public final class StandardAttributeValueFactories
 	 * @param enableXPath
 	 *            true iff XPath-based function(s) support enabled
 	 * @param maxIntegerValue
-	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type 'http://www.w3.org/2001/XMLSchema#integer'. Decreasing this value as much as possible
+	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type {@literal http://www.w3.org/2001/XMLSchema#integer}. Decreasing this value as much as possible
 	 *            helps the PDP engine optimize the processing of integer values (lower memory consumption, faster computations). By default, the Java class used to represent an integer value is:
 	 *            <ul>
 	 *            <li>{@link Integer}</li>

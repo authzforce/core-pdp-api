@@ -18,6 +18,9 @@
 package org.ow2.authzforce.core.pdp.api.io;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.*;
 import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.policy.PrimaryPolicyMetadata;
@@ -25,9 +28,6 @@ import org.ow2.authzforce.core.pdp.api.policy.TopLevelPolicyElementType;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.transform.dom.DOMResult;
 import java.util.*;
 import java.util.Map.Entry;

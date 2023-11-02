@@ -18,24 +18,30 @@
 package org.ow2.authzforce.core.pdp.api;
 
 import com.google.common.collect.ImmutableMap;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.UnmarshallerHandler;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.s9api.*;
 import org.ow2.authzforce.core.pdp.api.expression.XPathCompilerProxy;
+import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 import org.ow2.authzforce.xacml.identifiers.XPathVersion;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,8 +52,8 @@ import java.util.Map.Entry;
 public final class XmlUtils
 {
     /**
-     * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But bug report
-     * indicates it should be and has been so far: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177 Reusing the same instance matters for performance: https://www.java.net/node/666491 The
+     * XML datatype factory for parsing XML-Schema-compliant date/time/duration values into Java types. DatatypeFactory's official javadoc does not say whether it is thread-safe. But <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6466177">this bug report</a>
+     * indicates it should be and has been so far.  Reusing the same instance matters for <a href="https://www.java.net/node/666491">performance</a>. The
      * alternative would be to use ThreadLocal to limit thread-safety issues in the future.
      */
     public static final DatatypeFactory XML_TEMPORAL_DATATYPE_FACTORY;
@@ -162,7 +168,7 @@ public final class XmlUtils
      * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
      * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
      *
-     * @param xpathVersionURI       XPath version URI, e.g. "http://www.w3.org/TR/1999/REC-xpath-19991116"
+     * @param xpathVersionURI       XPath version URI, e.g. {@literal http://www.w3.org/TR/1999/REC-xpath-19991116}
      * @param namespaceURIsByPrefix namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
      * @return XPath compiler instance
      * @throws IllegalArgumentException if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null
@@ -429,6 +435,31 @@ public final class XmlUtils
          * @throws JAXBException if any error instantiating XACML-to-JAXB parser
          */
         XmlnsFilteringParser getInstance() throws JAXBException;
+    }
+
+    /**
+     * Converts JAXB element to DOM element (e.g. used in ImmutableXacmlStatus to create JAXB StatusDetail from MissingAttributeDetail)
+     * @param jaxbElement JAXB object of a XML element
+     * @param elementNameForErrorMessage (descriptive) name of the element to be displayed in error messages
+     * @return DOM element
+     */
+    public static Element jaxbToDomElement(final Serializable jaxbElement, String elementNameForErrorMessage ) {
+        if(jaxbElement == null) {
+            throw new IllegalArgumentException("Indefined/null input " + elementNameForErrorMessage);
+        }
+
+        final DOMResult domResult = new DOMResult();
+        final Marshaller marshaller;
+        try
+        {
+            marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
+            marshaller.marshal(jaxbElement, domResult);
+        } catch (JAXBException e)
+        {
+            throw new RuntimeException("Error marshalling input "+elementNameForErrorMessage+" to DOM", e);
+        }
+
+        return ((Document)domResult.getNode()).getDocumentElement();
     }
 
     private XmlUtils()
