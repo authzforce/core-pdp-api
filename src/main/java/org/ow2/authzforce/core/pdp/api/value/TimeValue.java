@@ -36,7 +36,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <li>{@link XMLGregorianCalendar#getDay()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
  * <li>{@link XMLGregorianCalendar#getYear()} always returns {@link DatatypeConstants#FIELD_UNDEFINED}</li>
  * </ul>
- * </p>
  * 
  * @version $Id: $
  */

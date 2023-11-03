@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.func;
 
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
 import org.ow2.authzforce.core.pdp.api.func.BaseFirstOrderFunctionCall.EagerSinglePrimitiveTypeEval;
 import org.ow2.authzforce.core.pdp.api.value.*;
@@ -47,6 +48,11 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue>
 		private final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> funcSig;
 		private final Matcher<PARAM_T> matcher;
 
+		/**
+		 * Constructor
+		 * @param functionSignature call function signature
+		 * @param matcher underlying match function
+		 */
 		protected CallFactory(
 				final SingleParameterTypedFirstOrderFunctionSignature<BooleanValue, PARAM_T> functionSignature,
 				final Matcher<PARAM_T> matcher) {
@@ -54,6 +60,13 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue>
 			this.matcher = matcher;
 		}
 
+		/**
+		 * Creates function call instance
+		 * @param argExpressions arguments (Expressions)
+		 * @param remainingArgTypes types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as <code>remainingArgs</code> parameter to {@link EagerSinglePrimitiveTypeEval#evaluate(EvaluationContext, java.util.Optional, boolean, AttributeValue...)}, then {@link EagerSinglePrimitiveTypeEval#evaluate(EvaluationContext, java.util.Optional, AttributeValue...)}.
+		 * @return call instance
+		 * @throws IllegalArgumentException if one of <code>remainingArgTypes</code> is a bag type.
+		 */
 		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions,
 				final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException {
 			return new EagerSinglePrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)

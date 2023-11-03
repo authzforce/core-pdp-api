@@ -37,6 +37,10 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 	private static final IllegalArgumentException UNDEF_DATATYPE_EXCEPTION = new IllegalArgumentException("Undefined expression return type");
 	private static final IllegalArgumentException UNDEF_VALUE_EXCEPTION = new IllegalArgumentException("Undefined value");
 	private final Datatype<V> datatype;
+
+	/**
+	 * Value always returned by this expression
+	 */
 	protected final Optional<V> alwaysPresentValue;
 
 	/**

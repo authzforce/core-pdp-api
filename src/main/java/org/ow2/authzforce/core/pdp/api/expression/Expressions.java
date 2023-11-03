@@ -52,6 +52,7 @@ public final class Expressions
 	 * 	 the context of the Multiple Decision request that the {@code context} belongs to if the Multiple Decision Profile is used.
 	 * @param returnType
 	 *            type of returned attribute value
+	 * @param <V> return value type
 	 * @return result of evaluation
 	 * @throws IndeterminateEvaluationException
 	 *             if no value returned from evaluation, or <code>returnType</code> is not a supertype of the result value datatype

@@ -25,10 +25,9 @@ import java.util.List;
 
 /**
  * Representation of XACML VersionType:
- * <p>
- * 
+ *
  * <pre>
- * {@code 
+ * {@code
  * <xs:simpleType name="VersionType"> 
  * 	<xs:restriction base="xs:string"> 
  * 		<xs:pattern value="(\d+\.)*\d+"/> 
@@ -36,7 +35,7 @@ import java.util.List;
  * </xs:simpleType>
  * }
  * </pre>
- * 
+ *
  * 
  */
 public final class PolicyVersion implements Comparable<PolicyVersion>
@@ -126,12 +125,11 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 			return true;
 		}
 
-		if (!(obj instanceof PolicyVersion))
+		if (!(obj instanceof PolicyVersion other))
 		{
 			return false;
 		}
 
-		final PolicyVersion other = (PolicyVersion) obj;
 		return this.numbers.equals(other.numbers);
 	}
 

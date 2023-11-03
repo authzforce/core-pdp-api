@@ -372,6 +372,12 @@ public final class XmlUtils
      * Supplies unmarshallers
      */
     public interface UnmarshallerFactory {
+
+        /**
+         * Creates instance of JAXB unmarshaller
+         * @return new instance
+         * @throws JAXBException error creating the unmarshaller
+         */
         Unmarshaller newInstance() throws JAXBException;
     }
 
@@ -388,6 +394,7 @@ public final class XmlUtils
          * Creates instance from JAXB unmarshaller used for parsing XML documents
          *
          * @param xmlUnmarshallerFactory JAXB unmarshaller factory
+         * @throws JAXBException error creating JAXB unmarshaller
          */
         public NoXmlnsFilteringParser(final UnmarshallerFactory xmlUnmarshallerFactory) throws JAXBException
         {

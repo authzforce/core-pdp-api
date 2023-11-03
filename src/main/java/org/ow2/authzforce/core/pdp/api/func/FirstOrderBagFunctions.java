@@ -197,6 +197,7 @@ public final class FirstOrderBagFunctions
 		 *            primitive value
 		 * @param bag
 		 *            bag
+		 * @param <V> arg0 and bag element type
 		 * @return true iff {@code arg0} is in {@code bag}
 		 */
 		public static <V extends AttributeValue> boolean eval(final V arg0, final Bag<V> bag)
@@ -304,6 +305,11 @@ public final class FirstOrderBagFunctions
 			};
 		}
 
+		/**
+		 * Evaluate bag arguments
+		 * @param bagArgs bag arguments
+		 * @return evaluation result
+		 */
 		abstract protected RETURN eval(Bag<AV>[] bagArgs);
 	}
 
@@ -534,6 +540,7 @@ public final class FirstOrderBagFunctions
 	 * 
 	 * @param paramType
 	 *            parameter datatype
+	 * @param <AV> input parameter Java type
 	 * @return first-order bag functions taking the given primitive datatype as bag's primitive type
 	 */
 	public static <AV extends AttributeValue> Set<Function<?>> getFunctions(final AttributeDatatype<AV> paramType)

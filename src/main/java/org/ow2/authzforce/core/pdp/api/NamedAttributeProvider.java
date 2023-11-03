@@ -28,22 +28,26 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 /**
  * "Named" Attribute Provider, i.e. providing "named attribute(s)" as defined in §7.3 of XACML 3.0 specification (resolve {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeDesignatorType}s in a specific way, e.g. from a specific attribute source):
  * <p>
- * <i>A named attribute is the term used for the criteria that the specific attribute designators use to refer to particular attributes in the <Attributes> elements of the request context.</i>
+ * <i>A named attribute is the term used for the criteria that the specific attribute designators use to refer to particular attributes in the {@literal <Attributes>} elements of the request context.</i>
  * </p>
  * 
  */
 public interface NamedAttributeProvider
 {
 
+	/**
+	 * Exception to be thrown by default if a method of this interface is not implemented
+	 */
 	UnsupportedOperationException NOT_IMPLEMENTED_EXCEPTION = new UnsupportedOperationException("Not implemented");
 
 	/**
 	 * Returns the non-null non-empty <code>Set</code> of <code>AttributeDesignator</code>s provided/supported by this Attribute provider.
-	 *
+	 *<p>
 	 * Each {@link AttributeDesignatorType#getCategory() } must return a non-null/non-empty value
-	 *
+	 * </p>
+	 *<p>
 	 * If any AttributeDesignator in the set does not specify an AttributeId (getAttributeId() = null), the Attribute provider is considered a category-wide attribute provider for the category (returned by {@link AttributeDesignatorType#getCategory()} ), i.e. may provide any attribute in this category.
-	 * 
+	 * </p>
 	 * @return a non-null non-empty <code>Set</code> of supported <code>AttributeDesignatorType</code>s
 	 */
 	Set<AttributeDesignatorType> getProvidedAttributes();
@@ -78,7 +82,10 @@ public interface NamedAttributeProvider
 	 * The PDP engine calls this method before evaluating each Individual Decision Request (whether it is part of a Multiple Decision request or not) if the Attribute Provider supports it as indicated by {@link #supportsBeginIndividualDecisionRequest()}.
 	 * This enables the attribute provider to do some validation of the request (e.g. check dependency attributes) and/or set/override attributes or variables of the request before the policy evaluation begins, therefore reuse those values for its benefit during the evaluation.
 	 * A typical use case is an AttributeProvider providing the current date/time, e.g. either overriding current-* attributes (override mode) of the request or checking that current-date and current-time are consistent with current-dateTime.
+	 *
+	 * @param individualDecisionContext Individual Decision request context
 	 * @param mdpContext context of a Multiple Decision request evaluation, will be passed on as {@code mdpContext} argument of  {@link #get(AttributeFqn, Datatype, EvaluationContext, Optional)} when AttributeDesignator/AttributeSelector are evaluated for a given Individual Decision request.
+	 * @throws IndeterminateEvaluationException error initializing the request evaluation
 	 */
 	default void beginIndividualDecisionRequest(EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException {
 		throw NOT_IMPLEMENTED_EXCEPTION;
@@ -96,6 +103,7 @@ public interface NamedAttributeProvider
 	 * @param datatype
 	 *            attribute datatype, must match the data-type of the AttributeDesignatorType matching {@code attributeFQN} in the {@link #getProvidedAttributes()}'s result set
 	 * @return the result of retrieving the attribute, which will be a bag of values of type defined by {@code returnDatatype}; empty bag iff no value found and no error occurred.
+	 * @param <AV> Java type of AttributeValue
 	 * @throws UnsupportedOperationException
 	 *             {@code attributeFQN} or {@code returnDatatype} are not supported (the PDP engine should try another attribute provider if any)
 	 * @throws IndeterminateEvaluationException

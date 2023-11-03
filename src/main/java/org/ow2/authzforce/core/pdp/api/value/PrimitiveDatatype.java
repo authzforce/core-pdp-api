@@ -46,6 +46,7 @@ public class PrimitiveDatatype<AV extends PrimitiveValue> extends Datatype<AV>
 	 *            (non-null) datatype ID
 	 * @param functionIdPrefix
 	 *            (non-null) prefix of ID of any standard generic (e.g. bag/set) function built on this datatype, e.g. 'urn:oasis:names:tc:xacml:1.0:function:string' for string datatype
+	 * @param xpathDatatype corresponding XPATH datatype
 	 * @throws NullPointerException
 	 *             if {@code instanceClass == null || id == null || functionIdPrefix == null}.
 	 */

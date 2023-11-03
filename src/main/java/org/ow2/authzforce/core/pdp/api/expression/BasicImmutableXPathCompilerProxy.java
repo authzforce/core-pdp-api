@@ -22,11 +22,16 @@ import org.ow2.authzforce.xacml.identifiers.XPathVersion;
 
 import java.util.Map;
 
-/*
+/**
 Basic Immutable XPathCompilerProxy that does not support XPath variables
  */
 public final class BasicImmutableXPathCompilerProxy extends BaseXPathCompilerProxy
 {
+    /**
+     * Constructor
+     * @param xPathVersion XPath version
+     * @param namespaceURIsByPrefix XML namespace URIs, indexed by prefix, usable in XPath expressions for the newly created instance
+     */
     public BasicImmutableXPathCompilerProxy(XPathVersion xPathVersion, Map<String, String> namespaceURIsByPrefix)
     {
         super(xPathVersion, namespaceURIsByPrefix);

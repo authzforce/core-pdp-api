@@ -265,6 +265,10 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 	{
 		private final String id;
 
+		/**
+		 * Result postprocessor Factory constructor
+		 * @param id postprocessor ID
+		 */
 		protected Factory(final String id)
 		{
 			this.id = id;

@@ -183,6 +183,12 @@ public abstract class MultipleXacmlRequestPreprocHelper<R extends DecisionReques
 		this.individualXacmlReqFactory = individualXacmlRequestFactory;
 	}
 
+	/**
+	 * Validates input categorized attributes
+	 * @param inputRawAttributeCategoryObject input raw attributes
+	 * @return validated/sanitized attributes
+	 * @throws IndeterminateEvaluationException validation error
+	 */
 	protected abstract VALIDATOR_OUTPUT_ATTRIBUTE_CATEGORY_OBJECT validate(VALIDATOR_INPUT_ATTRIBUTE_CATEGORY_OBJECT inputRawAttributeCategoryObject) throws IndeterminateEvaluationException;
 
 	/**

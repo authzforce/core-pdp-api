@@ -88,6 +88,7 @@ public interface DecisionCache extends Closeable
 	 * 
 	 * @param requests
 	 *            individual decision request(s)
+	 * @param <DECISION_REQ_T> request type
 	 * @return a map where each entry key is a request from {@code requests}, and the value is the corresponding decision result from cache. If there is no such result in cache, the key must not be
 	 *         present in the map. In other words, each request in {@code requests} must be a key in the Map returned, except if there is no corresponding result in cache. Therefore, there must not be
 	 *         any null key/value in the map.
@@ -110,7 +111,7 @@ public interface DecisionCache extends Closeable
 	/**
 	 * Puts decision requests and corresponding results in cache. The ability to put multiple cache entries at once allows the Cache implementation to optimize the creation/update by doing them all in
 	 * the same request, e.g. if the cache is in a remote storage/server.
-	 * 
+	 * @param <DECISION_REQ_T> request type
 	 * @param resultsByRequest
 	 *            (request, result) pairs as key-value pairs to be cached
 	 */

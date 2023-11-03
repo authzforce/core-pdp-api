@@ -28,9 +28,6 @@ import java.util.Set;
  * </ol>
  * Ideally, the alternative should support <a href="http://leventov.github.io/Koloboke/api/1.0/java8/overview-summary.html#mutability">updatable</a> HashMaps/HashSets accepting an expected size as
  * constructor parameter as well.
- * <p>
- * 
- * @see "http://java-performance.info/hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove-january-2015/"
  *
  */
 public interface HashCollectionFactory
@@ -38,14 +35,16 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new empty mutable map of the default expected size (depending on the implementation).
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @return a new empty mutable map
 	 */
 	<K, V> Map<K, V> newMutableMap();
 
 	/**
 	 * Constructs a new empty updatable map of the default expected size (depending on the underlying implementation).
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @return new empty updatable map
 	 */
 	<K, V> Map<K, V> newUpdatableMap();
@@ -55,6 +54,8 @@ public interface HashCollectionFactory
 	 * 
 	 * @param expectedSize
 	 *            expected size of the returned map
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @return a new empty updatable map of the given expected size (positive)
 	 * @throws IllegalArgumentException
 	 *             if {@code expectedSize} is negative
@@ -63,7 +64,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new updatable map with the same mappings as the specified map.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param map
 	 *            the map whose mappings are to be placed in the returned map
 	 * @return a new updatable map with the same mappings as the specified map
@@ -77,6 +79,8 @@ public interface HashCollectionFactory
 	 *            the first map to merge
 	 * @param map2
 	 *            the second map to merge
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @return a new updatable map which merges the mappings of the specified maps
 	 */
 	<K, V> Map<K, V> newUpdatableMap(final Map<? extends K, ? extends V> map1, final Map<? extends K, ? extends V> map2);
@@ -84,7 +88,8 @@ public interface HashCollectionFactory
 	/**
 	 * Constructs a new updatable map which merge the mappings of the specified maps. On conflict, mappings from the maps passed later in the argument list have priority over mappings from the maps
 	 * passed earlier with the same keys.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param map1
 	 *            the first map to merge
 	 * @param map2
@@ -97,7 +102,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable map with the same mappings as the specified map.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param map
 	 *            the map whose mappings are to be placed in the returned map
 	 * @return a new immutable map with the same mappings as the specified map
@@ -106,7 +112,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable map which merges the mappings of the specified maps. On conflict, mappings from the map2 have priority over mappings from the map1 with the same keys.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param map1
 	 *            the first map to merge
 	 * @param map2
@@ -118,7 +125,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable map of the single specified mapping.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param k1
 	 *            the key of the sole mapping
 	 * @param v1
@@ -129,7 +137,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable map of the two specified mappings.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param k1
 	 *            the key of the first mapping
 	 * @param v1
@@ -144,7 +153,8 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable map of the three specified mappings.
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @param k1
 	 *            the key of the first mapping
 	 * @param v1
@@ -163,14 +173,14 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new empty updatable set of the default expected size (depending on the underlying implementation).
-	 * 
+	 * @param <E> set element type
 	 * @return a new empty updatable set
 	 */
 	<E> Set<E> newUpdatableSet();
 
 	/**
 	 * Constructs a new empty updatable set of the given expected size.
-	 * 
+	 * @param <E> set element type
 	 * @param expectedSize
 	 *            the expected size of the returned set
 	 * @return a new empty updatable set of the given expected size (positive)
@@ -181,7 +191,7 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new updatable set containing the elements in the specified iterable.
-	 * 
+	 * @param <E> element type
 	 * @param elements
 	 *            the iterable whose elements are to be placed into the returned set
 	 * @return a new updatable set of the elements of the specified iterable
@@ -190,7 +200,7 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable set of elements from the given array.
-	 * 
+	 * @param <E> element type
 	 * @param elements
 	 *            the array whose elements are to be placed into the returned set
 	 * @return a new immutable set of elements from the given array
@@ -199,7 +209,7 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable set containing the elements in the specified iterable.
-	 * 
+	 * @param <E> element type
 	 * @param elements
 	 *            the iterable whose elements are to be placed into the returned set
 	 * @return a new immutable set of the elements of the specified iterable
@@ -208,7 +218,7 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable set which merges the elements of the specified sets.
-	 * 
+	 * @param <E> element type
 	 * @param set1
 	 *            the first source of elements for the returned set
 	 * @param set2
@@ -220,7 +230,7 @@ public interface HashCollectionFactory
 
 	/**
 	 * Constructs a new immutable singleton set of the given element.
-	 * 
+	 * @param <E> element type
 	 * @param e1
 	 *            the sole element
 	 * @return a new immutable singleton set of the given element

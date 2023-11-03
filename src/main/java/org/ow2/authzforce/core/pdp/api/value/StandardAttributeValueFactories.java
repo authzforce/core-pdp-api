@@ -727,6 +727,9 @@ public final class StandardAttributeValueFactories
 	 */
 	private static final RuntimeException UNEXPECTED_XPATH_EXPRESSION_INTERNAL_ERROR = new RuntimeException("Unexpected XPath expression although XPath support disabled");
 
+	/**
+	 * XPath AttributeValue factory
+	 */
 	public static final SimpleValue.BaseFactory<XPathValue> XPATH = new SimpleValue.BaseFactory<>(StandardDatatypes.XPATH)
 	{
 

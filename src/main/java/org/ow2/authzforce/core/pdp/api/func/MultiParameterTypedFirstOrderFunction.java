@@ -32,6 +32,9 @@ import org.ow2.authzforce.core.pdp.api.value.Value;
  */
 public abstract class MultiParameterTypedFirstOrderFunction<RETURN_T extends Value> extends FirstOrderFunction<RETURN_T>
 {
+	/**
+	 * function signature
+	 */
 	protected final FirstOrderFunctionSignature<RETURN_T> functionSignature;
 
 	/**

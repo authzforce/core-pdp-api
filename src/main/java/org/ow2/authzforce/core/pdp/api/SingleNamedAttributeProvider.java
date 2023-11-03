@@ -55,6 +55,7 @@ public interface SingleNamedAttributeProvider<AV extends AttributeValue>
 	 *            the (Individual Decision) request context
 	 * @param mdpContext
 	 * 	 *            the context of the Multiple Decision request that the {@code individualDecisionContext} belongs to if the Multiple Decision Profile is used; same as the {@code mdpContext} parameter of {@link #beginMultipleDecisionRequest(EvaluationContext)}.
+	 * @return attribute bag
 	 * @throws UnsupportedOperationException
 	 *             {@code attributeFQN} or {@code returnDatatype} are not supported (the PDP engine should try another attribute provider if any)
 	 * @throws IndeterminateEvaluationException

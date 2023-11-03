@@ -230,6 +230,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		}
 	}
 
+	/**
+	 * Called function ID
+	 */
 	protected final String funcId;
 	private final List<? extends Datatype<?>> expectedParamTypesForRemainingArgs;
 	private final RequestTimeArgCountChecker requestTimeArgCountChecker;
@@ -393,9 +396,24 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 */
 	public static abstract class EagerEval<RETURN_T extends Value> extends BaseFirstOrderFunctionCall<RETURN_T>
 	{
+		/**
+		 * Call arguments (Expressions)
+		 */
 		protected final List<Expression<?>> argExpressions;
+
+		/**
+		 * Error message if any argument is indeterminate (Expression cannot be evaluated)
+		 */
 		protected final String indeterminateArgMessage;
+
+		/**
+		 * total number of arguments to this call
+		 */
 		protected final int totalArgCount;
+
+		/**
+		 * number of primitive parameters of same type, preceding the bag
+		 */
 		protected final int numOfSameTypePrimitiveParamsBeforeBag;
 
 		/**
@@ -732,8 +750,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	}
 
 	/**
-	 * Function call, for functions requiring <i>eager</i> (a.k.a. <i>greedy</i>) evaluation of ALL their arguments' expressions to actual values, before the function can be evaluated. To be used only
-	 * if there is a mix of primitive and bag arguments.
+	 * Function call, for functions requiring <i>eager</i> (a.k.a. <i>greedy</i>) evaluation of ALL their arguments' expressions to actual values before the function can be evaluated, and taking a mix of primitive and bag arguments.
 	 * 
 	 * @param <RETURN_T>
 	 *            function return type
@@ -741,8 +758,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	 * @param <PRIMITIVE_PARAM_T>
 	 *            primitive values' supertype, i.e. bag element type for bag parameter and the parameter datatype for primitive parameters. If argument expressions return different datatypes, the
 	 *            supertype of all - {@link AttributeValue} - may be specified.
-	 * 
-	 * 
+	 *
 	 */
 	public static abstract class EagerPartlyBagEval<RETURN_T extends Value, PRIMITIVE_PARAM_T extends AttributeValue> extends EagerEval<RETURN_T>
 	{
@@ -751,6 +767,16 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		private final Datatype<PRIMITIVE_PARAM_T> primitiveParamType;
 		private final Class<PRIMITIVE_PARAM_T[]> primitiveParamArrayClass;
 
+		/**
+		 * Constructor
+		 *
+		 * @param functionSig function signature
+		 * @param bagParamType bag parameter type
+		 * @param primitiveArrayClass class of the primitive array underlying the bag
+		 * @param args call arguments (Expressions)
+		 * @param remainingArgTypes types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as <code>remainingArgs</code> parameter to {@link #evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link #evaluate(EvaluationContext, Optional, AttributeValue...)}.
+		 * @throws IllegalArgumentException if one of <code>remainingArgTypes</code> is a bag type.
+		 */
 		protected EagerPartlyBagEval(final FirstOrderFunctionSignature<RETURN_T> functionSig, final BagDatatype<PRIMITIVE_PARAM_T> bagParamType, final Class<PRIMITIVE_PARAM_T[]> primitiveArrayClass,
 		        final List<Expression<?>> args, final Datatype<?>[] remainingArgTypes) throws IllegalArgumentException
 		{
@@ -769,7 +795,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 
 		/**
 		 * Make the call with attribute values as arguments. (The pre-evaluation of argument expressions in the evaluation context is already handled internally by this class.)
-		 * 
+		 * @param primArgsBeforeBag primitive arguments preceding the bag arguments
+		 * @param bagArgs bag arguments
+		 * @param remainingArgs remaining arguments following the bag arguments
 		 * @return result of the call
 		 * @throws IndeterminateEvaluationException
 		 *             if any error evaluating the function

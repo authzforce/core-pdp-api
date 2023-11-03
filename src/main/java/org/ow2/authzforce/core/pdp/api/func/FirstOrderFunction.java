@@ -35,9 +35,13 @@ public abstract class FirstOrderFunction<RETURN extends Value> extends BaseFunct
 {
 	private static final Datatype<?>[] EMPTY_DATATYPE_DEF_ARRAY = new Datatype<?>[] {};
 
-	protected FirstOrderFunction(final String name)
+	/**
+	 * Constructor
+	 * @param id function ID
+	 */
+	protected FirstOrderFunction(final String id)
 	{
-		super(name);
+		super(id);
 	}
 
 	/**

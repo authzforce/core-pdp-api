@@ -36,7 +36,7 @@ import java.util.Optional;
  * different AttributeDesignator with a defined Issuer must be used).
  * <p>
  * "Strict" means it does not allow defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category). This is not fully
- * compliant with the XACML spec according to a discussion on the xacml-dev mailing list (see {@linkplain "https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html"}), referring to the
+ * compliant with the XACML spec according to a discussion on the xacml-dev mailing list (see <a href="https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html">[xacml-dev] Handling repetitions of Attribute Category/Id/Issuer/DataType in XACML Request</a>), referring to the
  * XACML 3.0 core spec, §7.3.3, that indicates that multiple occurrences of the same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single
  * &lt;Attribute&gt; element with same meta-data and merged values (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id
  * Attributes are expected to result in a multi-value bag during evaluation of the &lt;AttributeDesignator&gt;.
@@ -44,7 +44,7 @@ import java.util.Optional;
  * In a nutshell, this type of attribute parser does not comply fully with XACML 3.0. However, to benefit fully from the XACML capabilities, it is strongly recommended to avoid such Attribute
  * repetitions and group all the values of the same Attribute in the same Attribute element with multiple AttributeValues. In that case, you will achieve better performances by using this "strict"
  * parser instead of the "lax" version.
- * 
+ *
  * @param <INPUT_ATTRIBUTE>
  *            type of raw input attribute object (not yet parsed into AuthzForce internal model), typically from original XACML Request, e.g. JAXB-annotated Attribute for XACML/XML request, or JSON
  *            object for XACML/JSON request

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.PatternSyntaxException;
 
+import org.ow2.authzforce.core.pdp.api.EvaluationContext;
 import org.ow2.authzforce.core.pdp.api.ImmutableXacmlStatus;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.core.pdp.api.expression.Expression;
@@ -101,6 +102,13 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 			this.funcSig = functionSig;
 		}
 
+		/**
+		 * Constructor
+		 * @param argExpressions arguments (Expressions)
+		 * @param remainingArgTypes types of arguments following <code>args</code>, and of which the actual Expression is unknown at this point, but will be known and passed at evaluation time as
+		 * 		 *            <code>remainingArgs</code> parameter to {@link EagerMultiPrimitiveTypeEval#evaluate(EvaluationContext, Optional, boolean, AttributeValue...)}, then {@link EagerMultiPrimitiveTypeEval#evaluate(EvaluationContext, Optional, AttributeValue...)}.
+		 * @return instance
+		 */
 		protected FirstOrderFunctionCall<BooleanValue> getInstance(final List<Expression<?>> argExpressions, final Datatype<?>[] remainingArgTypes)
 		{
 			return new EagerMultiPrimitiveTypeEval<>(funcSig, argExpressions, remainingArgTypes)
