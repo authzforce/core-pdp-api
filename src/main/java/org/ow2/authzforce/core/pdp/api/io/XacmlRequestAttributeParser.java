@@ -97,6 +97,11 @@ public abstract class XacmlRequestAttributeParser<INPUT_ATTRIBUTE, BAG extends I
 
 	private final NamedXacmlAttributeParser<INPUT_ATTRIBUTE> namedAttParser;
 
+	/**
+	 * Constructor
+	 * @param namedAttributeParser parser for named attributes
+	 * @throws IllegalArgumentException null namedAttributeParser
+	 */
 	protected XacmlRequestAttributeParser(final NamedXacmlAttributeParser<INPUT_ATTRIBUTE> namedAttributeParser) throws IllegalArgumentException
 	{
 		if (namedAttributeParser == null)
@@ -114,7 +119,8 @@ public abstract class XacmlRequestAttributeParser<INPUT_ATTRIBUTE, BAG extends I
 	 *            input attribute object (not yet parsed into AuthzForce internal model), typically from original XACML request
 	 * @param xPathCompiler
 	 *            XPath compiler for compiling/evaluating XPath expressions in values, such as XACML xpathExpressions. Undefined if XPath support disabled (by PDP configuration of RequestDefaults/XPathVersion undefined).
-	 * 
+	 * @param attributeCategoryId attribute Category ID
+	 * @return parsing result
 	 * @throws IllegalArgumentException
 	 *             if parsing of the {@code inputXacmlAttribute} failed because of invalid syntax, e.g. invalid datatype or mixing different datatypes
 	 */

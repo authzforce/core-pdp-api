@@ -60,13 +60,13 @@ public interface UpdatableMap<K, V>
 
 	/**
 	 * Copies all the mappings from the specified map to this map (optional operation). The effect of this call is equivalent to that of calling {@link #put(Object,Object) put(k, v)} on this map
-	 * once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified map. The behavior of this operation is undefined if the specified map is modified while the operation is in
+	 * once for each mapping from key {@code k} to value {@code v} in the specified map. The behavior of this operation is undefined if the specified map is modified while the operation is in
 	 * progress.
 	 *
 	 * @param m
 	 *            mappings to be stored in this map
 	 * @throws UnsupportedOperationException
-	 *             if the <tt>putAll</tt> operation is not supported by this map
+	 *             if the {@code putAll} operation is not supported by this map
 	 * @throws ClassCastException
 	 *             if the class of a key or value in the specified map prevents it from being stored in this map
 	 * @throws NullPointerException
@@ -77,12 +77,12 @@ public interface UpdatableMap<K, V>
 	void putAll(Map<? extends K, ? extends V> m);
 
 	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified key. More formally, returns <tt>true</tt> if and only if this map contains a mapping for a key <tt>k</tt> such that
-	 * <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most one such mapping.)
+	 * Returns {@code true} if this map contains a mapping for the specified key. More formally, returns {@code true} if and only if this map contains a mapping for a key  {@code k} such that
+	 * {@code (key==null ? k==null : key.equals(k))}. (There can be at most one such mapping.)
 	 *
 	 * @param key
 	 *            key whose presence in this map is to be tested
-	 * @return <tt>true</tt> if this map contains a mapping for the specified key
+	 * @return {@code true} if this map contains a mapping for the specified key
 	 * @throws NullPointerException
 	 *             if the specified key is null and this map does not permit null keys ( <a href="Collection.html#optional-restrictions">optional</a>)
 	 */
@@ -101,11 +101,11 @@ public interface UpdatableMap<K, V>
 	 * <p>
 	 * More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that {@code (key==null ? k==null :
 	 * key.equals(k))}, then this method returns {@code v}; otherwise it returns {@code null}. (There can be at most one such mapping.)
-	 *
+	 * </p>
 	 * <p>
 	 * If this map permits null values, then a return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible that the map
 	 * explicitly maps the key to {@code null}. The {@link #containsKey containsKey} operation may be used to distinguish these two cases.
-	 *
+	 *</p>
 	 * @param key
 	 *            the key whose associated value is to be returned
 	 * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key

@@ -52,6 +52,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
+		 * @param datatype data-type
 		 */
 		protected BaseFactory(final AttributeDatatype<AV> datatype)
 		{
@@ -101,7 +102,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 		 * 
 		 * @param content
 		 *            XACML AttributeValue content, e.g. if original input is XML/JAXB, a singleton list with an item of one of the following types: {@link String}, {@link Element} (see
-		 *            {@link javax.xml.bind.annotation.XmlMixed}); or if input is JSON, a single JSONObject, Number, Boolean, or String.
+		 *            {@link jakarta.xml.bind.annotation.XmlMixed}); or if input is JSON, a single JSONObject, Number, Boolean, or String.
 		 * @throws IllegalArgumentException
 		 *             if {@code datatype == null} or if there is more than one element in {@code content}, or first element in {@code content} is not a valid string representation for this datatype
 		 */
@@ -139,7 +140,8 @@ public abstract class SimpleValue<V> implements AttributeValue
 
 	}
 
-	/*
+	/**
+	 * Underlying value.
 	 * Make it final to prevent unexpected value change resulting from some function side effects
 	 */
 	protected final V value;
@@ -177,7 +179,7 @@ public abstract class SimpleValue<V> implements AttributeValue
 
 	/**
 	 * Converts the internal value (accessible via {@link #getUnderlyingValue()}) to a valid lexical representation for XML marshalling. Equivalent to the 'printMethod' in JAXB 'javaType' binding
-	 * customizations. Implementations of this typically call {@link javax.xml.bind.DatatypeConverter}. This method is called by {@link #getContent()} and its result cached by the same method for later use.
+	 * customizations. Implementations of this typically call {@link jakarta.xml.bind.DatatypeConverter}. This method is called by {@link #getContent()} and its result cached by the same method for later use.
 	 * Therefore, no need to cache the result in the implementation.
 	 *
 	 * @return XML-valid lexical representation.
@@ -233,12 +235,11 @@ public abstract class SimpleValue<V> implements AttributeValue
 			return true;
 		}
 
-		if (!(obj instanceof SimpleValue))
+		if (!(obj instanceof SimpleValue<?> other))
 		{
 			return false;
 		}
 
-		final SimpleValue<?> other = (SimpleValue<?>) obj;
 		return this.value.equals(other.value);
 	}
 

@@ -2,6 +2,19 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 22.0.0
+### Changed
+- Migrated to Java 17 as minimum required Java version and JAXB 4.0: replaced javax.xml.bind.* with jakarta.xml.bind.* in class imports
+- Upgraded parent project (authzforce-ce-parent): 9.0.0
+- Upgraded managed dependencies:
+   - authzforce-ce-xacml-model: 9.0.0
+   - authzforce-ce-pdp-ext-model: 9.0.0
+   - jakarta.mail-api: 2.1.2
+   - Spring Core: 6.0.11
+   - Slf4j: 2.0.7
+   - guava 32.1.3-jre
+  
+
 ## 21.4.0
 ### Fixed
 - Upgraded parent project (authzforce-ce-parent) version: 8.5.0

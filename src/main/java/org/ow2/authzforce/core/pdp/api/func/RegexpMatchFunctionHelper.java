@@ -43,7 +43,7 @@ import java.util.regex.PatternSyntaxException;
  * <ul>
  * <li>{@link Pattern} matches the entire string against the pattern always, whereas <code>xf:matches</code> considers the string to match the pattern if any substring matches the pattern.</li>
  * <li><code>xf:matches</code> regular expression syntax is based on XML schema which defines character class substraction using '-' character, whereas {@link Pattern} does not support this syntax but
- * <code>&&[^</code> instead.</li>
+ * {@literal &&[^} instead.</li>
  * <li>Category escape: can be done in XML SCHEMA with: <code>[\P{X}]</code>. {@link Pattern} only supports this form: <code>[^\p{X}]</code>.</li>
  * <li>Character classes: XML schema define categories <code>\c</code> and <code>\C</code>. {@link Pattern} does not support them.</li>
  * </ul>

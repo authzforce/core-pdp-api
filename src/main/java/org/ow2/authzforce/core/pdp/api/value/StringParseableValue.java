@@ -34,7 +34,12 @@ import java.util.Optional;
 public abstract class StringParseableValue<V> extends SimpleValue<V>
 {
 
-	protected StringParseableValue(final V rawVal) throws IllegalArgumentException, NullPointerException
+	/**
+	 * Constructor
+	 * @param rawVal raw internal value
+	 * @throws IllegalArgumentException if rawVal is null
+	 */
+	protected StringParseableValue(final V rawVal) throws IllegalArgumentException
 	{
 		super(rawVal);
 	}
@@ -58,6 +63,7 @@ public abstract class StringParseableValue<V> extends SimpleValue<V>
 
 		/**
 		 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
+		 * @param datatype data-type
 		 */
 		protected Factory(final AttributeDatatype<AV> datatype)
 		{

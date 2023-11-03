@@ -72,6 +72,7 @@ public interface PdpEngine
 	 * @param mdpContext
 	 * 	 the context of the Multiple Decision request that the {@code requests} belong to, i.e. may be used to reuse common variables/attributes to all its individual decision requests.
 	 * 	for any request in {code requests}, {@code request.getCreationTimestamp()} must match {@code mdpContext.getCreationTimestamp()}
+	 * @param <INDIVIDUAL_DECISION_REQ_T> request type
 	 * @return decision request-result pairs
 	 * @throws IndeterminateEvaluationException
 	 *             error occurred preventing any request evaluation. (This error is not specific to a particular decision request. Such request-specific error results in an Indeterminate decision

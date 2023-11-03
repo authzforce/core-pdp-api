@@ -29,7 +29,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeSelectorType;
  * WARNING: java.net.URI cannot be used here for XACML category and ContextSelectorId, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
- * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+ * [1] {@literal http://www.w3.org/TR/xmlschema-2/#anyURI}. That's why we use String instead.
  * </p>
  * 
  */
@@ -51,7 +51,8 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	 * @param category
 	 *            AttributeSelector's Category
 	 * @param xpath
-	 * 	 *            AttributeSelector's Path
+	 * 	             AttributeSelector's Path
+	 * @param contextSelectorId AttributeSelector's ContextSelectorId
 	 */
 	public AttributeSelectorId(final String category, final String xpath, final Optional<String> contextSelectorId)
 	{
@@ -135,12 +136,11 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 			return true;
 		}
 
-		if (!(obj instanceof AttributeSelectorId))
+		if (!(obj instanceof AttributeSelectorId other))
 		{
 			return false;
 		}
 
-		final AttributeSelectorId other = (AttributeSelectorId) obj;
 		return this.category.equals(other.category) && this.path.equals(other.path) && Objects.equals(this.contextSelectorId, other.contextSelectorId);
 	}
 

@@ -32,6 +32,10 @@ public abstract class BaseDecisionResult implements DecisionResult
 
 	private transient volatile int hashCode = 0;
 
+	/**
+	 * Creates DecisionResult from input status
+	 * @param status optional XACML Status
+	 */
 	protected BaseDecisionResult(final Optional<ImmutableXacmlStatus> status)
 	{
 		assert status != null;
@@ -65,12 +69,11 @@ public abstract class BaseDecisionResult implements DecisionResult
 			return true;
 		}
 
-		if (!(obj instanceof DecisionResult))
+		if (!(obj instanceof DecisionResult other))
 		{
 			return false;
 		}
 
-		final DecisionResult other = (DecisionResult) obj;
 		if (this.getDecision() != other.getDecision() || this.getExtendedIndeterminate() != other.getExtendedIndeterminate())
 		{
 			return false;

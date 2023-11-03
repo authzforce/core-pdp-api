@@ -52,6 +52,7 @@ public interface EvaluationContext
 		 *            attribute GUID (global ID = Category,Issuer,AttributeId)
 		 * @param value
 		 *            attribute value bag
+		 * @param <AV> produced AttributeValue type
 		 */
 		<AV extends AttributeValue> void namedAttributeValueProduced(AttributeFqn attributeFQN, AttributeBag<AV> value);
 
@@ -62,6 +63,7 @@ public interface EvaluationContext
 		 *            attribute GUID (global ID = Category,Issuer,AttributeId)
 		 * @param value
 		 *            attribute value bag; null if the request named attribute was undefined in this context
+		 * @param <AV> consumed bag AttributeValue type
 		 */
 		<AV extends AttributeValue> void namedAttributeValueConsumed(AttributeFqn attributeFQN, AttributeBag<AV> value);
 
@@ -75,6 +77,7 @@ public interface EvaluationContext
 		 *            (optional) xPath-expression value of attribute referenced by ContextSelectorId if present
 		 * @param result
 		 *            evaluation result
+		 * @param <AV> produced bag AttributeValue type
 		 */
 		<AV extends AttributeValue> void attributeSelectorResultProduced(AttributeSelectorExpression<AV> attributeSelector, Optional<AttributeBag<XPathValue>> contextSelectorBag, Bag<AV> result);
 
@@ -85,6 +88,7 @@ public interface EvaluationContext
 		 *            attribute selector
 		 * @param result
 		 *            evaluation result
+		 * @param <AV> consumed bag AttributeValue type
 		 */
 		<AV extends AttributeValue> void attributeSelectorResultConsumed(AttributeSelectorExpression<AV> attributeSelector, Bag<AV> result);
 	}
@@ -106,6 +110,7 @@ public interface EvaluationContext
 	 * @param datatype
 	 *            attribute value datatype
 	 * 
+	 * @param <AV> type of AttributeValue requested
 	 * @return attribute value(s), null iff attribute unknown (not set) in this context, empty if attribute known in this context but no value
 	 * @throws IndeterminateEvaluationException
 	 *             if error occurred trying to determine the attribute value(s) in context. This is different from finding without error that the attribute is not in the context (and/or no value),
@@ -143,6 +148,7 @@ public interface EvaluationContext
 	 * 
 	 * @param attributeSelector
 	 *            AttributeSelector
+	 * @param <AV> type of AttributeValue returned in the bag
 	 * @return attribute value(s), null iff AttributeSelector's bag of values unknown (not set) in this context because not evaluated yet; empty if it was evaluated in this context but not result,
 	 *         i.e. bag is empty
 	 * @throws IndeterminateEvaluationException
@@ -159,6 +165,7 @@ public interface EvaluationContext
 	 *            AttributeSelector
 	 * @param result
 	 *            AttributeSelector value bag
+	 * @param <AV> type of AttributeValue in the bag
 	 * @return false iff there is already a matching value in this context (this operation could NOT succeed)
 	 * @throws IndeterminateEvaluationException
 	 *             if AttributeSelector evaluation is not supported (this is an optional feature of XACML specification)
@@ -184,6 +191,7 @@ public interface EvaluationContext
 	 *            identifies the VariableDefinition
 	 * @param datatype
 	 *            datatype
+	 * @param <V> type of variable value requested
 	 * @return value of the evaluated VariableDefinition's expression, or null if not evaluated (yet) in this context
 	 * @throws IndeterminateEvaluationException
 	 *             if actual datatype of variable value in context does not match expected {@code datatype}
@@ -270,8 +278,9 @@ public interface EvaluationContext
 	 * Registers a listener on this evaluation context
 	 * 
 	 * @param listenerType
-	 *            listener type used as key for retrieving the listener with {@link #getListener(Class)}
+	 *            listener class used as key for retrieving the listener with {@link #getListener(Class)}
 	 * @param listener the new listener to be registered
+	 * @param <L> type of listener
 	 * @return the listener previously associated with this class (possibly null), or null if there was no previous entry.
 	 */
 	<L extends Listener> L putListener(Class<L> listenerType, L listener);
@@ -280,7 +289,8 @@ public interface EvaluationContext
 	 * Returns the listener the specified class is mapped to. This will only return a value that was bound to this specific class, not a value that may have been bound to a subtype.
 	 * 
 	 * @param listenerType
-	 *            listener type, used as key to retrieve the listener registered with this type with {@link #putListener(Class, Listener)}
+	 *            listener class, used as key to retrieve the listener registered with this type with {@link #putListener(Class, Listener)}
+	 * @param <L> type of listener
 	 * @return the listener associated with this class, or null if no entry for this class is present
 	 */
 	<L extends Listener> L getListener(Class<L> listenerType);

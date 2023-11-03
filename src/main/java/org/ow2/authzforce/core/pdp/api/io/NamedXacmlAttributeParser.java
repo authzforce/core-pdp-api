@@ -36,6 +36,11 @@ public abstract class NamedXacmlAttributeParser<INPUT_ATTRIBUTE>
 
 	private final AttributeValueFactoryRegistry datatypeFactoryRegistry;
 
+	/**
+	 * Constructor
+	 * @param attributeValueFactoryRegistry registry of attribute value factories
+	 * @throws IllegalArgumentException attributeValueFactoryRegistry is null
+	 */
 	protected NamedXacmlAttributeParser(final AttributeValueFactoryRegistry attributeValueFactoryRegistry) throws IllegalArgumentException
 	{
 		if (attributeValueFactoryRegistry == null)
@@ -46,6 +51,13 @@ public abstract class NamedXacmlAttributeParser<INPUT_ATTRIBUTE>
 		this.datatypeFactoryRegistry = attributeValueFactoryRegistry;
 	}
 
+	/**
+	 * Get AttributeValueFactory for a given datatype ID
+	 * @param attributeDatatypeId datatype ID
+	 * @param attributeName attribute name for exception message
+	 * @return attribute value factory
+	 * @throws IllegalArgumentException if no factory exists for such datatype ID in the registry used by this parser
+	 */
 	protected final AttributeValueFactory<?> getAttributeValueFactory(final String attributeDatatypeId, final AttributeFqn attributeName) throws IllegalArgumentException
 	{
 		final AttributeValueFactory<?> datatypeFactory = datatypeFactoryRegistry.getExtension(attributeDatatypeId);
@@ -57,6 +69,14 @@ public abstract class NamedXacmlAttributeParser<INPUT_ATTRIBUTE>
 		return datatypeFactory;
 	}
 
+	/**
+	 * Parse the input named attribute
+	 * @param attributeCategoryId attribute category ID
+	 * @param inputXacmlAttribute attribute
+	 * @param xPathCompiler optional XPath compiler
+	 * @return parsing result
+	 * @throws IllegalArgumentException invalid inputXacmlAttribute or parsing error
+	 */
 	protected abstract NamedXacmlAttributeParsingResult<?> parseNamedAttribute(final String attributeCategoryId, final INPUT_ATTRIBUTE inputXacmlAttribute, final Optional<XPathCompilerProxy> xPathCompiler)
 			throws IllegalArgumentException;
 }

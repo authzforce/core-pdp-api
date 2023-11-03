@@ -36,11 +36,11 @@ public interface CombiningAlgRegistry extends PdpExtensionRegistry<CombiningAlg<
 	 *            XSD anyURI [1], not in java.net.URI for example. That's why we use String instead.
 	 *            </p>
 	 *            <p>
-	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI
+	 *            [1] {@literal http://www.w3.org/TR/xmlschema-2/#anyURI }
 	 *            </p>
 	 * @param combinedElementType
-	 *            type of combined element
-	 * 
+	 *            class of combined elements
+	 * @param <T> type of combined elements
 	 * @return a combining algorithm
 	 * 
 	 * @throws IllegalArgumentException

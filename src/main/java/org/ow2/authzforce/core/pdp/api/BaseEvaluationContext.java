@@ -65,6 +65,9 @@ public abstract class BaseEvaluationContext implements EvaluationContext
 
     private final boolean returnApplicablePolicyIdList;
 
+    /**
+     * Listeners registered in the context, indexed by Class
+     */
     protected final ClassToInstanceMap<Listener> listeners = MutableClassToInstanceMap.create();
     private final Instant creationTimestamp;
 
@@ -74,6 +77,7 @@ public abstract class BaseEvaluationContext implements EvaluationContext
      * @param namedAttributeMap
      *            updatable named attribute map (attribute key and value pairs) from the original Request; null iff none. An attribute key is a global ID based on attribute category,issuer,id. An
      *            attribute value is a bag of primitive values.
+     * @param requestTimestamp optional request timestamp (else current time is used)
      * @param returnApplicablePolicyIdList
      *            true iff list of IDs of policies matched during evaluation must be returned
      */

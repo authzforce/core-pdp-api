@@ -241,6 +241,7 @@ public final class Bags
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
 	 * @param elementDatatype
 	 *            bag element datatype
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
@@ -265,6 +266,7 @@ public final class Bags
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
 	 * @param attributeValueSource
 	 *            attribute value source
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
@@ -287,6 +289,7 @@ public final class Bags
 	 *            reason for empty bag (optional but should be specified whenever possible, to help troubleshoot)
 	 * @param elementDatatype
 	 *            bag element datatype
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null}
@@ -304,6 +307,7 @@ public final class Bags
 	 *            bag element datatype
 	 * @param val
 	 *            the val and only val value in the bag
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
@@ -332,6 +336,7 @@ public final class Bags
 	 *            the val and only val value in the bag
 	 * @param attributeValueSource
 	 *            attribute value source
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
@@ -364,6 +369,7 @@ public final class Bags
 	 *            bag element datatype
 	 * @param val
 	 *            the val and only val value in the bag
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code val == null || elementDatatype == null}
@@ -380,6 +386,7 @@ public final class Bags
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
 	 * @param elementDatatype
 	 *            bag element datatype
+	 * @param <AV> type of AttributeValue
 	 * @return bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
@@ -422,6 +429,7 @@ public final class Bags
 	 *            bag element datatype
 	 * @param attributeBagSource
 	 *            source of the attribute values
+	 * @param <AV> type of AttributeValue
 	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}
@@ -469,6 +477,7 @@ public final class Bags
 	 *            bag values, typically a List for ordered results, e.g. attribute values for which order matters; or it may be a Set for result of bag/Set functions (intersection, union...)
 	 * @param elementDatatype
 	 *            bag element datatype
+	 * @param <AV> type of AttributeValue
 	 * @return attribute bag
 	 * @throws IllegalArgumentException
 	 *             if {@code elementDatatype == null } or {@code values} has at least one element which is null: {@code values != null && !values.isEmpty() && values.iterator().next() == null}

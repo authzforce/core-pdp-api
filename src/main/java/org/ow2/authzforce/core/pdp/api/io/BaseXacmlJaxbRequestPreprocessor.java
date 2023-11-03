@@ -257,6 +257,10 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
     {
         private final String id;
 
+        /**
+         * Creates a request preprocessor Factory with a given ID
+         * @param id preprocessor ID
+         */
         protected Factory(final String id)
         {
             this.id = id;

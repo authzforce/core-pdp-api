@@ -29,15 +29,15 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 
 /**
  * Growable/updatable attribute bag, i.e. mutable bag of attribute values to which you can add as many values as you can. Used only when the total number of values for a given attribute - typically in
- * a XACML request - is not known in advance. For example, for the same AttributeId (e.g. with Issuer = null), there might be multiple <Attribute> elements, in which case values must be merged for
- * later matching <AttributeDesignator> evaluation. Indeed, as discussed on the xacml-dev mailing list (see https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html), the following excerpt
- * from the XACML 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same <Attribute> with same meta-data but different values should be considered equivalent to a single <Attribute>
+ * a XACML request - is not known in advance. For example, for the same AttributeId (e.g. with Issuer = null), there might be multiple {@literal <Attribute>} elements, in which case values must be merged for
+ * later matching {@literal <AttributeDesignator>} evaluation. Indeed, as discussed on the xacml-dev mailing list (see <a href="https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html">[xacml-dev] Handling repetitions of Attribute Category/Id/Issuer/DataType in XACML Request</a>), the following excerpt
+ * from the XACML 3.0 core spec, §7.3.3, indicates that multiple occurrences of the same {@literal <Attribute>} with same meta-data but different values should be considered equivalent to a single {@literal <Attribute>}
  * element with same meta-data and merged values (multivalued Attribute). Moreover, the conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected to result in
  * a multi-value bag during evaluation of the AttributeDesignator.
  * <p>
  * To be instantiated only in a given evaluation request context (handled by a single thread), otherwise not guaranteed thread-safe.
- * 
- * 
+ *
+ *
  * @param <AV>
  *            element type (primitive). Indeed, XACML spec says for Attribute Bags (7.3.2): "There SHALL be no notion of a bag containing bags, or a bag containing values of differing types; i.e., a
  *            bag in XACML SHALL contain only values that are of the same data-type."

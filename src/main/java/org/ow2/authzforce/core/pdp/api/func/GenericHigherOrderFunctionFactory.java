@@ -36,6 +36,7 @@ public abstract class GenericHigherOrderFunctionFactory implements PdpExtension
 	 *
 	 * @param subFunctionReturnType
 	 *            sub-function's return datatype
+	 * @param <SUB_RETURN_T> sub-function return type
 	 * @return higher-order function instance (non-null, throw exceptions below if no instance may be returned for this argument)
 	 * @throws IllegalArgumentException
 	 *             iff {@code subFunctionReturnType == null} or {@code subFunctionReturnType} is not compatible with this factory (i.e. map function only accepts primitive datatype as subfunction's
