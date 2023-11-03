@@ -25,12 +25,17 @@ package org.ow2.authzforce.core.pdp.api.value;
  */
 public abstract class BaseAttributeValueFactory<AV extends AttributeValue> implements AttributeValueFactory<AV>
 {
+	/**
+	 * Datatype of instances created by this factory
+	 */
 	protected final AttributeDatatype<AV> instanceDatatype;
 	private final transient String toString;
 	private final transient int hashCode;
 
 	/**
 	 * Base attribute value factory constructor
+	 *
+	 * @param instanceDatatype datatype of instances created by this factory
 	 */
 	protected BaseAttributeValueFactory(final AttributeDatatype<AV> instanceDatatype)
 	{
@@ -90,12 +95,11 @@ public abstract class BaseAttributeValueFactory<AV extends AttributeValue> imple
 			return true;
 		}
 
-		if (!(other instanceof AttributeValueFactory))
+		if (!(other instanceof AttributeValueFactory<?> otherAttValFactory))
 		{
 			return false;
 		}
 
-		final AttributeValueFactory<?> otherAttValFactory = (AttributeValueFactory<?>) other;
 		return this.instanceDatatype.equals(otherAttValFactory.getDatatype());
 	}
 }

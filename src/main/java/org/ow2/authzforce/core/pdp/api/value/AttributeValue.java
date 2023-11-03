@@ -27,14 +27,15 @@ import java.util.Map;
  * turned into an interface for more flexibility, and it is not JAXB-annotated. Yet, it is designed to be mappable to an {@link oasis.names.tc.xacml._3_0.core.schema.wd_17.AttributeValueType}. Values
  * of all standard XACML primitive data-types extend this. Contrary to {@link PrimitiveValue}, this does not represent Functions which are not attribute values. If you want to provide a new type of
  * AttributeValue, i.e. new datatype, extend {@link AttributeValueFactory} to provide a factory for it.
- * 
- * <b>All implementations must implement/override {@link #equals(Object)} and {@link #hashCode()} properly.</b>
+ * <p>
+ * <b>All implementations must implement/override {@link  Object#equals(Object)} and {@link Object#hashCode()} properly.</b>
+ * </p>
  */
 public interface AttributeValue extends PrimitiveValue
 {
 
 	/**
-	 * Get the value content as specified by {@link javax.xml.bind.annotation.XmlMixed}, i.e. a list, each item of which may be a String, a {@link javax.xml.bind.JAXBElement}, an instance of a class
+	 * Get the value content as specified by {@link jakarta.xml.bind.annotation.XmlMixed}, i.e. a list, each item of which may be a String, a {@link jakarta.xml.bind.JAXBElement}, an instance of a class
 	 * annotated with @XmlRootElement, or a {@link org.w3c.dom.Element}. In addition, in the two latter cases, the item must also be {@link Serializable}.
 	 * 
 	 * @return (possibly mixed) content; <b>not null</b> (must be empty if no content)
@@ -42,7 +43,7 @@ public interface AttributeValue extends PrimitiveValue
 	List<Serializable> getContent();
 
 	/**
-	 * Get the attributes attached to the value as specified by {@link javax.xml.bind.annotation.XmlAnyAttribute}, or any kind of attributes/metadata defined by some markup language that this value
+	 * Get the attributes attached to the value as specified by {@link jakarta.xml.bind.annotation.XmlAnyAttribute}, or any kind of attributes/metadata defined by some markup language that this value
 	 * type is designed to be (de)serialized (from) to. The primary use of this is (de)serialization of XML attributes. Each key is an attribute's QName and the associated value is the attribute's
 	 * string value. One example of such XML attribute in XACML standard is the xpathExpression value which has an XPathCategory attribute.
 	 * 

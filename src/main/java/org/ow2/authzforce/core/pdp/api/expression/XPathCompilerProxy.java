@@ -30,7 +30,8 @@ import java.util.Map;
 public interface XPathCompilerProxy
 {
     /**
-     * @see XPathCompiler#getLanguageVersion() 
+     * @see XPathCompiler#getLanguageVersion()
+     * @return XPath version supported
      */
     XPathVersion getXPathVersion();
 
@@ -43,29 +44,45 @@ public interface XPathCompilerProxy
 
     /**
      * Get the list of XACML Policy Variables allowed as XPath variables in compiled XPath expressions
+     * @return allowed variables
      */
     List<VariableReference<?>> getAllowedVariables();
 
     /**
      * @see XPathCompiler#compile(String)
+     * @param source XPath expression
+     * @return compiled XPath expression ready for evaluation
+     * @throws SaxonApiException error compiling the expression (e.g. invalid XPath expression)
      */
     XPathExecutable compile(String source) throws SaxonApiException;
 
     /**
      * 
-     * @see XPathCompiler#evaluate(String, XdmItem) 
+     * @see XPathCompiler#evaluate(String, XdmItem)
+     * @param expression XPath expression
+     * @param contextItem context item (e.g. XML node) on which to evaluate the expression
+     * @return the result of the evaluation
+     * @throws SaxonApiException evaluation error
      */
     XdmValue evaluate(String expression, XdmItem contextItem) throws SaxonApiException;
 
     /**
      *
      * @see XPathCompiler#evaluateSingle(String, XdmItem)
+     * @param expression XPath expression
+     * @param contextItem context item (e.g. XML node) on which to evaluate the expression
+     * @return the result of the evaluation
+     * @throws SaxonApiException evaluation error
      */
     XdmItem evaluateSingle(String expression, XdmItem contextItem) throws SaxonApiException;
 
     /**
      *
      * @see XPathCompiler#compilePattern(String)
+     * @see XPathCompiler#compile(String)
+     * @param source XPath expression
+     * @return compiled XPath expression ready for evaluation
+     * @throws SaxonApiException error compiling the expression (e.g. invalid XPath expression)
      */
     XPathExecutable compilePattern(String source) throws SaxonApiException;
 }

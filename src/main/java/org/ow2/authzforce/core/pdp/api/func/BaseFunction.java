@@ -40,6 +40,10 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 		return this.functionId;
 	}
 
+	/**
+	 * Creates Function
+	 * @param functionId function ID
+	 */
 	protected BaseFunction(final String functionId)
 	{
 		this.functionId = functionId;
@@ -67,12 +71,11 @@ public abstract class BaseFunction<RETURN_T extends Value> implements Function<R
 			return true;
 		}
 
-		if (!(obj instanceof BaseFunction))
+		if (!(obj instanceof BaseFunction<?> other))
 		{
 			return false;
 		}
 
-		final BaseFunction<?> other = (BaseFunction<?>) obj;
 		// functionId never null
 		return functionId.equals(other.functionId);
 	}

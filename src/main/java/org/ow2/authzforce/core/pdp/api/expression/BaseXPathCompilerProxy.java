@@ -33,8 +33,14 @@ public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
     private static final UnsupportedOperationException UNSUPPORTED_EVALUATE_SINGLE_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#evaluateSingle(String, XdmItem) not supported");
     private static final UnsupportedOperationException UNSUPPORTED_COMPILE_PATTERN_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#compilePattern(String) not supported");
 
+    /**
+     * XML Namespace prefix-to-URI mapping
+     */
     protected final ImmutableMap<String, String> nsPrefixToUriMap;
 
+    /**
+     * XPath version
+     */
     protected final transient XPathVersion xPathVersion;
 
     /**

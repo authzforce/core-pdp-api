@@ -18,10 +18,10 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Locale;
 
 /**
@@ -41,7 +41,7 @@ public final class StringValue extends StringParseableValue<String> implements C
 	public static final StringValue EMPTY = new StringValue("");
 
 	/**
-	 * Convert the lexical XSD string argument into a String value, using {@link javax.xml.bind.DatatypeConverter#parseString(String)}.
+	 * Convert the lexical XSD string argument into a String value, using {@link DatatypeConverter#parseString(String)}.
 	 *
 	 * @param val
 	 *            A string containing a lexical representation of xsd:string

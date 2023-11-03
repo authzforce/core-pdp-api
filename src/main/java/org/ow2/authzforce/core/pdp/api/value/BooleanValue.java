@@ -19,16 +19,16 @@ package org.ow2.authzforce.core.pdp.api.value;
 
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
-
-import javax.xml.bind.DatatypeConverter;
+import net.sf.saxon.str.UnicodeString;
 
 /**
  * Representation of a xs:boolean value. This class supports parsing xs:boolean values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java
- * type boolean is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
+ * type boolean is based on <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a>
  *
- * 
+ *
  * @version $Id: $
  */
 public final class BooleanValue extends StringParseableValue<Boolean>
@@ -46,15 +46,13 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 	public static final BooleanValue FALSE = new BooleanValue(Boolean.FALSE);
 
 	/**
-	 * Convert a boolean value from string, according to the XML Schema definition. Adapted from {@link net.sf.saxon.value.BooleanValue#fromString(CharSequence)}, but without whitespace trimming. This
-	 * is meant to replace {@link DatatypeConverter#parseBoolean(String)} which is flawed and does not comply with XSD definition of boolean type as of now (JDK7/8). See
-	 * https://java.net/jira/browse/JAXB-901, and https://java.net/jira/browse/JAXB-902. E.g. DatatypeConverter.parseBoolean("not") throws NullPointerException instead of IllegalArgumentException as
-	 * expected according to javadoc.
+	 * Convert a boolean value from string, according to the XML Schema definition. Adapted from {@link net.sf.saxon.value.BooleanValue#fromString(UnicodeString)}, but without whitespace trimming. This
+	 * is meant to replace {@link DatatypeConverter#parseBoolean(String)} with more optimal implementation for this BooleanValue type (saving object instanciation).
 	 *
 	 * @param s
 	 *            XSD-compliant string representation of boolean
 	 * @return boolean value corresponding to {@code s}
-	 * @throws java.lang.IllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if string parameter does not conform to lexical value space defined in XML Schema Part 2: Datatypes for xsd:boolean.
 	 */
 	public static BooleanValue getInstance(final String s) throws IllegalArgumentException
@@ -161,12 +159,10 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 			return true;
 		}
 
-		if (!(obj instanceof BooleanValue))
+		if (!(obj instanceof BooleanValue other))
 		{
 			return false;
 		}
-
-		final BooleanValue other = (BooleanValue) obj;
 
 		/*
 		 * if (value == null) { if (other.value != null) { return false; } } else

@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import com.google.common.collect.ImmutableList;
+import jakarta.xml.bind.DatatypeConverter;
 import org.ow2.authzforce.core.pdp.api.HashCollections;
 import org.ow2.authzforce.core.pdp.api.PdpExtensionRegistry.PdpExtensionComparator;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -151,9 +151,8 @@ public final class StandardAttributeValueFactories
 				return IntegerValue.valueOf((Integer) value);
 			}
 
-			if (value instanceof Long)
+			if (value instanceof Long l)
 			{
-				final Long l = (Long) value;
 				final int i;
 				try
 				{
@@ -166,9 +165,8 @@ public final class StandardAttributeValueFactories
 				return IntegerValue.valueOf(i);
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				final int i;
 				try
 				{
@@ -241,9 +239,8 @@ public final class StandardAttributeValueFactories
 				return smallIntegerValue;
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				final long i;
 				try
 				{
@@ -311,9 +308,8 @@ public final class StandardAttributeValueFactories
 				return smallIntegerValue;
 			}
 
-			if (value instanceof BigInteger)
+			if (value instanceof BigInteger bigInt)
 			{
-				final BigInteger bigInt = (BigInteger) value;
 				return getInstance(bigInt);
 			}
 
@@ -445,9 +441,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public DateValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof LocalDate)
+			if (value instanceof LocalDate date)
 			{
-				final LocalDate date = (LocalDate) value;
 				// We set date in UTC, so timezone offset is 0
 				return DateValue.getInstance(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newXMLGregorianCalendarDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0));
 			}
@@ -514,9 +509,8 @@ public final class StandardAttributeValueFactories
 						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
-			if (value instanceof Instant)
+			if (value instanceof Instant instant)
 			{
-				final Instant instant = (Instant) value;
 				// We set time in UTC
 				final LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(), 0);
@@ -555,9 +549,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public AnyUriValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof URI)
+			if (value instanceof URI uri)
 			{
-				final URI uri = (URI) value;
 				return new AnyUriValue(uri.toString());
 			}
 
@@ -594,9 +587,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public HexBinaryValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof byte[])
+			if (value instanceof byte[] bytes)
 			{
-				final byte[] bytes = (byte[]) value;
 				return new HexBinaryValue(bytes);
 			}
 
@@ -646,9 +638,8 @@ public final class StandardAttributeValueFactories
 		@Override
 		public X500NameValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof X500Principal)
+			if (value instanceof X500Principal principal)
 			{
-				final X500Principal principal = (X500Principal) value;
 				return new X500NameValue(principal);
 			}
 
@@ -736,6 +727,9 @@ public final class StandardAttributeValueFactories
 	 */
 	private static final RuntimeException UNEXPECTED_XPATH_EXPRESSION_INTERNAL_ERROR = new RuntimeException("Unexpected XPath expression although XPath support disabled");
 
+	/**
+	 * XPath AttributeValue factory
+	 */
 	public static final SimpleValue.BaseFactory<XPathValue> XPATH = new SimpleValue.BaseFactory<>(StandardDatatypes.XPATH)
 	{
 
@@ -786,7 +780,7 @@ public final class StandardAttributeValueFactories
 	 * @param enableXPath
 	 *            true iff XPath-based function(s) support enabled
 	 * @param maxIntegerValue
-	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type 'http://www.w3.org/2001/XMLSchema#integer'. Decreasing this value as much as possible
+	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type {@literal http://www.w3.org/2001/XMLSchema#integer}. Decreasing this value as much as possible
 	 *            helps the PDP engine optimize the processing of integer values (lower memory consumption, faster computations). By default, the Java class used to represent an integer value is:
 	 *            <ul>
 	 *            <li>{@link Integer}</li>

@@ -66,7 +66,7 @@ public interface AttributeSelectorExpression<AV extends AttributeValue> extends 
 	 * directly. Used for instance when XPath expressions are pre-compiled in cache, i.e. in decision cache extensions.
 	 * 
 	 * @param contentElement
-	 *            XML element used as (replacement for) this AttributeSelector's &lt;Content&gt
+	 *            XML element used as (replacement for) this AttributeSelector's &lt;Content&gt;
 	 * @param contextPathEvaluator
 	 *            (optional) XPath expression evaluator used as replacement for the XPath expression usually given by the attribute referenced by this AttributeSelector's ContextSelectorId, if it is
 	 *            defined

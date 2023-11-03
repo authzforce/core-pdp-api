@@ -34,6 +34,7 @@ public abstract class StringContentOnlyValueFactory<AV extends AttributeValue> e
 
 	/**
 	 * Creates a datatype factory from the Java datatype implementation class and datatype identifier
+	 * @param datatype data-type
 	 */
 	protected StringContentOnlyValueFactory(final AttributeDatatype<AV> datatype)
 	{

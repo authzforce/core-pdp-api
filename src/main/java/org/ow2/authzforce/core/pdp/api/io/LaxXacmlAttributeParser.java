@@ -30,16 +30,16 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 
+ *
  * "Lax" XACML Attribute parser. "Lax" means it allows defining multivalued attributes by repeating the same XACML Attribute (same AttributeId) within a XACML Attributes element (same Category)
- * but with possibly different AttributeValues. As discussed on the xacml-dev mailing list (see {@linkplain "https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html"}), the XACML 3.0
+ * but with possibly different AttributeValues. As discussed on the xacml-dev mailing list (see <a href="https://lists.oasis-open.org/archives/xacml-dev/201507/msg00001.html">[xacml-dev] Handling repetitions of Attribute Category/Id/Issuer/DataType in XACML Request</a>), the XACML 3.0
  * core spec, §7.3.3, indicates that multiple occurrences of the same &lt;Attribute&gt; with same meta-data but different values should be considered equivalent to a single &lt;Attribute&gt;
  * element with same meta-data and merged values (multivalued Attribute). Moreover, the XACML 3.0 conformance test 'IIIA024' expects this behavior: the multiple subject-id Attributes are expected
  * to result in a multi-value bag during evaluation of the &lt;AttributeDesignator&gt;.
  * <p>
  * It is strongly recommended for better performance to avoid such Attribute repetitions and group all the values of the same Attribute in the same Attribute element with multiple AttributeValues,
  * using the "strict" parser ({@link NonIssuedLikeIssuedStrictXacmlAttributeParser} instead of the "lax" variant.
- * 
+ *
  * @param <INPUT_ATTRIBUTE>
  *            type of raw input attribute object (not yet parsed into AuthzForce internal model), typically from original XACML Request, e.g. JAXB-annotated Attribute for XACML/XML request, or
  *            JSON object for XACML/JSON request
@@ -63,7 +63,7 @@ abstract class LaxXacmlAttributeParser<INPUT_ATTRIBUTE> extends XacmlRequestAttr
 
 	/**
 	 * Decide whether to copy values of attributes with Issuer to attributes with same category and ID but null Issuer
-	 * 
+	 * @param attributeFQN attribute name
 	 * @return true iff the caller is required to make the copy
 	 */
 	protected abstract boolean copyIssuedAttributeValuesToNonIssued(AttributeFqn attributeFQN);

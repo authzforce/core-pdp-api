@@ -18,17 +18,17 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Deque;
 
 /**
  * Representation of a xs:double value. This class supports parsing xs:double values. All objects of this class are immutable and all methods of the class are thread-safe. The choice of the Java type
- * Double is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
+ * Double is based on <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a>
  *
- * 
+ *
  * @version $Id: $
  */
 public final class DoubleValue extends NumericValue<Double, DoubleValue> implements Comparable<DoubleValue>

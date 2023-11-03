@@ -3,10 +3,10 @@
     <parent>
         <groupId>org.ow2.authzforce</groupId>
         <artifactId>authzforce-ce-parent</artifactId>
-        <version>8.5.0</version>
+        <version>9.0.0</version>
     </parent>
     <artifactId>authzforce-ce-core-pdp-api</artifactId>
-    <version>21.4.0</version>
+    <version>22.0.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>AuthzForce - Core PDP API</description>
     <url>${project.url}</url>
@@ -34,9 +34,6 @@
             <!-- For validation of XACML RFC822Name (email address) -->
             <groupId>jakarta.mail</groupId>
             <artifactId>jakarta.mail-api</artifactId>
-            <!-- Not the latest but the latest conflicts with jakarta.xml.bind-api's jakarta.mail-api dependency version -->
-            <version>1.6.7</version>
-            <!-- Must be replaced with actual implementation at runtime (to be provided), e.g. com.sun.mail:javax.mail -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -139,6 +136,13 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -92,7 +92,7 @@ public final class X500NameValue extends StringParseableValue<String>
 	 *
 	 * @param other
 	 *            the second argument
-	 * @return true if and only if this matches some terminal sequence of RDNs from the <code>other</other>'s value when compared using x500Name-equal.
+	 * @return true if and only if this matches some terminal sequence of RDNs from the <code>other</code>'s value when compared using x500Name-equal.
 	 */
 	public boolean match(final X500NameValue other)
 	{
@@ -164,12 +164,11 @@ public final class X500NameValue extends StringParseableValue<String>
 			return true;
 		}
 
-		if (!(obj instanceof X500NameValue))
+		if (!(obj instanceof X500NameValue other))
 		{
 			return false;
 		}
 
-		final X500NameValue other = (X500NameValue) obj;
 		/*
 		 * This equals() has the same effect as the algorithm described in the spec
 		 */

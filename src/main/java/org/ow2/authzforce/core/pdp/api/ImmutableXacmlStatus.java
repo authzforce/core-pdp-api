@@ -21,15 +21,9 @@ import com.google.common.base.Preconditions;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.MissingAttributeDetail;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
-import org.ow2.authzforce.xacml.Xacml3JaxbHelper;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.annotation.concurrent.Immutable;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.dom.DOMResult;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -64,12 +58,15 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 
 
 	/**
+	 * <p>
 	 * Constructor that takes the status code, an optional message, and some detail to include with the status. Note that the specification explicitly says that a status code of OK, SyntaxError or
 	 * ProcessingError may not appear with status detail, so an exception is thrown if one of these status codes is used and detail is included.
-	 *
+	 *</p>
+	 * <p>
 	 * Note: StatusDetail field not supported.
 	 *  According to XACML 3.0 spec, section 5.57, if the code is ok, syntax error or processing error, there must not be any StatusDetail included.
-	 * 
+	 * </p>
+	 *
 	 * @param codes
 	 *            a <code>List</code> of codes of type xs:anyURI, typically just one code, but this may contain any number of minor codes after the first item in the list, which is the major code
 	 * @param message
@@ -80,15 +77,7 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 	 */
 	public ImmutableXacmlStatus(final List<String> codes, final Optional<String> message) throws IllegalArgumentException
 	{
-		if (codes == null || codes.isEmpty())
-		{
-			throw new IllegalArgumentException("status code value undefined");
-		}
-
-		// stringsToStatusCode(...) != null;
-		this.statusCode = stringsToStatusCode(codes.iterator(), MAX_STATUS_CODE_DEPTH);
-		this.statusMessage = message.orElse(null);
-		this.statusDetail = null;
+		super(stringsToStatusCode(codes),message.orElse(null), null);
 	}
 
 	/**
@@ -130,22 +119,23 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 	 */
 	public ImmutableXacmlStatus(final MissingAttributeDetail missingAttributeDetail, Optional<String> code, Optional<String> message)
 	{
-		final DOMResult domResult = new DOMResult();
-		final Marshaller marshaller;
-		try
-		{
-			marshaller = Xacml3JaxbHelper.createXacml3Marshaller();
+		super(code.map(s -> new StatusCode(null, s)).orElse(MISSING_ATTRIBUTE_STATUS_CODE), message.orElse(DEFAULT_MISSING_ATTRIBUTE_STATUS_MESSAGE), new StatusDetail(List.of(XmlUtils.jaxbToDomElement(missingAttributeDetail, "XACML <MissingAttributeDetail>"))));
+	}
 
-			marshaller.marshal(missingAttributeDetail, domResult);
-		} catch (JAXBException e)
+	/**
+	 * Builds the chain of status codes (recursive) (similar to error stacktrace)
+	 *
+	 * @param codes chain of status codes (stack trace)
+	 * @return recursive status code
+	 */
+	private static ImmutableXacmlStatusCode stringsToStatusCode(final List<String> codes)
+	{
+		if (codes == null || codes.isEmpty())
 		{
-			throw new RuntimeException("Error marshalling a XACML <MissingAttributeDetail>", e);
+			throw new IllegalArgumentException("status code value undefined");
 		}
 
-		this.statusCode = code.map(s -> new StatusCode(null, s)).orElse(MISSING_ATTRIBUTE_STATUS_CODE);
-		this.statusMessage = message.orElse(DEFAULT_MISSING_ATTRIBUTE_STATUS_MESSAGE);
-		final Element domElement = ((Document)domResult.getNode()).getDocumentElement();
-		this.statusDetail = new StatusDetail(List.of(domElement));
+		return stringsToStatusCode(codes.iterator(), MAX_STATUS_CODE_DEPTH);
 	}
 
 	/**
@@ -157,6 +147,8 @@ public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.s
 	 */
 	private static ImmutableXacmlStatusCode stringsToStatusCode(final Iterator<String> codesIterator, final int depth)
 	{
+
+
 		assert codesIterator.hasNext();
 		final String codeVal = codesIterator.next();
 		if (codeVal == null)

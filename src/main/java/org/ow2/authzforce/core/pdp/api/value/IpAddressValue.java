@@ -165,6 +165,7 @@ public final class IpAddressValue extends StringParseableValue<String> {
 	 * Instantiates from string representation
 	 *
 	 * @param val string form of IP address
+	 * @return instance of IpAddressValue
 	 * @throws java.lang.IllegalArgumentException if {@code val} is not a valid
 	 *                                            XACML IPAddress string
 	 */
@@ -222,11 +223,10 @@ public final class IpAddressValue extends StringParseableValue<String> {
 			return true;
 		}
 
-		if (!(obj instanceof IpAddressValue)) {
+		if (!(obj instanceof IpAddressValue other)) {
 			return false;
 		}
 
-		final IpAddressValue other = (IpAddressValue) obj;
 		// address and range non-null
 		return this.address.equals(other.address) && this.portRange.equals(other.portRange)
 				&& Objects.equals(this.mask, other.mask);

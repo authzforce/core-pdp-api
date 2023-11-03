@@ -139,6 +139,7 @@ public final class UpdatableCollections
 	/**
 	 * Get instance of UpdatableList that does not update anything and {@link UpdatableList#copy()} always return an empty list. This implementation does not raise any exception on
 	 * {@link UpdatableList#add(Object)} and {@link UpdatableList#addAll(Collection)} method but merely return false always. This is useful merely for polymorphism.
+	 * @param <E> type of elements in this list
 	 * 
 	 * @return "empty" list, i.e. list that silently ignores updates and always stays empty
 	 */
@@ -150,7 +151,7 @@ public final class UpdatableCollections
 
 	/**
 	 * Create new instance of UpdatableList not accepting null values
-	 * 
+	 * @param <E> type of elements in this list
 	 * @return new instance
 	 */
 	public static <E> UpdatableList<E> newUpdatableList()
@@ -198,7 +199,7 @@ public final class UpdatableCollections
 	/**
 	 * Get instance of UpdatableSet that does not update anything and {@link UpdatableSet#copy()} always return an empty Set. This implementation does not raise any exception on
 	 * {@link UpdatableSet#add(Object)} and {@link UpdatableSet#addAll(Collection)} method but merely return false always. This is useful merely for polymorphism.
-	 * 
+	 * @param <E> type of elements in this set
 	 * @return "empty" Set, i.e. list that silently ignores updates and always stays empty
 	 */
 	@SuppressWarnings("unchecked")
@@ -220,11 +221,6 @@ public final class UpdatableCollections
 		private UpdatableHashSet()
 		{
 			// Set initialized above
-		}
-
-		private UpdatableHashSet(final E e)
-		{
-			set.add(e);
 		}
 
 		@Override
@@ -268,7 +264,7 @@ public final class UpdatableCollections
 
 	/**
 	 * Create new instance of UpdatableSet not accepting null values
-	 * 
+	 * @param <E> type of elements in this set
 	 * @return new instance
 	 */
 	public static <E> UpdatableSet<E> newUpdatableSet()
@@ -321,8 +317,9 @@ public final class UpdatableCollections
 	/**
 	 * Get instance of UpdatableMap that does not update anything and {@link UpdatableMap#copy()} always return an empty Map. This implementation does not raise any exception on
 	 * {@link UpdatableMap#put(Object, Object)} and {@link UpdatableMap#putAll(Map)} method but merely return false always. This is useful merely for polymorphism.
-	 * 
-	 * @return "empty" Set, i.e. list that silently ignores updates and always stays empty
+	 * @param <K> key type
+	 * @param <V> value type
+	 * @return "empty" map, i.e. map that silently ignores updates and always stays empty
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V> UpdatableMap<K, V> emptyMap()
@@ -382,7 +379,8 @@ public final class UpdatableCollections
 
 	/**
 	 * Create new instance of UpdatableMap not accepting null values
-	 * 
+	 * @param <K> key type
+	 * @param <V> value type
 	 * @return new instance
 	 */
 	public static <K, V> UpdatableMap<K, V> newUpdatableMap()

@@ -34,12 +34,20 @@ public abstract class FirstOrderFunctionSignature<RETURN_T extends Value>
 {
 	private static final IllegalArgumentException NULL_NAME_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined function name arg");
 	private static final IllegalArgumentException NULL_RETURN_TYPE_ARGUMENT_EXCEPTION = new IllegalArgumentException("Undefined function return type arg");
+
+	/**
+	 * Exception to be thrown if one of the function parameter types is undefined
+	 */
 	protected static final IllegalArgumentException UNDEF_PARAMETER_TYPES_EXCEPTION = new IllegalArgumentException("Undefined function parameter types");
 
-	// function name
+	/**
+	 * 	function ID
+ 	 */
 	protected final String name;
 
-	// the return type of the function
+	/**
+	 * The return type of the function
+	 */
 	protected final Datatype<RETURN_T> returnType;
 
 	/**
