@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,16 +32,19 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
 public interface NamedXacmlAttributeParsingResult<AV extends AttributeValue>
 {
 	/**
+	 * Get the attribute name
 	 * @return attribute (fully-qualified) name, i.e. category/Issuer/ID
 	 */
 	AttributeFqn getAttributeName();
 
 	/**
+	 * Get the attribute datatype
 	 * @return attribute datatype
 	 */
 	Datatype<AV> getAttributeDatatype();
 
 	/**
+	 * Get the attribute values
 	 * @return attribute value
 	 */
 	Collection<AV> getAttributeValues();

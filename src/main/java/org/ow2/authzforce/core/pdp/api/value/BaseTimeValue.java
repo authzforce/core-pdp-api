@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -22,8 +22,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 /**
- * Superclass of date/time attribute values, i.e. XML schema date/time values. The choice of the Java type <code>XMLGregorianCalendar</code> is based on JAXB schema-to-Java mapping spec:
- * https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html
+ * Superclass of date/time attribute values, i.e. XML schema date/time values. The choice of the Java type <code>XMLGregorianCalendar</code> is based on <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a>.
  *
  * @param <TAV>
  *            type of result returned by arithmetic functions with this type of arguments: {@link #add(DurationValue)}, {@link #subtract(DurationValue)}, etc. Basically, we expect that arithmetic

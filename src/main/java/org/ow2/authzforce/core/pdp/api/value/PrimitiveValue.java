@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -30,7 +30,7 @@ import net.sf.saxon.s9api.XdmValue;
 public interface PrimitiveValue extends Value
 {
     /**
-     *
+     * Get the corresponding XPath (XDM) value
      * @return corresponding XPath (XDM) value
      */
     XdmItem getXdmItem();

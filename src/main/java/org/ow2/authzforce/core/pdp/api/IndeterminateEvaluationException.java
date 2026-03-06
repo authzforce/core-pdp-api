@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -58,7 +58,9 @@ public class IndeterminateEvaluationException extends Exception
 
 	private final ImmutableXacmlStatus xacmlStatus;
 
-	// Top-level Status for the final XACML Result, may be different from xacmlStatus, in which case it overrides
+	/*
+	 Top-level Status for the final XACML Result, may be different from xacmlStatus, in which case it overrides
+	 */
 	@SuppressFBWarnings(value="SE_BAD_FIELD", justification = "only used internally")
 	private final Optional<ImmutableXacmlStatus> overridingTopLevelStatusInFinalResult;
 

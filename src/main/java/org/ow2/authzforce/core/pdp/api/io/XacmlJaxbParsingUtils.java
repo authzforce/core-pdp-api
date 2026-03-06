@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -251,6 +251,10 @@ public final class XacmlJaxbParsingUtils
 			}
 
 			return new SingleCategoryAttributes<>(categoryId, attrMap.entrySet(), namedAttrIterConverter, attrsToIncludeInResult, extraContent);
+		}
+
+		protected final void finalize() {
+			// SEI CERT Rule OBJ-11
 		}
 	}
 

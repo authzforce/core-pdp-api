@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -38,7 +38,6 @@ public abstract class BaseDecisionResult implements DecisionResult
 	 */
 	protected BaseDecisionResult(final Optional<ImmutableXacmlStatus> status)
 	{
-		assert status != null;
 		this.status = status;
 	}
 

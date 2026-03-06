@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -257,7 +257,6 @@ public final class DecisionResults
      */
     public static DecisionResult getPermit(final Optional<ImmutableXacmlStatus> status, final ImmutableList<PepAction> pepActions, final ImmutableList<PrimaryPolicyMetadata> applicablePolicyIdList)
     {
-        assert status != null;
         if (status.isEmpty() && (pepActions == null || pepActions.isEmpty()) && (applicablePolicyIdList == null || applicablePolicyIdList.isEmpty()))
         {
             return SIMPLE_PERMIT;

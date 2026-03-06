@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -181,35 +181,35 @@ public final class MediumInteger extends GenericInteger
 	public MediumInteger add(final GenericInteger other) throws ArithmeticException
 	{
 		final int result = value + other.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger multiply(final GenericInteger other) throws ArithmeticException
 	{
 		final int result = value * other.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger divide(final GenericInteger divisor) throws ArithmeticException
 	{
 		final int result = value / divisor.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger subtract(final GenericInteger subtractedVal)
 	{
 		final int result = Math.subtractExact(value, subtractedVal.intValueExact());
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger remainder(final GenericInteger divisor) throws ArithmeticException
 	{
 		final int result = value % divisor.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 }

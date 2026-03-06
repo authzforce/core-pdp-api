@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -402,7 +402,6 @@ public final class ExtendedDecisions
 	 */
 	public static ExtendedDecision newIndeterminate(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause) throws IllegalArgumentException
 	{
-		assert cause != null;
 		// cause must be present
 		return new IndeterminateExtendedDecision(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -32,6 +32,7 @@ public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
     private static final UnsupportedOperationException UNSUPPORTED_EVALUATE_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#evaluate(String, XdmItem) not supported");
     private static final UnsupportedOperationException UNSUPPORTED_EVALUATE_SINGLE_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#evaluateSingle(String, XdmItem) not supported");
     private static final UnsupportedOperationException UNSUPPORTED_COMPILE_PATTERN_OPERATION_EXCEPTION = new UnsupportedOperationException("XPathCompiler#compilePattern(String) not supported");
+    private static final IllegalArgumentException NULL_XPATH_VERSION_EXCEPTION = new IllegalArgumentException("Undefined XPath version");
 
     /**
      * XML Namespace prefix-to-URI mapping
@@ -51,9 +52,15 @@ public abstract class BaseXPathCompilerProxy implements XPathCompilerProxy
      */
     public BaseXPathCompilerProxy(final XPathVersion xpathVersion, final Map<String, String> namespacePrefixToUriMap) throws IllegalArgumentException
     {
-        assert xpathVersion != null;
+        if(xpathVersion == null) {
+            throw NULL_XPATH_VERSION_EXCEPTION;
+        }
         this.xPathVersion = xpathVersion;
         this.nsPrefixToUriMap = namespacePrefixToUriMap == null ? ImmutableMap.of() : ImmutableMap.copyOf(namespacePrefixToUriMap);
+    }
+
+    protected final void finalize() {
+        // SEI CERT Rule OBJ-11
     }
 
     @Override

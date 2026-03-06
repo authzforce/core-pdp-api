@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -830,7 +830,7 @@ public final class StandardAttributeValueFactories
 		if (enableXPath)
 		{
 
-			attValFactories.add(StandardAttributeValueFactories.XPATH);
+			attValFactories.add(XPATH);
 		}
 
 		if (LOGGER.isDebugEnabled())

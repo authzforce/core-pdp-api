@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -214,6 +214,7 @@ public final class XmlUtils
         }
 
         /**
+         * Load the XPath evaluator
          * @return An XPathSelector. The returned XPathSelector can be used to set up the dynamic context, and then to evaluate the expression.
          * @see XPathExecutable#load()
          */

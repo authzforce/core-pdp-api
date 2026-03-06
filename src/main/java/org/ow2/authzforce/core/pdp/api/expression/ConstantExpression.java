@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -68,6 +68,10 @@ public abstract class ConstantExpression<V extends Value> implements Expression<
 
 		this.datatype = datatype;
 		this.alwaysPresentValue = Optional.of(v);
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	@Override

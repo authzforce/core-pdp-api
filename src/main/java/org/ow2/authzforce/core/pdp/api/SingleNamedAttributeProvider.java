@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -26,7 +26,8 @@ import java.util.Optional;
 /**
  * "Named" Attribute Provider, similar to {@link NamedAttributeProvider} but provides one and only one named attribute,
  * used for AttributeDesignator/AttributeSelector (ContextSelectorId) evaluation
- * 
+ *
+ * @param <AV> returned attribute value type
  */
 public interface SingleNamedAttributeProvider<AV extends AttributeValue>
 {

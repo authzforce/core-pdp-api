@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -56,6 +56,7 @@ public final class PepAction
 	}
 
 	/**
+	 * Get the action ID
 	 * @return the action ID (XACML ObligationId / AdviceId)
 	 */
 	public String getId()
@@ -74,6 +75,7 @@ public final class PepAction
 	}
 
 	/**
+	 * Get the action arguments (AttributeAssignments)
 	 * @return the action's arguments (attribute assignments)
 	 */
 	public ImmutableList<PepActionAttributeAssignment<?>> getAttributeAssignments()

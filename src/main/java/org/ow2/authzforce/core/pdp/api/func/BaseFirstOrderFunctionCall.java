@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -339,6 +339,10 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 		}
 
 		this.returnType = functionSig.getReturnType();
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	@Override
@@ -686,6 +690,8 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 	public static abstract class EagerBagEval<RETURN_T extends Value, PARAM_BAG_ELEMENT_T extends AttributeValue> extends EagerEval<RETURN_T>
 	{
 		private final Datatype<Bag<PARAM_BAG_ELEMENT_T>> paramBagType;
+		private final IndeterminateEvaluationException invalidRemainingArgsException;
+
 
 		/**
 		 * Instantiates Function call
@@ -709,7 +715,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			}
 
 			this.paramBagType = functionSig.getParameterType();
-
+			this.invalidRemainingArgsException = new IndeterminateEvaluationException("Function " + funcId + ": unexpected primitive values as request-time args", XacmlStatusCode.SYNTAX_ERROR.value());
 		}
 
 		/**
@@ -730,7 +736,9 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			/*
 			 * No support for remainingArgs which would be primitive values, whereas all arguments for EagerBagEval are supposed to be bags. Else use EagerPartlyBagEval.
 			 */
-			assert remainingArgs == null;
+			if(remainingArgs != null) {
+				throw invalidRemainingArgsException;
+			}
 
 			/*
 			 * We checked in constructor that argExpressions != null
@@ -785,7 +793,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 			{
 				// all arg expressions are primitive
 				throw new IllegalArgumentException(
-				        "Function " + BaseFirstOrderFunctionCall.EVAL_ARGS_NULL_INPUT_STACK_EXCEPTION + ": no bag expression in arguments. At least one bag expression is required to use this type of FunctionCall: " + this.getClass());
+				        "Function " + EVAL_ARGS_NULL_INPUT_STACK_EXCEPTION + ": no bag expression in arguments. At least one bag expression is required to use this type of FunctionCall: " + this.getClass());
 			}
 
 			this.bagParamType = bagParamType;

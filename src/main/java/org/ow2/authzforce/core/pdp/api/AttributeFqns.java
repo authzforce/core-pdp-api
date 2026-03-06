@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -67,6 +67,10 @@ public final class AttributeFqns
 			id = attrId;
 		}
 
+		protected final void finalize() {
+			// SEI CERT Rule OBJ-11
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -125,7 +129,7 @@ public final class AttributeFqns
 			{
 
 				final Optional<String> optIssuer = getIssuer();
-				toString = "[category='" + category + "', issuer=" + (optIssuer.map(s -> "'" + s + "'").orElse(null)) + ", id='" + id + "']";
+				toString = "[category='" + category + "', issuer=" + optIssuer.map(s -> "'" + s + "'").orElse(null) + ", id='" + id + "']";
 			}
 
 			return toString;
@@ -247,8 +251,6 @@ public final class AttributeFqns
 		{
 			throw NULL_CATEGORY_ARGUMENT_EXCEPTION;
 		}
-
-		assert attributeIssuer != null;
 
 		if (attributeId == null)
 		{

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -43,6 +43,10 @@ public abstract class BaseAttributeValueFactory<AV extends AttributeValue> imple
 		this.instanceDatatype = instanceDatatype;
 		this.toString = getClass().getName() + "[datatype=" + instanceDatatype + "]";
 		this.hashCode = this.instanceDatatype.hashCode();
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	/**

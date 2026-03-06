@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -121,6 +121,10 @@ public abstract class BaseXacmlJaxbRequestPreprocessor implements DecisionReques
             }
 
         this.isCombinedDecisionSupported = extraPdpFeatures.contains(DecisionResultPostprocessor.Features.XACML_MULTIPLE_DECISION_PROFILE_COMBINED_DECISION);
+    }
+
+    protected final void finalize() {
+        // SEI CERT Rule OBJ-11
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -62,6 +62,7 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 	private final AttributeSource attributeSource;
 
 	/**
+	 * Constructs a mutable bag with a given item datatype and attribute source
 	 * @param elementDatatype
 	 *            primitive datatype factory to create every element/value in the bag
 	 * @param attributeSource

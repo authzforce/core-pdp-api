@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -55,6 +55,10 @@ public class PrimitiveDatatype<AV extends PrimitiveValue> extends Datatype<AV>
 		super(TypeToken.of(Objects.requireNonNull(instanceClass, "Undefined valueClass arg")), Optional.empty(), id, functionIdPrefix, xpathDatatype);
 		this.valueClass = instanceClass;
 		this.arrayClass = (Class<AV[]>) Array.newInstance(this.valueClass, 0).getClass();
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	@Override

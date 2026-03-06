@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -49,6 +49,10 @@ public abstract class BaseNamedAttributeProvider implements CloseableNamedAttrib
 		this.instanceID = instanceID;
 		this.hashCode = instanceID.hashCode();
 		this.toString = "AttributeProvider[" + instanceID + "]";
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	/**
