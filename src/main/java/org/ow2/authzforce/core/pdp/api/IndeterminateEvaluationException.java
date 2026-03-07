@@ -23,6 +23,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.MissingAttributeDetail;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.Status;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
 
+import java.io.Serial;
 import java.util.Optional;
 
 /**
@@ -35,6 +36,7 @@ import java.util.Optional;
  */
 public class IndeterminateEvaluationException extends Exception
 {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private static Status validateArg(final ImmutableXacmlStatus status)

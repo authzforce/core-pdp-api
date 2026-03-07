@@ -19,6 +19,7 @@ package org.ow2.authzforce.core.pdp.api.io;
 
 import com.google.common.collect.ImmutableSet;
 import net.sf.saxon.s9api.XdmNode;
+import org.jetbrains.annotations.NotNull;
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.MutableAttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
@@ -216,6 +217,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	@Override
+	@NotNull
 	public Iterator<Entry<AttributeFqn, AttributeBag<?>>> iterator()
 	{
 		return this.iteratorProvider.get(namedAttributes);

@@ -102,13 +102,12 @@ public final class PepAction
 			return true;
 		}
 
-		if (!(obj instanceof PepAction))
+		if (!(obj instanceof PepAction other))
 		{
 			return false;
 		}
 
-		final PepAction other = (PepAction) obj;
-		return this.isMandatory == other.isMandatory && this.actionId.equals(other.actionId) && this.attAssignments.equals(other.attAssignments);
+        return this.isMandatory == other.isMandatory && this.actionId.equals(other.actionId) && this.attAssignments.equals(other.attAssignments);
 	}
 
 	@Override

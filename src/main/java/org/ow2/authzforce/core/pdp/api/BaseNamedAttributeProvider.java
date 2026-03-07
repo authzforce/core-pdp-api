@@ -79,12 +79,11 @@ public abstract class BaseNamedAttributeProvider implements CloseableNamedAttrib
 			return true;
 		}
 
-		if (!(obj instanceof BaseNamedAttributeProvider))
+		if (!(obj instanceof BaseNamedAttributeProvider other))
 		{
 			return false;
 		}
-
-		final BaseNamedAttributeProvider other = (BaseNamedAttributeProvider) obj;
+		
 		return this.instanceID.equals(other.instanceID);
 	}
 

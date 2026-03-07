@@ -85,9 +85,9 @@ public interface NamedAttributeProvider
 	 *
 	 * @param individualDecisionContext Individual Decision request context
 	 * @param mdpContext context of a Multiple Decision request evaluation, will be passed on as {@code mdpContext} argument of  {@link #get(AttributeFqn, Datatype, EvaluationContext, Optional)} when AttributeDesignator/AttributeSelector are evaluated for a given Individual Decision request.
-	 * @throws IndeterminateEvaluationException error initializing the request evaluation
-	 */
-	default void beginIndividualDecisionRequest(EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException {
+     */
+	default void beginIndividualDecisionRequest(EvaluationContext individualDecisionContext, Optional<EvaluationContext> mdpContext)
+    {
 		throw NOT_IMPLEMENTED_EXCEPTION;
 	}
 

@@ -577,10 +577,7 @@ public abstract class BaseFirstOrderFunctionCall<RETURN extends Value> implement
 				/*
 				 * remainingArgs (following the initial args, therefore starting at index = initialArgCount)
 				 */
-				for (final AttributeValue remainingArg : remainingArgs)
-				{
-					finalArgs.add(remainingArg);
-				}
+                Collections.addAll(finalArgs, remainingArgs);
 			}
 
 			return evaluate(finalArgs);

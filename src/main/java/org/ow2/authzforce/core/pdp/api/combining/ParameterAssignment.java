@@ -102,13 +102,12 @@ public final class ParameterAssignment
 			return true;
 		}
 
-		if (!(obj instanceof ParameterAssignment))
+		if (!(obj instanceof ParameterAssignment other))
 		{
 			return false;
 		}
 
-		final ParameterAssignment other = (ParameterAssignment) obj;
-		return this.paramName.equals(other.paramName) && this.paramValue.equals(other.paramValue);
+        return this.paramName.equals(other.paramName) && this.paramValue.equals(other.paramValue);
 	}
 
 	/*

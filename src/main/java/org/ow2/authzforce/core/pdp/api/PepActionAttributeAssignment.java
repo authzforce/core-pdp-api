@@ -129,13 +129,12 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 			return true;
 		}
 
-		if (!(obj instanceof PepActionAttributeAssignment))
+		if (!(obj instanceof PepActionAttributeAssignment<?> other))
 		{
 			return false;
 		}
 
-		final PepActionAttributeAssignment<?> other = (PepActionAttributeAssignment<?>) obj;
-		return this.attId.equals(other.attId) && this.category.equals(other.category) && this.issuer.equals(other.issuer) && this.datatype.equals(other.datatype) && this.value.equals(other.value);
+        return this.attId.equals(other.attId) && this.category.equals(other.category) && this.issuer.equals(other.issuer) && this.datatype.equals(other.datatype) && this.value.equals(other.value);
 	}
 
 	@Override

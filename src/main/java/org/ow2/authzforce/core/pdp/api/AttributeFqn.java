@@ -28,7 +28,7 @@ import java.util.Optional;
  * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
- * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+ * [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} That's why we use String instead.
  * </p>
  * 
  */

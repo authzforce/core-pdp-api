@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bags;
@@ -184,6 +185,7 @@ public final class MutableAttributeBag<AV extends AttributeValue> implements Ite
 	}
 
 	@Override
+	@NotNull
 	public Iterator<AV> iterator()
 	{
 		return this.toImmutable().iterator();

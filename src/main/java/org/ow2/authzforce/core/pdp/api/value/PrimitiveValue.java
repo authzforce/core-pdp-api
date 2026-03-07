@@ -23,7 +23,7 @@ import net.sf.saxon.s9api.XdmValue;
 /**
  * The base type for all primitive/non-bag values that may be used as function arguments (e.g. in XACML policy) or result. In particular, AttributeValues as well as Functions ("special" datatype
  * because they can be used as arguments to higher-order functions) are considered such primitive values, as opposed to bags/sets.
- *
+ * <p>
  * {@link #getXdmValue()} must return the same as {@link #getXdmItem()}
  * 
  */

@@ -77,7 +77,7 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 	 *            See also:
 	 *            </p>
 	 *            <p>
-	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
+	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16
 	 *            </p>
 	 *            <p>
 	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".

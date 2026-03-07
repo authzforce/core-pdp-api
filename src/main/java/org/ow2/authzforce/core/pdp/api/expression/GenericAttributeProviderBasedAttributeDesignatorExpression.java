@@ -175,13 +175,12 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 			return true;
 		}
 
-		if (!(obj instanceof GenericAttributeProviderBasedAttributeDesignatorExpression))
+		if (!(obj instanceof GenericAttributeProviderBasedAttributeDesignatorExpression<?> other))
 		{
 			return false;
 		}
 
-		final GenericAttributeProviderBasedAttributeDesignatorExpression<?> other = (GenericAttributeProviderBasedAttributeDesignatorExpression<?>) obj;
-		return this.attrGUID.equals(other.attrGUID);
+        return this.attrGUID.equals(other.attrGUID);
 	}
 
 }

@@ -72,8 +72,9 @@ public final class AnyUriValue extends StringParseableValue<String>
 	 * @param value
 	 *            the URI to be represented
 	 *            <p>
-	 *            WARNING: java.net.URI cannot be used here for XACML datatype, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI. [1]
-	 *            http://www.w3.org/TR/xmlschema-2/#anyURI So we use String instead.
+	 *            WARNING: java.net.URI cannot be used here for XACML datatype, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
+	 *            <p>
+	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI So we use String instead.
 	 *            </p>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for xs:anyURI

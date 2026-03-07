@@ -25,9 +25,9 @@ import javax.xml.datatype.Duration;
 
 /**
  * Representation of a xs:yearMonthDuration value. This class supports parsing xs:yearMonthDuration values. All objects of this class are immutable and thread-safe. The choice of the Java type
- * Duration is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html and documentation of javax.xml.datatype package.
+ * Duration is based on the <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a> and the documentation of javax.xml.datatype package.
  *
- * 
+ *
  * @version $Id: $
  */
 public final class YearMonthDurationValue extends DurationValue<YearMonthDurationValue>

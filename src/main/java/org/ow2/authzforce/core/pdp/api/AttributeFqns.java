@@ -101,13 +101,12 @@ public final class AttributeFqns
 				return true;
 			}
 
-			if (!(obj instanceof ExtensibleAttributeFQN))
+			if (!(obj instanceof ExtensibleAttributeFQN other))
 			{
 				return false;
 			}
 
-			final ExtensibleAttributeFQN other = (ExtensibleAttributeFQN) obj;
-			// category cannot be null (see constructor)
+            // category cannot be null (see constructor)
 			// id cannot be null (see constructor)
 			/*
 			 * According to XACML Core spec, 7.3.4 Attribute Matching, if the Issuer is not supplied in the AttributeDesignator, ignore it in the match. But if the Issuer is supplied, it must match

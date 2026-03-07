@@ -72,7 +72,7 @@ public interface DecisionResultPostprocessor<INDIVIDUAL_DECISION_REQUEST extends
 	 * 
 	 * Get supported features, e.g. {@value Features#XACML_MULTIPLE_DECISION_PROFILE_COMBINED_DECISION} for Combined Decision
 	 * 
-	 * @return list of identifiers of supported features
+	 * @return a set of identifiers of supported features
 	 */
 	default Set<String> getFeatures()
 	{

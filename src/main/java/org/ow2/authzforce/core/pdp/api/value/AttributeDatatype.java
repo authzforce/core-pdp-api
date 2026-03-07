@@ -20,6 +20,8 @@ package org.ow2.authzforce.core.pdp.api.value;
 import com.google.common.reflect.TypeToken;
 import net.sf.saxon.s9api.ItemType;
 
+import java.io.Serial;
+
 /**
  * AttributeValue datatype, i.e. in the XACML context, a datatype of any value that may be used for a request attribute, AttributeValue in a policy, or a response's attribute assignment
  *
@@ -50,6 +52,7 @@ public final class AttributeDatatype<AV extends AttributeValue> extends Primitiv
 		this.emptyBag = Bags.empty(this, null);
 		this.bagDatatype = new BagDatatype<>(new TypeToken<>()
 		{
+			@Serial
 			private static final long serialVersionUID = 1L;
 		}, this);
 	}

@@ -2,6 +2,50 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 22.1.0
+### Changed
+- Upgraded authzforce-ce-parent: 9.2.0
+  XPathValue class:
+- XPathCategory made optional in xpathExpression values, to support the attribute-selector function from the XACML v3.0 Related and Nested Entities Profile Version 1.0
+- Added evaluate() method without Evaluation context parameter to help implement attribute-selector function from XACML v3.0 Related and Nested Entities Profile Version 1.0
+  <dependency>
+  <!-- For logging -->
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-api</artifactId>
+  </dependency>
+  <dependency>
+  <!-- For representing Attributes/Content (free form XML) in XML Data Model (XDM). This is used for XPath evaluation required by XACML AttributeSelector and XPath-based functions (making reference
+     to [XF]). -->
+  <groupId>net.sf.saxon</groupId>
+  <artifactId>Saxon-HE</artifactId>
+  </dependency>
+  <dependency>
+  <!-- For validation of XACML RFC822Name (email address) -->
+  <groupId>jakarta.mail</groupId>
+  <artifactId>jakarta.mail-api</artifactId>
+  <scope>provided</scope>
+  </dependency>
+  <dependency>
+  <!-- For extra collections (Multiset class used for XACML Bags, Table class, ImmutableSet/ImmutableMap/ImmutableList), and validating IP addresses (XACML IPAddress datatype), Domain names (XACML
+     DNSName datatype), etc. without any DNS resolution -->
+  <groupId>com.google.guava</groupId>
+  <artifactId>guava</artifactId>
+  </dependency>
+  <dependency>
+  <groupId>com.github.spotbugs</groupId>
+  <artifactId>spotbugs-annotations</artifactId>
+  <optional>true</optional>
+  </dependency>
+  <!-- AuthZForce dependencies -->
+  <dependency>
+  <groupId>${project.groupId}</groupId>
+  <artifactId>${artifactId.prefix}-xacml-model</artifactId>
+  </dependency>
+  <dependency>
+  <groupId>${project.groupId}</groupId>
+  <artifactId>${artifactId.prefix}-pdp-ext-model</artifactId>
+  </dependency>
+
 ## 22.0.0
 ### Changed
 - Migrated to Java 17 as minimum required Java version and JAXB 4.0: replaced javax.xml.bind.* with jakarta.xml.bind.* in class imports

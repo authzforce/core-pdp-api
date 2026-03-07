@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.math.BigInteger;
 
 /**
@@ -26,9 +27,7 @@ import java.math.BigInteger;
 public abstract class GenericInteger extends Number implements Comparable<GenericInteger>
 {
 
-	/**
-	 * 
-	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

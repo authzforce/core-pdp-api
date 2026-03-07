@@ -18,6 +18,7 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -134,14 +135,9 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 	}
 
 	@Override
-	public int compareTo(final PolicyVersion other)
+	public int compareTo(@NotNull final PolicyVersion other)
 	{
-		if (other == null)
-		{
-			throw UNDEFINED_COMPARED_VERSION_EXCEPTION;
-		}
-
-		final Iterator<Integer> thisIterator = this.numbers.iterator();
+        final Iterator<Integer> thisIterator = this.numbers.iterator();
 		final Iterator<Integer> otherIterator = other.numbers.iterator();
 		while (thisIterator.hasNext() && otherIterator.hasNext())
 		{

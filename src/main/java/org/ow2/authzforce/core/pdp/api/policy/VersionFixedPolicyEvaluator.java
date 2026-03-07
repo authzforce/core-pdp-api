@@ -37,8 +37,8 @@ public interface VersionFixedPolicyEvaluator extends PolicyEvaluator
 	PolicyVersion getPolicyVersion();
 
 	@Override
-	default PolicyVersion getPolicyVersion(final EvaluationContext evaluationCtx, final Optional<EvaluationContext> mdpContext) throws IndeterminateEvaluationException
-	{
+	default PolicyVersion getPolicyVersion(final EvaluationContext evaluationCtx, final Optional<EvaluationContext> mdpContext)
+    {
 		return getPolicyVersion();
 	}
 

@@ -168,7 +168,7 @@ public final class XmlUtils
      * Create XPath compiler for given XPath version and namespace context. For single evaluation of a given XPath with {@link XPathCompiler#evaluateSingle(String, XdmItem)}. For repeated evaluation
      * of the same XPath, use {@link XPathEvaluator} instead. What we have in XACML Policy/PolicySetDefaults is the version URI, so we need this map to map the URI to the XPath compiler
      *
-     * @param xpathVersionURI       XPath version URI, e.g. {@literal http://www.w3.org/TR/1999/REC-xpath-19991116}
+     * @param xpathVersionURI       XPath version URI, e.g. {@code http://www.w3.org/TR/1999/REC-xpath-19991116}
      * @param namespaceURIsByPrefix namespace prefix-URI mapping to be part of the static context for XPath expressions compiled using the created XPathCompiler
      * @return XPath compiler instance
      * @throws IllegalArgumentException if {@code xpathVersionURI} is invalid or unsupported XPath version or one of the namespace prefixes/URIs in {@code namespaceURIsByPrefix} is null

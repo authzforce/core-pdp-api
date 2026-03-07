@@ -125,13 +125,12 @@ public class BasePrimaryPolicyMetadata implements PrimaryPolicyMetadata
 		{
 			return false;
 		}
-		if (!(obj instanceof PrimaryPolicyMetadata))
+		if (!(obj instanceof PrimaryPolicyMetadata other))
 		{
 			return false;
 		}
 
-		final PrimaryPolicyMetadata other = (PrimaryPolicyMetadata) obj;
-		return this.type.equals(other.getType()) && this.id.equals(other.getId()) && this.version.equals(other.getVersion());
+        return this.type.equals(other.getType()) && this.id.equals(other.getId()) && this.version.equals(other.getVersion());
 	}
 
 	@Override
