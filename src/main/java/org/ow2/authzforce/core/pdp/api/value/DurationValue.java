@@ -24,12 +24,12 @@ import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 /**
- * Superclass of duration attribute values, i.e. XML schema dayTime/yearMonthDuration values. The choice of the Java type Duration is based on JAXB schema-to-Java mapping spec:
- * https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html and documentation of javax.xml.datatype package.
+ * Superclass of duration attribute values, i.e. XML schema dayTime/yearMonthDuration values. The choice of the Java type Duration is based on
+ * <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">the JAXB schema-to-Java mapping spec</a> and the documentation of javax.xml.datatype package.
  *
  * @param <DAV>
  *            Concrete DurationAttributeValue type subclass
- * 
+ *
  * @version $Id: $
  */
 public abstract class DurationValue<DAV extends DurationValue<DAV>> extends StringParseableValue<Duration>

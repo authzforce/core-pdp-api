@@ -17,17 +17,17 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.math.BigInteger;
 
 /**
- * Long integer, equivalent of xsd:long. The actual Java type of the underlying value is Long. For bigger values, see {@link ArbitrarilyBigInteger}. More info:
- * https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html
- *
+ * Long integer, equivalent of xsd:long. The actual Java type of the underlying value is Long. For bigger values, see {@link ArbitrarilyBigInteger}. <a href="https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html">More info.</a>
  * 
  * @version $Id: $
  */
 public final class LongInteger extends GenericInteger
 {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final long value;
@@ -156,12 +156,11 @@ public final class LongInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof GenericInteger))
+		if (!(obj instanceof GenericInteger other))
 		{
 			return false;
 		}
 
-		final GenericInteger other = (GenericInteger) obj;
 		try
 		{
 			return value == other.longValueExact();

@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.math.BigInteger;
 
 /**
@@ -27,6 +28,7 @@ import java.math.BigInteger;
  */
 public final class MediumInteger extends GenericInteger
 {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final int value;
@@ -155,12 +157,11 @@ public final class MediumInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof GenericInteger))
+		if (!(obj instanceof GenericInteger other))
 		{
 			return false;
 		}
 
-		final GenericInteger other = (GenericInteger) obj;
 		try
 		{
 			return value == other.intValueExact();

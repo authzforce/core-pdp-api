@@ -132,10 +132,9 @@ public final class ImmutableAttributeValueFactoryRegistry extends BasePdpExtensi
 
 		final Map<Class<? extends Serializable>, StringParseableValue.Factory<?>> mutableJavaClassToAttValFactory = HashCollections.newUpdatableMap();
 		attributeValueFactories.forEach(factory -> {
-			if (factory instanceof StringParseableValue.Factory)
+			if (factory instanceof StringParseableValue.Factory<?> simpleValueFactory)
 			{
-				final StringParseableValue.Factory<?> simpleValueFactory = (StringParseableValue.Factory<?>) factory;
-				simpleValueFactory.getSupportedInputTypes().forEach(inputType -> mutableJavaClassToAttValFactory.putIfAbsent(inputType, simpleValueFactory));
+                simpleValueFactory.getSupportedInputTypes().forEach(inputType -> mutableJavaClassToAttValFactory.putIfAbsent(inputType, simpleValueFactory));
 			}
 		});
 

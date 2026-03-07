@@ -22,6 +22,7 @@ import com.google.common.collect.Multiset;
 import net.sf.saxon.s9api.XdmEmptySequence;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmValue;
+import org.jetbrains.annotations.NotNull;
 import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 import java.util.Iterator;
@@ -130,12 +131,11 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
             return true;
         }
 
-        if (!(other instanceof Bag))
+        if (!(other instanceof Bag<?> otherBag))
         {
             return false;
         }
 
-        final Bag<?> otherBag = (Bag<?>) other;
         return this.elementDatatype.equals(otherBag.elementDatatype) && elements.equals(otherBag.elements);
     }
 
@@ -185,6 +185,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
     }
 
     @Override
+    @NotNull
     public final Iterator<AV> iterator()
     {
         return elements.iterator();

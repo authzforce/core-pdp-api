@@ -82,12 +82,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && other.getStatus().isEmpty();
 		}
 
@@ -184,12 +183,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return DecisionType.INDETERMINATE == other.getDecision() && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.equals(other.getCauseForIndeterminate());
 		}
 
@@ -276,12 +274,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && Objects.equals(status, other.getStatus());
 		}
 

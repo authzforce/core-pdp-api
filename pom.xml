@@ -34,6 +34,12 @@
     <dependencies>
         <!-- Third-party dependencies -->
         <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <!-- For logging -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

@@ -124,13 +124,12 @@ public abstract class Datatype<V extends Value>
 			return true;
 		}
 
-		if (!(obj instanceof Datatype))
+		if (!(obj instanceof Datatype<?> other))
 		{
 			return false;
 		}
 
-		final Datatype<?> other = (Datatype<?>) obj;
-		/*
+        /*
 		 * there should be a one-to-one mapping between valueClass and id, so only checking one of these two is necessary
 		 */
 		return this.typeToken.equals(other.typeToken);

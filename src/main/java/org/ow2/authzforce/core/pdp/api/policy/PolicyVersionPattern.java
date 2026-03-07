@@ -101,15 +101,11 @@ public final class PolicyVersionPattern
 
 	private static String convertMatchNumberToRegex(final Integer number)
 	{
-		switch (number)
-		{
-			case WILDCARD_INT:
-				return "\\d+";
-			case PLUS_INT:
-				return "(\\d+\\.)*\\d+";
-			default:
-				return number.toString();
-		}
+        return switch (number) {
+            case WILDCARD_INT -> "\\d+";
+            case PLUS_INT -> "(\\d+\\.)*\\d+";
+            default -> number.toString();
+        };
 	}
 
 	/**
