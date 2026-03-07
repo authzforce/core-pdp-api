@@ -2,6 +2,11 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 22.1.1
+### Fixed
+- Bad regex for XACML datatype dnsName
+
+
 ## 22.1.0
 ### Changed
 - XPathValue class for xpathExpression values (XACML datatype) modify to support the 'attribute-selector' function from the XACML v3.0 Related and Nested Entities Profile Version 1.0
