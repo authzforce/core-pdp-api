@@ -43,8 +43,6 @@ public final class PolicyVersion implements Comparable<PolicyVersion>
 {
 	private static final IllegalArgumentException UNDEFINED_VERSION_EXCEPTION = new IllegalArgumentException(
 			"Policy(Set) Version undefined");
-	private static final IllegalArgumentException UNDEFINED_COMPARED_VERSION_EXCEPTION = new IllegalArgumentException(
-			"Other Policy(Set) Version for comparison is undefined");
 
 	private final String version;
 	private final ImmutableList<Integer> numbers;
