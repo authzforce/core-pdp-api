@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api.value;
 
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
@@ -177,7 +176,7 @@ public final class BooleanValue extends StringParseableValue<Boolean>
 		return DatatypeConverter.printBoolean(this.value);
 	}
 
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
 	@Override
 	public XdmItem getXdmItem()
 	{

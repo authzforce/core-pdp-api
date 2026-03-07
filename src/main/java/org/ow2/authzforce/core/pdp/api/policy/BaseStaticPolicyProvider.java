@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -71,13 +71,13 @@ public abstract class BaseStaticPolicyProvider implements CloseableStaticPolicyP
 	 *            WARNING: java.net.URI cannot be used here, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
 	 *            </p>
 	 *            <p>
-	 *            [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+	 *            [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} That's why we use String instead.
 	 *            </p>
 	 *            <p>
 	 *            See also:
 	 *            </p>
 	 *            <p>
-	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/ message/16
+	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16
 	 *            </p>
 	 *            <p>
 	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".

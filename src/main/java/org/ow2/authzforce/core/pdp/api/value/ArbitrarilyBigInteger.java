@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,20 +17,20 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.math.BigInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Arbitrary-precision integer, that can represent xsd:integer values. The actual type of the underlying value is {@link BigInteger}. See
- * https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html
- *
+ * Arbitrary-precision integer, that can represent xsd:integer values. The actual type of the underlying value is {@link BigInteger}. See the <a href="https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html">tutorial on Numeric Types</a>.
  * 
  * @version $Id: $
  */
 public final class ArbitrarilyBigInteger extends GenericInteger
 {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private static final IllegalArgumentException TOO_BIGINTEGER_FOR_DOUBLE_ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException(
@@ -52,14 +52,14 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	}
 
 	/**
-	 * Creates instance from long argument, mostly for easy writing of tests
-	 * <p>
-	 * Be aware that type long is not equivalent to xsd:integer type, BigInteger is. See https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html
-	 * </p>
-	 *
-	 * @param val
-	 *            integer value as Java long
-	 */
+     * Creates instance from long argument, mostly for easy writing of tests
+     * <p>
+     * Be aware that type long is not equivalent to xsd:integer type, BigInteger is. See the <a href="https://jaxb.java.net/tutorial/section_2_2_2-Numeric-Types.html">tutorial on Numeric Types</a>.
+     * </p>
+     *
+     * @param val
+     *            integer value as Java long
+     */
 	public ArbitrarilyBigInteger(final long val)
 	{
 		this(BigInteger.valueOf(val));
@@ -177,12 +177,11 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof GenericInteger))
+		if (!(obj instanceof GenericInteger other))
 		{
 			return false;
 		}
 
-		final GenericInteger other = (GenericInteger) obj;
 		return value.equals(other.bigIntegerValue());
 	}
 
@@ -199,7 +198,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger add(final GenericInteger other)
 	{
 		final BigInteger result = value.add(other.bigIntegerValue());
-		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -207,7 +206,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger multiply(final GenericInteger other) throws ArithmeticException
 	{
 		final BigInteger result = value.multiply(other.bigIntegerValue());
-		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -215,7 +214,7 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger divide(final GenericInteger divisor) throws ArithmeticException
 	{
 		final BigInteger result = value.divide(divisor.bigIntegerValue());
-		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	/** {@inheritDoc} */
@@ -223,14 +222,14 @@ public final class ArbitrarilyBigInteger extends GenericInteger
 	public ArbitrarilyBigInteger subtract(final GenericInteger subtractedVal)
 	{
 		final BigInteger result = value.subtract(subtractedVal.bigIntegerValue());
-		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
 	public ArbitrarilyBigInteger remainder(final GenericInteger divisor) throws ArithmeticException
 	{
 		final BigInteger result = value.remainder(divisor.bigIntegerValue());
-		return result.equals(value) ? this : ArbitrarilyBigInteger.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override

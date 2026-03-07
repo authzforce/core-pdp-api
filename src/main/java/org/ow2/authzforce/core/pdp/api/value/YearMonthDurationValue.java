@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,7 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 import org.ow2.authzforce.core.pdp.api.XmlUtils;
@@ -26,9 +25,9 @@ import javax.xml.datatype.Duration;
 
 /**
  * Representation of a xs:yearMonthDuration value. This class supports parsing xs:yearMonthDuration values. All objects of this class are immutable and thread-safe. The choice of the Java type
- * Duration is based on JAXB schema-to-Java mapping spec: https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html and documentation of javax.xml.datatype package.
+ * Duration is based on the <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/bind.html">JAXB schema-to-Java mapping spec</a> and the documentation of javax.xml.datatype package.
  *
- * 
+ *
  * @version $Id: $
  */
 public final class YearMonthDurationValue extends DurationValue<YearMonthDurationValue>
@@ -55,7 +54,7 @@ public final class YearMonthDurationValue extends DurationValue<YearMonthDuratio
 		super(XmlUtils.XML_TEMPORAL_DATATYPE_FACTORY.newDurationYearMonth(value));
 	}
 
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
 	@Override
 	public XdmItem getXdmItem()
 	{

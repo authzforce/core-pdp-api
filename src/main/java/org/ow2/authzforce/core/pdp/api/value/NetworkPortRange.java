@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -29,9 +30,7 @@ import java.util.Objects;
 public final class NetworkPortRange implements Serializable
 {
 
-	/**
-	 * 
-	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -182,13 +181,12 @@ public final class NetworkPortRange implements Serializable
 			return true;
 		}
 
-		if (!(o instanceof NetworkPortRange))
+		if (!(o instanceof NetworkPortRange other))
 		{
 			return false;
 		}
 
-		final NetworkPortRange other = (NetworkPortRange) o;
-		return lowerBound == other.lowerBound && upperBound == other.upperBound;
+        return lowerBound == other.lowerBound && upperBound == other.upperBound;
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -51,6 +51,10 @@ public abstract class BaseNamedAttributeProvider implements CloseableNamedAttrib
 		this.toString = "AttributeProvider[" + instanceID + "]";
 	}
 
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
+	}
+
 	/**
 	 * Get user-defined ID for this instance
 	 * 
@@ -75,12 +79,11 @@ public abstract class BaseNamedAttributeProvider implements CloseableNamedAttrib
 			return true;
 		}
 
-		if (!(obj instanceof BaseNamedAttributeProvider))
+		if (!(obj instanceof BaseNamedAttributeProvider other))
 		{
 			return false;
 		}
-
-		final BaseNamedAttributeProvider other = (BaseNamedAttributeProvider) obj;
+		
 		return this.instanceID.equals(other.instanceID);
 	}
 

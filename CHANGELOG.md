@@ -2,6 +2,20 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 22.1.0
+### Changed
+- XPathValue class for xpathExpression values (XACML datatype) modify to support the 'attribute-selector' function from the XACML v3.0 Related and Nested Entities Profile Version 1.0
+  - 'XPathCategory' attribute made optional
+  - Added evaluate(xml, variables) method without an EvaluationContext parameter
+- Upgraded authzforce-ce-parent: 9.2.0
+- Upgraded dependencies:
+  - slf4j-api: 2.0.17
+  - jakarta.mail-api: 2.1.5
+  - guava: 33.5.0-jre
+  - authzforce-ce-xacml-model: 9.2.0
+  - authzforce-ce-pdp-ext-model: 9.2.0
+
+
 ## 22.0.0
 ### Changed
 - Migrated to Java 17 as minimum required Java version and JAXB 4.0: replaced javax.xml.bind.* with jakarta.xml.bind.* in class imports

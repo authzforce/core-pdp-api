@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -56,6 +56,7 @@ public final class PepAction
 	}
 
 	/**
+	 * Get the action ID
 	 * @return the action ID (XACML ObligationId / AdviceId)
 	 */
 	public String getId()
@@ -74,6 +75,7 @@ public final class PepAction
 	}
 
 	/**
+	 * Get the action arguments (AttributeAssignments)
 	 * @return the action's arguments (attribute assignments)
 	 */
 	public ImmutableList<PepActionAttributeAssignment<?>> getAttributeAssignments()
@@ -100,13 +102,12 @@ public final class PepAction
 			return true;
 		}
 
-		if (!(obj instanceof PepAction))
+		if (!(obj instanceof PepAction other))
 		{
 			return false;
 		}
 
-		final PepAction other = (PepAction) obj;
-		return this.isMandatory == other.isMandatory && this.actionId.equals(other.actionId) && this.attAssignments.equals(other.attAssignments);
+        return this.isMandatory == other.isMandatory && this.actionId.equals(other.actionId) && this.attAssignments.equals(other.attAssignments);
 	}
 
 	@Override

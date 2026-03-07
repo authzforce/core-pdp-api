@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,19 +17,18 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.Multiset;
+import net.sf.saxon.s9api.XdmEmptySequence;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmValue;
+import org.jetbrains.annotations.NotNull;
+import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import net.sf.saxon.s9api.XdmEmptySequence;
-import net.sf.saxon.s9api.XdmItem;
-import net.sf.saxon.s9api.XdmValue;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
-
-import com.google.common.collect.ImmutableMultiset;
-import com.google.common.collect.Multiset;
 
 /**
  * Bag of values (elements) as defined in §7.3.2 of XACML core specification (Attribute bags): <i>The values in a bag are not ordered, and some of the values may be duplicates. There SHALL be no
@@ -105,6 +104,10 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
         this.elements = elements;
     }
 
+    protected final void finalize() {
+        // SEI CERT Rule OBJ-11
+    }
+
     /**
      * Get this bag's element datatype (datatype of every element in the bag)
      *
@@ -128,12 +131,11 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
             return true;
         }
 
-        if (!(other instanceof Bag))
+        if (!(other instanceof Bag<?> otherBag))
         {
             return false;
         }
 
-        final Bag<?> otherBag = (Bag<?>) other;
         return this.elementDatatype.equals(otherBag.elementDatatype) && elements.equals(otherBag.elements);
     }
 
@@ -183,6 +185,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
     }
 
     @Override
+    @NotNull
     public final Iterator<AV> iterator()
     {
         return elements.iterator();
@@ -200,7 +203,7 @@ public class Bag<AV extends AttributeValue> implements Value, Iterable<AV>
         return toString;
     }
 
-    @SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+    //@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
     @Override
     public final XdmValue getXdmValue()
     {

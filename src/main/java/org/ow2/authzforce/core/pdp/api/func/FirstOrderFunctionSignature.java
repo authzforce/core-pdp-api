@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -118,6 +118,10 @@ public abstract class FirstOrderFunctionSignature<RETURN_T extends Value>
 		this.name = name;
 		this.returnType = returnType;
 		this.isVarArgs = varArgs;
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	/**

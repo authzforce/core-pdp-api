@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -67,6 +67,10 @@ public final class AttributeFqns
 			id = attrId;
 		}
 
+		protected final void finalize() {
+			// SEI CERT Rule OBJ-11
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -97,13 +101,12 @@ public final class AttributeFqns
 				return true;
 			}
 
-			if (!(obj instanceof ExtensibleAttributeFQN))
+			if (!(obj instanceof ExtensibleAttributeFQN other))
 			{
 				return false;
 			}
 
-			final ExtensibleAttributeFQN other = (ExtensibleAttributeFQN) obj;
-			// category cannot be null (see constructor)
+            // category cannot be null (see constructor)
 			// id cannot be null (see constructor)
 			/*
 			 * According to XACML Core spec, 7.3.4 Attribute Matching, if the Issuer is not supplied in the AttributeDesignator, ignore it in the match. But if the Issuer is supplied, it must match
@@ -125,7 +128,7 @@ public final class AttributeFqns
 			{
 
 				final Optional<String> optIssuer = getIssuer();
-				toString = "[category='" + category + "', issuer=" + (optIssuer.map(s -> "'" + s + "'").orElse(null)) + ", id='" + id + "']";
+				toString = "[category='" + category + "', issuer=" + optIssuer.map(s -> "'" + s + "'").orElse(null) + ", id='" + id + "']";
 			}
 
 			return toString;
@@ -247,8 +250,6 @@ public final class AttributeFqns
 		{
 			throw NULL_CATEGORY_ARGUMENT_EXCEPTION;
 		}
-
-		assert attributeIssuer != null;
 
 		if (attributeId == null)
 		{

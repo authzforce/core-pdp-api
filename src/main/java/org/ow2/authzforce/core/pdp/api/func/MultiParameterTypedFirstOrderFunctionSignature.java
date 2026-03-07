@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -108,12 +108,11 @@ public class MultiParameterTypedFirstOrderFunctionSignature<RETURN extends Value
 			return true;
 		}
 
-		if (!(obj instanceof MultiParameterTypedFirstOrderFunctionSignature))
+		if (!(obj instanceof MultiParameterTypedFirstOrderFunctionSignature<?> other))
 		{
 			return false;
 		}
 
-		final MultiParameterTypedFirstOrderFunctionSignature<?> other = (MultiParameterTypedFirstOrderFunctionSignature<?>) obj;
-		return isVarArgs == other.isVarArgs && name.equals(other.name) && returnType.equals(other.returnType) && this.paramTypes.equals(other.paramTypes);
+        return isVarArgs == other.isVarArgs && name.equals(other.name) && returnType.equals(other.returnType) && this.paramTypes.equals(other.paramTypes);
 	}
 }

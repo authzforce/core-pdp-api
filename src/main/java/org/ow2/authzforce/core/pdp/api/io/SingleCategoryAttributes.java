@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,22 +17,21 @@
  */
 package org.ow2.authzforce.core.pdp.api.io;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.s9api.XdmNode;
-
+import org.jetbrains.annotations.NotNull;
 import org.ow2.authzforce.core.pdp.api.AttributeFqn;
 import org.ow2.authzforce.core.pdp.api.MutableAttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
 import org.ow2.authzforce.core.pdp.api.value.AttributeValue;
 import org.ow2.authzforce.core.pdp.api.value.Bag;
 import org.ow2.authzforce.core.pdp.api.value.PrimitiveValue;
+
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 
@@ -160,7 +159,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 *             iff {@code namedAttributes != null && !namedAttributes.isEmpty() && namedAttributeIteratorConverter == null} (namedAttributeIteratorConverter required if namedAttributes not
 	 *             null/empty)
 	 */
-	@SuppressFBWarnings(value="EI_EXPOSE_REP2", justification="XdmNode considered immutable")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP2", justification="XdmNode considered immutable")
 	public SingleCategoryAttributes(final String categoryId, final Set<Entry<AttributeFqn, AV_BAG>> namedAttributes, final NamedAttributeIteratorConverter<AV_BAG> namedAttributeIteratorConverter,
 			final RETURNED_ATTRIBUTE_CATEGORY returnedAttributeCategory, final XdmNode extraContent) throws IllegalArgumentException
 	{
@@ -201,7 +200,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	 * 
 	 * @return the Content in XPath data model
 	 */
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="XdmNode considered immutable")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="XdmNode considered immutable")
 	public XdmNode getExtraContent()
 	{
 		return extraContent;
@@ -218,6 +217,7 @@ public final class SingleCategoryAttributes<AV_BAG extends Iterable<? extends At
 	}
 
 	@Override
+	@NotNull
 	public Iterator<Entry<AttributeFqn, AttributeBag<?>>> iterator()
 	{
 		return this.iteratorProvider.get(namedAttributes);

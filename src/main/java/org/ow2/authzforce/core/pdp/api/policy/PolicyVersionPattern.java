@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -47,8 +47,7 @@ public final class PolicyVersionPattern
 	 */
 	public PolicyVersionPattern(final String xacmlVersionMatch) throws IllegalArgumentException
 	{
-		assert xacmlVersionMatch != null;
-		if (xacmlVersionMatch.isEmpty() || xacmlVersionMatch.startsWith(".") || xacmlVersionMatch.endsWith("."))
+		if (xacmlVersionMatch == null || xacmlVersionMatch.isEmpty() || xacmlVersionMatch.startsWith(".") || xacmlVersionMatch.endsWith("."))
 		{
 			throw new IllegalArgumentException("Invalid VersionMatch expression: '" + xacmlVersionMatch + "'");
 		}
@@ -102,18 +101,15 @@ public final class PolicyVersionPattern
 
 	private static String convertMatchNumberToRegex(final Integer number)
 	{
-		switch (number)
-		{
-			case WILDCARD_INT:
-				return "\\d+";
-			case PLUS_INT:
-				return "(\\d+\\.)*\\d+";
-			default:
-				return number.toString();
-		}
+        return switch (number) {
+            case WILDCARD_INT -> "\\d+";
+            case PLUS_INT -> "(\\d+\\.)*\\d+";
+            default -> number.toString();
+        };
 	}
 
 	/**
+	 * Compile the pattern to a regular expression
 	 * @return the equivalent of this XACML VersionMatchType expression as regular expression (valid for {@link Pattern}) without leading '^' or trailing '$'.
 	 */
 	public String toRegex()

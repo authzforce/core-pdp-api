@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -98,7 +98,7 @@ abstract class LaxXacmlAttributeParser<INPUT_ATTRIBUTE> extends XacmlRequestAttr
 			/*
 			 * Collection of values already in the map for this Attribute id, reuse/update it directly
 			 */
-			if (!(previousAttrVals.getElementType().equals(attributeDatatype)))
+			if (!previousAttrVals.getElementType().equals(attributeDatatype))
 			{
 				throw new IllegalArgumentException("Invalid Attribute '" + attributeName + "': Values with different datatypes (" + previousAttrVals.getElementType() + ", " + attributeDatatype
 						+ ")");
@@ -128,7 +128,7 @@ abstract class LaxXacmlAttributeParser<INPUT_ATTRIBUTE> extends XacmlRequestAttr
 			}
 			else
 			{
-				if (!(oldIssuerLessAttrVals.getElementType().equals(attributeDatatype)))
+				if (!oldIssuerLessAttrVals.getElementType().equals(attributeDatatype))
 				{
 					throw new IllegalArgumentException("Invalid Attribute '" + issuerLessId + "': Values with different datatypes (" + oldIssuerLessAttrVals.getElementType() + ", "
 							+ attributeDatatype + ")");

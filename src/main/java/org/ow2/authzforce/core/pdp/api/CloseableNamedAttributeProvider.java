@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -75,11 +75,8 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 	 * 
 	 * @param <CONF_T>
 	 *            type of configuration (XML-schema-derived)
-	 * 
-	 *            This class follows the Step Factory Pattern to guide clients through the creation of the object in a particular sequence of method calls:
-	 *            <p>
-	 *            http://rdafbn.blogspot.fr/2012/07/step-builder-pattern_28.html
-	 *            </p>
+	 * <p>
+	 *            This class follows the <a href="http://rdafbn.blogspot.fr/2012/07/step-builder-pattern_28.html">Step Factory Pattern</a> to guide clients through the creation of the object in a particular sequence of method calls.
 	 */
 	abstract class FactoryBuilder<CONF_T extends AbstractAttributeProvider> extends JaxbBoundPdpExtension<CONF_T>
 	{

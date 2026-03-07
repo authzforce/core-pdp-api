@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -58,6 +58,7 @@ public interface UpdatableCollection<E>
 	boolean addAll(UpdatableCollection<E> c);
 
 	/**
+	 * Get an iterator over the collection
 	 * @return iterator over elements in this collection (remove() operation is not supported)
 	 */
 	UnmodifiableIterator<E> iterator();

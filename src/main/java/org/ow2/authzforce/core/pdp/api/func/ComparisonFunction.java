@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -46,21 +46,20 @@ public class ComparisonFunction<AV extends AttributeValue & Comparable<AV>> exte
 	 */
 	public enum PostCondition
 	{
-
 		/**
-		 * 
+		 * greater-than
 		 */
 		GREATER_THAN("-greater-than", comparisonResult -> comparisonResult > 0),
 		/**
-		 * 
+		 * greater-than-or-equal
 		 */
 		GREATER_THAN_OR_EQUAL("-greater-than-or-equal", comparisonResult -> comparisonResult >= 0),
 		/**
-		 * 
+		 * less-than
 		 */
 		LESS_THAN("-less-than", comparisonResult -> comparisonResult < 0),
 		/**
-		 * 
+		 * less-than-or-equal
 		 */
 		LESS_THAN_OR_EQUAL("-less-than-or-equal", comparisonResult -> comparisonResult <= 0);
 

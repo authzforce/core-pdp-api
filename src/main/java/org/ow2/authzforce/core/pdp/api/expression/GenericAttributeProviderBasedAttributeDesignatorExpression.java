@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -175,13 +175,12 @@ public final class GenericAttributeProviderBasedAttributeDesignatorExpression<AV
 			return true;
 		}
 
-		if (!(obj instanceof GenericAttributeProviderBasedAttributeDesignatorExpression))
+		if (!(obj instanceof GenericAttributeProviderBasedAttributeDesignatorExpression<?> other))
 		{
 			return false;
 		}
 
-		final GenericAttributeProviderBasedAttributeDesignatorExpression<?> other = (GenericAttributeProviderBasedAttributeDesignatorExpression<?>) obj;
-		return this.attrGUID.equals(other.attrGUID);
+        return this.attrGUID.equals(other.attrGUID);
 	}
 
 }

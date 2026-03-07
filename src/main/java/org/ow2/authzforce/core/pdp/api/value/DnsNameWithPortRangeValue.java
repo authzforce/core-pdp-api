@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,7 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 
@@ -52,10 +51,10 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 		/*
 		 * Limit repetitions in regex to mitigate Regex DoS attacks
 		 */
-		final String domainlabel = "\\w[[\\w|\\-]{0,1000}\\w]?";
-		final String toplabel = "[a-zA-Z][[\\w|\\-]{0,1000}\\w]?";
+		final String domainlabel = "\\w(?:[\\w\\-]{0,1000}\\w)?";
+		final String toplabel = "[a-zA-Z](?:[\\w\\-]{0,1000}\\w)?";
 		// Add the possibility of wildcard in the left-most part (specific to XACML definition)
-		final String pattern = "[\\*\\.]?[" + domainlabel + "\\.]{0,100}" + toplabel + "\\.?";
+		final String pattern = "[*.]?(?:" + domainlabel + "\\.){0,100}" + toplabel + "\\.?";
 		HOSTNAME_PATTERN = Pattern.compile(pattern);
 	}
 
@@ -84,10 +83,10 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 	// private final boolean isAnySubdomain;
 
 	/**
-	 * Private helper that tests whether the given string is valid.
-	 * 
-	 * TODO: find out whether it's better to use DomainValidator from Apache commons-validator instead, but first make sure this issue is fixed: https://issues.apache.org/jira/browse/VALIDATOR-366
-	 */
+     * Private helper that tests whether the given string is valid.
+     * <p>
+     * TODO: find out whether it's better to use DomainValidator from Apache commons-validator instead, but first make sure <a href="https://issues.apache.org/jira/browse/VALIDATOR-366">this issue is fixed</a>.
+     */
 	private static boolean isValidHostName(final String hostname)
 	{
 		assert hostname != null;
@@ -143,7 +142,7 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 		// this.isAnySubdomain = hostname.charAt(0) == '*' ? true : false;
 	}
 
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
 	@Override
 	public XdmItem getXdmItem()
 	{
@@ -185,14 +184,12 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 			return true;
 		}
 
-		if (!(obj instanceof DnsNameWithPortRangeValue))
+		if (!(obj instanceof DnsNameWithPortRangeValue other))
 		{
 			return false;
 		}
 
-		final DnsNameWithPortRangeValue other = (DnsNameWithPortRangeValue) obj;
-
-		// hostname and portRange are not null
+        // hostname and portRange are not null
 		/*
 		 * if (hostname == null) { if (other.hostname != null) return false; } else
 		 */

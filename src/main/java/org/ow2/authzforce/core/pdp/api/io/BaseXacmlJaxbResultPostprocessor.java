@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -166,6 +166,10 @@ public class BaseXacmlJaxbResultPostprocessor implements DecisionResultPostproce
 		}
 
 		this.maxDepthOfErrorCauseIncludedInResult = clientRequestErrorVerbosityLevel;
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	@Override

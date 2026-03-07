@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -37,6 +37,7 @@ import java.util.List;
  */
 public final class IndividualXacmlJaxbRequest implements DecisionRequest
 {
+	private static final IllegalArgumentException UNDEFINED_BASE_REQUEST_EXCEPTION = new IllegalArgumentException("Undefined baseRequest");
 	private final ImmutableDecisionRequest baseRequest;
 	private final ImmutableList<Attributes> attributesToBeReturned;
 
@@ -50,7 +51,9 @@ public final class IndividualXacmlJaxbRequest implements DecisionRequest
 	 */
 	public IndividualXacmlJaxbRequest(final ImmutableDecisionRequest baseRequest, final ImmutableList<Attributes> attributesToBeReturned)
 	{
-		assert baseRequest != null;
+		if(baseRequest == null) {
+			throw UNDEFINED_BASE_REQUEST_EXCEPTION;
+		}
 
 		this.baseRequest = baseRequest;
 		this.attributesToBeReturned = attributesToBeReturned == null ? ImmutableList.of() : attributesToBeReturned;

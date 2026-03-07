@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
+import java.io.Serial;
 import java.math.BigInteger;
 
 /**
@@ -27,6 +28,7 @@ import java.math.BigInteger;
  */
 public final class MediumInteger extends GenericInteger
 {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final int value;
@@ -155,12 +157,11 @@ public final class MediumInteger extends GenericInteger
 			return true;
 		}
 
-		if (!(obj instanceof GenericInteger))
+		if (!(obj instanceof GenericInteger other))
 		{
 			return false;
 		}
 
-		final GenericInteger other = (GenericInteger) obj;
 		try
 		{
 			return value == other.intValueExact();
@@ -181,35 +182,35 @@ public final class MediumInteger extends GenericInteger
 	public MediumInteger add(final GenericInteger other) throws ArithmeticException
 	{
 		final int result = value + other.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger multiply(final GenericInteger other) throws ArithmeticException
 	{
 		final int result = value * other.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger divide(final GenericInteger divisor) throws ArithmeticException
 	{
 		final int result = value / divisor.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger subtract(final GenericInteger subtractedVal)
 	{
 		final int result = Math.subtractExact(value, subtractedVal.intValueExact());
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 	@Override
 	public MediumInteger remainder(final GenericInteger divisor) throws ArithmeticException
 	{
 		final int result = value % divisor.intValueExact();
-		return result == value ? this : MediumInteger.valueOf(result);
+		return result == value ? this : valueOf(result);
 	}
 
 }

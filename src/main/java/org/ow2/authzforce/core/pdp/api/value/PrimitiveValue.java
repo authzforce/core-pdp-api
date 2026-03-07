@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -23,14 +23,14 @@ import net.sf.saxon.s9api.XdmValue;
 /**
  * The base type for all primitive/non-bag values that may be used as function arguments (e.g. in XACML policy) or result. In particular, AttributeValues as well as Functions ("special" datatype
  * because they can be used as arguments to higher-order functions) are considered such primitive values, as opposed to bags/sets.
- *
+ * <p>
  * {@link #getXdmValue()} must return the same as {@link #getXdmItem()}
  * 
  */
 public interface PrimitiveValue extends Value
 {
     /**
-     *
+     * Get the corresponding XPath (XDM) value
      * @return corresponding XPath (XDM) value
      */
     XdmItem getXdmItem();

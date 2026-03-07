@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -28,7 +28,7 @@ import java.util.Optional;
  * WARNING: java.net.URI cannot be used here for XACML category and ID, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
- * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+ * [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} That's why we use String instead.
  * </p>
  * 
  */
@@ -36,16 +36,19 @@ public interface AttributeFqn extends Comparable<AttributeFqn>
 {
 
 	/**
+	 * Get the attribute category
 	 * @return the category
 	 */
 	String getCategory();
 
 	/**
+	 * Get the attribute ID
 	 * @return the id
 	 */
 	String getId();
 
 	/**
+	 * Get the attribute issuer
 	 * @return the issuer
 	 */
 	Optional<String> getIssuer();

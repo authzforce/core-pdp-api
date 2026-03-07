@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -29,6 +29,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.PolicyIssuer;
  */
 public class BasePrimaryPolicyMetadata implements PrimaryPolicyMetadata
 {
+	private static final IllegalArgumentException ILLEGAL_ARGUMENT_EXCEPTION = new IllegalArgumentException("Either type, id or version is undefined");
 	private final TopLevelPolicyElementType type;
 	private final String id;
 	private final PolicyVersion version;
@@ -48,10 +49,16 @@ public class BasePrimaryPolicyMetadata implements PrimaryPolicyMetadata
 	 */
 	public BasePrimaryPolicyMetadata(final TopLevelPolicyElementType type, final String id, final PolicyVersion version)
 	{
-		assert type != null && id != null && version != null;
+		if(type == null || id == null || version == null) {
+			throw ILLEGAL_ARGUMENT_EXCEPTION;
+		}
 		this.type = type;
 		this.id = id;
 		this.version = version;
+	}
+
+	protected final void finalize() {
+		// SEI CERT Rule OBJ-11
 	}
 
 	@Override
@@ -118,13 +125,12 @@ public class BasePrimaryPolicyMetadata implements PrimaryPolicyMetadata
 		{
 			return false;
 		}
-		if (!(obj instanceof PrimaryPolicyMetadata))
+		if (!(obj instanceof PrimaryPolicyMetadata other))
 		{
 			return false;
 		}
 
-		final PrimaryPolicyMetadata other = (PrimaryPolicyMetadata) obj;
-		return this.type.equals(other.getType()) && this.id.equals(other.getId()) && this.version.equals(other.getVersion());
+        return this.type.equals(other.getType()) && this.id.equals(other.getId()) && this.version.equals(other.getVersion());
 	}
 
 	@Override

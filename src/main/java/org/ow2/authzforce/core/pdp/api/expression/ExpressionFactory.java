@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -101,7 +101,7 @@ public interface ExpressionFactory
 
 	/**
 	 * Get a snapshot list of current Variable definitions. Order matters as a variable X must be declared in the list after any variable that it depends on.
-	 *
+	 * <p>
 	 * One use for this is to be able to declare all possible variables that may occur in a AttributeSelector's XPath expression, therefore all need to be declared on the XPath compiler with {@link net.sf.saxon.s9api.XPathCompiler#declareVariable(QName, ItemType, OccurrenceIndicator)}.
 	 *
 	 * @return a new copy of the current list of Variable definitions, empty if there is no such declared variable.

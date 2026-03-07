@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,6 +17,7 @@
  */
 package org.ow2.authzforce.core.pdp.api;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
@@ -55,9 +56,7 @@ public interface PdpExtensionRegistry<T extends PdpExtension>
 	final class PdpExtensionComparator<E extends PdpExtension> implements Comparator<E>, Serializable
 	{
 
-		/**
-		 * 
-		 */
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,7 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.saxon.lib.StandardURIChecker;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
@@ -29,22 +28,18 @@ import net.sf.saxon.value.AnyURIValue;
  * WARNING: java.net.URI cannot be used here for this XACML datatype, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
  * </p>
  * <p>
- * [1] http://www.w3.org/TR/xmlschema-2/#anyURI That's why we use String instead.
+ * [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} That's why we use String instead.
  * </p>
  * <p>
- * See also:
- * </p>
- * <p>
- * https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16
+ * See also <a href="https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16">this message on JAXB mailing list</a>.
  * </p>
  * <p>
  * From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor. Using a global JAXB customization
  * described in Section 7.9".
  * </p>
  * <p>
- * Last but not least, we now refer to the definition of anyURI datatype given in XSD 1.1, which has the same value space as the string datatype. More info in the XSD 1.1 data-types document and SAXON
- * documentation: http://www.saxonica.com/html/documentation9.4/changes/intro93/xsd11-93.html. Also confirmed on the mailing list:
- * https://sourceforge.net/p/saxon/mailman/saxon-help/thread/4F9E683E.8060001@saxonica.com/. Although XACML 3.0 still refers to XSD 1.0 and its stricter definition of anyURI, we prefer to anticipate
+ * Last but not least, we now refer to the definition of anyURI datatype given in XSD 1.1, which has the same value space as the string datatype. More info in the XSD 1.1 data-types document and <a href="http://www.saxonica.com/html/documentation9.4/changes/intro93/xsd11-93.html">SAXON
+ * documentation</a>. Also confirmed by <a href="https://sourceforge.net/p/saxon/mailman/saxon-help/thread/4F9E683E.8060001@saxonica.com/">this message on the mailing list</a>. Although XACML 3.0 still refers to XSD 1.0 and its stricter definition of anyURI, we prefer to anticipate
  * and use the definition from XSD 1.1 for XACML AttributeValues of datatype anyURI. However, this does not affect XACML schema validation of Policy/PolicySet/Request documents, where the XSD 1.0
  * definition of anyURI still applies.
  * </p>
@@ -73,8 +68,9 @@ public final class AnyUriValue extends StringParseableValue<String>
 	 * @param value
 	 *            the URI to be represented
 	 *            <p>
-	 *            WARNING: java.net.URI cannot be used here for XACML datatype, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI. [1]
-	 *            http://www.w3.org/TR/xmlschema-2/#anyURI So we use String instead.
+	 *            WARNING: java.net.URI cannot be used here for XACML datatype, because not equivalent to XML schema anyURI type. Spaces are allowed in XSD anyURI [1], not in java.net.URI.
+	 *            <p>
+	 *            [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} So we use String instead.
 	 *            </p>
 	 * @throws java.lang.IllegalArgumentException
 	 *             if {@code value} is not a valid string representation for xs:anyURI
@@ -84,7 +80,7 @@ public final class AnyUriValue extends StringParseableValue<String>
 		super(value);
 	}
 
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
 	@Override
 	public XdmItem getXdmItem()
 	{

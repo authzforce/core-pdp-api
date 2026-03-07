@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -24,6 +24,7 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusDetail;
 import org.ow2.authzforce.xacml.identifiers.XacmlStatusCode;
 
 import javax.annotation.concurrent.Immutable;
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.Optional;
 public final class ImmutableXacmlStatus extends oasis.names.tc.xacml._3_0.core.schema.wd_17.Status
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

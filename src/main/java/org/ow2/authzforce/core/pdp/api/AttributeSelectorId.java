@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -83,6 +83,7 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	}
 
 	/**
+	 * Get the AttributeSelector Category
 	 * @return AttributeSelector Category
 	 */
 	public String getCategory()
@@ -91,6 +92,7 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	}
 
 	/**
+	 * Get the AttributeSelector Path
 	 * @return AttributeSelector Path
 	 */
 	public String getPath()
@@ -99,6 +101,7 @@ public final class AttributeSelectorId implements Comparable<AttributeSelectorId
 	}
 
 	/**
+	 * Get the AttributeSelector ContextSelectorId
 	 * @return AttributeSelector ContextSelectorId
 	 */
 	public Optional<String> getContextSelectorId()

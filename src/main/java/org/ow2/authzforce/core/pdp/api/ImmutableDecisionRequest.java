@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -172,13 +172,12 @@ public final class ImmutableDecisionRequest implements DecisionRequest
 			return true;
 		}
 
-		if (!(obj instanceof ImmutableDecisionRequest))
+		if (!(obj instanceof ImmutableDecisionRequest other))
 		{
 			return false;
 		}
 
-		final ImmutableDecisionRequest other = (ImmutableDecisionRequest) obj;
-		return this.isApplicablePolicyListReturned == other.isApplicablePolicyListReturned && this.namedAttributes.equals(other.namedAttributes)
+        return this.isApplicablePolicyListReturned == other.isApplicablePolicyListReturned && this.namedAttributes.equals(other.namedAttributes)
 				&& this.extraContentByCategory.equals(other.extraContentByCategory);
 	}
 

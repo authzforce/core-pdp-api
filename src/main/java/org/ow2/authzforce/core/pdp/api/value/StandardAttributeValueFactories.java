@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -394,17 +394,15 @@ public final class StandardAttributeValueFactories
 		@Override
 		public TimeValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof LocalTime)
+			if (value instanceof LocalTime time)
 			{
-				final LocalTime time = (LocalTime) value;
-				// We set time in UTC, so timezone offset is 0
+                // We set time in UTC, so timezone offset is 0
 				return newUtcTimeValue(time.getHour(), time.getMinute(), time.getSecond(), time.getNano());
 			}
 
-			if (value instanceof OffsetTime)
+			if (value instanceof OffsetTime time)
 			{
-				final OffsetTime time = (OffsetTime) value;
-				// We set time in UTC, so timezone offset is 0
+                // We set time in UTC, so timezone offset is 0
 				return newUtcTimeValue(time.getHour(), time.getMinute(), time.getSecond(), time.getNano());
 			}
 
@@ -488,24 +486,21 @@ public final class StandardAttributeValueFactories
 		@Override
 		public DateTimeValue getInstance(final Serializable value) throws IllegalArgumentException
 		{
-			if (value instanceof LocalDateTime)
+			if (value instanceof LocalDateTime dateTime)
 			{
-				final LocalDateTime dateTime = (LocalDateTime) value;
-				// We set time in UTC, so timezone offset is 0
+                // We set time in UTC, so timezone offset is 0
 				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(), 0);
 			}
 
-			if (value instanceof OffsetDateTime)
+			if (value instanceof OffsetDateTime dateTime)
 			{
-				final OffsetDateTime dateTime = (OffsetDateTime) value;
-				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
+                return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
 						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
-			if (value instanceof ZonedDateTime)
+			if (value instanceof ZonedDateTime dateTime)
 			{
-				final ZonedDateTime dateTime = (ZonedDateTime) value;
-				return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
+                return newDateTimeValue(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano(),
 						dateTime.getOffset().getTotalSeconds() / 60);
 			}
 
@@ -780,7 +775,7 @@ public final class StandardAttributeValueFactories
 	 * @param enableXPath
 	 *            true iff XPath-based function(s) support enabled
 	 * @param maxIntegerValue
-	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type {@literal http://www.w3.org/2001/XMLSchema#integer}. Decreasing this value as much as possible
+	 *            Maximum integer value. This is the expected maximum value for XACML attributes of standard type {@code http://www.w3.org/2001/XMLSchema#integer}. Decreasing this value as much as possible
 	 *            helps the PDP engine optimize the processing of integer values (lower memory consumption, faster computations). By default, the Java class used to represent an integer value is:
 	 *            <ul>
 	 *            <li>{@link Integer}</li>
@@ -830,7 +825,7 @@ public final class StandardAttributeValueFactories
 		if (enableXPath)
 		{
 
-			attValFactories.add(StandardAttributeValueFactories.XPATH);
+			attValFactories.add(XPATH);
 		}
 
 		if (LOGGER.isDebugEnabled())

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -20,6 +20,7 @@ package org.ow2.authzforce.core.pdp.api;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.StatusCode;
 
 import javax.annotation.concurrent.Immutable;
+import java.io.Serial;
 import java.util.Optional;
 
 /**
@@ -28,6 +29,7 @@ import java.util.Optional;
 @Immutable
 public final class ImmutableXacmlStatusCode extends StatusCode
 {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * Creates status code with code value and optional nested status code

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -17,10 +17,6 @@
  */
 package org.ow2.authzforce.core.pdp.api.value;
 
-import java.math.BigInteger;
-import java.util.Deque;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.xml.bind.DatatypeConverter;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
@@ -28,6 +24,9 @@ import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.Int64Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
+import java.util.Deque;
 
 /**
  * Representation of a xs:integer value. This class supports parsing xs:integer values. All objects of this class are immutable and all methods of the class are thread-safe.
@@ -59,7 +58,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 		super(val);
 	}
 
-	@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
+	//@SuppressFBWarnings(value="EI_EXPOSE_REP", justification="According to Saxon documentation, an XdmValue is immutable.")
 	@Override
 	public XdmItem getXdmItem()
 	{
@@ -124,7 +123,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 		try
 		{
 			final int intVal = i.intValueExact();
-			return IntegerValue.valueOf(intVal);
+			return valueOf(intVal);
 		} catch (final ArithmeticException e)
 		{
 			LOGGER.debug("Input integer value is too big to fit in an int: {}", i);
@@ -144,7 +143,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	{
 		// TODO: caching
 		final GenericInteger result = value.abs();
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
@@ -156,7 +155,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 			result = result.add(others.poll().value);
 		}
 
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
@@ -168,21 +167,21 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 			result = result.multiply(others.poll().value);
 		}
 
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
 	public IntegerValue divide(final IntegerValue divisor) throws ArithmeticException
 	{
 		final GenericInteger result = value.divide(divisor.value);
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
 	public IntegerValue subtract(final IntegerValue subtractedVal) throws ArithmeticException
 	{
 		final GenericInteger result = value.subtract(subtractedVal.value);
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	@Override
@@ -203,7 +202,7 @@ public final class IntegerValue extends NumericValue<GenericInteger, IntegerValu
 	public IntegerValue remainder(final IntegerValue divisor) throws ArithmeticException
 	{
 		final GenericInteger result = this.value.remainder(divisor.value);
-		return result.equals(value) ? this : IntegerValue.valueOf(result);
+		return result.equals(value) ? this : valueOf(result);
 	}
 
 	/**

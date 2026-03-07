@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -30,6 +30,7 @@ import java.util.Map;
 public interface XPathCompilerProxy
 {
     /**
+     * Get the supported XPath version
      * @see XPathCompiler#getLanguageVersion()
      * @return XPath version supported
      */
@@ -49,6 +50,7 @@ public interface XPathCompilerProxy
     List<VariableReference<?>> getAllowedVariables();
 
     /**
+     * Compile the XPath expression with Saxon API
      * @see XPathCompiler#compile(String)
      * @param source XPath expression
      * @return compiled XPath expression ready for evaluation
@@ -57,7 +59,7 @@ public interface XPathCompilerProxy
     XPathExecutable compile(String source) throws SaxonApiException;
 
     /**
-     * 
+     * Evaluate the XPath expression
      * @see XPathCompiler#evaluate(String, XdmItem)
      * @param expression XPath expression
      * @param contextItem context item (e.g. XML node) on which to evaluate the expression
@@ -67,7 +69,7 @@ public interface XPathCompilerProxy
     XdmValue evaluate(String expression, XdmItem contextItem) throws SaxonApiException;
 
     /**
-     *
+     * Evaluate the XPath expression to a single XDM item
      * @see XPathCompiler#evaluateSingle(String, XdmItem)
      * @param expression XPath expression
      * @param contextItem context item (e.g. XML node) on which to evaluate the expression
@@ -77,7 +79,7 @@ public interface XPathCompilerProxy
     XdmItem evaluateSingle(String expression, XdmItem contextItem) throws SaxonApiException;
 
     /**
-     *
+     * Evaluate the XPath expression as an XSLT 2.0 pattern
      * @see XPathCompiler#compilePattern(String)
      * @see XPathCompiler#compile(String)
      * @param source XPath expression

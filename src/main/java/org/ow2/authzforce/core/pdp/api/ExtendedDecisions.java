@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -82,12 +82,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && other.getStatus().isEmpty();
 		}
 
@@ -184,12 +183,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return DecisionType.INDETERMINATE == other.getDecision() && extIndeterminate.equals(other.getExtendedIndeterminate()) && cause.equals(other.getCauseForIndeterminate());
 		}
 
@@ -276,12 +274,11 @@ public final class ExtendedDecisions
 				return true;
 			}
 
-			if (!(obj instanceof ExtendedDecision))
+			if (!(obj instanceof ExtendedDecision other))
 			{
 				return false;
 			}
 
-			final ExtendedDecision other = (ExtendedDecision) obj;
 			return this.decision == other.getDecision() && DecisionType.NOT_APPLICABLE == other.getExtendedIndeterminate() && Objects.equals(status, other.getStatus());
 		}
 
@@ -402,7 +399,6 @@ public final class ExtendedDecisions
 	 */
 	public static ExtendedDecision newIndeterminate(final DecisionType extendedIndeterminate, final IndeterminateEvaluationException cause) throws IllegalArgumentException
 	{
-		assert cause != null;
 		// cause must be present
 		return new IndeterminateExtendedDecision(extendedIndeterminate == null ? DecisionType.INDETERMINATE : extendedIndeterminate, cause);
 	}

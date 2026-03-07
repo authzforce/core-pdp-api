@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 THALES.
+ * Copyright 2012-2026 THALES.
  *
  * This file is part of AuthzForce CE.
  *
@@ -66,6 +66,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
+	 * Get the attribute ID
 	 * @return the attribute ID
 	 */
 	public String getAttributeId()
@@ -74,6 +75,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
+	 * Get the attribute category
 	 * @return the category
 	 */
 	public Optional<String> getCategory()
@@ -82,6 +84,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
+	 * Get the attribute issuer
 	 * @return the issuer
 	 */
 	public Optional<String> getIssuer()
@@ -90,6 +93,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
+	 * Get the attribute datatype
 	 * @return the attribute datatype
 	 */
 	public Datatype<AV> getDatatype()
@@ -98,6 +102,7 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 	}
 
 	/**
+	 * Get the attribute value
 	 * @return the attribute value
 	 */
 	public AV getValue()
@@ -124,13 +129,12 @@ public final class PepActionAttributeAssignment<AV extends AttributeValue>
 			return true;
 		}
 
-		if (!(obj instanceof PepActionAttributeAssignment))
+		if (!(obj instanceof PepActionAttributeAssignment<?> other))
 		{
 			return false;
 		}
 
-		final PepActionAttributeAssignment<?> other = (PepActionAttributeAssignment<?>) obj;
-		return this.attId.equals(other.attId) && this.category.equals(other.category) && this.issuer.equals(other.issuer) && this.datatype.equals(other.datatype) && this.value.equals(other.value);
+        return this.attId.equals(other.attId) && this.category.equals(other.category) && this.issuer.equals(other.issuer) && this.datatype.equals(other.datatype) && this.value.equals(other.value);
 	}
 
 	@Override
