@@ -43,11 +43,7 @@ public interface StaticPolicyProvider extends PolicyProvider<StaticTopLevelPolic
 	 *            [1] {@code http://www.w3.org/TR/xmlschema-2/#anyURI} That's why we use String instead.
 	 *            </p>
 	 *            <p>
-	 *            See also:
-	 *            </p>
-	 *            <p>
-	 *            https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16
-	 *            </p>
+	 *            See also <a href="https://java.net/projects/jaxb/lists/users/archive/2011-07/message/16">this message in JAXB mailing list</a>.
 	 *            <p>
 	 *            From the JAXB spec: "xs:anyURI is not bound to java.net.URI by default since not all possible values of xs:anyURI can be passed to the java.net.URI constructor".
 	 * @param policyType

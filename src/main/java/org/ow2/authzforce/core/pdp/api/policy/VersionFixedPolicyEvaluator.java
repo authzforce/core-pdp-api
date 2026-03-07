@@ -18,7 +18,6 @@
 package org.ow2.authzforce.core.pdp.api.policy;
 
 import org.ow2.authzforce.core.pdp.api.EvaluationContext;
-import org.ow2.authzforce.core.pdp.api.IndeterminateEvaluationException;
 
 import java.util.Optional;
 
