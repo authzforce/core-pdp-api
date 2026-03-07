@@ -54,7 +54,7 @@ public final class DnsNameWithPortRangeValue extends StringParseableValue<String
 		final String domainlabel = "\\w(?:[\\w\\-]{0,1000}\\w)?";
 		final String toplabel = "[a-zA-Z](?:[\\w\\-]{0,1000}\\w)?";
 		// Add the possibility of wildcard in the left-most part (specific to XACML definition)
-		final String pattern = "[*.]?(?:" + domainlabel + "\\.){0,100}" + toplabel + "\\.?";
+		final String pattern = "(?:\\*\\.)?(?:" + domainlabel + "\\.){0,100}" + toplabel + "\\.?";
 		HOSTNAME_PATTERN = Pattern.compile(pattern);
 	}
 
