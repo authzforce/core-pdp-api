@@ -55,6 +55,10 @@ public interface PdpExtensionRegistry<T extends PdpExtension>
 	 */
 	final class PdpExtensionComparator<E extends PdpExtension> implements Comparator<E>, Serializable
 	{
+		/**
+		 * Default constructor.
+		 */
+		public PdpExtensionComparator() { }
 
 		@Serial
 		private static final long serialVersionUID = 1L;

@@ -2,6 +2,14 @@
 All notable changes to this project are documented in this file following the [Keep a CHANGELOG](http://keepachangelog.com) conventions. This project adheres to [Semantic Versioning](http://semver.org).
 
 
+## 22.2.0
+### Changed
+- Upgraded parent project to 9.3.0 -> upgraded dependencies:
+  * authzforce-ce-xacml-model: 9.3.0
+  * authzforce-ce-pdp-ext-model: 9.3.0
+  * Saxon HE: 12.10
+  
+
 ## 22.1.1
 ### Fixed
 - Bad regex for XACML datatype dnsName

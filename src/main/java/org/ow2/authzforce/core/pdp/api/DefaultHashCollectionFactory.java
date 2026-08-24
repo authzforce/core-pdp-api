@@ -35,6 +35,10 @@ import com.google.common.collect.Sets;
  */
 public final class DefaultHashCollectionFactory implements HashCollectionFactory
 {
+	/**
+	 * Default constructor.
+	 */
+	public DefaultHashCollectionFactory() { }
 
 	@Override
 	public <K, V> Map<K, V> newMutableMap()

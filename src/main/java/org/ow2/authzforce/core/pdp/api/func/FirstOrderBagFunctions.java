@@ -48,6 +48,10 @@ import com.google.common.collect.Sets;
  */
 public final class FirstOrderBagFunctions
 {
+	/**
+	 * Default constructor
+	 */
+	private FirstOrderBagFunctions() { }
 
 	/**
 	 * Generic 'type-one-and-only' function
