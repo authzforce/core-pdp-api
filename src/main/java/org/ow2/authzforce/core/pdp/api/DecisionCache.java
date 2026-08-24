@@ -43,6 +43,11 @@ public interface DecisionCache extends Closeable
 	 */
 	abstract class Factory<CONF_T extends AbstractDecisionCache> extends JaxbBoundPdpExtension<CONF_T>
 	{
+		/**
+		 * Sole constructor. (For invocation by subclass
+		 * constructors, typically implicit.)
+		 */
+		protected Factory() { }
 
 		/**
 		 * Instantiates decision cache extension

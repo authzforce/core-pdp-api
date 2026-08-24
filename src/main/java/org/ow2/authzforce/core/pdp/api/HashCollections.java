@@ -41,6 +41,11 @@ import com.google.common.collect.Sets;
  */
 public final class HashCollections
 {
+	/**
+	 * Default constructor
+	 */
+	private HashCollections() { }
+
 	/*
 	 * Arbitrary limit of 1000 characters is there to mitigate Regex DoS attack
 	 */

@@ -26,6 +26,11 @@ import java.math.BigInteger;
  */
 public abstract class GenericInteger extends Number implements Comparable<GenericInteger>
 {
+	/**
+	 * Sole constructor. (For invocation by subclass
+	 * constructors, typically implicit.)
+	 */
+	protected GenericInteger() { }
 
 	@Serial
 	private static final long serialVersionUID = 1L;

@@ -29,6 +29,12 @@ import org.ow2.authzforce.xmlns.pdp.ext.AbstractPdpExtension;
 public abstract class JaxbBoundPdpExtension<T extends AbstractPdpExtension> implements PdpExtension
 {
 	/**
+	 * Sole constructor. (For invocation by subclass
+	 * constructors, typically implicit.)
+	 */
+	protected JaxbBoundPdpExtension() { }
+
+	/**
 	 * Gets the XML/JAXB class used as configuration class for the extension. There must be a one-to-one relationship between such types and the JAXB-bound extensions.
 	 * 
 	 * @return XML/JAXB class bound to this extension

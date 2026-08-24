@@ -30,6 +30,11 @@ import org.ow2.authzforce.core.pdp.api.value.Datatype;
  */
 public abstract class GenericHigherOrderFunctionFactory implements PdpExtension
 {
+	/**
+	 * Sole constructor. (For invocation by subclass
+	 * constructors, typically implicit.)
+	 */
+	protected GenericHigherOrderFunctionFactory() { }
 
 	/**
 	 * Returns instance of the Higher-order function

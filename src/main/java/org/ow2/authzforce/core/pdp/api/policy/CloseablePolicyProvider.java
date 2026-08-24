@@ -49,6 +49,12 @@ public interface CloseablePolicyProvider<PE extends TopLevelPolicyElementEvaluat
 	abstract class Factory<CONF_T extends AbstractPolicyProvider> extends JaxbBoundPdpExtension<CONF_T>
 	{
 		/**
+		 * Sole constructor. (For invocation by subclass
+		 * constructors, typically implicit.)
+		 */
+		protected Factory() { }
+
+		/**
 		 * Create PolicyProvider instance
 		 * 
 		 * @param conf

@@ -80,6 +80,11 @@ public interface CloseableNamedAttributeProvider extends NamedAttributeProvider,
 	 */
 	abstract class FactoryBuilder<CONF_T extends AbstractAttributeProvider> extends JaxbBoundPdpExtension<CONF_T>
 	{
+		/**
+		 * Sole constructor. (For invocation by subclass
+		 * constructors, typically implicit.)
+		 */
+		protected FactoryBuilder() { }
 
 		/**
 		 * Creates an attribute-dependency-aware AttributeProvider factory by inferring attribute dependencies (required attributes) from {@code conf}.

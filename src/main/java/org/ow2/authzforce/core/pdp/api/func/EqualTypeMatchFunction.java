@@ -157,6 +157,12 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue>
 	 * @param <PARAM> parameter type
 	 */
 	public static final class EqualMatcher<PARAM extends AttributeValue> implements Matcher<PARAM> {
+
+		/**
+		 * Default constructor
+		 */
+		public EqualMatcher() { }
+
 		@Override
 		public boolean match(final PARAM arg0, final PARAM arg1) {
 			return arg0.equals(arg1);
@@ -169,6 +175,12 @@ public class EqualTypeMatchFunction<PARAM extends AttributeValue>
 	 * @param <PARAM> parameter type
 	 */
 	public static final class EqualIgnoreCaseMatcher<PARAM extends SimpleValue<String>> implements Matcher<PARAM> {
+
+		/**
+		 * Default constructor
+		 */
+		public EqualIgnoreCaseMatcher() { }
+
 		@Override
 		public boolean match(final PARAM arg0, final PARAM arg1) {
 			final String normalized0 = arg0.getUnderlyingValue().toUpperCase(Locale.ENGLISH);

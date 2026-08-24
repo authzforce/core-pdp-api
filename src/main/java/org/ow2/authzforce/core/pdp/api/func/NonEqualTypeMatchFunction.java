@@ -229,6 +229,10 @@ public class NonEqualTypeMatchFunction<T0 extends AttributeValue, T1 extends Att
 	 */
 	public static class RegexpMatchCallFactoryBuilder<AV extends SimpleValue<String>> implements CallFactoryBuilder<StringValue, AV>
 	{
+		/**
+		 * Default constructor
+		 */
+		public RegexpMatchCallFactoryBuilder() { }
 
 		private final Matcher<StringValue, AV> regexMatcher = RegexpMatchFunctionHelper::match;
 
