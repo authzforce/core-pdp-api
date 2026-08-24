@@ -21,8 +21,8 @@
     $ gpg-agent --daemon --pinentry-program /usr/bin/pinentry-gnome3
 </code></pre>
     Then re-run the mvn command as above.
-1. Connect and log in to the OSS Nexus Repository Manager: https://oss.sonatype.org/
-1. Go to Staging Profiles and select the pending repository authzforce-*... you just uploaded with `jgitflow:release-finish`
-1. Click the Release button to release to Maven Central.
+1. Connect and log in to the Maven Central Repository: https://central.sonatype.com/publishing/deployments
+1. Go to Deployments and select the pending Deployment
+1. Click the Publish button to release to Maven Central.
 
 More info on jgitflow: http://jgitflow.bitbucket.org/
